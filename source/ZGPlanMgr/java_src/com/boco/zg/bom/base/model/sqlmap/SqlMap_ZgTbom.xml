@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTbom">
+
+    <typeAlias alias="zgTbom" type="com.boco.zg.bom.base.model.ZgTbom"/>
+
+    <resultMap id="zgTbomResult" class="zgTbom">
+        <result property="cuid" column="CUID"/>
+        <result property="maktx" column="MAKTX"/>
+        <result property="matnr" column="MATNR"/>
+        <result property="msehl" column="MSEHL"/>
+        <result property="matkl" column="MATKL"/>
+        <result property="zbz" column="ZBZ"/>
+        <result property="zrzqd" column="ZRZQD"/>
+        <result property="lgort" column="LGORT"/>
+        <result property="labelCn" column="label_cn"/>
+    </resultMap>
+    
+    <resultMap id="zgTbomResult2" class="zgTbom">
+        <result property="cuid" column="CUID"/>
+        <result property="maktx" column="MAKTX"/>
+        <result property="matnr" column="MATNR"/>
+        <result property="msehl" column="MSEHL"/>
+        <result property="matkl" column="MATKL"/>
+        <result property="zbz" column="ZBZ"/>
+        <result property="zrzqd" column="ZRZQD"/>
+        <result property="lgort" column="LGORT"/>
+        <result property="labelCn" column="label_cn"/>
+        <result property="carNum" column="CAR_NUM"/>
+         <result property="idnrk" column="IDNRK"/>
+    </resultMap>
+    
+    <resultMap id="zgTbomResult3" class="zgTbom">
+        <result property="cuid" column="CUID"/>
+        <result property="maktx" column="MAKTX"/>
+        <result property="matnr" column="MATNR"/>
+        <result property="msehl" column="MSEHL"/>
+        <result property="matkl" column="MATKL"/>
+        <result property="zbz" column="ZBZ"/>
+        <result property="zrzqd" column="ZRZQD"/>
+        <result property="lgort" column="LGORT"/>
+        <result property="labelCn" column="label_cn"/>
+        <!-- 
+        <result property="carNum" column="CAR_NUM"/>
+         -->
+        <result property="idnrk" column="IDNRK"/>
+        <!-- 扩展属性 -->
+        <result property="completeNum" column="COMPLETE_NUM"/>
+        <result property="outNum" column="OUT_NUM"/>
+        <result property="backNum" column="BACK_NUM"/>
+        <result property="planType" column="PLAN_TYPE"/>
+        <result property="remainNum" column="remain_num"/>
+        <result property="orderPlanbomId" column="orderPlanbomId"/>
+    </resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+        	t.CUID,
+        	t.MAKTX,
+        	t.MATNR,
+        	t.MSEHL,
+        	t.MATKL,
+        	t.ZBZ,
+        	t.ZRZQD,
+        	t.LGORT,
+        	t.label_cn,
+        	IDNRK
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+		    		$sqlQueryString$ 
+		    </isNotEmpty>
+       		<isNotEmpty prepend="AND" property="cuid">
+	       			t.CUID like #cuid#
+       		</isNotEmpty>
+       		
+       		
+       		<isNotEmpty prepend="AND" property="maktx">
+	       			t.MAKTX like #maktx#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="matnr">
+	       			t.MATNR like #matnr#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="msehl">
+	       			t.MSEHL like #msehl#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="matkl">
+	       			t.MATKL like #matkl#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="zbz">
+	       			t.ZBZ like #zbz#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="zrzqd">
+	       			t.ZRZQD like #zrzqd#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="lgort">
+	       			t.LGORT like #lgort#
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insert" parameterClass="zgTbom">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_BOM (
+        	CUID ,
+        	MAKTX ,
+        	MATNR ,
+        	MSEHL ,
+        	MATKL ,
+        	ZBZ ,
+        	ZRZQD ,
+        	LGORT 
+        ) VALUES (
+        	#cuid# ,
+        	#maktx# ,
+        	#matnr# ,
+        	#msehl# ,
+        	#matkl# ,
+        	#zbz# ,
+        	#zrzqd# ,
+        	#lgort# 
+        )
+    ]]>
+    <!--
+    mysql:		type="post" SELECT  select last_insert_id()
+    sqlserver:	type="post" SELECT  @@identity  AS  ID
+    oracle:		type="pre" 	SELECT  sequenceName.nextval AS ID FROM DUAL
+    DB2:		type="pre"	values nextval for sequenceName
+    -->
+		<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+            select sys_guid() as id FROM DUAL
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterClass="zgTbom">
+    <![CDATA[
+        UPDATE ZG_T_BOM SET
+	        MAKTX = #maktx# ,
+	        MATNR = #matnr# ,
+	        MSEHL = #msehl# ,
+	        MATKL = #matkl# ,
+	        ZBZ = #zbz# ,
+	        ZRZQD = #zrzqd# ,
+	        LGORT = #lgort# 
+        WHERE 
+	        CUID = #cuid# 
+    ]]>
+    </update>
+    <delete id="delete" parameterClass="java.lang.String">
+    <![CDATA[
+        delete from ZG_T_BOM where
+        CUID = #cuid# 
+    ]]>
+    </delete>
+    
+    <delete id="deleteButNotRealDet" parameterClass="java.lang.String">
+    <![CDATA[
+        update ZG_T_BOM t set t.car_id = '', t.carnum = '' where CUID = #cuid# 
+    ]]>
+    </delete>
+    
+    <delete id="deleteByProperty">
+    <![CDATA[
+        delete from ZG_T_BOM t
+    ]]>
+    	<include refid="dynamicWhere"/>
+    </delete>
+    
+    <select id="getById" resultMap="zgTbomResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from ZG_T_BOM t
+	        where 
+		        t.CUID = #cuid# 
+	    ]]>
+    </select>
+	 
+    <select id="count" resultClass="long">
+    <![CDATA[
+        select count(*) from ZG_T_BOM t
+    ]]>
+		<include refid="dynamicWhere"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTbomResult">
+    	select <include refid="commonColumns"/>,t.lgort_label_cn from 
+	    <![CDATA[
+	        (select z.* ,fo.label_cn lgort_label_cn from ZG_T_BOM z,   fw_organization fo 
+	          where z.lgort = fo.cuid) t
+	    ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findByProperty" resultMap="zgTbomResult">
+    	select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from ZG_T_BOM t
+	    ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+
+	
+	<select id="findAll" resultMap="zgTbomResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ZG_T_BOM t
+	    ]]>
+    </select>
+    
+    
+    <select id="findByCar" resultMap="zgTbomResult2"  parameterClass="java.util.Map">
+		select m.*,CAR_NUM
+    from (select t.CUID,
+          t.MAKTX,
+          t.MATNR,
+          t.MSEHL,
+          t.MATKL,
+          t.ZBZ,
+          t.ZRZQD,
+          t.LGORT,
+          t.label_cn,t.IDNRK from zg_t_bom t where t.LGORT=#lgort# and t.type='2'
+         <isNotEmpty prepend="AND" property="bomId">
+	       			t.cuid=#bomId#
+       	</isNotEmpty>
+          ) m
+    left join (select t0.CAR_NUM,bom_id as bom_id, ORDER_PLAN_ID
+                 from zg_t_order_planbom t0
+                where t0.ORDER_PLAN_ID = #orderPlanId#) t0_0_1 on t0_0_1.bom_id =m.cuid
+    </select>
+
+    <select id="count1" resultClass="long">
+		  select count(1) 
+		  from zg_t_orderbom t, zg_t_order_planbom bom, zg_t_order zto,zg_t_order_plan p
+		 where t.cuid = bom.order_bom_id
+		   and zto.cuid = t.order_id
+		      and p.cuid=bom.order_plan_id
+		  and bom.storage_num> 0
+		       
+		       	<isEqual prepend="AND" property="overNum" compareValue="0">
+		       		nvl(bom.complete_num,0)>nvl(bom.car_num,0)
+		       	</isEqual>
+		       	<isEqual prepend="AND" property="overNum" compareValue="1">
+		       		nvl(bom.car_num,0)>=nvl(bom.complete_num,0)
+		       	</isEqual>
+		       	<isNotEmpty prepend="AND" property="aufnr">
+			       	t.aufnr like '%'||'$aufnr$'||'%'
+		       	</isNotEmpty>
+		       	  <isNotEmpty prepend="AND" property="idnrk">
+			       	t.idnrk like '%'||'$idnrk$'||'%'
+		       	</isNotEmpty>
+		       	 <isNotEmpty prepend="AND" property="plant">
+			       	  p.plant='$plant$'
+		       	</isNotEmpty>
+		       	 <isNotEmpty prepend="AND" property="arbpl">
+			       	zto.arbpl = '$arbpl$'
+		       	</isNotEmpty>
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect1" resultClass="java.util.HashMap">
+    	select t.aufnr,
+		       zto.kdauf,
+		       zto.mipos,
+		       zto.arbpl,
+		       zto.pcdat,
+		       t.idnrk,
+		       t.maktx2,
+		       t.zbz,
+		       bom.storage_num,
+		       bom.wait_back_num,
+		       p.plant, t.posnr  
+		  from zg_t_orderbom t, zg_t_order_planbom bom, zg_t_order zto,zg_t_order_plan p
+		 where t.cuid = bom.order_bom_id
+		   and zto.cuid = t.order_id
+		      and p.cuid=bom.order_plan_id
+		  and bom.storage_num> 0
+		       
+		       	<isEqual prepend="AND" property="overNum" compareValue="0">
+		       		nvl(bom.complete_num,0)>nvl(bom.car_num,0)
+		       	</isEqual>
+		       	<isEqual prepend="AND" property="overNum" compareValue="1">
+		       		nvl(bom.car_num,0)>=nvl(bom.complete_num,0)
+		       	</isEqual>
+		       	<isNotEmpty prepend="AND" property="aufnr">
+			       	t.aufnr like '%'||'$aufnr$'||'%'
+		       	</isNotEmpty>
+		       	  <isNotEmpty prepend="AND" property="idnrk">
+			       	t.idnrk like '%'||'$idnrk$'||'%'
+		       	</isNotEmpty>
+		       	 <isNotEmpty prepend="AND" property="plant">
+			       	  p.plant='$plant$'
+		       	</isNotEmpty>
+		       	 <isNotEmpty prepend="AND" property="arbpl">
+			       	zto.arbpl = '$arbpl$'
+		       	</isNotEmpty>
+    </select>
+
+    <!-- 批量领料查询BOM,用于批量领料后，bom出备料库 -->
+    <select id="findBomsForBatchOut" resultMap="zgTbomResult3">
+    	select <include refid="commonColumns"/>,  planbom.cuid as orderPlanbomId,
+    	nvl(planbom.COMPLETE_NUM,0) as COMPLETE_NUM,
+    	nvl(planbom.OUT_NUM,0) as OUT_NUM,
+    	nvl(planbom.BACK_NUM,0) as BACK_NUM,
+    	orderplan.PLAN_TYPE,
+		planbom.STORAGE_NUM remain_num    	
+		<![CDATA[
+			from ZG_T_BOM t,ZG_T_ORDER_PLANBOM planbom,ZG_T_ORDER_PLAN orderplan 
+			where t.cuid=planbom.bom_id 
+			  and planbom.order_plan_id=orderplan.cuid
+			  and  orderplan.plan_type='3'
+			  and nvl(planbom.STORAGE_NUM,0)>0
+		]]>
+		<isNotEmpty prepend="AND" property="idnrk">
+	       			t.idnrk like '%'||#idnrk#||'%'
+   		</isNotEmpty>
+       	<isNotEmpty prepend="AND" property="maktx">
+	       			t.maktx like '%'||#maktx#||'%'
+  		</isNotEmpty>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>  
+    <!-- 统计批量领料BOM -->  
+    <select id="countBomsForBatchOut" resultClass="long">
+    	select count(*) from 
+    	(select <include refid="commonColumns"/>,  planbom.cuid as orderPlanbomId,
+    	nvl(planbom.COMPLETE_NUM,0) as COMPLETE_NUM,
+    	nvl(planbom.OUT_NUM,0) as OUT_NUM,
+    	nvl(planbom.BACK_NUM,0) as BACK_NUM,
+    	orderplan.PLAN_TYPE,
+    	planbom.STORAGE_NUM remain_num
+    	<![CDATA[
+			from ZG_T_BOM t,ZG_T_ORDER_PLANBOM planbom,ZG_T_ORDER_PLAN orderplan 
+			where t.cuid=planbom.bom_id 
+			  and planbom.order_plan_id=orderplan.cuid
+			  and  orderplan.plan_type='3'
+			  and nvl(planbom.STORAGE_NUM,0)>0
+		]]>
+		<isNotEmpty prepend="AND" property="idnrk">
+	       			t.idnrk like '%'||#idnrk#||'%'
+   		</isNotEmpty>
+       	<isNotEmpty prepend="AND" property="maktx">
+	       			t.maktx like '%'||#maktx#||'%'
+  		</isNotEmpty>)
+    </select>    
+    <!-- 批量领料bom出库，更新出库数量 -->
+    <update id="updateOutNumForBathchOut" parameterClass="java.util.HashMap">
+    	<![CDATA[
+			  update ZG_T_ORDER_PLANBOM t set t.out_num=nvl(t.out_num,0)+#outNumNew#,t.STORAGE_NUM=nvl(t.STORAGE_NUM,0)-#outNumNew# where t.cuid=#orderPlanbomId#	
+    	]]>
+    </update>
+</sqlMap>

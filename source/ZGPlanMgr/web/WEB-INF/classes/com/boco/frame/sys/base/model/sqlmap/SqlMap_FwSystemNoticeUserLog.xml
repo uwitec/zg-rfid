@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FwSystemNoticeUserLog">
+    <typeAlias alias="fwSystemNoticeUserLog" type="com.boco.frame.sys.base.model.FwSystemNoticeUserLog"/>
+	<resultMap id="fwSystemNoticeUserLogResult" class="fwSystemNoticeUserLog">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="userId" column="t0_USER_ID"/>
+		<result property="noticeId" column="t0_NOTICE_ID"/>
+		<result property="noticeId_related.value" column="t0_0_1_t0_CONTENT"/>
+		<result property="noticeId_related.relatedBmClassId" column="t0_0_1_BD"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_USER_ID,
+		    t0_0_1.t0_CONTENT as t0_0_1_t0_CONTENT,
+	        'FW_SYSTEM_NOTICE' as t0_0_1_BD,
+	        m.t0_NOTICE_ID
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="userId">
+	       			m.t0_USER_ID like #userId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="noticeId">
+	       			m.t0_NOTICE_ID like #noticeId#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertFW_SYSTEM_NOTICE_USER_LOG" parameterClass="fwSystemNoticeUserLog">
+    <![CDATA[
+        INSERT INTO
+        FW_SYSTEM_NOTICE_USER_LOG (
+        	CUID ,
+        	USER_ID ,
+        	NOTICE_ID 
+        ) VALUES (
+        	#cuid# ,
+        	#userId# ,
+        	#noticeId# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateFW_SYSTEM_NOTICE_USER_LOG" parameterClass="fwSystemNoticeUserLog">
+    <![CDATA[
+        UPDATE FW_SYSTEM_NOTICE_USER_LOG SET
+	        USER_ID = #userId# ,
+	        NOTICE_ID = #noticeId# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteFW_SYSTEM_NOTICE_USER_LOG" parameterClass="java.lang.String">
+		delete from FW_SYSTEM_NOTICE_USER_LOG 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="fwSystemNoticeUserLogResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.NOTICE_ID as t0_NOTICE_ID
+	        from 
+	        FW_SYSTEM_NOTICE_USER_LOG t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.CONTENT as t0_CONTENT,
+	        	t0.CREATE_ID as t0_CREATE_ID,
+	        	t0.CREATE_DATE as t0_CREATE_DATE,
+	        	t0.TITLE as t0_TITLE,
+	        	t0.STATE as t0_STATE,
+	        	t0.MODIRY_ID as t0_MODIRY_ID,
+	        	t0.LAST_MODIFY_DATE as t0_LAST_MODIFY_DATE
+	        	 from
+		        FW_SYSTEM_NOTICE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_NOTICE_ID 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="fwSystemNoticeUserLogResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.NOTICE_ID as t0_NOTICE_ID
+	        from 
+	        FW_SYSTEM_NOTICE_USER_LOG t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.CONTENT as t0_CONTENT,
+	        	t0.CREATE_ID as t0_CREATE_ID,
+	        	t0.CREATE_DATE as t0_CREATE_DATE,
+	        	t0.TITLE as t0_TITLE,
+	        	t0.STATE as t0_STATE,
+	        	t0.MODIRY_ID as t0_MODIRY_ID,
+	        	t0.LAST_MODIFY_DATE as t0_LAST_MODIFY_DATE
+	        	 from
+		        FW_SYSTEM_NOTICE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_NOTICE_ID 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.NOTICE_ID as t0_NOTICE_ID
+	        from 
+	        FW_SYSTEM_NOTICE_USER_LOG t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.CONTENT as t0_CONTENT,
+	        	t0.CREATE_ID as t0_CREATE_ID,
+	        	t0.CREATE_DATE as t0_CREATE_DATE,
+	        	t0.TITLE as t0_TITLE,
+	        	t0.STATE as t0_STATE,
+	        	t0.MODIRY_ID as t0_MODIRY_ID,
+	        	t0.LAST_MODIFY_DATE as t0_LAST_MODIFY_DATE
+	        	 from
+		        FW_SYSTEM_NOTICE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_NOTICE_ID 
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="fwSystemNoticeUserLogResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.NOTICE_ID as t0_NOTICE_ID
+	        from 
+	        FW_SYSTEM_NOTICE_USER_LOG t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.CONTENT as t0_CONTENT,
+	        	t0.CREATE_ID as t0_CREATE_ID,
+	        	t0.CREATE_DATE as t0_CREATE_DATE,
+	        	t0.TITLE as t0_TITLE,
+	        	t0.STATE as t0_STATE,
+	        	t0.MODIRY_ID as t0_MODIRY_ID,
+	        	t0.LAST_MODIFY_DATE as t0_LAST_MODIFY_DATE
+	        	 from
+		        FW_SYSTEM_NOTICE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_NOTICE_ID 
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="fwSystemNoticeUserLogResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.NOTICE_ID as t0_NOTICE_ID
+	        from 
+	        FW_SYSTEM_NOTICE_USER_LOG t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.CONTENT as t0_CONTENT,
+	        	t0.CREATE_ID as t0_CREATE_ID,
+	        	t0.CREATE_DATE as t0_CREATE_DATE,
+	        	t0.TITLE as t0_TITLE,
+	        	t0.STATE as t0_STATE,
+	        	t0.MODIRY_ID as t0_MODIRY_ID,
+	        	t0.LAST_MODIFY_DATE as t0_LAST_MODIFY_DATE
+	        	 from
+		        FW_SYSTEM_NOTICE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_NOTICE_ID 
+        ]]>
+    </select>
+    
+</sqlMap>

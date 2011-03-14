@@ -1,0 +1,22 @@
+*{padding:0;margin:0}
+body {
+	font-size: 62.5%;
+	margin:0;
+	padding:0;
+}
+
+table {
+	font-size: 1em;
+}
+
+body {
+	font-family: "Î¢ÈíÑÅºÚ","ËÎÌå","Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+}
+
+.hide {
+	display: none;
+}
+
+div.errormsg{
+	color:red;
+}

@@ -1,0 +1,26 @@
+@CHARSET "UTF-8";
+body{
+	background-color : #FFFFFF;
+	font-family: '宋体',verdana, arial, helvetica, sans-serif;
+	font-size: 12px;
+	border: 0;
+}
+
+html{border:0;}
+*{vertical-align: middle;padding: 0;margin: 0}
+
+.form_panel {margin-top:1px;border:1px solid #A8CFEB;}
+.form_table{width:100%;}
+.form_table caption{background-color:#DFEAFB;text-align:left; font-weight:bold;color:#1C568A;height:22px;padding-left:5px;padding-top:5px;}
+.form_table td{white-space:nowrap;padding-left:3px;}
+.form_table .label{height:25px;width:10%;background-color:#F1F6FF;padding-left:3px;}
+
+.query_panel {background-color:#F1F6FF;width:100%;border:1px solid #A8CFEB;position:relative;padding-left:15px;}
+.query_panel .querybar {text-align:left; white-space:nowrap;padding-left:5px;height:20px;}
+.query_panel td{white-space:nowrap;padding-left:3px;}
+.query_panel .toolbar{background-color:#F1F6FF;text-align: right}
+.query_panel .label{text-align:right; white-space:nowrap;padding-left:20px;height:20px;}
+.query_panel input {width:100px;}
+.query_panel select {width:104px}
+
+.operatorPanel{margin-top:0;#margin-top:-10px;_margin-top:-10px;}

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTBomManager">
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="aufnr">
+	       			m.t0_AUFNR like #aufnr#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="matnr">
+	       			m.t0_MATNR like #matnr#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="maktx">
+	       			m.t0_MAKTX like #maktx#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="mengeD">
+	       			m.t0_MENGE_D = #mengeD#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="lgortD">
+	       			m.t0_LGORT_D like #lgortD#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="budat_start">
+       			<![CDATA[m.t0_BUDAT >= to_date(#budat_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="budat_end">
+       			<![CDATA[m.t0_BUDAT <= to_date(#budat_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="cputm_start">
+       			<![CDATA[m.t0_CPUTM >= to_date(#cputm_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="cputm_end">
+       			<![CDATA[m.t0_CPUTM <= to_date(#cputm_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    
+    <select id="pageOrderPlanForChange_count" resultClass="long">
+        	 select count(1)
+		  from zg_t_order_plan t,
+		       zg_t_order      od,
+		       fw_operator     emp,
+		       fw_organization org
+		 where t.plan_type = 'CHANGE'
+		   and t.order_id = od.cuid
+		   and t.user_id = emp.cuid
+		   and t.departmenu_id = org.cuid
+
+		<include refid="dynamicWhere"/> 
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageOrderPlanForChange" resultClass="java.util.HashMap">
+		    	 select t.*, od.aufnr, emp.label_cn createName, org.label_cn orgName
+		  from zg_t_order_plan t,
+		       zg_t_order      od,
+		       fw_operator     emp,
+		       fw_organization org
+		 where t.plan_type = 'CHANGE'
+		   and t.order_id = od.cuid
+		   and t.user_id = emp.cuid
+		   and t.departmenu_id = org.cuid
+
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    
+    
+</sqlMap>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="FwOrganizationManager">
+    <typeAlias alias="fwOrganizationManager" type="com.boco.frame.sys.base.model.FwOrganizationManager"/>
+	<typeAlias alias="fwEmployee" type="com.boco.frame.sys.base.model.FwEmployee"/>
+	
+	<resultMap id="fwOrganizationManagerResult" class="fwOrganizationManager">
+		<result property="employeeId" column="employeeId"/>
+		<result property="employeeName" column="employeeName"/>
+	</resultMap>
+	
+	<resultMap id="fwOrganizationManagerResult1" class="fwOrganizationManager">
+		<result property="orgId" column="org_id"/>
+		<result property="orgName" column="orgName"/>
+		<result property="employeeId" column="employee_id"/>
+		<result property="extend2" column="extend2"/>
+		
+	</resultMap>
+	
+	
+	<resultMap id="fwEmployeeResult" class="fwEmployee">
+		<result property="cuid" column="fe_employeeId"/>
+		<result property="labelCn" column="fo_employeeName"/>
+		<result property="rfidCode" column="rfidcode"/>
+		<result property="sex" column="sex"/>
+		<result property="mobile" column="mobile"/>
+		<result property="telephone" column="telephone"/>
+		<result property="address" column="address"/>
+		<result property="email" column="email"/>
+		<result property="orgId_labelCn" column="org_id_label_cn"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	    	m.fe_employeeId,
+	        m.fo_employeeName,
+	        m.rfidcode,
+	        m.sex,
+	        m.mobile,
+	        m.telephone,
+	        m.address,
+	        m.email,
+          	m.org_id_label_cn
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="principalName">
+	    		m.fo_employeeName like '%'||#principalName#||'%'
+	    	</isNotEmpty> 
+	    	<isNotEmpty prepend="AND" property="sex">
+	    		m.sex=#sex#
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend="AND" property="departmentId">
+	    		m.departmentId = #departmentId#
+	    	</isNotEmpty> 
+	    </dynamic>	
+	</sql>
+	
+	<!-- page分页，查找负责人列表 -->
+	<select id="pageSelectPrincipals" resultMap="fwEmployeeResult">
+		select <include refid="commonColumns"/> ,orderStr
+		from <![CDATA[ (
+						select 
+					   fe.cuid fe_employeeId,
+					   fo.label_cn fo_employeeName,
+				       fo.rfidcode,
+				       fe.sex,
+				       fe.mobile,
+				       fe.telephone,
+				       fe.address,
+				       fe.email,
+				       fon.label_cn org_id_label_cn,
+				       fon.cuid departmentId,
+				       '1' as orderStr
+						  from FW_OPERATOR fo, FW_EMPLOYEE fe,FW_ORGANIZATION fon
+						 where fo.cuid = fe.cuid
+						 and fe.org_id=fon.cuid(+) ]]>
+						 <isNotEqual property="employeesId" compareValue="">
+						 	and fo.cuid not in ($employeesId$)
+						 </isNotEqual>
+						<![CDATA[ )m  ]]>
+		<include refid="dynamicWhere"/>
+		order by orderStr desc
+	</select>
+	
+	<!-- count，查找负责人列表 -->
+	<select id="count" resultClass="long">
+		select count(1) from (
+			select <include refid="commonColumns"/> 
+			from <![CDATA[ (select 
+						   fe.cuid fe_employeeId,
+						   fo.label_cn fo_employeeName,
+					       fo.rfidcode,
+					       fe.sex,
+					       fe.mobile,
+					       fe.telephone,
+					       fe.address,
+					       fe.email,
+				       	   fon.label_cn org_id_label_cn,
+				       	   fon.cuid departmentId
+					  from FW_OPERATOR fo, FW_EMPLOYEE fe,FW_ORGANIZATION fon
+					 where fo.cuid = fe.cuid
+					 and fe.org_id=fon.cuid(+) ]]>
+					 <isNotEqual property="employeesId" compareValue="">
+						 	and fo.cuid not in ($employeesId$)
+					</isNotEqual>
+					<![CDATA[ )m ]]>
+					 
+			<include refid="dynamicWhere"/>
+		)
+	</select>
+	
+	<select id="findEmployeesByOrgId" resultMap="fwOrganizationManagerResult">
+		 <![CDATA[ select fo.cuid employeeId, fo.label_cn employeeName
+				  from FW_OPERATOR fo
+				 where cuid in (select t.employee_id
+                  from FW_ORGANIZATION_MANAGER t
+                 where org_id = #cuid#) ]]>
+	</select>
+	
+	<select id="getManagerListByUserId" resultMap="fwOrganizationManagerResult1">
+		select t.org_id,t.employee_id,org.label_cn orgName,org.extend2 from fw_organization_manager t,fw_organization org 
+		 where org.cuid=t.org_id and t.employee_id='$cuid$'
+	</select>
+	
+	<select id="getManagerOrgListByOperatorSorftType"  resultMap="fwOrganizationManagerResult1">
+			select distinct t.org_id, NULL AS employee_id, org.label_cn orgName,org.extend2
+		  from fw_organization_manager t, fw_organization org
+		 where org.cuid = t.org_id and org.type='5'
+		 <isNotEqual property="operatorId" compareValue="0">
+		 AND t.employee_id = '$operatorId$'
+		</isNotEqual>
+		    and org.extend1='$sorftType$'
+		    order by t.org_id
+	</select>
+	
+	<insert id="insertFW_ORGANIZATION_MANAGER" parameterClass="fwOrganizationManager">
+    <![CDATA[
+        insert into FW_ORGANIZATION_MANAGER
+  		(CUID, 
+  		ORG_ID, 
+  		EMPLOYEE_ID)
+		values
+  		(#cuid#, 
+  		#orgId#, 
+  		#employeeId#)
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <delete id="deleteFwOrganizationManagerByOrgId">
+    	<![CDATA[ delete FW_ORGANIZATION_MANAGER where org_id=#orgId# ]]>
+    </delete>
+    
+    <delete id="removeManagerOrgByOperateId">
+    	delete from fw_organization_manager t where t.employee_id=#cuid#
+    </delete>
+    
+</sqlMap>

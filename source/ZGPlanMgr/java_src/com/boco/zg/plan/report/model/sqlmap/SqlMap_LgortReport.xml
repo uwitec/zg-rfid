@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="LgortReport">
+
+<sql id="dynamicWhere">
+	    <dynamic prepend="">
+       		<isNotEmpty prepend="AND" property="date_start">
+	       			 carplan.car_date>=to_date('$date_start$','yyyy-mm-dd') 
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="date_end">
+	       			to_date('$date_end$','yyyy-mm-dd')+1 >= carplan.car_date
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="aufnr">
+	       		  zto.aufnr like '%'||'$aufnr$'||'%'
+       		</isNotEmpty> 
+       		<isNotEmpty prepend="AND" property="matnr">
+       			  zto.matnr like '%'||'$matnr$'||'%'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="plantWhere">
+       			  ($plantWhere$)
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="arbpl">
+	       		  zto.arbpl like '%'||'$arbpl$'||'%'
+       		</isNotEmpty> 
+       			<isNotEmpty prepend="AND" property="idnrk">
+	       		  orderbom.idnrk like '%'||'$idnrk$'||'%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty prepend="AND" property="suppliers">
+	       		  sup.lifnr_name like '%'||'$suppliers$'||'%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty prepend="AND" property="lgort">
+	       		  orderbom.lgort like '%'||'$lgort$'||'%'
+       		</isNotEmpty> 
+       		
+	    </dynamic>	
+	</sql>
+
+	<select id="pageSelect" resultClass="java.util.HashMap">
+		     
+	    <![CDATA[	select zto.aufnr,
+	       zto.matnr,
+	       zto.maktx1,
+	       emu.orgname plant,
+	       zto.arbpl,
+	       orderbom.idnrk,
+	       orderbom.maktx2,
+	       orderbom.sortf,
+	       orderbom.lgort,
+	       sup.lifnr,
+	           sup.car_num real_num,
+	       planbom.car_num,
+	       sup.lifnr_name,
+	       carplan.car_user,
+	       op.label_cn car_user_name,
+	       to_char(carplan.create_date,'yyyy-MM-dd hh24:mi:ss') create_date,
+	       to_char(carplan.car_date,'yyyy-MM-dd hh24:mi:ss') car_date,
+	       carplan.storage_user_id,
+	       op1.label_cn storage_user_name,
+	       sup.batchno,
+           sup.zrzqd
+	  from zg_t_carbom           carbom,
+	       zg_t_carplan          carplan,
+	       zg_t_order            zto,
+	       zg_t_orderbom         orderbom,
+	       zg_t_order_planbom    planbom,
+	       zg_t_carbom_suppliers sup,
+	       fw_operator op,
+	       fw_operator op1,
+              ( select temp.order_id,max(temp.plant) plant from zg_t_order_aide temp group by temp.order_id) aide,
+              t_plant_enumevalue emu
+	 where aide.order_id=zto.cuid
+         and aide.plant=emu.plantid
+         and op.cuid = carplan.car_user
+	   and op1.cuid = carplan.storage_user_id
+	   and carbom.car_plan_id = carplan.cuid
+	   and carbom.order_id = zto.cuid
+	   and carbom.order_bom_id = orderbom.cuid
+	   and orderbom.order_id = carbom.order_id
+	   and planbom.cuid = carbom.order_planbom_id
+	   and sup.car_bom_id = carbom.cuid
+	    and sup.car_num>0
+	     and zto.order_state<>'-1' 
+	   and carplan.car_state = '8'
+	    and carplan.order_plan_type <>'3'  
+	      and sup.car_num>0  ]]>
+	    <include refid="dynamicWhere"/>
+
+
+	</select>   
+	
+	  <select id="count" resultClass="long">
+		 <![CDATA[  		select count(1)
+	  from zg_t_carbom           carbom,
+	       zg_t_carplan          carplan,
+	       zg_t_order            zto,
+	       zg_t_orderbom         orderbom,
+	       zg_t_order_planbom    planbom,
+	       zg_t_carbom_suppliers sup,
+	       fw_operator op,
+	       fw_operator op1,
+              ( select temp.order_id,max(temp.plant) plant from zg_t_order_aide temp group by temp.order_id) aide,
+              t_plant_enumevalue emu
+	 where aide.order_id=zto.cuid
+         and aide.plant=emu.plantid
+         and op.cuid = carplan.car_user
+	   and op1.cuid = carplan.storage_user_id
+	   and carbom.car_plan_id = carplan.cuid
+	   and carbom.order_id = zto.cuid
+	   and carbom.order_bom_id = orderbom.cuid
+	   and orderbom.order_id = carbom.order_id
+	   and planbom.cuid = carbom.order_planbom_id
+	   and sup.car_bom_id = carbom.cuid
+	    and sup.car_num>0
+	       and zto.order_state<>'-1' 
+	   and carplan.car_state = '8'
+	   and carplan.order_plan_type <>'3'      ]]>
+	    <include refid="dynamicWhere"/>
+
+	  </select>
+</sqlMap>

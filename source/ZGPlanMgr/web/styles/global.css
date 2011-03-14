@@ -1,0 +1,143 @@
+body {
+	margin: 0;
+	padding: 0;
+	background-color : #FFFFFF;
+	font-family: 'ËÎÌו',verdana, arial, helvetica, sans-serif;
+	font-size: 12px;
+}
+
+/* link color */
+a,a:link {color: #006699; text-decoration:none;}
+a:visited {color: #006699;text-decoration:none;}
+a:hover {color: #bc2931; text-decoration:underline;}
+a:active {color: #bc2931;}
+
+/* for button: <input type=submit class=stdButton /> */
+.stdButton {
+	background-color:buttonface;
+	border:1px solid #CCCCCC;
+	cursor:pointer;
+	font-family:Verdana;
+	font-size:9pt;
+	height:22px;
+}
+
+/* formTable */
+.formTable {
+	border-collapse:collapse;
+	width:100%;
+	margin:0px; 
+}
+
+.formTable .tdLabel{   
+	border:1px solid #CCC;
+	height: 25px;
+	width: 150px;
+	font-weight:bold;
+	vertical-align: top;
+	text-align: right;
+}
+
+.formTable td{   
+	border:1px solid #CCC;
+}
+
+.formTable span.alterlabel{   
+	color:red;
+	font-weight:bold;
+}
+
+/* END formTable */
+
+/* queryPanel for list.jsp */
+.queryPanel .tdLabel{   
+	vertical-align: top;
+	text-align: right;
+}
+
+/* Messages */
+div.error, div.message {
+	border: 1px solid black;
+	padding: 4px;
+    background: #ffffcc;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: normal;
+    margin: 10px auto;
+    text-align: left;
+    vertical-align: bottom;
+}
+
+div.error {
+	border: 2px solid red;
+}
+/* END Messages */
+
+.textButton {
+	background-color:transparent;
+	border: 0;
+	cursor: pointer;
+	height:20px;
+	color:blue;
+	margin:0;
+	padding:0;
+}
+
+.textButton:hover{
+	color:red;
+}
+
+.commonButton {
+	background-color:transparent;
+	background-repeat: no-repeat;
+	background-position:center left;
+	padding:1px 0 0 12px;
+	border: 0;
+	cursor: pointer;
+	height:20px;
+	color:blue;
+}
+.commonButton:hover{
+	color:red;
+}
+
+.delButton {
+	background-image: url('images/del_button.png');
+}
+
+.addButton {
+	background-image: url('images/add_button.png');
+}
+
+.viewButton {
+	background-image: url('images/detail.png');
+}
+
+
+.saveButton {
+	background-image: url('images/save_button.png');
+}
+
+.acceptButton {
+	background-image: url('images/accept_button.png');
+}
+
+.expButton {
+	background-image: url('images/exp_button.png');
+}
+
+.queryButton {
+	background-image: url('images/query.png');
+}
+
+.queryExButton {
+	background-image: url('images/query_ex.png');
+}
+
+.resetButton {
+	background-image: url('images/reset_button.png');
+}
+
+.backButton {
+	background-image: url('images/back_button.png');
+}

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TmdPackagetypeRestype">
+
+    <typeAlias alias="tmdPackagetypeRestype" type="com.boco.frame.meta.base.model.TmdPackagetypeRestype"/>
+
+    <resultMap id="tmdPackagetypeRestypeResult" class="tmdPackagetypeRestype">
+        <result property="cuid" column="CUID"/>
+        <result property="packageId" column="PACKAGE_ID"/>
+        <result property="typeId" column="TYPE_ID"/>
+    </resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+        	t.CUID,
+        	t.PACKAGE_ID,
+        	t.TYPE_ID
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+		    		$sqlQueryString$ 
+		    </isNotEmpty>
+       		<isNotEmpty prepend="AND" property="cuid">
+	       			t.CUID like #cuid#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="packageId">
+	       			t.PACKAGE_ID like #packageId#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="typeId">
+	       			t.TYPE_ID like #typeId#
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insert" parameterClass="tmdPackagetypeRestype">
+    <![CDATA[
+        INSERT INTO
+        T_MD_PACKAGETYPE_RESTYPE (
+        	CUID ,
+        	PACKAGE_ID ,
+        	TYPE_ID 
+        ) VALUES (
+        	#cuid# ,
+        	#packageId# ,
+        	#typeId# 
+        )
+    ]]>
+    <!--
+    mysql:		type="post" SELECT  select last_insert_id()
+    sqlserver:	type="post" SELECT  @@identity  AS  ID
+    oracle:		type="pre" 	SELECT  sequenceName.nextval AS ID FROM DUAL
+    DB2:		type="pre"	values nextval for sequenceName
+    -->
+		<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+            select sys_guid() as id FROM DUAL
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterClass="tmdPackagetypeRestype">
+    <![CDATA[
+        UPDATE T_MD_PACKAGETYPE_RESTYPE SET
+	        PACKAGE_ID = #packageId# ,
+	        TYPE_ID = #typeId# 
+        WHERE 
+	        CUID = #cuid# 
+    ]]>
+    </update>
+    <delete id="delete" parameterClass="java.lang.String">
+    <![CDATA[
+        delete from T_MD_PACKAGETYPE_RESTYPE where
+        CUID = #cuid# 
+    ]]>
+    </delete>
+    
+    <delete id="deleteByProperty">
+    <![CDATA[
+        delete from T_MD_PACKAGETYPE_RESTYPE t
+    ]]>
+    	<include refid="dynamicWhere"/>
+    </delete>
+    
+    <select id="getById" resultMap="tmdPackagetypeRestypeResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from T_MD_PACKAGETYPE_RESTYPE t
+	        where 
+		        t.CUID = #cuid# 
+	    ]]>
+    </select>
+	 
+    <select id="count" resultClass="long">
+    <![CDATA[
+        select count(*) from T_MD_PACKAGETYPE_RESTYPE t
+    ]]>
+		<include refid="dynamicWhere"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="tmdPackagetypeRestypeResult">
+    	select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from T_MD_PACKAGETYPE_RESTYPE t
+	    ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findByProperty" resultMap="tmdPackagetypeRestypeResult">
+    	select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from T_MD_PACKAGETYPE_RESTYPE t
+	    ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+
+	
+	<select id="findAll" resultMap="tmdPackagetypeRestypeResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from T_MD_PACKAGETYPE_RESTYPE t
+	    ]]>
+    </select>
+</sqlMap>

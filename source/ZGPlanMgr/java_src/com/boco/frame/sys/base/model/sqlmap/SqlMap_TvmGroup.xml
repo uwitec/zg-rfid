@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TvmGroup">
+    <typeAlias alias="tvmGroup" type="com.boco.frame.sys.base.model.TvmGroup"/>
+	<resultMap id="tvmGroupResult" class="tvmGroup">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="bmClassId" column="t0_BM_CLASS_ID"/>
+		<result property="relatedUserCuid" column="t0_RELATED_USER_CUID"/>
+		<result property="type" column="t0_TYPE"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_LABEL_CN,
+	        m.t0_BM_CLASS_ID,
+	        m.t0_RELATED_USER_CUID,
+	        m.t0_TYPE
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="bmClassId">
+	       			m.t0_BM_CLASS_ID like #bmClassId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="relatedUserCuid">
+	       			m.t0_RELATED_USER_CUID like #relatedUserCuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="type">
+	       			m.t0_TYPE like #type#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertT_VM_GROUP" parameterClass="tvmGroup">
+    <![CDATA[
+        INSERT INTO
+        T_VM_GROUP (
+        	CUID ,
+        	LABEL_CN ,
+        	BM_CLASS_ID ,
+        	RELATED_USER_CUID ,
+        	TYPE 
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#bmClassId# ,
+        	#relatedUserCuid# ,
+        	#type# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateT_VM_GROUP" parameterClass="tvmGroup">
+    <![CDATA[
+        UPDATE T_VM_GROUP SET
+	        LABEL_CN = #labelCn# ,
+	        BM_CLASS_ID = #bmClassId# ,
+	        RELATED_USER_CUID = #relatedUserCuid# ,
+	        TYPE = #type# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteT_VM_GROUP" parameterClass="java.lang.String">
+		delete from T_VM_GROUP 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="tvmGroupResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.BM_CLASS_ID as t0_BM_CLASS_ID,
+	        		t0.RELATED_USER_CUID as t0_RELATED_USER_CUID,
+	        		t0.TYPE as t0_TYPE
+	        from 
+	        T_VM_GROUP t0
+ ) m
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="tvmGroupResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.BM_CLASS_ID as t0_BM_CLASS_ID,
+	        		t0.RELATED_USER_CUID as t0_RELATED_USER_CUID,
+	        		t0.TYPE as t0_TYPE
+	        from 
+	        T_VM_GROUP t0
+ ) m
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.BM_CLASS_ID as t0_BM_CLASS_ID,
+	        		t0.RELATED_USER_CUID as t0_RELATED_USER_CUID,
+	        		t0.TYPE as t0_TYPE
+	        from 
+	        T_VM_GROUP t0
+ ) m
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="tvmGroupResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.BM_CLASS_ID as t0_BM_CLASS_ID,
+	        		t0.RELATED_USER_CUID as t0_RELATED_USER_CUID,
+	        		t0.TYPE as t0_TYPE
+	        from 
+	        T_VM_GROUP t0
+ ) m
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="tvmGroupResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.BM_CLASS_ID as t0_BM_CLASS_ID,
+	        		t0.RELATED_USER_CUID as t0_RELATED_USER_CUID,
+	        		t0.TYPE as t0_TYPE
+	        from 
+	        T_VM_GROUP t0
+ ) m
+        ]]>
+    </select>
+    
+</sqlMap>

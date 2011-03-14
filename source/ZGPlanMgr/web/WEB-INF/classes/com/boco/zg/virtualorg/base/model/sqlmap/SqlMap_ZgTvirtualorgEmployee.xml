@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTvirtualorgEmployee">
+    <typeAlias alias="zgTvirtualorgEmployee" type="com.boco.zg.virtualorg.base.model.ZgTvirtualorgEmployee"/>
+	
+	<resultMap id="zgTvirtualorgEmployeeResult" class="zgTvirtualorgEmployee">
+		<result property="userCuid" column="userCuid"/>
+		<result property="userId" column="fo_user_id"/>
+		<result property="userName" column="userName"/>
+		<result property="sex" column="fe_sex"/>
+		<result property="email" column="fe_email"/>
+		<result property="orgName" column="foz_label_cn"/>
+    </resultMap>
+	
+	<resultMap class="zgTvirtualorgEmployee" id="zgTvirtualorgEmployeeResultForVirtual">
+		<result property="cuid" column="CUID"/>
+		<result property="orgId" column="ORG_ID"/>
+		<result property="userId" column="USER_ID"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	    	m.userCuid,
+	        m.fo_user_id,
+	        m.userName,
+	        m.fe_sex,
+	        m.fe_email,
+	        m.foz_label_cn
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="userId">
+	    		m.fo_user_id like '%'||#userId#||'%' 
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend="AND" property="userName">
+	    		m.userName like '%'||#userName#||'%' 
+	    	</isNotEmpty>
+	    	<isNotEqual property="userSex" compareValue="0">   
+			    <isNotEmpty prepend="AND" property="userSex">
+		       			m.fe_sex = #userSex#
+	       		</isNotEmpty>
+       		</isNotEqual>
+       		<isNotEqual property="userDepartmentId" compareValue="">   
+			    <isNotEmpty prepend="AND" property="userDepartmentId">
+		       			m.foz_cuid = #userDepartmentId#
+	       		</isNotEmpty>
+       		</isNotEqual>
+	    </dynamic>	
+	</sql>
+	
+	<select id="count" resultClass="long">
+	select count(*) from (
+    select <include refid="commonColumns"/> 
+    <![CDATA[
+    from (
+    	select fo.cuid userCuid, 
+    	fo.user_id fo_user_id, 
+       fo.label_cn userName, 
+       fe.sex fe_sex, 
+       fe.email fe_email, 
+       foz.label_cn foz_label_cn,
+       foz.cuid foz_cuid
+	  from FW_OPERATOR fo, FW_EMPLOYEE fe, FW_ORGANIZATION foz
+	 where fo.cuid = fe.cuid
+	   and fe.org_id = foz.cuid(+)
+	   and fo.cuid not in (select t.user_id
+                         from ZG_T_VIRTUALORG_EMPLOYEE t
+                        where t.org_id = #virtualorgId#)
+                        )m ]]>
+        <include refid="dynamicWhere"/> 
+        )
+    </select>
+	
+    <select id="pageSelect" resultMap="zgTvirtualorgEmployeeResult">
+    select <include refid="commonColumns"/> 
+    <![CDATA[
+    from (
+    	select fo.cuid userCuid, 
+    	fo.user_id fo_user_id,
+       fo.label_cn userName, 
+       fe.sex fe_sex, 
+       fe.email fe_email, 
+       foz.label_cn foz_label_cn,
+       foz.cuid foz_cuid
+	  from FW_OPERATOR fo, FW_EMPLOYEE fe, FW_ORGANIZATION foz
+	 where fo.cuid = fe.cuid
+	   and fe.org_id = foz.cuid(+)
+	   and fo.cuid not in (select t.user_id
+                         from ZG_T_VIRTUALORG_EMPLOYEE t
+                        where t.org_id = #virtualorgId#)
+                        )m ]]>
+        <include refid="dynamicWhere"/> 
+    </select>
+    
+    <insert id="insert_ZgTvirtualorgEmployee">
+    <![CDATA[
+    	insert into ZG_T_VIRTUALORG_EMPLOYEE (CUID, ORG_ID, USER_ID) values (#cuid#,#orgId#,#userId#) ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <select id="getById" resultMap="zgTvirtualorgEmployeeResultForVirtual">
+    <![CDATA[
+	    select CUID,ORG_ID,USER_ID 
+	    from ZG_T_VIRTUALORG_EMPLOYEE m
+	    where  m.org_id =#orgId#
+	 ]]>
+    </select>
+    
+</sqlMap>
