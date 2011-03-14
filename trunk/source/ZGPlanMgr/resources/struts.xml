@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+    
+<!-- 
+修改说明:
+	1.修改pakcage的namespace属性,因为URL访问规则是: /namesapce/Entity/method.do 
+	2.根据你的包结构修改action节点的class属性 
+ -->
+ 
+<struts>
+
+     <constant name="struts.devMode" value="false" /> 
+    <!-- struts的URL扩展名 -->
+ 	<constant name="struts.action.extension" value="do" />
+ 	
+ 	<!-- 允许访问静态成员变量 -->
+ 	<constant name="struts.ognl.allowStaticMethodAccess" value="true" />
+ 	
+    <constant name="struts.custom.i18n.resources" value="i18n/messages"/>
+    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <constant name="struts.enable.SlashesInActionNames" value="true" />
+
+	<package name="custom-default" extends="struts-default">
+        <result-types>
+            <result-type name="direct" class="cn.org.rapid_framework.struts2.dispatcher.DirectResult"/>
+        </result-types>
+        <default-interceptor-ref name="paramsPrepareParamsStack"/>
+  	</package>
+  	
+  	<!-- 修改为你自己的namespace -->
+    <package name="default" namespace="/frame/sys" extends="custom-default">
+		
+		<!-- 通过URL访问的路径是 /namesapce/Entity/method.do -->
+		<action name="*/*" method="{2}" class="com.boco.frame.sys.base.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+		
+		<action name="ext/*/*" method="{2}" class="com.boco.frame.sys.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+		
+		<!-- 打开以下配置用于使用struts2自带的验证框架
+		<action name="*/save" method="save" class="com.boco.system.action.{1}Action">
+			<result name="input" type="dispatcher">/demo/{1}/create.do</result>
+		    <result name="*" type="direct">通过Action直接返回</result>
+		</action>
+
+		<action name="*/update" method="update" class="com.boco.system.action.{1}Action">
+			<result name="input" type="dispatcher">/demo/{1}/edit.do</result>
+		    <result name="*" type="direct">通过Action直接返回</result>
+		</action>
+		-->
+								
+    </package>
+    
+    <package name="zgbom" namespace="/zg/bom" extends="custom-default">
+		
+		<!-- 通过URL访问的路径是 /namesapce/Entity/method.do -->
+		<action name="*/*" method="{2}" class="com.boco.zg.bom.base.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+		
+		<action name="ext/*/*" method="{2}" class="com.boco.zg.bom.base.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+    </package>
+    
+    <package name="autoComplate" namespace="/autoComplate" extends="custom-default">
+		<action name="*" method="{1}" class="javacommon.base.action.AutoComplateAction">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+    </package>
+    
+    <package name="frame" namespace="/" extends="custom-default">
+		<action name="*/*" method="{2}" class="com.boco.frame.login.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+    </package>
+    
+    <package name="excel" namespace="/frame/excel/sys" extends="struts-default">
+		<action name="export" method="export" class="com.boco.frame.excel.xlsexp.action.XlsExportAction">
+		    <result name="success" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		</action>
+		<action name="exportStorage" method="exportStorage" class="com.boco.frame.excel.xlsexp.action.XlsExportAction">
+		    <result name="success" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		</action>
+    </package>
+    
+    <!-- Bom Car中的excel导入导出Action -->
+    <package name="allexcel" namespace="/frame/excel/all" extends="custom-default">
+		<action name="*/export" method="export" class="com.boco.frame.excel.action.{1}Action">
+		    <result name="success" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		</action>
+		<action name="*/importData" method="importData" class="com.boco.frame.excel.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+    </package>
+    
+    <!-- wjz -->
+    <package name="wu" namespace="/wu/auditing" extends="custom-default">
+    	<action name="*/*" method="{2}" class="com.boco.zg.plan.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+    </package>
+    
+    <package name="/zg/virtualorg" namespace="/zg/virtualorg" extends="custom-default">
+    	<action name="*/*" method="{2}" class="com.boco.zg.virtualorg.base.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+	</package>
+	
+	<package name="/zg/materiel" namespace="/zg/materiel" extends="custom-default">
+    	<action name="*/*" method="{2}" class="com.boco.zg.materiel.base.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+	</package>
+    
+    <package name="zg" namespace="/zg/plan" extends="custom-default">
+		<action name="*/*" method="{2}" class="com.boco.zg.plan.base.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+		<action name="ZgTorderbom/changeSortF" method="changeSortF" class="com.boco.zg.plan.base.action.ZgTorderbomAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTorderbom/findBomList</param>
+		    	<param name="matnrs">${matnrs}</param>
+		    	<param name="orderId">${orderId}</param>
+		    </result>
+		</action>
+		<action name="ZgTorderPlanbom/saveOrderPlan" method="saveOrderPlan" class="com.boco.zg.plan.base.action.ZgTorderPlanbomAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTorderPlanbom/findBomList</param>
+		    	<param name="orderPlanId">${orderPlanId}</param>
+		    </result>
+		</action>
+		<action name="ZgTorderPlanbom/saveViewOrderPlan" method="saveViewOrderPlan" class="com.boco.zg.plan.base.action.ZgTorderPlanbomAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTorderPlanbom/findViewBomList</param>
+		    	<param name="orderPlanId">${orderPlanId}</param>
+		    </result>
+		</action>
+		<action name="ZgTorderPlan/submitOrderPlan" method="submitOrderPlan" class="com.boco.zg.plan.base.action.ZgTorderPlanAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTorderPlan/list</param>
+		    	<param name="type">${type}</param>
+		    </result>
+		</action>
+		<action name="ZgTorderPlanForBatch/saveOrderPlanForBatch" method="saveOrderPlanForBatch" class="com.boco.zg.plan.base.action.ZgTorderPlanForBatchAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTorderPlanbomForBatch/findBomBatchList</param>
+		    	<param name="orderPlanId">${orderPlanId}</param>
+		    </result>
+		</action>
+		
+		<action name="ZgTorderPlanbomForBatch/deleteBomForBatch" method="deleteBomForBatch" class="com.boco.zg.plan.base.action.ZgTorderPlanbomForBatchAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTorderPlanbomForBatch/list</param>
+		    	<param name="orderPlanId">${orderPlanId}</param>
+		    </result>
+		</action>
+		
+		<action name="ZgTorderPlanbomForBatch/saveOrderPlanBom" method="saveOrderPlanBom" class="com.boco.zg.plan.base.action.ZgTorderPlanbomForBatchAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTorderPlanbomForBatch/findBomBatchList</param>
+		    	<param name="orderPlanId">${orderPlanId}</param>
+		    </result>
+		</action>
+		
+		<action name="ZgTorderPlanForBatch/submitOrderPlanForBatch" method="submitOrderPlanForBatch" class="com.boco.zg.plan.base.action.ZgTorderPlanForBatchAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTorderPlan/query</param>
+		    	<param name="type">5</param>
+		    </result>
+		</action>
+		
+		<action name="ZgTcarbom/saveStorePlan" method="saveStorePlan" class="com.boco.zg.plan.base.action.ZgTcarbomAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTcarbom/findBomList2</param>
+		    	<param name="carPlanId">${carPlanId}</param>
+		    	<param name="matnrs">${matnrs}</param>
+		    </result>
+		</action>
+			<action name="ZgTcarbom/saveStorePlanForBatch" method="saveStorePlanForBatch" class="com.boco.zg.plan.base.action.ZgTcarbomAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTcarbom/findBomList3</param>
+		    	<param name="carPlanId">${carPlanId}</param>
+		    </result>
+		</action>
+		
+		<action name="ZgTcarplan/generateCarPlan" method="generateCarPlan" class="com.boco.zg.plan.base.action.ZgTcarplanAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTcarbom/bomPanel</param>
+		    	<param name="carPlanId">${carPlanId}</param>
+		    	<param name="orderPlanType">${orderPlanType}</param>
+		    </result>
+		</action>
+    </package>
+    
+    <package name="report" namespace="/zg/report" extends="custom-default">
+		<action name="*/*" method="{2}" class="com.boco.zg.plan.report.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+	</package>
+    
+      <package name="storage" namespace="/zg/storage" extends="custom-default">
+		
+		<!-- 通过URL访问的路径是 /namesapce/Entity/method.do -->
+		<action name="*/*" method="{2}" class="com.boco.zg.storage.base.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+		
+		<action name="ext/*/*" method="{2}" class="com.boco.zg.storage.base.action.{1}Action">
+		    <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+		</action>
+		
+		<action name="ZgTstorage/deleteBom" method="deleteBom" class="com.boco.zg.storage.base.action.ZgTstorageAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTstorage/findBomlList</param>
+		    	<param name="id">${id}</param>
+		    	<param name="type">${type}</param>
+		    	<param name="productType">${productType}</param>
+		    	<param name="flag">temp</param>
+		    	
+		    </result>
+		</action>
+		
+		<action name="ZgTstorageCanclebom/deleteBom" method="deleteBom" class="com.boco.zg.storage.base.action.ZgTstorageCanclebomAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTstorageCancle/findBomlList</param>
+		    	<param name="id">${cancleId}</param>
+		    	<param name="productType">${productType}</param>
+		    	<param name="flag">temp</param>
+		    </result>
+		</action>
+		
+		<action name="ZgTstorageCanclebom/saveBom" method="saveBom" class="com.boco.zg.storage.base.action.ZgTstorageCanclebomAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTstorageCancle/findBomlList</param>
+		    	<param name="id">${cancleId}</param>
+		    	<param name="productType">${productType}</param>
+		    	<param name="flag">temp</param>
+		    </result>
+		</action>
+		
+		<action name="ZgTstoragebom/saveInOutBom" method="saveInOutBom" class="com.boco.zg.storage.base.action.ZgTstoragebomAction">
+		    <result name="success" type="redirectAction">
+		    	<param name="actionName">ZgTstorage/findBomlList</param>
+		    	<param name="id">${id}</param>
+		    	<param name="productType">${productType}</param>
+		    	<param name="type">${type}</param>
+		    	<param name="flag">temp</param>
+		    </result>
+		</action>
+    </package>
+    <package name="SapDataTest" namespace="/sap" extends="custom-default">
+       <action name="toLoadSapDateUI" method="toLoadSapDateUI"  class="sap.action.SapAction">
+         <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+         </action>
+     <action name="listLogList" method="listLogList"  class="sap.action.SapAction">
+         <result name="*" type="direct">通过Action直接返回，这一行无需修改</result>
+         </action>
+    	<action name="invokeSapPxData" method="invokeSapPxData"  class="sap.SapDataTestAction"></action>
+    	<action name="invokeSapBackBomData" method="invokeSapBackBomData"  class="sap.SapDataTestAction"></action>
+		<action name="invokeSapPcData" method="invokeSapPcData"  class="sap.SapDataTestAction"></action>
+		<action name="test" method="test"  class="sap.SapDataTestAction"></action>		
+		<action name="invokeSapBatchBomData" method="invokeSapBatchBomData"  class="sap.SapDataTestAction"></action>
+    </package>
+</struts>

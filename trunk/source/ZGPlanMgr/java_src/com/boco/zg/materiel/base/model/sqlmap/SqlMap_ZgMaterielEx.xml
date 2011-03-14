@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgMaterielEx">
+    <typeAlias alias="zgMateriel" type="com.boco.frame.sys.base.model.ZgMateriel"/>
+	<resultMap id="zgMaterielResult" class="zgMateriel">
+		<result property="materielName" column="materiel_name"/>
+		<result property="id" column="id"/>
+		<result property="organizationId" column="orgid"/>
+		<result property="organizationName" column="orgname"/>
+    </resultMap>
+    
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.zm_cuid,
+	        m.zm_parent_id,
+	        m.zm_materiel_name,
+	        m.zm_type,
+	        m.zm_id,
+	        m.advance
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="materielName">
+	       			m.zm_materiel_name like '%'||#materielName#||'%'
+       		</isNotEmpty>    
+       		<isNotEqual property="organizationId" compareValue="">
+			    <isNotEmpty prepend="AND" property="organizationId">
+		       			m.organizationId = #organizationId#
+	       		</isNotEmpty>
+       		</isNotEqual>
+		    <isNotEmpty prepend="AND" property="virtualorgType">
+	       			m.virtualorgType like '%'||#virtualorgType#||'%'
+       		</isNotEmpty>
+       		<isNotEqual property="whetherParent" compareValue=""> 
+       			<isEqual property="whetherParent" compareValue="0">
+       				<isNotEmpty prepend="AND" property="treeCuid">
+		       			m.organizationId = #treeCuid#
+	       			</isNotEmpty>
+       			</isEqual>  
+			    <isEqual property="whetherParent" compareValue="1">
+       				<isNotEmpty prepend="AND" property="treeCuid">
+		       			m.virtualorgCuid = #treeCuid#
+	       			</isNotEmpty>
+       			</isEqual>
+       		</isNotEqual> 
+       		 <isNotEmpty prepend="AND" property="advance">
+       		 	advance='$advance$'
+       		 </isNotEmpty>
+	    </dynamic>	
+	</sql>
+	<sql id="dynamicWhere1">
+	    <dynamic prepend="WHERE">
+	    	 <isNotEmpty prepend="AND" property="materielName">
+       		 	materiel_name like '%'||'$materielName$'||'%'
+       		 </isNotEmpty>
+       		  <isNotEmpty prepend="AND" property="lgort">
+       		 	instr(orgid,'$lgort$')>0
+       		 </isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+   
+    
+    <select id="count" resultClass="long">
+      	select   count(1) from (select t.id,
+            t.materiel_name,
+            WMSYS.WM_CONCAT(t.lgort) orgid,
+            WMSYS.WM_CONCAT(org.label_cn) orgname
+       from zg_materiel t, fw_organization org
+      where t.lgort = org.cuid
+        and t.id not in (select temp.matkl
+                           from zg_materiel_virtualorg temp
+                          where temp.org_id = '$orgId$')
+          
+      group by t.id, t.materiel_name) m  <include refid="dynamicWhere1"/>
+    </select>
+    
+    
+    
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgMaterielResult">
+    	select * from (select t.id,
+            t.materiel_name,
+            WMSYS.WM_CONCAT(t.lgort) orgid,
+            WMSYS.WM_CONCAT(org.label_cn) orgname
+       from zg_materiel t, fw_organization org
+      where t.lgort = org.cuid
+        and t.id not in (select temp.matkl
+                           from zg_materiel_virtualorg temp
+                          where temp.org_id = '$orgId$')
+          
+      group by t.id, t.materiel_name) m
+       <include refid="dynamicWhere1"/>
+      
+    </select>
+    
+    	<resultMap id="zgMaterielResult1" class="zgMateriel">
+		<result property="materielName" column="materiel_name"/>
+		<result property="id" column="id"/>
+    </resultMap>
+     <select id="listMateridel" resultMap="zgMaterielResult1">
+    	select distinct t.id,t.materiel_name from zg_materiel t where t.type='2'
+		and t.cuid not in (select org.matkl from zg_materiel_virtualorg org where org.org_id='$orgId$')
+    </select>
+  	
+  	
+</sqlMap>

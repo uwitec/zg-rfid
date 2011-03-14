@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTcarbomSuppliers">
+    <typeAlias alias="zgTcarbomSuppliers" type="com.boco.zg.plan.base.model.ZgTcarbomSuppliers"/>
+	<resultMap id="zgTcarbomSuppliersResult" class="zgTcarbomSuppliers">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="carBomId" column="t0_CAR_BOM_ID"/>
+		<result property="lifnr" column="t0_LIFNR"/>
+		<result property="lifnrName" column="t0_LIFNR_NAME"/>
+		<result property="carNum" column="t0_CAR_NUM"/>
+		<result property="batchno" column="t0_BATCHNO"/>
+		<result property="zrzqd" column="t0_ZRZQD"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_CAR_BOM_ID,
+	        m.t0_LIFNR,
+	        m.t0_LIFNR_NAME,
+	        m.t0_CAR_NUM,
+	        m.t0_BATCHNO,
+        	m.t0_ZRZQD
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="carBomId">
+	       			m.t0_CAR_BOM_ID like #carBomId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="lifnr">
+	       			m.t0_LIFNR like #lifnr#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="lifnrName">
+	       			m.t0_LIFNR_NAME like #lifnrName#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="carNum">
+	       			m.t0_CAR_NUM = #carNum#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertZG_T_CARBOM_SUPPLIERS" parameterClass="zgTcarbomSuppliers">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_CARBOM_SUPPLIERS (
+        	CUID ,
+        	CAR_BOM_ID ,
+        	LIFNR ,
+        	LIFNR_NAME ,
+        	CAR_NUM ,
+        	BATCHNO,
+        	ZRZQD
+        ) VALUES (
+        	#cuid# ,
+        	#carBomId# ,
+        	#lifnr# ,
+        	#lifnrName# ,
+        	#carNum# ,
+        	#batchno#,
+        	#zrzqd#
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateZG_T_CARBOM_SUPPLIERS" parameterClass="zgTcarbomSuppliers">
+    <![CDATA[
+        UPDATE ZG_T_CARBOM_SUPPLIERS SET
+	        CAR_BOM_ID = #carBomId# ,
+	        LIFNR = #lifnr# ,
+	        LIFNR_NAME = #lifnrName# ,
+	        CAR_NUM = #carNum# ,
+        	BATCHNO=#batchno#,
+        	ZRZQD=#zrzqd#
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteZG_T_CARBOM_SUPPLIERS" parameterClass="java.lang.String">
+		delete from ZG_T_CARBOM_SUPPLIERS 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="zgTcarbomSuppliersResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.CAR_BOM_ID as t0_CAR_BOM_ID,
+	        		t0.LIFNR as t0_LIFNR,
+	        		t0.LIFNR_NAME as t0_LIFNR_NAME,
+	        		t0.CAR_NUM as t0_CAR_NUM,
+	        		t0.batchno as t0_batchno,
+	        		t0.zrzqd as t0_zrzqd
+	        from 
+	        ZG_T_CARBOM_SUPPLIERS t0
+ ) m
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="zgTcarbomSuppliersResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.CAR_BOM_ID as t0_CAR_BOM_ID,
+	        		t0.LIFNR as t0_LIFNR,
+	        		t0.LIFNR_NAME as t0_LIFNR_NAME,
+	        		t0.CAR_NUM as t0_CAR_NUM,
+	        		t0.batchno as t0_batchno,
+	        		t0.zrzqd as t0_zrzqd
+	        from 
+	        ZG_T_CARBOM_SUPPLIERS t0
+ ) m
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.CAR_BOM_ID as t0_CAR_BOM_ID,
+	        		t0.LIFNR as t0_LIFNR,
+	        		t0.LIFNR_NAME as t0_LIFNR_NAME,
+	        		t0.CAR_NUM as t0_CAR_NUM,
+	        		t0.batchno as t0_batchno,
+	        		t0.zrzqd as t0_zrzqd
+	        from 
+	        ZG_T_CARBOM_SUPPLIERS t0
+ ) m
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTcarbomSuppliersResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.CAR_BOM_ID as t0_CAR_BOM_ID,
+	        		t0.LIFNR as t0_LIFNR,
+	        		t0.LIFNR_NAME as t0_LIFNR_NAME,
+	        		t0.CAR_NUM as t0_CAR_NUM,
+	        		t0.batchno as t0_batchno,
+	        		t0.zrzqd as t0_zrzqd
+	        from 
+	        ZG_T_CARBOM_SUPPLIERS t0
+ ) m
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="zgTcarbomSuppliersResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.CAR_BOM_ID as t0_CAR_BOM_ID,
+	        		t0.LIFNR as t0_LIFNR,
+	        		t0.LIFNR_NAME as t0_LIFNR_NAME,
+	        		t0.CAR_NUM as t0_CAR_NUM,
+	        		t0.batchno as t0_batchno,
+	        		t0.zrzqd as t0_zrzqd
+	        from 
+	        ZG_T_CARBOM_SUPPLIERS t0
+ ) m
+        ]]>
+    </select>
+    
+    <select id="getCarBomSuppliersListByCarbomIds" resultMap="zgTcarbomSuppliersResult">
+   		 select t0.CUID as t0_CUID,
+	        		t0.CAR_BOM_ID as t0_CAR_BOM_ID,
+	        		t0.LIFNR as t0_LIFNR,
+	        		t0.LIFNR_NAME as t0_LIFNR_NAME,
+	        		t0.CAR_NUM as t0_CAR_NUM,t0.batchno as t0_batchno,
+	        		t0.zrzqd as t0_zrzqd   from zg_t_carbom_suppliers t0  where t0.car_bom_id in ('$carBomIds$')
+    </select>
+    
+</sqlMap>

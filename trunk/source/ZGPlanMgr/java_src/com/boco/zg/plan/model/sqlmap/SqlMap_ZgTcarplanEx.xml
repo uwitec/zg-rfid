@@ -1,0 +1,65 @@
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTcarplanEx">
+	
+    
+	
+    <select id="getBomListByLgort" resultClass="java.util.HashMap">
+    	select *
+  from (select null as cuid,
+               ORDERBOM.ZDTYL,
+               orderbom.ORDER_ID,
+               orderbom.cuid order_bom_id,
+               orderbom.idnrk,
+               orderbom.maktx2,
+               planbom.cuid as order_planbom_id,
+               null as car_plan_id,
+               orderbom.aufnr,
+               planbom.car_num,
+               nvl(planbom.plan_num, 0) plan_num,
+               nvl(planbom.complete_num, 0) complete_num,
+               0 as car_plan_num,
+               planbom.car_num - nvl(planbom.plan_num, 0) max_value,
+               bom.carnum carCount
+          from zg_t_order_planbom planbom,
+               zg_t_orderbom      orderbom,
+               zg_t_bom           bom,
+               zg_t_group_order_plan gop,
+               zg_t_order_plan       plan
+               <isNotEqual  property="operatorId" compareValue="0">
+               	,zg_materiel mat,
+               zg_materiel_virtualorg matvog,
+               zg_t_virtualorg org,
+               zg_t_virtualorg_employee emp
+               </isNotEqual>
+         where planbom.order_bom_id = orderbom.cuid
+           and planbom.car_num - nvl(planbom.plan_num, 0) > 0
+           and bom.idnrk = orderbom.idnrk
+           and bom.lgort = orderbom.lgort
+           and bom.matkl = orderbom.matkl
+           and gop.order_plan_id = plan.cuid
+           and plan.order_id = orderbom.order_id
+           <isNotEqual prepend="AND" property="operatorId" compareValue="0">
+            bom.matkl=mat.id
+           and bom.lgort=mat.lgort
+           and mat.id=matvog.matkl
+           and matvog.org_id=org.cuid
+           and org.cuid=emp.org_id
+           and org.org_id=plan.plant
+           and emp.user_id='$operatorId$'
+           </isNotEqual>
+           and orderbom.lgort = '$lgort$'
+           and gop.group_id = '$groupId$'
+           
+        ) w
+ where w.order_bom_id not in
+       (select carbom.order_bom_id
+          from zg_t_carplan plan, zg_t_carbom carbom
+         where plan.car_user = '$operatorId$'
+           and plan.car_state = '0'
+           and plan.cuid = carbom.car_plan_id)
+    </select>
+    
+    
+</sqlMap>

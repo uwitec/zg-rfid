@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FwOrganization">
+    <typeAlias alias="fwOrganization" type="com.boco.frame.sys.base.model.FwOrganization"/>
+	<resultMap id="fwOrganizationResult" class="fwOrganization">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="parentOrgId" column="t0_PARENT_ORG_ID"/>
+		<result property="parentOrgId_related.value" column="t0_0_1_t0_LABEL_CN"/>
+		<result property="parentOrgId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="levelNum" column="t0_LEVEL_NUM"/>
+		<result property="seq" column="t0_SEQ"/>
+		<result property="note" column="t0_NOTE"/>
+		<result property="type" column="t0_TYPE"/>
+		<result property="relatedBmClassId" column="t0_RELATED_BM_CLASS_ID"/>
+    </resultMap>
+    
+    <resultMap id="fwOrganizationResult1" class="fwOrganization">
+		<result property="cuid" column="cuid"/>
+		<result property="labelCn" column="label_cn"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_LABEL_CN,
+		    t0_0_1.t0_LABEL_CN as t0_0_1_t0_LABEL_CN,
+	        'FW_ORGANIZATION' as t0_0_1_BD,
+	        m.t0_PARENT_ORG_ID,
+	        m.t0_LEVEL_NUM,
+	        m.t0_SEQ,
+	        m.t0_NOTE,
+	        m.t0_TYPE,
+	        m.t0_RELATED_BM_CLASS_ID
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="equalBmClassIdQuery">
+	    		m.t0_RELATED_BM_CLASS_ID  = #BM_CLASS_ID# 
+	    	</isNotEmpty> 
+	    	<isNotEmpty prepend="AND" property="inSubBmClassIdQuery">
+	    		m.t0_RELATED_BM_CLASS_ID in (select p.bm_classid from t_md_abstract_type p start with p.bm_classid=#BM_CLASS_ID# connect by prior  p.cuid =p.parent_type_cuid )
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			  m.t0_CUID like #cuid# 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like '%'||'$labelCn$'||'%'
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="parentOrgId">
+	       			m.t0_PARENT_ORG_ID = #parentOrgId#
+       		</isNotEmpty>    
+       		
+		    <isNotEmpty prepend="AND" property="levelNum">
+	       			m.t0_LEVEL_NUM = #levelNum#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="seq">
+	       			m.t0_SEQ like #seq#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="note">
+	       			m.t0_NOTE like #note#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="type">
+	       			m.t0_TYPE = #type#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="relatedBmClassId">
+	       			m.t0_RELATED_BM_CLASS_ID like #relatedBmClassId#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+	<sql id="dynamicWhere1">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="equalBmClassIdQuery">
+	    		m.t0_RELATED_BM_CLASS_ID  = #BM_CLASS_ID# 
+	    	</isNotEmpty> 
+	    	<isNotEmpty prepend="AND" property="inSubBmClassIdQuery">
+	    		m.t0_RELATED_BM_CLASS_ID in (select p.bm_classid from t_md_abstract_type p start with p.bm_classid=#BM_CLASS_ID# connect by prior  p.cuid =p.parent_type_cuid )
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			  m.t0_CUID like #cuid# 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like '%'||'$labelCn$'||'%'
+       		</isNotEmpty>      
+		    <isNotEmpty prepend="AND" property="parentOrgId">
+	       			m.t0_PARENT_ORG_ID = #parentOrgId#
+       		</isNotEmpty>    
+       		<isEmpty prepend="AND" property="parentOrgId">
+	       			m.t0_PARENT_ORG_ID  is null
+       		</isEmpty>  
+		    <isNotEmpty prepend="AND" property="levelNum">
+	       			m.t0_LEVEL_NUM = #levelNum#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="seq">
+	       			m.t0_SEQ like #seq#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="note">
+	       			m.t0_NOTE like #note#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="type">
+	       			m.t0_TYPE = #type#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="relatedBmClassId">
+	       			m.t0_RELATED_BM_CLASS_ID like #relatedBmClassId#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertFW_ORGANIZATION" parameterClass="fwOrganization">
+    <![CDATA[
+        INSERT INTO
+        FW_ORGANIZATION (
+        	CUID ,
+        	LABEL_CN ,
+        	PARENT_ORG_ID ,
+        	LEVEL_NUM ,
+        	SEQ ,
+        	NOTE ,
+        	TYPE ,
+        	RELATED_BM_CLASS_ID 
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#parentOrgId# ,
+        	#levelNum# ,
+        	#seq# ,
+        	#note# ,
+        	#type#,
+        	#relatedBmClassId# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateFW_ORGANIZATION" parameterClass="fwOrganization">
+    <![CDATA[
+        UPDATE FW_ORGANIZATION SET
+	        LABEL_CN = #labelCn# ,
+	        PARENT_ORG_ID = #parentOrgId# ,
+	        LEVEL_NUM = #levelNum# ,
+	        SEQ = #seq# ,
+	        NOTE = #note# ,
+	        TYPE = #type#,
+	        RELATED_BM_CLASS_ID = #relatedBmClassId# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteFW_ORGANIZATION" parameterClass="java.lang.String">
+		delete from FW_ORGANIZATION 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="fwOrganizationResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        		t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        		t0.SEQ as t0_SEQ,
+	        		t0.NOTE as t0_NOTE,
+	        		t0.TYPE as t0_TYPE,
+	        		t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        from 
+	        FW_ORGANIZATION t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.TYPE as t0_TYPE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_PARENT_ORG_ID 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="fwOrganizationResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        		t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        		t0.SEQ as t0_SEQ,
+	        		t0.NOTE as t0_NOTE,
+	        		t0.TYPE as t0_TYPE,
+	        		t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        from 
+	        FW_ORGANIZATION t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.TYPE as t0_TYPE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_PARENT_ORG_ID 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        		t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        		t0.SEQ as t0_SEQ,
+	        		t0.NOTE as t0_NOTE,
+	        		t0.TYPE as t0_TYPE,
+	        		t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        from 
+	        FW_ORGANIZATION t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.TYPE as t0_TYPE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_PARENT_ORG_ID 
+    	]]>
+		<include refid="dynamicWhere1"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="fwOrganizationResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        		t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        		t0.SEQ as t0_SEQ,
+	        		t0.NOTE as t0_NOTE,
+	        		t0.TYPE as t0_TYPE,
+	        		t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        from 
+	        FW_ORGANIZATION t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.TYPE as t0_TYPE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_PARENT_ORG_ID 
+        ]]>
+		<include refid="dynamicWhere1"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="fwOrganizationResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        		t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        		t0.SEQ as t0_SEQ,
+	        		t0.NOTE as t0_NOTE,
+	        		t0.TYPE as t0_TYPE,
+	        		t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        from 
+	        FW_ORGANIZATION t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.TYPE as t0_TYPE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_PARENT_ORG_ID 
+        ]]>
+    </select>
+    
+    
+    
+    <select id="selectPartAllNameByOnePeople" resultMap="fwOrganizationResult1">
+    <![CDATA[
+    	select fo.cuid,fo.label_cn from FW_EMPLOYEE fe,FW_ORGANIZATION fo
+		 where fe.org_id=fo.cuid(+)
+		 and fe.cuid=#cuid#
+    ]]>
+    </select>
+    
+</sqlMap>

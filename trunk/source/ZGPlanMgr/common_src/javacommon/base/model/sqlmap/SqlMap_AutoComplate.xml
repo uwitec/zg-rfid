@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AutoComplate">
+
+    <typeAlias alias="autoComplate" type="javacommon.base.model.AutoComplate"/>
+
+    <resultMap id="autoComplateResult" class="autoComplate">
+        <result property="id" column="ID"/>
+        <result property="labelCn" column="LABEL_CN"/>
+        <result property="value" column="VALUE"/>
+    </resultMap>
+
+	<select id="findByProperty" resultMap="autoComplateResult">
+		select CUID as ID,LABEL_CN,CUID as VALUE
+	    <![CDATA[
+	        from $table$
+	     	where $column$ like '$value$'
+	    ]]>
+    </select>
+</sqlMap>

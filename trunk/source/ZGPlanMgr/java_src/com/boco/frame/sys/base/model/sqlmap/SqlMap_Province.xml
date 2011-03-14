@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Province">
+    <typeAlias alias="province" type="com.boco.frame.sys.base.model.Province"/>
+	<resultMap id="provinceResult" class="province">
+		<result property="name" column="t0_NAME"/>
+		<result property="address" column="t0_ADDRESS"/>
+		<result property="address1" column="t0_ADDRESS1"/>
+		<result property="address2" column="t0_ADDRESS2"/>
+		<result property="address3" column="t0_ADDRESS3"/>
+		<result property="alias1" column="t0_ALIAS1"/>
+		<result property="alias2" column="t0_ALIAS2"/>
+		<result property="createdby2dimuser" column="t0_CREATEDBY2DIMUSER"/>
+		<result property="createddate" column="t0_CREATEDDATE"/>
+		<result property="description" column="t0_DESCRIPTION"/>
+		<result property="fax" column="t0_FAX"/>
+		<result property="fullname" column="t0_FULLNAME"/>
+		<result property="isvisible" column="t0_ISVISIBLE"/>
+		<result property="label" column="t0_LABEL"/>
+		<result property="lastmodifiedby2dimuser" column="t0_LASTMODIFIEDBY2DIMUSER"/>
+		<result property="lastmodifieddate" column="t0_LASTMODIFIEDDATE"/>
+		<result property="location2functionalstatus" column="t0_LOCATION2FUNCTIONALSTATUS"/>
+		<result property="location2locationtype" column="t0_LOCATION2LOCATIONTYPE"/>
+		<result property="location2parentlocation" column="t0_LOCATION2PARENTLOCATION"/>
+		<result property="location2provisionstatus" column="t0_LOCATION2PROVISIONSTATUS"/>
+		<result property="location2rpbuildtemplate" column="t0_LOCATION2RPBUILDTEMPLATE"/>
+		<result property="locationid" column="t0_LOCATIONID"/>
+		<result property="markedfordelete" column="t0_MARKEDFORDELETE"/>
+		<result property="notes" column="t0_NOTES"/>
+		<result property="objectid" column="t0_OBJECTID"/>
+		<result property="physicalx" column="t0_PHYSICALX"/>
+		<result property="physicaly" column="t0_PHYSICALY"/>
+		<result property="physicalz" column="t0_PHYSICALZ"/>
+		<result property="province" column="t0_PROVINCE"/>
+		<result property="relativename" column="t0_RELATIVENAME"/>
+		<result property="responsible" column="t0_RESPONSIBLE"/>
+		<result property="substatus" column="t0_SUBSTATUS"/>
+		<result property="subtype" column="t0_SUBTYPE"/>
+		<result property="telephone" column="t0_TELEPHONE"/>
+		<result property="towncity" column="t0_TOWNCITY"/>
+		<result property="zip" column="t0_ZIP"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_NAME,
+	        m.t0_ADDRESS,
+	        m.t0_ADDRESS1,
+	        m.t0_ADDRESS2,
+	        m.t0_ADDRESS3,
+	        m.t0_ALIAS1,
+	        m.t0_ALIAS2,
+	        m.t0_CREATEDBY2DIMUSER,
+	        m.t0_CREATEDDATE,
+	        m.t0_DESCRIPTION,
+	        m.t0_FAX,
+	        m.t0_FULLNAME,
+	        m.t0_ISVISIBLE,
+	        m.t0_LABEL,
+	        m.t0_LASTMODIFIEDBY2DIMUSER,
+	        m.t0_LASTMODIFIEDDATE,
+	        m.t0_LOCATION2FUNCTIONALSTATUS,
+	        m.t0_LOCATION2LOCATIONTYPE,
+	        m.t0_LOCATION2PARENTLOCATION,
+	        m.t0_LOCATION2PROVISIONSTATUS,
+	        m.t0_LOCATION2RPBUILDTEMPLATE,
+	        m.t0_LOCATIONID,
+	        m.t0_MARKEDFORDELETE,
+	        m.t0_NOTES,
+	        m.t0_OBJECTID,
+	        m.t0_PHYSICALX,
+	        m.t0_PHYSICALY,
+	        m.t0_PHYSICALZ,
+	        m.t0_PROVINCE,
+	        m.t0_RELATIVENAME,
+	        m.t0_RESPONSIBLE,
+	        m.t0_SUBSTATUS,
+	        m.t0_SUBTYPE,
+	        m.t0_TELEPHONE,
+	        m.t0_TOWNCITY,
+	        m.t0_ZIP
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="equalBmClassIdQuery">
+	    		m.t0_LOCATION2LOCATIONTYPE in (select l.LOCATIONTYPEID from locationtype l where l.name = #BM_CLASS_ID#)
+	    	</isNotEmpty> 
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="name">
+	       			m.t0_NAME like #name#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="address">
+	       			m.t0_ADDRESS like #address#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="address1">
+	       			m.t0_ADDRESS1 like #address1#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="address2">
+	       			m.t0_ADDRESS2 like #address2#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="address3">
+	       			m.t0_ADDRESS3 like #address3#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="alias1">
+	       			m.t0_ALIAS1 like #alias1#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="alias2">
+	       			m.t0_ALIAS2 like #alias2#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="createdby2dimuser">
+	       			m.t0_CREATEDBY2DIMUSER = #createdby2dimuser#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="createddate_start">
+       			<![CDATA[m.t0_CREATEDDATE >= to_date(#createddate_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="createddate_end">
+       			<![CDATA[m.t0_CREATEDDATE <= to_date(#createddate_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="description">
+	       			m.t0_DESCRIPTION like #description#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="fax">
+	       			m.t0_FAX like #fax#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="fullname">
+	       			m.t0_FULLNAME like #fullname#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="isvisible">
+	       			m.t0_ISVISIBLE = #isvisible#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="label">
+	       			m.t0_LABEL = #label#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="lastmodifiedby2dimuser">
+	       			m.t0_LASTMODIFIEDBY2DIMUSER = #lastmodifiedby2dimuser#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="lastmodifieddate_start">
+       			<![CDATA[m.t0_LASTMODIFIEDDATE >= to_date(#lastmodifieddate_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="lastmodifieddate_end">
+       			<![CDATA[m.t0_LASTMODIFIEDDATE <= to_date(#lastmodifieddate_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="location2functionalstatus">
+	       			m.t0_LOCATION2FUNCTIONALSTATUS = #location2functionalstatus#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="location2locationtype">
+	       			m.t0_LOCATION2LOCATIONTYPE = #location2locationtype#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="location2parentlocation">
+	       			m.t0_LOCATION2PARENTLOCATION = #location2parentlocation#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="location2provisionstatus">
+	       			m.t0_LOCATION2PROVISIONSTATUS = #location2provisionstatus#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="location2rpbuildtemplate">
+	       			m.t0_LOCATION2RPBUILDTEMPLATE = #location2rpbuildtemplate#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="locationid">
+	       			m.t0_LOCATIONID = #locationid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="markedfordelete">
+	       			m.t0_MARKEDFORDELETE = #markedfordelete#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="notes">
+	       			m.t0_NOTES like #notes#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="objectid">
+	       			m.t0_OBJECTID like #objectid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="physicalx">
+	       			m.t0_PHYSICALX like #physicalx#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="physicaly">
+	       			m.t0_PHYSICALY like #physicaly#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="physicalz">
+	       			m.t0_PHYSICALZ like #physicalz#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="province">
+	       			m.t0_PROVINCE like #province#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="relativename">
+	       			m.t0_RELATIVENAME like #relativename#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="responsible">
+	       			m.t0_RESPONSIBLE like #responsible#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="substatus">
+	       			m.t0_SUBSTATUS like #substatus#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="subtype">
+	       			m.t0_SUBTYPE like #subtype#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="telephone">
+	       			m.t0_TELEPHONE like #telephone#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="towncity">
+	       			m.t0_TOWNCITY like #towncity#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zip">
+	       			m.t0_ZIP like #zip#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertLOCATION" parameterClass="province">
+    <![CDATA[
+        INSERT INTO
+        LOCATION (
+        	NAME ,
+        	ADDRESS ,
+        	ADDRESS1 ,
+        	ADDRESS2 ,
+        	ADDRESS3 ,
+        	ALIAS1 ,
+        	ALIAS2 ,
+        	CREATEDBY2DIMUSER ,
+        	CREATEDDATE ,
+        	DESCRIPTION ,
+        	FAX ,
+        	FULLNAME ,
+        	ISVISIBLE ,
+        	LABEL ,
+        	LASTMODIFIEDBY2DIMUSER ,
+        	LASTMODIFIEDDATE ,
+        	LOCATION2FUNCTIONALSTATUS ,
+        	LOCATION2LOCATIONTYPE ,
+        	LOCATION2PARENTLOCATION ,
+        	LOCATION2PROVISIONSTATUS ,
+        	LOCATION2RPBUILDTEMPLATE ,
+        	LOCATIONID ,
+        	MARKEDFORDELETE ,
+        	NOTES ,
+        	OBJECTID ,
+        	PHYSICALX ,
+        	PHYSICALY ,
+        	PHYSICALZ ,
+        	PROVINCE ,
+        	RELATIVENAME ,
+        	RESPONSIBLE ,
+        	SUBSTATUS ,
+        	SUBTYPE ,
+        	TELEPHONE ,
+        	TOWNCITY ,
+        	ZIP 
+        ) VALUES (
+        	#name# ,
+        	#address# ,
+        	#address1# ,
+        	#address2# ,
+        	#address3# ,
+        	#alias1# ,
+        	#alias2# ,
+        	#createdby2dimuser# ,
+        	#createddate# ,
+        	#description# ,
+        	#fax# ,
+        	#fullname# ,
+        	#isvisible# ,
+        	#label# ,
+        	#lastmodifiedby2dimuser# ,
+        	#lastmodifieddate# ,
+        	#location2functionalstatus# ,
+        	#location2locationtype# ,
+        	#location2parentlocation# ,
+        	#location2provisionstatus# ,
+        	#location2rpbuildtemplate# ,
+        	#locationid# ,
+        	#markedfordelete# ,
+        	#notes# ,
+        	#objectid# ,
+        	#physicalx# ,
+        	#physicaly# ,
+        	#physicalz# ,
+        	#province# ,
+        	#relativename# ,
+        	#responsible# ,
+        	#substatus# ,
+        	#subtype# ,
+        	#telephone# ,
+        	#towncity# ,
+        	#zip# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.Long" type="pre" keyProperty="locationid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateLOCATION" parameterClass="province">
+    <![CDATA[
+        UPDATE LOCATION SET
+	        NAME = #name# ,
+	        ADDRESS = #address# ,
+	        ADDRESS1 = #address1# ,
+	        ADDRESS2 = #address2# ,
+	        ADDRESS3 = #address3# ,
+	        ALIAS1 = #alias1# ,
+	        ALIAS2 = #alias2# ,
+	        CREATEDBY2DIMUSER = #createdby2dimuser# ,
+	        CREATEDDATE = #createddate# ,
+	        DESCRIPTION = #description# ,
+	        FAX = #fax# ,
+	        FULLNAME = #fullname# ,
+	        ISVISIBLE = #isvisible# ,
+	        LABEL = #label# ,
+	        LASTMODIFIEDBY2DIMUSER = #lastmodifiedby2dimuser# ,
+	        LASTMODIFIEDDATE = #lastmodifieddate# ,
+	        LOCATION2FUNCTIONALSTATUS = #location2functionalstatus# ,
+	        LOCATION2LOCATIONTYPE = #location2locationtype# ,
+	        LOCATION2PARENTLOCATION = #location2parentlocation# ,
+	        LOCATION2PROVISIONSTATUS = #location2provisionstatus# ,
+	        LOCATION2RPBUILDTEMPLATE = #location2rpbuildtemplate# ,
+	        MARKEDFORDELETE = #markedfordelete# ,
+	        NOTES = #notes# ,
+	        OBJECTID = #objectid# ,
+	        PHYSICALX = #physicalx# ,
+	        PHYSICALY = #physicaly# ,
+	        PHYSICALZ = #physicalz# ,
+	        PROVINCE = #province# ,
+	        RELATIVENAME = #relativename# ,
+	        RESPONSIBLE = #responsible# ,
+	        SUBSTATUS = #substatus# ,
+	        SUBTYPE = #subtype# ,
+	        TELEPHONE = #telephone# ,
+	        TOWNCITY = #towncity# ,
+	        ZIP = #zip# 
+	    WHERE LOCATIONID = #locationid#
+    ]]>
+    </update>
+    
+	<delete id="deleteLOCATION" parameterClass="java.lang.Long">
+		delete from LOCATION 
+		 where LOCATIONID = #locationid#
+	</delete>
+	
+	<select id="getById" resultMap="provinceResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.NAME as t0_NAME,
+	        		t0.ADDRESS as t0_ADDRESS,
+	        		t0.ADDRESS1 as t0_ADDRESS1,
+	        		t0.ADDRESS2 as t0_ADDRESS2,
+	        		t0.ADDRESS3 as t0_ADDRESS3,
+	        		t0.ALIAS1 as t0_ALIAS1,
+	        		t0.ALIAS2 as t0_ALIAS2,
+	        		t0.CREATEDBY2DIMUSER as t0_CREATEDBY2DIMUSER,
+	        		t0.CREATEDDATE as t0_CREATEDDATE,
+	        		t0.DESCRIPTION as t0_DESCRIPTION,
+	        		t0.FAX as t0_FAX,
+	        		t0.FULLNAME as t0_FULLNAME,
+	        		t0.ISVISIBLE as t0_ISVISIBLE,
+	        		t0.LABEL as t0_LABEL,
+	        		t0.LASTMODIFIEDBY2DIMUSER as t0_LASTMODIFIEDBY2DIMUSER,
+	        		t0.LASTMODIFIEDDATE as t0_LASTMODIFIEDDATE,
+	        		t0.LOCATION2FUNCTIONALSTATUS as t0_LOCATION2FUNCTIONALSTATUS,
+	        		t0.LOCATION2LOCATIONTYPE as t0_LOCATION2LOCATIONTYPE,
+	        		t0.LOCATION2PARENTLOCATION as t0_LOCATION2PARENTLOCATION,
+	        		t0.LOCATION2PROVISIONSTATUS as t0_LOCATION2PROVISIONSTATUS,
+	        		t0.LOCATION2RPBUILDTEMPLATE as t0_LOCATION2RPBUILDTEMPLATE,
+	        		t0.LOCATIONID as t0_LOCATIONID,
+	        		t0.MARKEDFORDELETE as t0_MARKEDFORDELETE,
+	        		t0.NOTES as t0_NOTES,
+	        		t0.OBJECTID as t0_OBJECTID,
+	        		t0.PHYSICALX as t0_PHYSICALX,
+	        		t0.PHYSICALY as t0_PHYSICALY,
+	        		t0.PHYSICALZ as t0_PHYSICALZ,
+	        		t0.PROVINCE as t0_PROVINCE,
+	        		t0.RELATIVENAME as t0_RELATIVENAME,
+	        		t0.RESPONSIBLE as t0_RESPONSIBLE,
+	        		t0.SUBSTATUS as t0_SUBSTATUS,
+	        		t0.SUBTYPE as t0_SUBTYPE,
+	        		t0.TELEPHONE as t0_TELEPHONE,
+	        		t0.TOWNCITY as t0_TOWNCITY,
+	        		t0.ZIP as t0_ZIP
+	        from 
+	        LOCATION t0
+ ) m
+        where m.t0_LOCATIONID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="provinceResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.NAME as t0_NAME,
+	        		t0.ADDRESS as t0_ADDRESS,
+	        		t0.ADDRESS1 as t0_ADDRESS1,
+	        		t0.ADDRESS2 as t0_ADDRESS2,
+	        		t0.ADDRESS3 as t0_ADDRESS3,
+	        		t0.ALIAS1 as t0_ALIAS1,
+	        		t0.ALIAS2 as t0_ALIAS2,
+	        		t0.CREATEDBY2DIMUSER as t0_CREATEDBY2DIMUSER,
+	        		t0.CREATEDDATE as t0_CREATEDDATE,
+	        		t0.DESCRIPTION as t0_DESCRIPTION,
+	        		t0.FAX as t0_FAX,
+	        		t0.FULLNAME as t0_FULLNAME,
+	        		t0.ISVISIBLE as t0_ISVISIBLE,
+	        		t0.LABEL as t0_LABEL,
+	        		t0.LASTMODIFIEDBY2DIMUSER as t0_LASTMODIFIEDBY2DIMUSER,
+	        		t0.LASTMODIFIEDDATE as t0_LASTMODIFIEDDATE,
+	        		t0.LOCATION2FUNCTIONALSTATUS as t0_LOCATION2FUNCTIONALSTATUS,
+	        		t0.LOCATION2LOCATIONTYPE as t0_LOCATION2LOCATIONTYPE,
+	        		t0.LOCATION2PARENTLOCATION as t0_LOCATION2PARENTLOCATION,
+	        		t0.LOCATION2PROVISIONSTATUS as t0_LOCATION2PROVISIONSTATUS,
+	        		t0.LOCATION2RPBUILDTEMPLATE as t0_LOCATION2RPBUILDTEMPLATE,
+	        		t0.LOCATIONID as t0_LOCATIONID,
+	        		t0.MARKEDFORDELETE as t0_MARKEDFORDELETE,
+	        		t0.NOTES as t0_NOTES,
+	        		t0.OBJECTID as t0_OBJECTID,
+	        		t0.PHYSICALX as t0_PHYSICALX,
+	        		t0.PHYSICALY as t0_PHYSICALY,
+	        		t0.PHYSICALZ as t0_PHYSICALZ,
+	        		t0.PROVINCE as t0_PROVINCE,
+	        		t0.RELATIVENAME as t0_RELATIVENAME,
+	        		t0.RESPONSIBLE as t0_RESPONSIBLE,
+	        		t0.SUBSTATUS as t0_SUBSTATUS,
+	        		t0.SUBTYPE as t0_SUBTYPE,
+	        		t0.TELEPHONE as t0_TELEPHONE,
+	        		t0.TOWNCITY as t0_TOWNCITY,
+	        		t0.ZIP as t0_ZIP
+	        from 
+	        LOCATION t0
+ ) m
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.NAME as t0_NAME,
+	        		t0.ADDRESS as t0_ADDRESS,
+	        		t0.ADDRESS1 as t0_ADDRESS1,
+	        		t0.ADDRESS2 as t0_ADDRESS2,
+	        		t0.ADDRESS3 as t0_ADDRESS3,
+	        		t0.ALIAS1 as t0_ALIAS1,
+	        		t0.ALIAS2 as t0_ALIAS2,
+	        		t0.CREATEDBY2DIMUSER as t0_CREATEDBY2DIMUSER,
+	        		t0.CREATEDDATE as t0_CREATEDDATE,
+	        		t0.DESCRIPTION as t0_DESCRIPTION,
+	        		t0.FAX as t0_FAX,
+	        		t0.FULLNAME as t0_FULLNAME,
+	        		t0.ISVISIBLE as t0_ISVISIBLE,
+	        		t0.LABEL as t0_LABEL,
+	        		t0.LASTMODIFIEDBY2DIMUSER as t0_LASTMODIFIEDBY2DIMUSER,
+	        		t0.LASTMODIFIEDDATE as t0_LASTMODIFIEDDATE,
+	        		t0.LOCATION2FUNCTIONALSTATUS as t0_LOCATION2FUNCTIONALSTATUS,
+	        		t0.LOCATION2LOCATIONTYPE as t0_LOCATION2LOCATIONTYPE,
+	        		t0.LOCATION2PARENTLOCATION as t0_LOCATION2PARENTLOCATION,
+	        		t0.LOCATION2PROVISIONSTATUS as t0_LOCATION2PROVISIONSTATUS,
+	        		t0.LOCATION2RPBUILDTEMPLATE as t0_LOCATION2RPBUILDTEMPLATE,
+	        		t0.LOCATIONID as t0_LOCATIONID,
+	        		t0.MARKEDFORDELETE as t0_MARKEDFORDELETE,
+	        		t0.NOTES as t0_NOTES,
+	        		t0.OBJECTID as t0_OBJECTID,
+	        		t0.PHYSICALX as t0_PHYSICALX,
+	        		t0.PHYSICALY as t0_PHYSICALY,
+	        		t0.PHYSICALZ as t0_PHYSICALZ,
+	        		t0.PROVINCE as t0_PROVINCE,
+	        		t0.RELATIVENAME as t0_RELATIVENAME,
+	        		t0.RESPONSIBLE as t0_RESPONSIBLE,
+	        		t0.SUBSTATUS as t0_SUBSTATUS,
+	        		t0.SUBTYPE as t0_SUBTYPE,
+	        		t0.TELEPHONE as t0_TELEPHONE,
+	        		t0.TOWNCITY as t0_TOWNCITY,
+	        		t0.ZIP as t0_ZIP
+	        from 
+	        LOCATION t0
+ ) m
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="provinceResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.NAME as t0_NAME,
+	        		t0.ADDRESS as t0_ADDRESS,
+	        		t0.ADDRESS1 as t0_ADDRESS1,
+	        		t0.ADDRESS2 as t0_ADDRESS2,
+	        		t0.ADDRESS3 as t0_ADDRESS3,
+	        		t0.ALIAS1 as t0_ALIAS1,
+	        		t0.ALIAS2 as t0_ALIAS2,
+	        		t0.CREATEDBY2DIMUSER as t0_CREATEDBY2DIMUSER,
+	        		t0.CREATEDDATE as t0_CREATEDDATE,
+	        		t0.DESCRIPTION as t0_DESCRIPTION,
+	        		t0.FAX as t0_FAX,
+	        		t0.FULLNAME as t0_FULLNAME,
+	        		t0.ISVISIBLE as t0_ISVISIBLE,
+	        		t0.LABEL as t0_LABEL,
+	        		t0.LASTMODIFIEDBY2DIMUSER as t0_LASTMODIFIEDBY2DIMUSER,
+	        		t0.LASTMODIFIEDDATE as t0_LASTMODIFIEDDATE,
+	        		t0.LOCATION2FUNCTIONALSTATUS as t0_LOCATION2FUNCTIONALSTATUS,
+	        		t0.LOCATION2LOCATIONTYPE as t0_LOCATION2LOCATIONTYPE,
+	        		t0.LOCATION2PARENTLOCATION as t0_LOCATION2PARENTLOCATION,
+	        		t0.LOCATION2PROVISIONSTATUS as t0_LOCATION2PROVISIONSTATUS,
+	        		t0.LOCATION2RPBUILDTEMPLATE as t0_LOCATION2RPBUILDTEMPLATE,
+	        		t0.LOCATIONID as t0_LOCATIONID,
+	        		t0.MARKEDFORDELETE as t0_MARKEDFORDELETE,
+	        		t0.NOTES as t0_NOTES,
+	        		t0.OBJECTID as t0_OBJECTID,
+	        		t0.PHYSICALX as t0_PHYSICALX,
+	        		t0.PHYSICALY as t0_PHYSICALY,
+	        		t0.PHYSICALZ as t0_PHYSICALZ,
+	        		t0.PROVINCE as t0_PROVINCE,
+	        		t0.RELATIVENAME as t0_RELATIVENAME,
+	        		t0.RESPONSIBLE as t0_RESPONSIBLE,
+	        		t0.SUBSTATUS as t0_SUBSTATUS,
+	        		t0.SUBTYPE as t0_SUBTYPE,
+	        		t0.TELEPHONE as t0_TELEPHONE,
+	        		t0.TOWNCITY as t0_TOWNCITY,
+	        		t0.ZIP as t0_ZIP
+	        from 
+	        LOCATION t0
+ ) m
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="provinceResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.NAME as t0_NAME,
+	        		t0.ADDRESS as t0_ADDRESS,
+	        		t0.ADDRESS1 as t0_ADDRESS1,
+	        		t0.ADDRESS2 as t0_ADDRESS2,
+	        		t0.ADDRESS3 as t0_ADDRESS3,
+	        		t0.ALIAS1 as t0_ALIAS1,
+	        		t0.ALIAS2 as t0_ALIAS2,
+	        		t0.CREATEDBY2DIMUSER as t0_CREATEDBY2DIMUSER,
+	        		t0.CREATEDDATE as t0_CREATEDDATE,
+	        		t0.DESCRIPTION as t0_DESCRIPTION,
+	        		t0.FAX as t0_FAX,
+	        		t0.FULLNAME as t0_FULLNAME,
+	        		t0.ISVISIBLE as t0_ISVISIBLE,
+	        		t0.LABEL as t0_LABEL,
+	        		t0.LASTMODIFIEDBY2DIMUSER as t0_LASTMODIFIEDBY2DIMUSER,
+	        		t0.LASTMODIFIEDDATE as t0_LASTMODIFIEDDATE,
+	        		t0.LOCATION2FUNCTIONALSTATUS as t0_LOCATION2FUNCTIONALSTATUS,
+	        		t0.LOCATION2LOCATIONTYPE as t0_LOCATION2LOCATIONTYPE,
+	        		t0.LOCATION2PARENTLOCATION as t0_LOCATION2PARENTLOCATION,
+	        		t0.LOCATION2PROVISIONSTATUS as t0_LOCATION2PROVISIONSTATUS,
+	        		t0.LOCATION2RPBUILDTEMPLATE as t0_LOCATION2RPBUILDTEMPLATE,
+	        		t0.LOCATIONID as t0_LOCATIONID,
+	        		t0.MARKEDFORDELETE as t0_MARKEDFORDELETE,
+	        		t0.NOTES as t0_NOTES,
+	        		t0.OBJECTID as t0_OBJECTID,
+	        		t0.PHYSICALX as t0_PHYSICALX,
+	        		t0.PHYSICALY as t0_PHYSICALY,
+	        		t0.PHYSICALZ as t0_PHYSICALZ,
+	        		t0.PROVINCE as t0_PROVINCE,
+	        		t0.RELATIVENAME as t0_RELATIVENAME,
+	        		t0.RESPONSIBLE as t0_RESPONSIBLE,
+	        		t0.SUBSTATUS as t0_SUBSTATUS,
+	        		t0.SUBTYPE as t0_SUBTYPE,
+	        		t0.TELEPHONE as t0_TELEPHONE,
+	        		t0.TOWNCITY as t0_TOWNCITY,
+	        		t0.ZIP as t0_ZIP
+	        from 
+	        LOCATION t0
+ ) m
+        ]]>
+    </select>
+    
+</sqlMap>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTbackBomTemp">
+    <typeAlias alias="zgTbackBomTemp" type="com.boco.zg.plan.base.model.ZgTbackBomTemp"/>
+	<resultMap id="zgTbackBomTempResult" class="zgTbackBomTemp">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="aufnr" column="t0_AUFNR"/>
+		<result property="matnr" column="t0_MATNR"/>
+		<result property="maktx" column="t0_MAKTX"/>
+		<result property="mengeD" column="t0_MENGE_D"/>
+		<result property="budat" column="t0_BUDAT"/>
+		<result property="cputm" column="t0_CPUTM"/>
+		<result property="batchNo" column="t0_BATCH_NO"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_AUFNR,
+	        m.t0_MATNR,
+	        m.t0_MAKTX,
+	        m.t0_MENGE_D,
+	        m.t0_BUDAT,
+	        m.t0_CPUTM,
+	        m.t0_BATCH_NO
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="aufnr">
+	       			m.t0_AUFNR like #aufnr#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="matnr">
+	       			m.t0_MATNR like #matnr#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="maktx">
+	       			m.t0_MAKTX like #maktx#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="mengeD">
+	       			m.t0_MENGE_D = #mengeD#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="budat_start">
+       			<![CDATA[m.t0_BUDAT >= to_date(#budat_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="budat_end">
+       			<![CDATA[m.t0_BUDAT <= to_date(#budat_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="cputm_start">
+       			<![CDATA[m.t0_CPUTM >= to_date(#cputm_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="cputm_end">
+       			<![CDATA[m.t0_CPUTM <= to_date(#cputm_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="batchNo">
+	       			m.t0_BATCH_NO = #batchNo#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertZG_T_BACK_BOM_TEMP" parameterClass="zgTbackBomTemp">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_BACK_BOM_TEMP (
+        	CUID ,
+        	AUFNR ,
+        	MATNR ,
+        	MAKTX ,
+        	MENGE_D ,
+        	BUDAT ,
+        	CPUTM ,
+        	BATCH_NO 
+        ) VALUES (
+        	#cuid# ,
+        	#aufnr# ,
+        	#matnr# ,
+        	#maktx# ,
+        	#mengeD# ,
+        	#budat# ,
+        	#cputm# ,
+        	#batchNo# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateZG_T_BACK_BOM_TEMP" parameterClass="zgTbackBomTemp">
+    <![CDATA[
+        UPDATE ZG_T_BACK_BOM_TEMP SET
+	        AUFNR = #aufnr# ,
+	        MATNR = #matnr# ,
+	        MAKTX = #maktx# ,
+	        MENGE_D = #mengeD# ,
+	        BUDAT = #budat# ,
+	        CPUTM = #cputm# ,
+	        BATCH_NO = #batchNo# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteZG_T_BACK_BOM_TEMP" parameterClass="java.lang.String">
+		delete from ZG_T_BACK_BOM_TEMP 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="zgTbackBomTempResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.MAKTX as t0_MAKTX,
+	        		t0.MENGE_D as t0_MENGE_D,
+	        		t0.BUDAT as t0_BUDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.BATCH_NO as t0_BATCH_NO
+	        from 
+	        ZG_T_BACK_BOM_TEMP t0
+ ) m
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="zgTbackBomTempResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.MAKTX as t0_MAKTX,
+	        		t0.MENGE_D as t0_MENGE_D,
+	        		t0.BUDAT as t0_BUDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.BATCH_NO as t0_BATCH_NO
+	        from 
+	        ZG_T_BACK_BOM_TEMP t0
+ ) m
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.MAKTX as t0_MAKTX,
+	        		t0.MENGE_D as t0_MENGE_D,
+	        		t0.BUDAT as t0_BUDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.BATCH_NO as t0_BATCH_NO
+	        from 
+	        ZG_T_BACK_BOM_TEMP t0
+ ) m
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTbackBomTempResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.MAKTX as t0_MAKTX,
+	        		t0.MENGE_D as t0_MENGE_D,
+	        		t0.BUDAT as t0_BUDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.BATCH_NO as t0_BATCH_NO
+	        from 
+	        ZG_T_BACK_BOM_TEMP t0
+ ) m
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="zgTbackBomTempResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.MAKTX as t0_MAKTX,
+	        		t0.MENGE_D as t0_MENGE_D,
+	        		t0.BUDAT as t0_BUDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.BATCH_NO as t0_BATCH_NO
+	        from 
+	        ZG_T_BACK_BOM_TEMP t0
+ ) m
+        ]]>
+    </select>
+    
+</sqlMap>

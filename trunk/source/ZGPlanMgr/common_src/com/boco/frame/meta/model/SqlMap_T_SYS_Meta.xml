@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ClassMetaNameSpace">
+    
+    <select id="getAllAbstractTypes" parameterClass="java.lang.String" resultClass="java.util.HashMap" >
+    	SELECT * FROM T_MD_ABSTRACT_TYPE
+    </select>
+    <select id="getAllAttrs" parameterClass="java.lang.String" resultClass="java.util.HashMap" >
+       SELECT T.CUID,
+	       T.LABEL_CN,
+	       T.RELATED_ATTRSET_CUID,
+	       T.COLUMN_NAME,
+	       T.DATA_TYPE,
+	       T.SEQUENCE,
+	       T.RELATED_ENUMETYPE_CUID,
+	       (select e.dic_code from t_md_enumetype e where e.cuid = t.related_enumetype_cuid) as enum_key,
+	       T.IS_NOTNULL,
+	       T.IS_READABLE,
+	       T.IS_SYSTEM,
+	       T.DEFAULT_VALUE,
+	       T.DATA_SOURCE,
+	       T.STR_ATTR_MAXLEN,
+	       T.XTYPE,
+	       T.VERIFY_EXPRESSION,
+	       T.CALCULATE_EXPRESSION,
+	       T.DESCRIPTION,
+	       T1.CUID AS CUID_T1,
+	       T1.LABEL_CN AS LABEL_CN_T1,
+	       T1.TABLE_NAME AS TABLE_NAME_T1,
+	       T1.DESCRIPTION AS DESCRIPTION_T1,
+	       T1.RELATED_RES_TYPE_CUID AS RELATED_RES_TYPE_CUID_T1,
+	       T1.IS_BASIC AS IS_BASIC_T1,
+	       T1.IS_SYSTEM AS IS_SYSTEM_T1,
+	       T1.IS_STATIC AS IS_STATIC_T1,
+	       T2.CUID AS CUID_T2,
+	       T2.RELATED_TYPE_CUID AS RELATED_TYPE_CUID_T2,
+	       T2.RELATED_ATTRSET_CUID AS RELATED_ATTRSET_CUID_T2,
+	       T2.DESCRIPTION AS DESCRIPTION_T2,
+	       T3.CUID AS CUID_T3,
+	       T3.BM_CLASSID AS BM_CLASSID_T3,
+	       T3.LABEL_CN AS LABEL_CN_T3,
+	       (SELECT TT0.BM_CLASSID FROM T_MD_ABSTRACT_TYPE TT0 WHERE TT0.BM_CLASSID=T3.PARENT_TYPE_CUID) PANRET_CLASSID,
+	       (SELECT LABEL_CN FROM T_MD_RESCLASS WHERE CUID = T3.RELATED_RESCLASS_CUID) RES,
+	       T3.LABEL_JOIN_CHAR AS LABEL_JOIN_CHAR_T3,
+	       T3.OBJECT_SELECT_XTYPE AS OBJECT_SELECT_XTYPE_T3,
+	       T3.IS_SHOW_ADD_BTN AS IS_SHOW_ADD_BTN_T3,
+	       T3.IS_SHOW_EDIT_BTN AS IS_SHOW_EDIT_BTN_T3,
+	       T3.IS_SHOW_DELETE_BTN AS IS_SHOW_DELETE_BTN_T3,
+	       T3.IS_SHOW_EXPORT_BTN AS IS_SHOW_EXPORT_BTN_T3,
+	       T3.IS_SHOW_IMPORT_BTN AS IS_SHOW_IMPORT_BTN_T3,
+	       T3.IS_VIRTUAL AS IS_VIRTUAL_T3,
+	       T3.PK_COL AS PK_COL_T3,
+	       (SELECT COLUMN_NAME FROM T_MD_ATTRIBUTE TMA WHERE T3.LABEL_ATTR_ID = TMA.CUID) COLUMN_NAME_R
+		FROM T_MD_ATTRIBUTE T,
+			T_MD_ATTRSET T1,
+			T_MD_RESTYPE_ATTRSET T2,
+			T_MD_ABSTRACT_TYPE T3
+		WHERE T.RELATED_ATTRSET_CUID = T1.CUID
+			AND T2.RELATED_TYPE_CUID = T3.CUID
+			AND T2.RELATED_ATTRSET_CUID = T1.CUID
+			AND T3.BM_CLASSID = #bmClassId# ORDER BY T1.IS_BASIC DESC,t.sequence 
+    </select>
+    <select id="getIconPath" parameterClass="java.lang.String" resultClass="java.util.HashMap" >
+       	select t.cuid, t.image_path, t.smage_path
+		  from t_md_resource_icon t, t_md_abstract_type t1
+		 where t.related_type_cuid = t1.cuid
+		       AND T1.BM_CLASSID = #bmClassId#
+    </select>
+	<select id="getAllUniqueAttrIds" parameterClass="java.lang.String" resultClass="java.util.HashMap" >
+       	SELECT T1.COLUMN_NAME, T3.LABEL_CN
+			FROM T_MD_ATTRIBUTE     T1,
+		       T_MD_UNIQUE_ATTR   T2,
+		       T_MD_UNIQUE        T3,
+		       T_MD_ABSTRACT_TYPE T4
+			WHERE T3.RELATED_TYPE_CUID = T4.CUID
+				AND T2.RELATED_UNIQUE_CUID = T3.CUID
+				AND T2.RELATED_ATTR_CUID = T1.CUID
+				AND T4.BM_CLASSID = #bmClassId#
+    </select>
+    <select id="getRelatedAttrs" parameterClass="java.lang.String" resultClass="java.util.HashMap" >
+    	SELECT T1.BM_CLASSID,T.FILTER
+		FROM T_MD_RELATED T, T_MD_ABSTRACT_TYPE T1
+		WHERE T.RELATED_JOIN_TYPE_CUID = T1.CUID
+			AND T.RELATED_ATTR_CUID = #cuid#
+    </select>
+    <select id="getEnumByEnumId" parameterClass="java.lang.String" resultClass="java.util.HashMap" >
+    	SELECT T1.CUID,
+			T1.LABEL_CN,
+			T1.DESCRIPTION,
+			T1.TYPE,
+			T1.DIC_CODE,
+			T2.COLOR,
+			T2.CUID AS CUID_T2,
+			T2.RELATED_ET_CUID AS RELATED_ET_CUID_T2,
+			T2.NAME AS NAME_T2,
+			T2.VALUE AS VALUE_T2,
+			T2.DESCRIPTION AS DESCRIPTION_T2
+		FROM T_MD_ENUMETYPE T1, T_MD_ENUMEVALUE T2
+		WHERE T1.CUID = T2.RELATED_ET_CUID
+			AND T1.CUID = #enumId:VARCHAR#
+    </select>
+    <select id="getEnumByEnumName" parameterClass="java.lang.String" resultClass="java.util.HashMap" >
+    	SELECT T1.CUID,
+			T1.LABEL_CN,
+			T1.DESCRIPTION,
+			T1.TYPE,
+			T1.DIC_CODE,
+			T2.COLOR,
+			T2.CUID AS CUID_T2,
+			T2.RELATED_ET_CUID AS RELATED_ET_CUID_T2,
+			T2.NAME AS NAME_T2,
+			T2.VALUE AS VALUE_T2,
+			T2.DESCRIPTION AS DESCRIPTION_T2
+		FROM T_MD_ENUMETYPE T1, T_MD_ENUMEVALUE T2
+		WHERE T1.CUID = T2.RELATED_ET_CUID
+			AND T1.DIC_CODE = #enumCode:VARCHAR#
+    </select>
+    <select id="getAllEnums" parameterClass="java.lang.String" resultClass="java.util.HashMap" >
+    	SELECT T1.CUID,
+			T1.LABEL_CN,
+			T1.DESCRIPTION,
+			T1.TYPE,
+			T1.DIC_CODE,
+			T2.COLOR,
+			T2.CUID AS CUID_T2,
+			T2.RELATED_ET_CUID AS RELATED_ET_CUID_T2,
+			T2.NAME AS NAME_T2,
+			T2.VALUE AS VALUE_T2,
+			T2.DESCRIPTION AS DESCRIPTION_T2,
+			T3.DEFAULT_VALUE AS DEFAULT_VALUE_T3
+		FROM T_MD_ENUMETYPE T1, T_MD_ENUMEVALUE T2, T_MD_ATTRIBUTE T3
+		WHERE T1.CUID = T2.RELATED_ET_CUID
+			AND T1.CUID = T3.RELATED_ENUMETYPE_CUID
+    </select>
+    <select id="getNameAttr" parameterClass="java.lang.String" resultClass="java.util.HashMap" >
+    	SELECT T1.COLUMN_NAME
+		FROM T_MD_NAMEATTR T, T_MD_ATTRIBUTE T1,T_MD_ABSTRACT_TYPE T2
+		WHERE T.RELATED_TYPE_CUID = T2.CUID
+			AND T.RELATED_ATTR_CUID = T1.CUID
+			AND T2.BM_CLASSID=#bmClassId#
+    </select>
+    <select id="getStatClassAttr" parameterClass="java.lang.String" resultClass="java.util.HashMap" >
+		SELECT TT4.BM_CLASSID, TT1.COLUMN_NAME, TT0.CASCADE_TYPE, TT0.STAT_TYPE, TT0.FILTER
+		FROM (SELECT T1.RELATED_ATTR_CUID,T1.CASCADE_TYPE,T1.STAT_TYPE,T1.FILTER
+				FROM T_MD_RELATED T1, T_MD_ABSTRACT_TYPE T2
+				WHERE T1.RELATED_JOIN_TYPE_CUID = T2.CUID
+					AND T2.BM_CLASSID = #bmClassId#) TT0,
+			T_MD_ATTRIBUTE TT1,
+			T_MD_ATTRSET TT2,
+			T_MD_RESTYPE_ATTRSET TT3,
+			T_MD_ABSTRACT_TYPE TT4
+		WHERE TT1.RELATED_ATTRSET_CUID = TT2.CUID
+			AND TT3.RELATED_TYPE_CUID = TT4.CUID
+			AND TT3.RELATED_ATTRSET_CUID = TT2.CUID
+			AND TT0.RELATED_ATTR_CUID = TT1.CUID
+    </select>
+    <select id="getAllRelation" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+    	SELECT T.LEFT_ATTR_NAME,T.RIGHT_ATTR_NAME,T.CENTER_TABLE_NAME,T.LEFT_INHIBIT,T.RIGHT_INHIBIT,T.LABEL_CN,T.DIC_CODE,
+			(SELECT TT3.BM_CLASSID FROM T_MD_ABSTRACT_TYPE TT3 WHERE T.RELATED_LEFT_TYPE=TT3.CUID) LEFTTYPE,
+			(SELECT TT4.BM_CLASSID FROM T_MD_ABSTRACT_TYPE TT4 WHERE T.RELATED_RIGHT_TYPE=TT4.CUID) RIGHTTYPE,
+			(SELECT TT3.LABEL_CN FROM T_MD_ABSTRACT_TYPE TT3 WHERE T.RELATED_LEFT_TYPE=TT3.CUID) LEFTNAME,
+			(SELECT TT4.LABEL_CN FROM T_MD_ABSTRACT_TYPE TT4 WHERE T.RELATED_RIGHT_TYPE=TT4.CUID) RIGHTNAME
+		FROM T_MD_RESTYPE_RESTYPE   T,
+			T_MD_ABSTRACT_TYPE     T2
+		WHERE (T.RELATED_LEFT_TYPE = T2.CUID OR T.RELATED_RIGHT_TYPE = T2.CUID)
+			AND T2.BM_CLASSID IN (SELECT BM_CLASSID FROM T_MD_ABSTRACT_TYPE T2 START WITH T2.BM_CLASSID=#bmClassId# CONNECT BY PRIOR T2.PARENT_TYPE_CUID=T2.BM_CLASSID)
+    </select>
+    <select id="getParentType" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+    	SELECT (SELECT BM_CLASSID
+			FROM T_MD_ABSTRACT_TYPE T1
+			WHERE T1.CUID = T.PARENT_TYPE_CUID) PARENT_BM_CLASSID,
+				T.*
+		FROM T_MD_ABSTRACT_TYPE T
+		WHERE T.BM_CLASSID = #bmClassId#
+    </select>
+    <select id="getAllChildType" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT BM_CLASSID
+			FROM T_MD_ABSTRACT_TYPE T
+			START WITH T.BM_CLASSID = #bmClassId#
+			CONNECT BY PRIOR T.BM_CLASSID = T.PARENT_TYPE_CUID
+    </select>
+    <select id="getAllParentType" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT BM_CLASSID
+			FROM T_MD_ABSTRACT_TYPE T
+			START WITH T.BM_CLASSID = #bmClassId#
+			CONNECT BY PRIOR T.PARENT_TYPE_CUID = T.BM_CLASSID
+    </select>
+</sqlMap>

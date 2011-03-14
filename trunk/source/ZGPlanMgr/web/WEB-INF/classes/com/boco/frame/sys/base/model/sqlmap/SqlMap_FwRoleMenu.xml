@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FwRoleMenu">
+    <typeAlias alias="fwRoleMenu" type="com.boco.frame.sys.base.model.FwRoleMenu"/>
+	<resultMap id="fwRoleMenuResult" class="fwRoleMenu">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="roleId" column="t0_ROLE_ID"/>
+		<result property="roleId_related.value" column="t0_0_1_t0_LABEL_CN"/>
+		<result property="roleId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="menuId" column="t0_MENU_ID"/>
+		<result property="menuId_related.value" column="t0_1_1_t0_LABEL_CN"/>
+		<result property="menuId_related.relatedBmClassId" column="t0_1_1_BD"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+		    t0_0_1.t0_LABEL_CN as t0_0_1_t0_LABEL_CN,
+	        'FW_ROLE' as t0_0_1_BD,
+	        m.t0_ROLE_ID,
+		    t0_1_1.t0_LABEL_CN as t0_1_1_t0_LABEL_CN,
+	        'FW_MENU' as t0_1_1_BD,
+	        m.t0_MENU_ID
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="roleId">
+	       			m.t0_ROLE_ID like #roleId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="menuId">
+	       			m.t0_MENU_ID like #menuId#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertFW_ROLE_MENU" parameterClass="fwRoleMenu">
+    <![CDATA[
+        INSERT INTO
+        FW_ROLE_MENU (
+        	CUID ,
+        	ROLE_ID ,
+        	MENU_ID 
+        ) VALUES (
+        	#cuid# ,
+        	#roleId# ,
+        	#menuId# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateFW_ROLE_MENU" parameterClass="fwRoleMenu">
+    <![CDATA[
+        UPDATE FW_ROLE_MENU SET
+	        ROLE_ID = #roleId# ,
+	        MENU_ID = #menuId# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteFW_ROLE_MENU" parameterClass="java.lang.String">
+		delete from FW_ROLE_MENU 
+		 where CUID = #cuid#
+	</delete>
+	
+	<delete id="deleteFW_ROLE_MENU_BY_ROLECUID" parameterClass="java.lang.String">
+		delete from FW_ROLE_MENU 
+		 where ROLE_ID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="fwRoleMenuResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.ROLE_ID as t0_ROLE_ID,
+	        		t0.MENU_ID as t0_MENU_ID
+	        from 
+	        FW_ROLE_MENU t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.NOTE as t0_NOTE
+	        	 from
+		        FW_ROLE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ROLE_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        	t0.URL as t0_URL,
+	        	t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.TYPE as t0_TYPE
+	        	 from
+		        FW_MENU t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_MENU_ID 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="fwRoleMenuResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.ROLE_ID as t0_ROLE_ID,
+	        		t0.MENU_ID as t0_MENU_ID
+	        from 
+	        FW_ROLE_MENU t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.NOTE as t0_NOTE
+	        	 from
+		        FW_ROLE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ROLE_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        	t0.URL as t0_URL,
+	        	t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.TYPE as t0_TYPE
+	        	 from
+		        FW_MENU t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_MENU_ID 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.ROLE_ID as t0_ROLE_ID,
+	        		t0.MENU_ID as t0_MENU_ID
+	        from 
+	        FW_ROLE_MENU t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.NOTE as t0_NOTE
+	        	 from
+		        FW_ROLE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ROLE_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        	t0.URL as t0_URL,
+	        	t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.TYPE as t0_TYPE
+	        	 from
+		        FW_MENU t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_MENU_ID 
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="fwRoleMenuResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.ROLE_ID as t0_ROLE_ID,
+	        		t0.MENU_ID as t0_MENU_ID
+	        from 
+	        FW_ROLE_MENU t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.NOTE as t0_NOTE
+	        	 from
+		        FW_ROLE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ROLE_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        	t0.URL as t0_URL,
+	        	t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.TYPE as t0_TYPE
+	        	 from
+		        FW_MENU t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_MENU_ID 
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="fwRoleMenuResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.ROLE_ID as t0_ROLE_ID,
+	        		t0.MENU_ID as t0_MENU_ID
+	        from 
+	        FW_ROLE_MENU t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.NOTE as t0_NOTE
+	        	 from
+		        FW_ROLE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ROLE_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        	t0.URL as t0_URL,
+	        	t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.TYPE as t0_TYPE
+	        	 from
+		        FW_MENU t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_MENU_ID 
+        ]]>
+    </select>
+    
+</sqlMap>

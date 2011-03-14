@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TmdModelLog">
+
+    <typeAlias alias="tmdModelLog" type="com.boco.frame.meta.base.model.TmdModelLog"/>
+
+    <resultMap id="tmdModelLogResult" class="tmdModelLog">
+        <result property="cuid" column="CUID"/>
+        <result property="type" column="TYPE"/>
+        <result property="errorMsg" column="ERROR_MSG"/>
+        <result property="beforeContext" column="BEFORE_CONTEXT"/>
+        <result property="beforeContextSql" column="BEFORE_CONTEXT_SQL"/>
+        <result property="lateContext" column="LATE_CONTEXT"/>
+        <result property="lateContextSql" column="LATE_CONTEXT_SQL"/>
+        <result property="isMust" column="IS_MUST"/>
+        <result property="isPeople" column="IS_PEOPLE"/>
+        <result property="status" column="STATUS"/>
+        <result property="operator" column="OPERATOR"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="version" column="VERSION"/>
+        <result property="operType" column="OPER_TYPE"/>
+        <result property="validateSql" column="VALIDATE_SQL"/>
+    </resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+        	t.CUID,
+        	t.TYPE,
+        	t.ERROR_MSG,
+        	t.BEFORE_CONTEXT,
+        	t.BEFORE_CONTEXT_SQL,
+        	t.LATE_CONTEXT,
+        	t.LATE_CONTEXT_SQL,
+        	t.IS_MUST,
+        	t.IS_PEOPLE,
+        	t.STATUS,
+        	t.OPERATOR,
+        	t.CREATE_TIME,
+        	t.MODIFY_TIME,
+        	t.VERSION,
+        	t.OPER_TYPE,
+        	t.VALIDATE_SQL
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+		    		$sqlQueryString$ 
+		    </isNotEmpty>
+       		<isNotEmpty prepend="AND" property="cuid">
+	       			t.CUID like #cuid#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="type">
+	       			t.TYPE like #type#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="errorMsg">
+	       			t.ERROR_MSG like #errorMsg#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="beforeContext">
+	       			t.BEFORE_CONTEXT like #beforeContext#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="beforeContextSql">
+	       			t.BEFORE_CONTEXT_SQL like #beforeContextSql#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="lateContext">
+	       			t.LATE_CONTEXT like #lateContext#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="lateContextSql">
+	       			t.LATE_CONTEXT_SQL like #lateContextSql#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="isMust">
+	       			t.IS_MUST like #isMust#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="isPeople">
+	       			t.IS_PEOPLE like #isPeople#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="status">
+	       			t.STATUS like #status#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="operator">
+	       			t.OPERATOR like #operator#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="createTime_start">
+       			<![CDATA[t.CREATE_TIME >= to_date(#createTime_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="createTime_end">
+       			<![CDATA[t.CREATE_TIME <= to_date(#createTime_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="modifyTime_start">
+       			<![CDATA[t.MODIFY_TIME >= to_date(#modifyTime_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="modifyTime_end">
+       			<![CDATA[t.MODIFY_TIME <= to_date(#modifyTime_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="version">
+	       			t.VERSION like #version#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="operType">
+	       			t.OPER_TYPE like #operType#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="validateSql">
+	       			t.VALIDATE_SQL like #validateSql#
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insert" parameterClass="tmdModelLog">
+    <![CDATA[
+        INSERT INTO
+        T_MD_MODEL_LOG (
+        	CUID ,
+        	TYPE ,
+        	ERROR_MSG ,
+        	BEFORE_CONTEXT ,
+        	BEFORE_CONTEXT_SQL ,
+        	LATE_CONTEXT ,
+        	LATE_CONTEXT_SQL ,
+        	IS_MUST ,
+        	IS_PEOPLE ,
+        	STATUS ,
+        	OPERATOR ,
+        	CREATE_TIME ,
+        	MODIFY_TIME ,
+        	VERSION ,
+        	OPER_TYPE ,
+        	VALIDATE_SQL 
+        ) VALUES (
+        	#cuid# ,
+        	#type# ,
+        	#errorMsg# ,
+        	#beforeContext# ,
+        	#beforeContextSql# ,
+        	#lateContext# ,
+        	#lateContextSql# ,
+        	#isMust# ,
+        	#isPeople# ,
+        	#status# ,
+        	#operator# ,
+        	#createTime# ,
+        	#modifyTime# ,
+        	#version# ,
+        	#operType# ,
+        	#validateSql# 
+        )
+    ]]>
+    <!--
+    mysql:		type="post" SELECT  select last_insert_id()
+    sqlserver:	type="post" SELECT  @@identity  AS  ID
+    oracle:		type="pre" 	SELECT  sequenceName.nextval AS ID FROM DUAL
+    DB2:		type="pre"	values nextval for sequenceName
+    -->
+		<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+            select sys_guid() as id FROM DUAL
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterClass="tmdModelLog">
+    <![CDATA[
+        UPDATE T_MD_MODEL_LOG SET
+	        TYPE = #type# ,
+	        ERROR_MSG = #errorMsg# ,
+	        BEFORE_CONTEXT = #beforeContext# ,
+	        BEFORE_CONTEXT_SQL = #beforeContextSql# ,
+	        LATE_CONTEXT = #lateContext# ,
+	        LATE_CONTEXT_SQL = #lateContextSql# ,
+	        IS_MUST = #isMust# ,
+	        IS_PEOPLE = #isPeople# ,
+	        STATUS = #status# ,
+	        OPERATOR = #operator# ,
+	        CREATE_TIME = #createTime# ,
+	        MODIFY_TIME = #modifyTime# ,
+	        VERSION = #version# ,
+	        OPER_TYPE = #operType# ,
+	        VALIDATE_SQL = #validateSql# 
+        WHERE 
+	        CUID = #cuid# 
+    ]]>
+    </update>
+    <delete id="delete" parameterClass="java.lang.String">
+    <![CDATA[
+        delete from T_MD_MODEL_LOG where
+        CUID = #cuid# 
+    ]]>
+    </delete>
+    
+    <delete id="deleteByProperty">
+    <![CDATA[
+        delete from T_MD_MODEL_LOG t
+    ]]>
+    	<include refid="dynamicWhere"/>
+    </delete>
+    
+    <select id="getById" resultMap="tmdModelLogResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from T_MD_MODEL_LOG t
+	        where 
+		        t.CUID = #cuid# 
+	    ]]>
+    </select>
+	 
+    <select id="count" resultClass="long">
+    <![CDATA[
+        select count(*) from T_MD_MODEL_LOG t
+    ]]>
+		<include refid="dynamicWhere"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="tmdModelLogResult">
+    	select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from T_MD_MODEL_LOG t
+	    ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findByProperty" resultMap="tmdModelLogResult">
+    	select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from T_MD_MODEL_LOG t
+	    ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+
+	
+	<select id="findAll" resultMap="tmdModelLogResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from T_MD_MODEL_LOG t
+	    ]]>
+    </select>
+</sqlMap>

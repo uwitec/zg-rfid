@@ -1,0 +1,106 @@
+*
+{
+	padding: 0;
+	margin: 0;
+}
+body
+{
+	font-family: "å®‹ä½“";
+	font-size: 12px;
+	color: #333333;
+	background: url(images/beijing4_01.jpg);
+}
+.bei
+{
+	margin: 120px auto 0 auto;
+	width: 642px;
+}
+.center
+{
+	background: url(images/index_03.jpg);
+	width: 642px;
+	height: 112px;
+}
+.bottom
+{
+	background: url(images/index_05.jpg);
+	width: 362px;
+	height: 264px;
+	padding: 35px 0 0 280px;
+}
+.bottom ul
+{
+	list-style-type: none;
+}
+.wenben
+{
+	width: 140px;
+	border: solid 1px #749EC3;
+	height: 17px;
+	text-align: 17px;
+}
+.wenben-L
+{
+	width: 150px;
+	border: solid 1px #749EC3;
+	height: 17px;
+	text-align: 1px;
+}
+.wenbentwo
+{
+	width: 60px;
+	border: solid 1px #749EC3;
+	height: 17px;
+	text-align: 17px;
+}
+.bottom ul li
+{
+	margin-top: 5px;
+}
+.bottom .one a
+{
+	background: url(images/mun_07.jpg);
+	width: 75px;
+	height: 21px;
+	float: left;
+	margin: 15px 0 0 5px;
+}
+
+.bottom .two a
+{
+	background: url(images/nav.jpg);
+	width: 75px;
+	height: 21px;
+	float: left;
+	margin: 15px 0 0 32px;
+}
+
+.bottom .download a
+{
+	width: 105px;
+	height: 21px;
+	float: left;
+	margin: 15px 0 0 32px;
+	font-family: 'ËÎÌå',verdana, arial, helvetica, sans-serif;
+	font-size: 12px;
+}
+.btn
+{
+	background: url(images/mun_07.jpg);
+	
+	border:0px;
+	width: 75px;
+	height: 21px;
+	float: left;
+	margin: 15px 0 0 5px;
+}
+.btncanel
+{
+	background: url(images/nav.jpg);
+	
+	border:0px;
+	width: 75px;
+	height: 21px;
+	float: left;
+	margin: 15px 0 0 35px;
+}

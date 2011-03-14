@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTvirtualorgEx">
+    <typeAlias alias="zgTvirtualorgEx" type="com.boco.zg.virtualorg.base.model.ZgTvirtualorgEx"/>
+	<resultMap id="zgTvirtualorgExResult" class="zgTvirtualorgEx">
+		<result property="cuid" column="ztv_cuid"/>
+		<result property="orgId" column="ztv_org_id"/>
+		<result property="note" column="ztv_note"/>
+		<result property="type" column="ztv_type"/>
+		<result property="labelCn" column="ztv_label_cn"/>
+		<result property="orgName" column="fo_label_cn"/>
+    </resultMap>
+    
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.ztv_cuid,
+	        m.ztv_org_id,
+	        m.ztv_note,
+	        m.ztv_type,
+	        m.ztv_label_cn,
+	        m.fo_label_cn
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="virtualorgCuid">
+	    		m.ztv_cuid like '%'||#virtualorgCuid#||'%' 
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend="AND" property="virtualorgName">
+	    		m.ztv_label_cn like '%'||#virtualorgName#||'%' 
+	    	</isNotEmpty>
+	    	<isNotEqual property="departmentId" compareValue="">   
+			    <isNotEmpty prepend="AND" property="departmentId">
+		       			m.ztv_org_id = #departmentId#
+	       		</isNotEmpty>
+       		</isNotEqual>
+       		<isNotEqual property="virtualorgType" compareValue="">   
+			    <isNotEmpty prepend="AND" property="virtualorgType">
+		       			m.ztv_type = #virtualorgType#
+	       		</isNotEmpty>
+       		</isNotEqual>
+	    </dynamic>	
+	</sql>
+	
+	<select id="count" resultClass="long">
+		select count(*) from (
+		select <include refid="commonColumns"/>
+		<![CDATA[ from(
+		select ztv.cuid ztv_cuid, 
+		       ztv.org_id ztv_org_id, 
+		       ztv.note ztv_note, 
+		       ztv.type ztv_type, 
+		       ztv.label_cn ztv_label_cn, 
+		       fo.label_cn fo_label_cn
+		      from ZG_T_VIRTUALORG ztv, FW_ORGANIZATION fo
+		      where ztv.org_id = fo.cuid(+) )m ]]>
+		      <include refid="dynamicWhere"/>
+		      )
+	</select>
+	
+	<select id="pageSelect"  resultMap="zgTvirtualorgExResult">
+		select <include refid="commonColumns"/>
+		<![CDATA[ from(
+		select ztv.cuid ztv_cuid, 
+		       ztv.org_id ztv_org_id, 
+		       ztv.note ztv_note, 
+		       ztv.type ztv_type, 
+		       ztv.label_cn ztv_label_cn, 
+		       fo.label_cn fo_label_cn
+		      from ZG_T_VIRTUALORG ztv, FW_ORGANIZATION fo
+		      where ztv.org_id = fo.cuid(+) )m ]]>
+		 <include refid="dynamicWhere"/>
+	</select>
+	
+	<select id="getVirtualOrgByOperatorId" resultMap="zgTvirtualorgExResult">
+		select ztv.cuid ztv_cuid, 
+		       ztv.org_id ztv_org_id, 
+		       ztv.note ztv_note, 
+		       ztv.type ztv_type, 
+		       ztv.label_cn ztv_label_cn,null as fo_label_cn from ZG_T_VIRTUALORG_EMPLOYEE t,zg_t_virtualorg ztv where t.user_id='$operatorId$' and t.org_id=ztv.cuid
+	</select>
+    
+    <select id="findOrgIdByCuid" resultClass="java.lang.String">
+    	<![CDATA[
+    		select org_id from zg_t_virtualorg t where t.cuid=#cuid#
+    	]]>
+    </select>
+    
+     <select id="getPlantListByOperatorId" resultClass="java.util.HashMap">
+		    	select distinct org.org_id, fworg.extend2 pxdate
+		  from zg_t_virtualorg          org,
+		       zg_t_virtualorg_employee emp,
+		       fw_organization          fworg
+		 where 
+		   emp.org_id = org.cuid
+		   and fworg.type = '5'
+		   and org.org_id = fworg.cuid	
+		   and fworg.extend1='$planType$' 
+		   <isNotEqual property="operatorId" compareValue="0">
+		   	and emp.user_id = '$operatorId$'
+		   </isNotEqual>
+		   order by org.org_id
+		   
+		   
+    </select>
+    
+ 
+    
+</sqlMap>

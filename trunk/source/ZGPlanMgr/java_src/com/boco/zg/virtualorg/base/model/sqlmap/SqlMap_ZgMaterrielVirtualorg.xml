@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgMaterrielVirtualorg">
+    <typeAlias alias="zgMaterrielVirtualorg" type="com.boco.zg.virtualorg.base.model.ZgMaterrielVirtualorg"/>
+	<resultMap id="zgMaterrielVirtualorgResult" class="zgMaterrielVirtualorg">
+		<result property="matkl" column="zm_cuid"/>
+		<result property="materielName" column="zm_materiel_name"/>
+		<result property="storageName" column="storageName"/>
+    </resultMap>
+    <resultMap class="zgMaterrielVirtualorg" id="zgMaterrielVirtualorgResultForVirtual">
+    	<result property="cuid" column="CUID"/>
+    	<result property="matkl" column="MATKL"/>
+    	<result property="orgId" column="ORG_ID"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.zm_cuid,
+	        m.zm_materiel_name,
+	        m.storageName
+	    ]]>
+	</sql>
+	
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns1">
+	    <![CDATA[
+	        m.materiel_cuid,
+	        m.parentName,
+	        m.parent_id,
+	        m.materiel_name,
+	        m.materiel_type,
+	        m.materiel_id,
+	        m.virtualorg_name,
+	        m.virtualorg_cuid,
+	        m.materiel_storage_id,
+	        m.materiel_storage_name
+	    ]]>
+	</sql>
+    
+    <sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="materielCuid">
+	    		m.zm_cuid like '%'||#materielCuid#||'%' 
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend="AND" property="materielName">
+	    		m.zm_materiel_name like '%'||#materielName#||'%' 
+	    	</isNotEmpty>
+			 <isNotEmpty prepend="AND" property="storageName">
+		       	m.storageName like '%'||#storageName#||'%'
+	       	</isNotEmpty>
+	    </dynamic>	
+	</sql>
+    
+    <insert id="insert_ZgMaterrielVirtualorg">
+    	<![CDATA[ insert into ZG_MATERIEL_VIRTUALORG(CUID,MATKL,ORG_ID) values(#cuid#,#matkl#,#orgId#) ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+     <insert id="delete_ZgMaterrielVirtualorg">
+    	<![CDATA[ delete ZG_MATERIEL_VIRTUALORG t where t.cuid=#cuid# ]]>
+    </insert>
+    
+    <resultMap id="zgMaterrielVirtualorgResult1" class="zgMaterrielVirtualorg">
+		<result property="matkl" column="materiel_cuid"/>
+		<result property="storageName" column="parentName"/>
+		<result property="storageId" column="parent_id"/>
+		<result property="materielName" column="materiel_name"/>
+		<result property="materielType" column="materiel_type"/>
+		<result property="materielId" column="materiel_id"/>
+		<result property="virtualorgName" column="virtualorg_name"/>
+		<result property="orgId" column="virtualorg_cuid"/>
+		<result property="materielStorageId" column="materiel_storage_id"/>
+		<result property="materielStorageName" column="materiel_storage_name"/>
+    </resultMap>
+    
+    <select id="count" resultClass="long">
+    	select count(*) from (
+    	select <include refid="commonColumns"/> 
+    	<![CDATA[
+    	from (
+    	select zm.cuid zm_cuid,
+			 zm.materiel_name zm_materiel_name,
+			 (select t.materiel_name
+			          from ZG_MATERIEL t
+			         where t.cuid = zm.parent_id) storageName
+			 from ZG_MATERIEL zm
+			 where zm.parent_id is not null
+			  and zm.cuid not in
+			       (select t.matkl from ZG_MATERIEL_VIRTUALORG t where t.org_id = #orgId#)
+			       )m ]]>
+		<include refid="dynamicWhere"/>
+		)
+    </select>
+    
+    
+    <select id="pageSelect" resultMap="zgMaterrielVirtualorgResult">
+    	select <include refid="commonColumns"/> 
+    	<![CDATA[
+    	from (
+    	select zm.cuid zm_cuid,
+			 zm.materiel_name zm_materiel_name,
+			 (select t.materiel_name
+			          from ZG_MATERIEL t
+			         where t.cuid = zm.parent_id) storageName
+			 from ZG_MATERIEL zm
+			 where zm.parent_id is not null
+			  and zm.cuid not in
+			       (select t.matkl from ZG_MATERIEL_VIRTUALORG t where t.org_id = #orgId#)
+			       )m ]]>
+		<include refid="dynamicWhere"/>
+    </select>
+    
+    
+    
+    <select id="findOneInfoMaterielVirtualorgCuid" resultMap="zgMaterrielVirtualorgResult1">
+    	select <include refid="commonColumns1"/> 
+    	<![CDATA[ from 
+    	( select zm.cuid materiel_cuid,
+		           (select t.materiel_name from ZG_MATERIEL t where t.cuid=zm.parent_id) parentName,
+		           zm.parent_id, 
+		           zm.materiel_name, 
+		           zm.type materiel_type, 
+		           zm.id materiel_id,
+		           zm.lgort materiel_storage_id,
+		           (select k.materiel_name from ZG_MATERIEL k where k.cuid=zm.lgort) materiel_storage_name,
+		           ztv.label_cn virtualorg_name,
+		           ztv.cuid virtualorg_cuid
+		          from ZG_MATERIEL_VIRTUALORG zmv, ZG_T_VIRTUALORG ztv, ZG_MATERIEL zm
+		         where zmv.org_id = ztv.cuid(+)
+		           and zm.cuid(+) = zmv.matkl
+		           and zmv.cuid = #cuid# )m ]]>
+    </select>
+    
+      <select id="getById" resultMap="zgMaterrielVirtualorgResultForVirtual">
+      <![CDATA[
+		    select  CUID,MATKL,ORG_ID
+		    from ZG_MATERIEL_VIRTUALORG m
+		    where  m.org_id =#orgId#
+	  ]]>
+    </select>
+    
+    <delete id="deleteZgMaterielVirtualorgByOrgId">
+    	<![CDATA[
+    		delete ZG_MATERIEL_VIRTUALORG t where t.org_id=#orgId#
+    	]]>
+    </delete>
+    
+</sqlMap>

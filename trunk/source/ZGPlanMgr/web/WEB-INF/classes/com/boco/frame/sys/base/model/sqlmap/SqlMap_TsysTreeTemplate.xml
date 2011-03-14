@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TsysTreeTemplate">
+    <typeAlias alias="tsysTreeTemplate" type="com.boco.frame.sys.base.model.TsysTreeTemplate"/>
+	<resultMap id="tsysTreeTemplateResult" class="tsysTreeTemplate">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="sqlTemplate" column="t0_SQL_TEMPLATE"/>
+		<result property="param1" column="t0_PARAM1"/>
+		<result property="param2" column="t0_PARAM2"/>
+		<result property="param3" column="t0_PARAM3"/>
+		<result property="param4" column="t0_PARAM4"/>
+		<result property="param5" column="t0_PARAM5"/>
+		<result property="param6" column="t0_PARAM6"/>
+		<result property="remark" column="t0_REMARK"/>
+		<result property="isdistinct" column="t0_ISDISTINCT"/>
+		<result property="primarycolumn" column="t0_PRIMARYCOLUMN"/>
+		<result property="isOpenUrl" column="t0_IS_OPEN_URL"/>
+		<result property="openUrl" column="t0_OPEN_URL"/>
+		<result property="pageSize" column="t0_PAGE_SIZE"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_SQL_TEMPLATE,
+	        m.t0_PARAM1,
+	        m.t0_PARAM2,
+	        m.t0_PARAM3,
+	        m.t0_PARAM4,
+	        m.t0_PARAM5,
+	        m.t0_PARAM6,
+	        m.t0_REMARK,
+	        m.t0_ISDISTINCT,
+	        m.t0_PRIMARYCOLUMN,
+	        m.t0_IS_OPEN_URL,
+	        m.t0_OPEN_URL,
+	        m.t0_PAGE_SIZE
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="sqlTemplate">
+	       			m.t0_SQL_TEMPLATE like #sqlTemplate#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="param1">
+	       			m.t0_PARAM1 = #param1#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="param2">
+	       			m.t0_PARAM2 = #param2#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="param3">
+	       			m.t0_PARAM3 = #param3#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="param4">
+	       			m.t0_PARAM4 = #param4#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="param5">
+	       			m.t0_PARAM5 = #param5#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="param6">
+	       			m.t0_PARAM6 = #param6#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="remark">
+	       			m.t0_REMARK like #remark#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="isdistinct">
+	       			m.t0_ISDISTINCT like #isdistinct#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="primarycolumn">
+	       			m.t0_PRIMARYCOLUMN like #primarycolumn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="isOpenUrl">
+	       			m.t0_IS_OPEN_URL like #isOpenUrl#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="openUrl">
+	       			m.t0_OPEN_URL like #openUrl#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="pageSize">
+	       			m.t0_PAGE_SIZE like #pageSize#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertT_SYS_TREE_TEMPLATE" parameterClass="tsysTreeTemplate">
+    <![CDATA[
+        INSERT INTO
+        T_SYS_TREE_TEMPLATE (
+        	CUID ,
+        	SQL_TEMPLATE ,
+        	PARAM1 ,
+        	PARAM2 ,
+        	PARAM3 ,
+        	PARAM4 ,
+        	PARAM5 ,
+        	PARAM6 ,
+        	REMARK ,
+        	ISDISTINCT ,
+        	PRIMARYCOLUMN ,
+        	IS_OPEN_URL ,
+        	OPEN_URL ,
+        	PAGE_SIZE 
+        ) VALUES (
+        	#cuid# ,
+        	#sqlTemplate# ,
+        	#param1# ,
+        	#param2# ,
+        	#param3# ,
+        	#param4# ,
+        	#param5# ,
+        	#param6# ,
+        	#remark# ,
+        	#isdistinct# ,
+        	#primarycolumn# ,
+        	#isOpenUrl# ,
+        	#openUrl# ,
+        	#pageSize# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateT_SYS_TREE_TEMPLATE" parameterClass="tsysTreeTemplate">
+    <![CDATA[
+        UPDATE T_SYS_TREE_TEMPLATE SET
+	        SQL_TEMPLATE = #sqlTemplate# ,
+	        PARAM1 = #param1# ,
+	        PARAM2 = #param2# ,
+	        PARAM3 = #param3# ,
+	        PARAM4 = #param4# ,
+	        PARAM5 = #param5# ,
+	        PARAM6 = #param6# ,
+	        REMARK = #remark# ,
+	        ISDISTINCT = #isdistinct# ,
+	        PRIMARYCOLUMN = #primarycolumn# ,
+	        IS_OPEN_URL = #isOpenUrl# ,
+	        OPEN_URL = #openUrl# ,
+	        PAGE_SIZE = #pageSize# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteT_SYS_TREE_TEMPLATE" parameterClass="java.lang.String">
+		delete from T_SYS_TREE_TEMPLATE 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="tsysTreeTemplateResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        		t0.PARAM1 as t0_PARAM1,
+	        		t0.PARAM2 as t0_PARAM2,
+	        		t0.PARAM3 as t0_PARAM3,
+	        		t0.PARAM4 as t0_PARAM4,
+	        		t0.PARAM5 as t0_PARAM5,
+	        		t0.PARAM6 as t0_PARAM6,
+	        		t0.REMARK as t0_REMARK,
+	        		t0.ISDISTINCT as t0_ISDISTINCT,
+	        		t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        		t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        		t0.OPEN_URL as t0_OPEN_URL,
+	        		t0.PAGE_SIZE as t0_PAGE_SIZE
+	        from 
+	        T_SYS_TREE_TEMPLATE t0
+ ) m
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="tsysTreeTemplateResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        		t0.PARAM1 as t0_PARAM1,
+	        		t0.PARAM2 as t0_PARAM2,
+	        		t0.PARAM3 as t0_PARAM3,
+	        		t0.PARAM4 as t0_PARAM4,
+	        		t0.PARAM5 as t0_PARAM5,
+	        		t0.PARAM6 as t0_PARAM6,
+	        		t0.REMARK as t0_REMARK,
+	        		t0.ISDISTINCT as t0_ISDISTINCT,
+	        		t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        		t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        		t0.OPEN_URL as t0_OPEN_URL,
+	        		t0.PAGE_SIZE as t0_PAGE_SIZE
+	        from 
+	        T_SYS_TREE_TEMPLATE t0
+ ) m
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        		t0.PARAM1 as t0_PARAM1,
+	        		t0.PARAM2 as t0_PARAM2,
+	        		t0.PARAM3 as t0_PARAM3,
+	        		t0.PARAM4 as t0_PARAM4,
+	        		t0.PARAM5 as t0_PARAM5,
+	        		t0.PARAM6 as t0_PARAM6,
+	        		t0.REMARK as t0_REMARK,
+	        		t0.ISDISTINCT as t0_ISDISTINCT,
+	        		t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        		t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        		t0.OPEN_URL as t0_OPEN_URL,
+	        		t0.PAGE_SIZE as t0_PAGE_SIZE
+	        from 
+	        T_SYS_TREE_TEMPLATE t0
+ ) m
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="tsysTreeTemplateResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        		t0.PARAM1 as t0_PARAM1,
+	        		t0.PARAM2 as t0_PARAM2,
+	        		t0.PARAM3 as t0_PARAM3,
+	        		t0.PARAM4 as t0_PARAM4,
+	        		t0.PARAM5 as t0_PARAM5,
+	        		t0.PARAM6 as t0_PARAM6,
+	        		t0.REMARK as t0_REMARK,
+	        		t0.ISDISTINCT as t0_ISDISTINCT,
+	        		t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        		t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        		t0.OPEN_URL as t0_OPEN_URL,
+	        		t0.PAGE_SIZE as t0_PAGE_SIZE
+	        from 
+	        T_SYS_TREE_TEMPLATE t0
+ ) m
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="tsysTreeTemplateResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        		t0.PARAM1 as t0_PARAM1,
+	        		t0.PARAM2 as t0_PARAM2,
+	        		t0.PARAM3 as t0_PARAM3,
+	        		t0.PARAM4 as t0_PARAM4,
+	        		t0.PARAM5 as t0_PARAM5,
+	        		t0.PARAM6 as t0_PARAM6,
+	        		t0.REMARK as t0_REMARK,
+	        		t0.ISDISTINCT as t0_ISDISTINCT,
+	        		t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        		t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        		t0.OPEN_URL as t0_OPEN_URL,
+	        		t0.PAGE_SIZE as t0_PAGE_SIZE
+	        from 
+	        T_SYS_TREE_TEMPLATE t0
+ ) m
+        ]]>
+    </select>
+    
+</sqlMap>
