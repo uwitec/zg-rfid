@@ -67,14 +67,10 @@ public class ZgTcarbomBo extends BaseManager<ZgTcarbom,java.lang.String>{
 	 * wjz,这里的业务是用来修改uid变成名字的
 	 */
 	public List<ZgTorderPlanComment> getZgTorderPlanCommentList(String orderplanid){
-		List<ZgTorderPlanComment> commentList=zgTcarbomDao.selectZgTorderPlanCommentById(orderplanid);//还没有中文名的
+		List<ZgTorderPlanComment> commentList=zgTcarbomDao.selectZgTorderPlanCommentById(orderplanid);
 		
 		//进行循环赋值 中文名
-		for(int i=0;i<commentList.size();i++){
-			ZgTorderPlanComment zgTorderPlanCommentOne=commentList.get(i);
-			zgTcarbomDao.changeNameForCh(zgTorderPlanCommentOne);
-		}
-		
+	
 		return commentList;
 	}
 	public int getSeq(String seqName) {

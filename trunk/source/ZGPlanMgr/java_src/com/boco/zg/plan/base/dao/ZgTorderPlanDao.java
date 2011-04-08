@@ -92,4 +92,11 @@ public class ZgTorderPlanDao extends BaseIbatisDao<ZgTorderPlan,java.lang.String
 		return super.getSqlMapClientTemplate().insert("ZgTorderPlan.insertZG_T_ORDER_PLAN",zgTorderPlan).toString();
 	}
 
+	public Object saveOrderPlan1(ZgTorderPlan zgTorderPlan) {
+		return super.getSqlMapClientTemplate().insert("ZgTorderPlan.insertZG_T_ORDER_PLAN1",zgTorderPlan);
+	}
+	public Page findorderPlanByPageRequest(PageRequest<Map> pr) {
+		
+		return pageQuery("ZgTorderPlan.pageSelect1",pr);
+	}
 }

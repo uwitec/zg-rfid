@@ -53,17 +53,22 @@
 			document.getElementById("grid-panel").style.width=maxWidth+'px';
 			
 		}
-		
-		function edit(orderPlanId) {
+		function edit(cuid){
 			if(parent.targetFrame) {
-				parent.targetFrame('${ctx}/zg/plan/ZgTorderPlanbomForBatch/findBomBatchList.do?orderPlanId='+orderPlanId);
+			    
+				parent.targetFrame('${ctx}/zg/plan/ZgTBomManager/edit.do?id='+cuid);
+			}
+		}
+		function view(cuid){
+			if(parent.targetFrame) {
+				parent.targetFrame('${ctx}/zg/plan/ZgTBomManager/view.do?id='+cuid);
 			}
 		}
 	</script>
 	</head>
 	<body>
-		<form id="ec" action="<c:url value="/zg/plan/ZgTorderPlanForBatch/listForBatch.do"/>" method="post" style="display: inline;">
-			<input type="hidden" id="stateData" value="${s_state }"/>
+		<form id="ec" action="<c:url value="/zg/plan/ZgTBomManager/listForChange.do"/>" method="post" style="display: inline;">
+			
 			<div>
 				<div>
 					<%@ include file="query_include_ZgTorderPlan.jsp"%>
@@ -79,26 +84,33 @@
 									<td class="tableHeader" width="3%">
 										<input type='checkbox' onclick="setAllCheckboxState('items',this.checked)" />
 									</td>
-							<td class="tableHeader"  onclick="queryColumn(this,'CUID')"  title="排序 CUID" >单据编码<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
-		                    <td class="tableHeader"  onclick="queryColumn(this,'CUID')"  title="排序 CUID" >生产订单<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
-			                <td class="tableHeader"  onclick="queryColumn(this,'CUID')"  title="排序 CUID" >物料等级<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
-							<td class="tableHeader"  onclick="queryColumn(this,'PLAN_DATE')"  title="排序 PLAN_DATE" >创建时间<%=map.get("ec_image_PLAN_DATE")==null?"":map.get("ec_image_PLAN_DATE")%></td>
-							<td class="tableHeader"  onclick="queryColumn(this,'USER_NAME')"  title="排序 USER_NAME" >创建人<%=map.get("ec_image_USER_NAME")==null?"":map.get("ec_image_USER_NAME")%></td>
-							<td class="tableHeader"  onclick="queryColumn(this,'DEPARTMENT_NAME')"  title="排序 DEPARTMENT_NAME" >创建人部门<%=map.get("ec_image_DEPARTMENT_NAME")==null?"":map.get("ec_image_DEPARTMENT_NAME")%></td>
-							<td class="tableHeader"  onclick="queryColumn(this,'STATE')"  title="排序 PLAN_END_TIME" >状态<%=map.get("ec_image_STATE")==null?"":map.get("ec_image_STATE")%></td>
+							<td class="tableHeader"  >单据编码<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
+		                    <td class="tableHeader" >生产订单<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
+			                <td class="tableHeader" >物料等级<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
+							<td class="tableHeader" >创建时间<%=map.get("ec_image_PLAN_DATE")==null?"":map.get("ec_image_PLAN_DATE")%></td>
+							<td class="tableHeader" >创建人<%=map.get("ec_image_USER_NAME")==null?"":map.get("ec_image_USER_NAME")%></td>
+							<td class="tableHeader"  >创建人部门<%=map.get("ec_image_DEPARTMENT_NAME")==null?"":map.get("ec_image_DEPARTMENT_NAME")%></td>
+							<td class="tableHeader"  >状态<%=map.get("ec_image_STATE")==null?"":map.get("ec_image_STATE")%></td>
 
 								</tr>
 							</thead>
 							<tbody>
 								<c:forEach items="${page.result}" var="obj" varStatus="n">
 									<c:set var="trcss" value="${n.count%2==0?'odd':'even'}" />
-									<tr class="${trcss}" title="双击查看详情"
-										ondblclick="edit('${obj.cuid }')">
-										<td width="3%">
-											<input type="checkbox" name="items" value="id=${obj.cuid}&" />
-										</td>
+									<c:choose>
+									<c:when test="${obj.STATE=='1'||obj.STATE=='0'}">
+									<tr class="${trcss}" title="双击修改" ondblclick="edit('${obj.CUID}')"  onmouseover="this.style.backgroundColor = '#EBF1FF'"  onmouseout="this.style.backgroundColor = '#FFFFFF'">
+									</c:when>
+									<c:otherwise>
+									<tr class="${trcss}" title="双击查看" ondblclick="view('${obj.CUID}')"  onmouseover="this.style.backgroundColor = '#EBF1FF'"  onmouseout="this.style.backgroundColor = '#FFFFFF'">
+									</c:otherwise>
+									</c:choose>
+						
+							<td width="3%" >
+							<input type="checkbox" name="items" value="id=${obj.CUID}&"/>
+							</td>
 										<td align="center">
-											${obj.CUID }
+										${obj.CUID}
 										</td>
 										<td align="center">
 											${obj.AUFNR}
@@ -108,103 +120,34 @@
 											
 										</td>
 										<td align="center">
-											<fmt:formatDate value="${obj.CREATE_DATE}" pattern="yyyy-MM-dd  HH:mm:ss" />
+										${obj.CREATEDATE}
 										</td>
 										<td align="center">
-											${obj.USERNAME}
+											${obj.CREATENAME}
 										</td>
 										<td align="center">
 											${obj.ORGNAME}
 										</td>
+										
 										<td align="center">
-											${obj.STATE}
-										</td>
-									</tr>
+											
+											<c:choose>
+								            <c:when test="${obj.STATE=='0'}">保存</c:when>
+								            <c:when test="${obj.STATE=='1'}">厂领导审核退回</c:when>
+								            <c:when test="${obj.STATE=='2'}">待厂领导审核</c:when>
+								            <c:when test="${obj.STATE=='4'}">待品质部审核</c:when>
+								            <c:otherwise>完成</c:otherwise>
+							</c:choose>
+											
+											
+											
+												</td>
+								
+									
 								</c:forEach> 
-								<c:set var="trcss" value="odd" />
-								<tr class="${trcss}" title="双击查看详情"
-										ondblclick="edit('${obj.cuid }')">
-										<td width="3%" align="center">
-											<input type="checkbox" name="items" value="id=${obj.cuid}&" />
-										</td>
-										<td align="center">
-											20100221104729009
-										</td>
-										<td align="center">
-											6000067851
-										</td>
-										<td align="center">
-											A
-										</td>
-										<td align="center">
-											2010-02-15
-										</td>
-										<td align="center">
-											朱朝明
-										</td>
-										<td align="center">
-											生产线
-										</td>
-										<td align="center">
-										待品质部审核
-										</td>
-									</tr>
-									<tr class="${trcss}" title="双击查看详情"
-										ondblclick="edit('${obj.cuid }')">
-										<td width="3%" align="center">
-											<input type="checkbox" name="items" value="id=${obj.cuid}&" />
-										</td>
-										<td align="center">
-											20100221104729009
-										</td>
-										<td align="center">
-											6000067850
-										</td>
-										<td align="center">
-											B
-										</td>
-										<td align="center">
-											2010-02-15
-										</td>
-										<td align="center">
-											朱朝明
-										</td>
-										<td align="center">
-											生产线
-										</td>
-										<td align="center">
-											审核通过待领料
-										</td>
-									</tr>
-									<tr class="${trcss}" title="双击查看详情"
-										ondblclick="edit('${obj.cuid }')">
-										<td width="3%" align="center" >
-											<input type="checkbox"  name="items" value="id=${obj.cuid}&" />
-										</td>
-										<td align="center">
-											20100221104729009
-										</td>
-										<td align="center">
-											6000067850
-										</td>
-										<td align="center">
-											B
-										</td>
-										<td align="center">
-											2010-02-15
-										</td>
-										<td align="center">
-											朱朝明
-										</td>
-										<td align="center">
-											生产线
-										</td>
-										<td align="center">
-											完成
-										</td>
-									</tr>
-								<tr style="padding: 0px;">
-									<td colspan="12">
+								
+								<tr>
+									<td colspan="10">
 										<%@include file="/frame/default/ux/pagebar.jsp" %>
 									</td>
 								</tr>

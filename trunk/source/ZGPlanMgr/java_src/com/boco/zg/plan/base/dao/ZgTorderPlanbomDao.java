@@ -101,4 +101,8 @@ public class ZgTorderPlanbomDao extends BaseIbatisDao<ZgTorderPlanbom,java.lang.
 		return getSqlMapClientTemplate().queryForList("ZgTorderPlanbom.getWaitBackBomListByAufnrIdnrk",paramsMap);
 	}
 
+	public Object save1(ZgTorderPlanbom zgTorderPlanbom) {
+		return super.getSqlMapClientTemplate().insert("ZgTorderPlanbom.insertZG_T_ORDER_PLANBOM1",zgTorderPlanbom);
+	}
+
 }

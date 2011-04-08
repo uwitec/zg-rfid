@@ -766,6 +766,8 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	public void setZgTorderbomMoveLogBo(ZgTorderbomMoveLogBo zgTorderbomMoveLogBo) {
 		this.zgTorderbomMoveLogBo = zgTorderbomMoveLogBo;
 	}
-
+	 public void deleteById(java.lang.String id) {
+		  zgTorderbomDao.deleteById(id);
+	}
 
 }

@@ -31,30 +31,6 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 			$(window).bind("resize",doLayout);
 			$("form:first").submit();
 		}
-		function query(){
-		    var createDate_start=$("#s_createDate_start").val()
-		    var createDate_end=$("#s_createDate_end").val()
-		    if(createDate_start>createDate_end){
-		      alert("开始时间不能大于结束时间")
-		      
-		    }
-		   
-		    
-			var planStat= $("#s_state").val();
-			
-			
-			if(planStat=='0'){
-			  
-				$("#deletePlanButton").attr("style","display:''")
-				
-			}else{
-				$("#deletePlanButton").attr("style","display:none");
-			}
-			if(batchValidation('listFrame','${ctx}/zg/plan/ZgTBomManager/listForChange.do',document.forms[0]))document.forms[0].submit();
-			document.forms[0].submit();
-			
-		  
-		}
 		function doLayout() {
 			var maxHeight = top.getContentHeight();
 			var splitH = document.getElementById("split_1").offsetHeight;
@@ -71,99 +47,27 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 			if(document.getElementById("_queryPanel").style.display == 'none') {
 				changePanel(document.getElementById("split_1"));
 			}
-			if(batchValidation('listFrame','${ctx}/zg/plan/ZgTBomManager/listForChange.do',document.forms[0])) {
+			if(batchValidation('listFrame','${ctx}/zg/plan/ZgTBomManager/listForChangeLead.do',document.forms[0])) {
 				document.forms[0].submit();
 			}
 		}
+		function query(){
+			if(batchValidation('listFrame','${ctx}/zg/plan/ZgTBomManager/listForChangeLead.do',document.forms[0]))document.forms[0].submit();
+			document.forms[0].submit();
+			
+		}
 		
-		function batchValidation(target,action,form) {
-			var oldAction=form.action;
-			form.target=target;
-			form.action = action;
-			form.submit();
-			form.action = oldAction;
-			return true;
-		}
-		//思路：在提交审核之前要先选择‘审核人’--弹出模式窗体
-		function orderPlanSubmit(obj) {
-			obj.disabled=true;
-			var form = listFrame.document.getElementById("ec");
-			var items = listFrame.document.getElementsByName("items");
-			
-			//这里用来判断是否有打钩的
-			var flag = false;
-			for(var i = 0; i < items.length;i++) {
-				if(items[i].checked) {
-					flag = true;
-				}
-			}
-			
-			var batch_state=listFrame.document.getElementById("stateData").value;//批量状态
-			//如果是选择了‘待审核’的话
-			if(batch_state=="1"&&flag==true){
-				alert("待审核状态的不能再度提交审核了！");
-				obj.disabled=false;
-				return;
-			}
-			//如果是选择了‘已提交’的话
-			if(batch_state=="8"&&flag==true){
-				alert("已提交状态的不能再度提交审核了！");
-				obj.disabled=false;
-				return;
-			}
-			
-			if(flag) {
-				//弹出选择‘审核’人的窗体  url,'',sFeatures
-				var sFeatures="dialogHeight: 500px;dialogWidth:760px";
-				var firstShowQueryUrl="${ctx}/zg/plan/ZgTorderPlanForBatch/queryForAuditingPeople.do";
-				var returnValue = window.showModalDialog(firstShowQueryUrl,'',sFeatures);
-				//returnValue这个是用来取决是否能够提交的returnValue==undefined||returnValue==''
-				if(returnValue){
-					form.action = "${ctx}/zg/plan/ZgTorderPlanForBatch/submitOrderPlan.do?userId="+returnValue.userId;
-					form.submit();
-				}
-			}else {
-				alert("请选择要提交的计划！");
-			}
-			obj.disabled=false;
-		}
 		function exportData(){
 			document.forms[0].action = "${ctx}/frame/excel/sys/export.do";
 			document.forms[0].submit();
 		}
-		function deletePlan(){
-			var form = listFrame.document.getElementById("ec");
-			var items = listFrame.document.getElementsByName("items");
-			var flag = false;
-			for(var i = 0; i < items.length;i++) {
-				if(items[i].checked) {
-					flag = true;
-					break;
-				}
-			}
-			if(flag) {
-				if(confirm("确认删除所选的换料计划单")){
-					form.action="${ctx}/zg/plan/ZgTBomManager/deletePlan.do";
-					form.submit();
-				}
-			}else {
-				alert("请选择所要删除的对象！");
-			}
-		}
-		function doQuery() {
-			if(document.getElementById("_queryPanel").style.display == 'none') {
-				changePanel(document.getElementById("split_1"));
-			}
-			if(batchValidation('listFrame','${ctx}/zg/plan/ZgTBomManager/listForChange.do',document.forms[0])) {
-				document.forms[0].submit();
-			}
-		}
+		
 	</script>
 </head>
 
 <body>
 <div id="_queryPanel">
-	<form action="${ctx}/zg/plan/ZgTBomManager/listForChange.do" method="post" target="listFrame">
+	<form action="${ctx}/zg/plan/ZgTBomManager/listForChangeLead.do" method="post" target="listFrame">
 		<input type="hidden" name="bmClassId" value="<%=ZgTorderPlan.BM_CLASS_ID%>"/>
 		<input type="hidden" name="s_planType" value="${pageRequest.filters.planType}"/>
 		<input type="hidden"  name="s_equalBmClassIdQuery"  value="${pageRequest.filters.equalBmClassIdQuery}"/>
@@ -176,6 +80,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							<img src="<%=expandIcon %>" for="tbody_1"/>
 						</label>
 					</td>
+						
 					<td width="80px" class="label">
 						开始时间：
 					</td>
@@ -190,12 +95,9 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 					<td width="80px" class="label">单据状态：</td>
 					<td>
 				<select name="s_state" id="s_state">
-				      <option value="">全部</option>
-				    <option value="0">保存</option>
-					<option value="1">厂领导审核退回</option>
+					
 					<option value="2">待厂领导审核</option>
-					<option value="4">待品质部审核</option>
-					<option value="8">完成</option>
+					<option value="1">厂领导审核退回</option>
 				</select>
 					</td>
 				</tr>
@@ -205,18 +107,19 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 					<td width="20px" align="center" rowspan="3" ></td>
 						<td class="label">生产订单</td>
 						<td><input type="text" size="20" name="s_aufnr"/></td>
-					
+						<td class="label"></td>
+						<td>
+						</td>
+					<td class="label"></td>
+					<td>
+					</td>
 			</tbody>
 			<tfoot class="querybar">
 				<tr>
 					<td colspan="7" align="right">
 						<div class="toolbar">
-							
 							<a href="javascript:query()" id="queryBtn"><span><img src="<%=iconPath%>/ico_search.gif" />查询</span></a>
 							<a href="javascript:document.forms[0].reset()"><span><img src="<%=iconPath%>/ico_007.gif" />重置</span></a>
-							<a id="deletePlanButton" style="display:none" href="javascript:deletePlan()"><span><img src="<%=iconPath%>/ico_005.gif" />删除</span></a>
-							<a href="javascript:targetFrame('${ctx }/zg/plan/ZgTBomManager/createForChange.do')"><span><img src="<%=iconPath%>/addition.gif" />新单</span></a>
-							
 						</div>
 					</td>
 				</tr>

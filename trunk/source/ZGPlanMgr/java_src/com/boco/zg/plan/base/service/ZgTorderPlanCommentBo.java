@@ -33,28 +33,29 @@ import com.boco.zg.plan.base.service.*;
  */
 
 @Component
-public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.String>{
-	private ZgTorderPlanbomDao zgTorderPlanbomDao;
+public class ZgTorderPlanCommentBo extends BaseManager<ZgTorderPlanComment,java.lang.String>{
+	private ZgTorderPlanCommentDao zgTorderPlanCommentDao;
 	/**增加setXXXX()方法,spring就可以通过autowire自动设置对象属性*/
-	public void setZgTorderPlanbomDao(ZgTorderPlanbomDao dao) {
-		this.zgTorderPlanbomDao = dao;
-	}
+	
 	public EntityDao getEntityDao() {
-		return this.zgTorderPlanbomDao;
-	}
-	public Page findByPageRequest(PageRequest pr) {
-		return zgTorderPlanbomDao.findByPageRequest(pr);
+		return this.zgTorderPlanCommentDao;
 	}
 	
 	public void removeById(java.lang.String id) {
-		zgTorderPlanbomDao.deleteById(id);
+		zgTorderPlanCommentDao.deleteById(id);
 	}
 	
-	public List<ZgTorderPlanbom> findByRequest(PageRequest pageRequest) {
-		return zgTorderPlanbomDao.findByRequest(pageRequest);
+	
+	public void savePlanComment(ZgTorderPlanComment zgTorderPlanComment){
+		zgTorderPlanCommentDao.savePlanComment(zgTorderPlanComment);
 	}
-	public Object save1(ZgTorderPlanbom zgTorderPlanbom) {
-		return zgTorderPlanbomDao.save1(zgTorderPlanbom);
-		
+
+	public ZgTorderPlanCommentDao getZgTorderPlanCommentDao() {
+		return zgTorderPlanCommentDao;
+	}
+
+	public void setZgTorderPlanCommentDao(
+			ZgTorderPlanCommentDao zgTorderPlanCommentDao) {
+		this.zgTorderPlanCommentDao = zgTorderPlanCommentDao;
 	}
 }

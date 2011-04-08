@@ -56,9 +56,9 @@
 		
 		//选择生产线及订单半成品
 		function addBom(){
-			var arbpl=parent.document.getElementById("arbpl").value;
-			var orderId=parent.document.getElementById("orderId").value;
-			var lgort=parent.document.getElementById("lgort").value;
+			var arbpl=parent.document.getElementById("arbpl_value").value;
+			var orderId=parent.document.getElementById("orderId_value").value;
+			var lgort=parent.document.getElementById("lgort_value").value;
 			var type  = '${type}';
 			if(arbpl==''){
 				alert('请先选择订单号和生产线');
@@ -226,7 +226,7 @@
 
 											</c:if>
 										</td>
-										</tr>
+										
 									</c:if>
 								</c:forEach>
 								<tr style="padding: 0px;">

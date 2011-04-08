@@ -22,6 +22,10 @@
 		<result property="state" column="t0_STATE"/>
 		<result property="planType" column="t0_PLAN_TYPE"/>
 		<result property="plant" column="t0_PLANT"/>
+		<result property="extend1" column="t0_EXTEND1"/>
+		<result property="create_date" column="t0_CREATE_DATE"/>
+		<result property="backReason" column="t0_BACK_REASON"/>
+		<result property="backZbz" column="t0_BACK_ZBZ"/>
     </resultMap>
     
     <!-- 用于select查询公用抽取的列 -->
@@ -43,7 +47,12 @@
 	        m.t0_PLAN_END_TIME,
 	        m.t0_STATE,
 	        m.t0_PLAN_TYPE,
-	        m.t0_PLANT
+	        m.t0_PLANT,
+	        m.t0_EXTEND1,
+	        m.t0_CREATE_DATE,
+	        m.t0_BACK_REASON,
+	        m.t0_BACK_ZBZ
+	        
 	    ]]>
 	</sql>
 	
@@ -93,9 +102,9 @@
        		</isNotEmpty>    
 	    </dynamic>	
 	</sql>
-	
-    <insert id="insertZG_T_ORDER_PLAN" parameterClass="zgTorderPlan">
-    <![CDATA[
+
+	<insert id="insertZG_T_ORDER_PLAN" parameterClass="zgTorderPlan">
+		<![CDATA[
         INSERT INTO
         ZG_T_ORDER_PLAN (
         	CUID ,
@@ -127,25 +136,71 @@
         	#isManul#
         )
     ]]>
-    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
-			SELECT to_char(SYSTIMESTAMP,'yyyymmddhhmissff')||#cuid#  FROM DUAL
+		<selectKey resultClass="java.lang.String" type="pre"
+			keyProperty="cuid">
+			SELECT to_char(SYSTIMESTAMP,'yyyymmddhhmissff')||#cuid# FROM
+			DUAL
 		</selectKey>
-    </insert>
-    
-    <update id="updateZG_T_ORDER_PLAN" parameterClass="zgTorderPlan">
+	</insert>
+	
+	<insert id="insertZG_T_ORDER_PLAN1" parameterClass="zgTorderPlan">
+		<![CDATA[
+        INSERT INTO
+        ZG_T_ORDER_PLAN (
+        	CUID ,
+        	LABEL_CN ,
+        	ORDER_ID ,
+        	DEPARTMENU_ID ,
+        	USER_ID ,
+        	PLAN_DATE ,
+        	PLAN_START_TIME ,
+        	PLAN_END_TIME ,
+        	STATE ,
+        	PLAN_TYPE ,
+        	PLANT,
+        	percent,
+        	isManul,
+        	extend1,
+        	back_zbz,
+        	back_reason
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#orderId# ,
+        	#departmenuId# ,
+        	#userId# ,
+        	#planDate# ,
+        	#planStartTime# ,
+        	#planEndTime# ,
+        	#state# ,
+        	#planType# ,
+        	#plant#,
+        	#percent#,
+        	#isManul#,
+        	#extend1#,
+        	#backZbz#,
+        	#backReason#
+        )
+    ]]>
+
+	</insert>
+
+	<update id="updateZG_T_ORDER_PLAN" parameterClass="zgTorderPlan">
     <![CDATA[
         UPDATE ZG_T_ORDER_PLAN SET
 	        LABEL_CN = #labelCn# ,
 	        ORDER_ID = #orderId# ,
 	        DEPARTMENU_ID = #departmenuId# ,
-	        USER_ID = #userId# ,
+	       
 	        PLAN_DATE = #planDate# ,
 	        PLAN_START_TIME = #planStartTime# ,
 	        PLAN_END_TIME = #planEndTime# ,
 	        STATE = #state# ,
 	        PLAN_TYPE = #planType# ,
 	        plant = #plant#,
-	        percent = #percent#
+	        percent = #percent#,
+	        back_zbz=#backZbz#,
+	        back_reason=#backReason#
 	    WHERE CUID = #cuid#
     ]]>
     </update>
@@ -155,6 +210,46 @@
 		 where CUID = #cuid#
 	</delete>
 	
+	 <select id="pageOrderPlanForChange_count" resultClass="long">
+          	 select count(*)
+		 from zg_t_order_plan t,
+		       zg_t_order      od,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where t.plan_type = 'change'
+		   and t.order_id = od.cuid
+		   and t.user_id = emp.cuid
+		   and emo.cuid=emp.cuid
+       and emo.org_id=org.cuid
+
+		<include refid="dynamicWhere"/> 
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageOrderPlanForChange" resultClass="java.util.HashMap">
+		    	 select  emo.org_id,t.*, od.aufnr, emp.label_cn createName, org.label_cn orgName
+
+		 from zg_t_order_plan t,
+		       zg_t_order      od,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where t.plan_type = 'change'
+		   and t.order_id = od.cuid
+		   and t.user_id = emp.cuid
+		   and emo.cuid=emp.cuid
+       and emo.org_id=org.cuid
+		   
+
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
 	<select id="getById" resultMap="zgTorderPlanResult">
 	    select <include refid="commonColumns"/>
 	    <![CDATA[
@@ -169,7 +264,11 @@
 	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
 	        		t0.STATE as t0_STATE,
 	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
-	        		t0.plant as t0_PLANT
+	        		t0.plant as t0_PLANT,
+	                t0.EXTEND1 as t0_EXTEND1,
+	                t0.CREATE_DATE as t0_CREATE_DATE,
+	                t0.BACK_REASON as t0_BACK_REASON,
+	                t0.BACK_ZBZ as t0_BACK_ZBZ
 	        from 
 	        ZG_T_ORDER_PLAN t0
  ) m
@@ -265,7 +364,12 @@
 	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
 	        		t0.STATE as t0_STATE,
 	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
-	        			t0.plant as t0_PLANT
+	        			t0.plant as t0_PLANT,
+	        			          t0.EXTEND1 as t0_EXTEND1,
+	        t0.CREATE_DATE as t0_CREATE_DATE,
+	                t0.BACK_REASON as t0_BACK_REASON,
+	                t0.BACK_ZBZ as t0_BACK_ZBZ
+	        			
 	        from 
 	        ZG_T_ORDER_PLAN t0
  ) m
@@ -365,7 +469,11 @@
 	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
 	        		t0.STATE as t0_STATE,
 	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
-	        			t0.plant as t0_PLANT
+	        			t0.plant as t0_PLANT,
+                       t0.EXTEND1 as t0_EXTEND1,
+	        t0.CREATE_DATE as t0_CREATE_DATE,
+	                t0.BACK_REASON as t0_BACK_REASON,
+	                t0.BACK_ZBZ as t0_BACK_ZBZ
 	        from 
 	        ZG_T_ORDER_PLAN t0
  ) m
@@ -466,6 +574,10 @@
 	        		t0.STATE as t0_STATE,
 	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
 	        			t0.plant as t0_PLANT
+	        		          t0.EXTEND1 as t0_EXTEND1,
+	        t0.CREATE_DATE as t0_CREATE_DATE,
+	                t0.BACK_REASON as t0_BACK_REASON,
+	                t0.BACK_ZBZ as t0_BACK_ZBZ
 	        from 
 	        ZG_T_ORDER_PLAN t0
  ) m
@@ -565,6 +677,10 @@
 	        		t0.STATE as t0_STATE,
 	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
 	        			t0.plant as t0_PLANT
+	        			          t0.EXTEND1 as t0_EXTEND1,
+	        t0.CREATE_DATE as t0_CREATE_DATE,
+	                t0.BACK_REASON as t0_BACK_REASON,
+	                t0.BACK_ZBZ as t0_BACK_ZBZ
 	        from 
 	        ZG_T_ORDER_PLAN t0
  ) m
@@ -644,5 +760,23 @@
 	        ) t0_2_1 on t0_2_1.t0_CUID = m.t0_USER_ID 
         ]]>
     </select>
-    
+     <select id="pageSelect1" resultClass="java.util.HashMap">
+		    	 select  emo.org_id,t.*, od.aufnr, emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
+		       zg_t_order      od,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where t.plan_type = 'change'
+		   and t.order_id = od.cuid
+		   and t.user_id = emp.cuid
+		   and emo.cuid=emp.cuid
+           and emo.org_id=org.cuid
+		   
+
+
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
 </sqlMap>

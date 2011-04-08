@@ -11,6 +11,7 @@ public class ZgTorderPlanComment extends BaseEntity {
 	String userid;//审核人id
 	String content;//审核意见
 	String orderplanid;//单id
+	String audittype;
 	
 	String chname;//中文名
 	
@@ -50,6 +51,12 @@ public class ZgTorderPlanComment extends BaseEntity {
 	}
 	public void setCreatetime(Date createtime) {
 		this.createtime = createtime;
+	}
+	public String getAudittype() {
+		return audittype;
+	}
+	public void setAudittype(String audittype) {
+		this.audittype = audittype;
 	}
 	
 	

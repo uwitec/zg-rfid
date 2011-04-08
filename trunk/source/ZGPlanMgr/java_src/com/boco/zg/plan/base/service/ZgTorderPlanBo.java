@@ -8,6 +8,7 @@ package com.boco.zg.plan.base.service;
 
 import org.springframework.stereotype.Component;
 
+import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 
 import java.util.*;
@@ -56,5 +57,11 @@ public class ZgTorderPlanBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 	
 	public String saveOrderPlan(ZgTorderPlan zgTorderPlan){
 		return zgTorderPlanDao.saveOrderPlan(zgTorderPlan);
+	}
+	public Object saveOrderPlan1(ZgTorderPlan zgTorderPlan) {
+		return zgTorderPlanDao.saveOrderPlan1(zgTorderPlan);
+	}
+	public Page findorderPlanByPageRequest(PageRequest<Map> pageRequest) {
+		return zgTorderPlanDao.findorderPlanByPageRequest(pageRequest);
 	}
 }

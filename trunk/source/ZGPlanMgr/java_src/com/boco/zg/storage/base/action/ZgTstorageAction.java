@@ -253,6 +253,7 @@ public class ZgTstorageAction extends BaseStruts2Action implements Preparable,Mo
 		}
 		
 		zgTstorageExBo.synSessionBomToDataBase(bomEList);
+		             
 		
 		forwardQuery("操作成功");
 		
