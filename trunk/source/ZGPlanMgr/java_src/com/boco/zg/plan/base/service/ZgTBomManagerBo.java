@@ -85,6 +85,12 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 	public List<Map> findBomListByPlanID(String str) {
 		return zgTBomManagerDao.findBomListByPlanID(str);
 	}
+
+	/**
+	 * 根据领料计划id查找历史审核记录
+	 * @param id str 代表orderPlanId
+	 * @return
+	 */
 	public List<Map> findqueryHistoryPlanID(String str) {
 		return zgTBomManagerDao.findqueryHistoryPlanID(str);
 	}

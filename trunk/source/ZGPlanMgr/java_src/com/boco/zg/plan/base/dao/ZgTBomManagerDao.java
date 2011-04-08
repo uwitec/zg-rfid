@@ -86,6 +86,11 @@ public class ZgTBomManagerDao extends BaseIbatisDao<ZgTorderPlan,java.lang.Strin
 		params.put("cuid", str);
 		return getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findBomListByPlanID",params);
 	}
+	/**
+	 * 根据领料计划id查找历史审核记录
+	 * @param id str 代表orderPlanId
+	 * @return
+	 */
 	public List<Map> findqueryHistoryPlanID(String str) {
 		Map<String, Object> params=new HashMap<String, Object>();
 		params.put("cuid", str);
