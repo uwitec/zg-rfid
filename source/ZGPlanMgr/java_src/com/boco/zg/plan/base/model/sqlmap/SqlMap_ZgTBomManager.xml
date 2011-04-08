@@ -9,18 +9,30 @@
 	    	<isNotEmpty prepend="AND" property="sqlQueryString">
 	    		$sqlQueryString$ 
 	    	</isNotEmpty>   
-		    <isNotEmpty prepend="AND" property="cuid">
-	       			m.t0_CUID like #cuid#
+		    <isNotEmpty prepend="AND" property="state">
+	       			STATE = #state#
        		</isNotEmpty>    
+       		
+       		<isNotEmpty prepend="AND" property="createDate_start">
+       			<![CDATA[CREATE_DATE >= to_date(#createDate_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="createDate_end">
+       			<![CDATA[CREATE_DATE <= to_date(#createDate_end#,'yyyy-mm-dd HH24:mi:ss')+1
+       			 ]]>
+       		</isNotEmpty> 
+       		 <isNotEmpty prepend="AND" property="cuid">
+	       			CUID like #cuid#
+       		</isNotEmpty>   
 		    <isNotEmpty prepend="AND" property="aufnr">
-	       			m.t0_AUFNR like #aufnr#
+	       			AUFNR like #aufnr#
        		</isNotEmpty>    
 		    <isNotEmpty prepend="AND" property="matnr">
 	       			m.t0_MATNR like #matnr#
        		</isNotEmpty>    
 		    <isNotEmpty prepend="AND" property="maktx">
 	       			m.t0_MAKTX like #maktx#
-       		</isNotEmpty>    
+       		</isNotEmpty>  
+       		   
 		    <isNotEmpty prepend="AND" property="mengeD">
 	       			m.t0_MENGE_D = #mengeD#
        		</isNotEmpty>    
@@ -44,15 +56,42 @@
 	
     
     <select id="pageOrderPlanForChange_count" resultClass="long">
-        	 select count(1)
-		  from zg_t_order_plan t,
+          select count(1) from(	 select  emo.org_id,t.*, od.aufnr, emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
 		       zg_t_order      od,
 		       fw_operator     emp,
-		       fw_organization org
-		 where t.plan_type = 'CHANGE'
+		       fw_organization org,
+           fw_employee     emo
+		 where t.plan_type = 'change'
 		   and t.order_id = od.cuid
 		   and t.user_id = emp.cuid
-		   and t.departmenu_id = org.cuid
+		   and emo.cuid=emp.cuid
+           and emo.org_id=org.cuid
+           
+           <isNotEqual property="operatorId" compareValue="0">
+             <isNotEqual property="state" compareValue="2">
+			 	<![CDATA[and emp.CUID=#operatorId# ]]>
+			    </isNotEqual>
+			    </isNotEqual>
+           <isEqual property="roleId" compareValue="A">
+	    		<![CDATA[
+	    			and t.extend1 in('A','B','C')
+	    		]]>
+		    	</isEqual>
+		    	<isEqual property="roleId" compareValue="B">
+	    		<![CDATA[
+	    			and t.extend1 in('B','C')
+	    		]]>
+		    	</isEqual>
+		    	<isEqual property="roleId" compareValue="C">
+	    		<![CDATA[
+	    			and t.extend1 in('C')
+	    		]]>
+		    	</isEqual>
+		    	
+		    	
+		    	
+           )
 
 		<include refid="dynamicWhere"/> 
     </select>
@@ -61,21 +100,69 @@
     	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
     -->
     <select id="pageOrderPlanForChange" resultClass="java.util.HashMap">
-		    	 select t.*, od.aufnr, emp.label_cn createName, org.label_cn orgName
-		  from zg_t_order_plan t,
+		    select * from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , od.aufnr, emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
 		       zg_t_order      od,
 		       fw_operator     emp,
-		       fw_organization org
-		 where t.plan_type = 'CHANGE'
+		       fw_organization org,
+           fw_employee     emo
+		 where t.plan_type = 'change'
 		   and t.order_id = od.cuid
 		   and t.user_id = emp.cuid
-		   and t.departmenu_id = org.cuid
-
+		   and emo.cuid=emp.cuid
+           and emo.org_id=org.cuid
+          
+          
+             <isNotEqual property="operatorId" compareValue="0">
+            
+			 	<![CDATA[and emp.CUID=#operatorId# ]]>
+			    </isNotEqual>
+			    
+       )
 		<include refid="dynamicWhere"/>
 		<dynamic prepend="ORDER BY">
 			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
 		</dynamic>
     </select>
+    
+    
+      <select id="pageOrderPlanForChange1" resultClass="java.util.HashMap">
+		    select * from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , od.aufnr, emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
+		       zg_t_order      od,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where t.plan_type = 'change'
+		   and t.order_id = od.cuid
+		   and t.user_id = emp.cuid
+		   and emo.cuid=emp.cuid
+           and emo.org_id=org.cuid
+          
+          
+            
+           <isEqual property="roleId" compareValue="A">
+	    		<![CDATA[
+	    			and t.extend1 in('A','B','C')
+	    		]]>
+		    	</isEqual>
+		    	<isEqual property="roleId" compareValue="B">
+	    		<![CDATA[
+	    			and t.extend1 in('B','C')
+	    		]]>
+		    	</isEqual>
+		    	<isEqual property="roleId" compareValue="C">
+	    		<![CDATA[
+	    			and t.extend1 in('C')
+	    		]]>
+		    	</isEqual>
+       )
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
     
     
     

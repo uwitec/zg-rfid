@@ -172,7 +172,51 @@
 			select sys_guid() AS ID FROM DUAL
 		</selectKey>
     </insert>
-    
+     <insert id="insertZG_T_ORDER_PLANBOM1" parameterClass="zgTorderPlanbom">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_ORDER_PLANBOM (
+        	CUID ,
+        	LABEL_CN ,
+        	ORDER_PLAN_ID,
+        	ORDER_BOM_ID ,
+        	ORDER_ID ,
+        	DEPARTMENT_ID ,
+        	USER_ID ,
+        	PLAN_DATE ,
+        	PLAN_START_TIME ,
+        	PLAN_END_TIME ,
+        	STATE ,
+        	COMPLETE_NUM ,
+        	CAR_NUM,
+        	PLAN_NUM,
+        	BOM_ID,
+        	WAIT_BACK_NUM,
+        	STORAGE_NUM 
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#orderPlanId#,
+        	#orderBomId# ,
+        	#orderId# ,
+        	#departmentId# ,
+        	#userId# ,
+        	#planDate# ,
+        	#planStartTime# ,
+        	#planEndTime# ,
+        	#state# ,
+        	#completeNum# ,
+        	#carNum#,
+        	#planNum#,
+        	#bomId#,
+        	#waitBackNum#,
+        	#storageNum# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
     <update id="updateZG_T_ORDER_PLANBOM" parameterClass="zgTorderPlanbom">
     <![CDATA[
         UPDATE ZG_T_ORDER_PLANBOM SET

@@ -894,6 +894,14 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		   and carbom.order_bom_id = orderbom.cuid
 		    and car.cuid = '$carPlanId$'
     </select>
+     <select id="findRoleCuid"  resultClass="java.lang.String">
+   select r.cuid
+   from fw_operator o, fw_role r, fw_operator_role rr
+   where o.cuid = rr.operator_id
+   and r.cuid = rr.role_id
+   and o.cuid ='$userId$'
+   order by r.cuid
+    </select>
     
      <select id="getBomListByOrderIdAndIdnrk"  resultClass="java.util.HashMap">
 		   select planbom.cuid,nvl(planbom.complete_num,0)-nvl(planbom.out_num,0) maxMoveNum from zg_t_orderbom t ,zg_t_order_planbom planbom
@@ -925,10 +933,14 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 			       bom.idnrk,
 			       bom.maktx2,
 			       t.cuid planId,
-			       (select count(1)
+			      
+			        pb.wait_back_num,
+			       (select sum(temp.storage_num)
 			          from zg_t_order_planbom temp
-			         where temp.order_bom_id = pb.order_bom_id) STORAGE_NUM,
-			       pb.cuid,
+			         where temp.order_bom_id = bom.cuid) STORAGE_NUM,       
+			       pb.cuid pbID ,
+              bom.cuid ,
+              bom.msehl2,
 			       pb.car_num
 			  from zg_t_order_plan    t,
 			       zg_t_order_planbom pb,
@@ -937,11 +949,25 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 			 where pb.order_plan_id = t.cuid
 			   and pb.order_id = od.cuid
 			   and pb.order_bom_id = bom.cuid
-			   and t.cuid = '$cuid$'
-     	</select>
+			   and t.cuid = '$cuid$'   	
+			   
+			   </select>
+			   	<select id="findqueryHistoryByPlanID" resultClass="java.util.HashMap">
+     		 	select to_char(m.create_time,'yyyy-mm-dd hh24:mm:ss') create_time, m.content, o.label_cn,m.user_id,p.back_reason,p.back_zbz
+            from zg_t_order_plan_comment m,
+           zg_t_order_plan         p,
+      
+            fw_operator             o
+            where p.cuid = m.order_plan_id
+   
+          and  m.user_id = o.user_id
+           and p.cuid = '$cuid$'
+			   
+			   </select>
+     	
      	
      	<select id="findBomlListByOrderId" resultClass="java.util.HashMap">
-     		select od.aufnr,
+     		select w.* from (select 
 			       t.*,
 			       (select sum(pb.storage_num)
 			          from zg_t_order_planbom pb
@@ -953,7 +979,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 			    t.cuid not in ('$changeBomIds$')
 			   </isNotEmpty>
 			   and t.matkl in
-			       (select m.id from zg_materiel m where m.materiel_level = '$extend1$')
+			       (select m.id from zg_materiel m where m.materiel_level = '$extend1$')) w where all_storage_num>0
      	</select>
      
      

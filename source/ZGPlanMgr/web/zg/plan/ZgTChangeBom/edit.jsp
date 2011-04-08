@@ -94,95 +94,42 @@
 		function addStorage(){
 			var items=document.frames('listFrame').document.getElementsByName("items");
 			if(items.length<=0){
-				alert('请添加物料');
+				alert('请添加半成品');
 				return;
 			}
-			document.frames['listFrame'].saveBom();
+			//document.frames['listFrame'].saveBom();
+			
+			var form=document.frames('listFrame').document.forms[0];
+			form.action="${ctx}/zg/plan/ZgTBomManager/saveInOutBom.do";
+			form.submit();
+		
+			
 			var form=document.forms[0];
-			
-			
-			form.action="${ctx}/zg/plan/ZgTBomManager/save.do";
+			form.action="${ctx}/zg/plan/ZgTBomManager/save.do?update=true";
 			form.submit();
 
 		}
-		function selectOrderArbpl(){
-		  var items=document.frames('listFrame').document.getElementsByName("items");
-			
-		 if(""==$("#orderId_value").val()){
 		
-			url='${ctx}/zg/plan/ZgTBomManager/queryOrderArbplList.do?type=1';
-			var sFeatures="dialogHeight: 500px;dialogWidth:760px";
-			var returnValue = window.showModalDialog(url,'',sFeatures);
-			if(returnValue) {
-				orderID = returnValue.orderID;
-				var aufnr =	returnValue.aufnr;
-				var arbpl = returnValue.arbpl;
-				var arbplName =	returnValue.arbplName;
-				
-				if(orderID!=$("#orderId_value").val()){
-					//$("form:first").submit();
-				}
-				
-				$("#orderId_label").val(aufnr);
-				$("#orderId_value").val(orderID);
-			   }
-			}else{
-		    if(items.length<=0){
-			url='${ctx}/zg/plan/ZgTBomManager/queryOrderArbplList.do?type=1';
-			var sFeatures="dialogHeight: 500px;dialogWidth:760px";
-			var returnValue = window.showModalDialog(url,'',sFeatures);
-			if(returnValue) {
-				orderID = returnValue.orderID;
-				var aufnr =	returnValue.aufnr;
-				var arbpl = returnValue.arbpl;
-				var arbplName =	returnValue.arbplName;
-				
-				if(orderID!=$("#orderId_value").val()){
-					//$("form:first").submit();
-				}
-				
-				$("#orderId_label").val(aufnr);
-				$("#orderId_value").val(orderID);
-			   }
-			}else{
-			alert("请先删除当前订单号下的物料，然后再选择");
-			return;
-			}
-		}
-	}
-	    function selectectend1(){
-	      
-	     var items=document.frames('listFrame').document.getElementsByName("items");
-	     if(items.length>0){
-	      alert("请先删除该物料等级下物料，然后再选择");
-	      return;
-	     }
-	    
-	    }
 		function submitStorage(){
 			var items=document.frames('listFrame').document.getElementsByName("items");
 			if(items.length<=0){
 				alert('请添加物料');
 				return;
 			}
-			//alert(items.length);
 			for(var i=0;i<items.length;i++){
-				//alert(i);
-				//alert(document.frames('listFrame').document.getElementById('WAIT_BACK_NUM_'+i));
-				
-				wait_back_num=document.frames('listFrame').document.getElementById('WAIT_BACK_NUM_'+i).value;
-				if(wait_back_num==0){
+			wait_back_num=document.frames('listFrame').document.getElementById('WAIT_BACK_NUM_'+i).value;
+			if(wait_back_num==0){
 			    alert('换料数量为0，请更改');
 				return;
-			     }
 			}
-			
-			
-		document.frames['listFrame'].saveBom();
-			
+			}
+			if(wait_back_num==0){
+			    alert('换料数量为0，请更改');
+				return;
+			}
+			document.frames['listFrame'].saveBom();
 			var form=document.forms[0];
-			
-			form.action="${ctx}/zg/plan/ZgTBomManager/submit.do";
+			form.action="${ctx}/zg/plan/ZgTBomManager/submit.do?update=true";
 			form.submit();
 			}
 	</script>
@@ -199,8 +146,12 @@
 						<td class="formToolbar">
 
 							<div class="button" style="text-align: left;">
+							  <c:if test="${model.state =='0'}">
 								<a href="javascript:addStorage()"><span><img src="<%=iconPath%>/icon_tool_049.gif" />保存</span></a>
+								</c:if>
+								<c:if test="${model.state =='1'||model.state =='0'}">
 								<a href="javascript:submitStorage()"><span><img src="<%=iconPath%>/true.gif" />提交</span></a>
+								</c:if>
 								<a href="javascript:if(parent.doQuery)parent.doQuery()"><span><img src="<%=iconPath%>/ico_007.gif" />返回</span></a>
 							</div>
 						</td>
@@ -216,6 +167,7 @@
 							<img src="${ctx }/resources/images/frame/ico_noexpand.gif"
 								style="cursor: pointer" title="高级查询" alt="" id="img_1"
 								border="0" onclick="changeV('1')" />
+								换料审核单
 						</td>
 					</tr>
 				</thead>
@@ -234,52 +186,46 @@
 						<th>
 							单据日期：
 						</th>
-						<td width="15%">
 						
-							<input type="text" size="15" readonly="true" id="create_date" maxlength="40"
-								name="create_date"
-								value="<fmt:formatDate value="${model.create_date}" pattern="yyyy-MM-dd HH:mm:ss" />" />
-						</td>
+						<td width="15%" >
+								
+								<fmt:formatDate value="${model.create_date}" pattern="yyyy-MM-dd HH:mm:ss" />
+							</td>
+						
 						<th>
 							订单号：
 						</th>
 						<td width="15%">
-							<input type="text" size="15" onclick="selectOrderArbpl()" maxlength="40"
-								readonly="true" id="orderId_label" name="orderId_label"
-								columnNameLower="orderId" bmClassId="FW_ORGANIZATION"
-								column="m.t0_LABEL_CN"  value=""/>
-							<input type="hidden" id="orderId_value" name="orderId" />
+							${model.orderId_related.value}
+							<input type="hidden" id="orderId_value" name="orderId" value="${model.orderId }"/>
 						</td>
 						<th>
 							物料等级：
 						</th>
-						<td width="15%" onclick="selectectend1()">
-					
-							<select name="extend1" id="extend1" >
-								<option value="A">A级物料</option>
-								<option value="B">B级物料</option>
-								<option value="C">C级物料</option>
-							</select>
-							
-						</td>
-
-						<th>
-							录单人：
-						</th>
 						<td width="15%">
-							${operatorInfo.userName}
-							<input type="hidden" id="userId" name="userId"
-								value="${model.userId}" />
+							${model.extend1}
 						</td>
 
+						 <th>
+								录单人:
+							</th>
+							<td width="15%">
+								${model.userId_related.value}
+							
+							</td>
 					</tr>
 				</tbody>
 			</table>
 		</form>
-		<iframe
+				
+	  
+	  
+	
+		<iframe id="resconfigResult"
 			src="${ctx}/zg/plan/ZgTBomManager/findBomListByPlanID.do?id=${model.cuid}"
-			autolayout="true" name="listFrame" frameborder="0" width="100%"
-			height="100%" align="top" scrolling="no" />
+			name="listFrame"
+			width="100%" style="height:378px" frameborder="0" marginwidth="0"
+	        marginheight="0" onload=""></iframe>
 
 	</body>
 </html>

@@ -39,17 +39,19 @@
 			var form = listFrame.document.getElementById("ec");
 			var items = listFrame.document.getElementsByName("items");
 			var flag = false;
+			
 			for(var i = 0; i < items.length;i++) {
 				if(items[i].checked) {
 					flag = true;
 				}
 			}
 			if(flag) {
-				form.action = "${ctx}/zg/storage/ZgTstoragebom/generateBom.do";
+				form.action = "${ctx}/zg/plan/ZgTBomManager/generateBom.do";
 				form.submit();
 			}else {
-				alert("请选择相应的入库单！");
+				alert("请选择相应的bom！");
 			}
+	
 		}
 		
 		function doLayout() {
@@ -74,12 +76,12 @@
 						物料编码：
 					</td>
 					<td width="120px">
-						<input type="text"  value="${ idnrk}"  name="s_idnrk" maxlength="40"/>
+						<input type="text"  value="${ matnr}"  name="s_matnr" maxlength="40"/>
 					</td >
 						<td  width="220px" >
 							<div class="button" >
 								<a href="javascript:"><span
-									onclick="if(batchValidation('listFrame','${ctx}/zg/storage/ZgTstoragebom/findBomlListByArbplOrderId.do',document.forms[0]));document.forms[0].submit();"><img
+									onclick="if(batchValidation('listFrame','${ctx}/zg/plan/ZgTBomManager/findBomlListByOrderId.do',document.forms[0]));document.forms[0].submit();"><img
 											src="<%=iconPath%>/ico_search.gif" />查询</span>
 								</a>
 								&nbsp;<a href="javascript:"><span

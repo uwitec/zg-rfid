@@ -1,6 +1,7 @@
 package com.boco.zg.plan.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javacommon.base.EntityDao;
 
@@ -9,15 +10,26 @@ import org.springframework.stereotype.Component;
 import cn.org.rapid_framework.page.PageRequest;
 
 import com.boco.zg.plan.base.model.ZgTorderPlanbom;
+import com.boco.zg.plan.base.model.ZgTorderbom;
 import com.boco.zg.plan.base.service.ZgTorderPlanbomBo;
 import com.boco.zg.plan.dao.ZgTorderPlanbomExDao;
 import com.boco.zg.plan.model.ZgTorderPlanbomEx;
+import com.boco.zg.storage.base.model.ZgTstorage;
+import com.boco.zg.storage.model.ZgTstoragebomEx;
 
 @Component
 public class ZgTorderPlanbomExBo extends ZgTorderPlanbomBo{
 	
 	private ZgTorderPlanbomExDao zgTorderPlanbomExDao;
-	/**增加setXXXX()方法,spring就可以通过autowire自动设置对象属性*/
+	private ZgTorderPlanbom zgTorderPlanbom;
+	
+	public ZgTorderPlanbom getZgTorderPlanbom() {
+		return zgTorderPlanbom;
+	}
+	public void setZgTorderPlanbom(ZgTorderPlanbom zgTorderPlanbom) {
+		this.zgTorderPlanbom = zgTorderPlanbom;
+	}
+	/** 增加setXXXX()方法,spring就可以通过autowire自动设置对象属性 */
 	public void setZgTorderPlanbomExDao(ZgTorderPlanbomExDao dao) {
 		this.zgTorderPlanbomExDao = dao;
 	}
@@ -63,7 +75,9 @@ public class ZgTorderPlanbomExBo extends ZgTorderPlanbomBo{
 	
 	/**
 	 * 根据批量领料计划编号号删除批量领料计划中的bom组件
-	 * @param cuid 批量领料计划编号
+	 * 
+	 * @param cuid
+	 *            批量领料计划编号
 	 */
 	public void removeByIdAndBomId(String cuid) {
 		zgTorderPlanbomExDao.removeByIdAndBomId(cuid);
@@ -71,6 +85,7 @@ public class ZgTorderPlanbomExBo extends ZgTorderPlanbomBo{
 	
 	/**
 	 * 根据批量领料计划单编号查找bom组件列表 按仓库排序返回
+	 * 
 	 * @param orderPlanId
 	 * @return
 	 */
@@ -96,6 +111,7 @@ public class ZgTorderPlanbomExBo extends ZgTorderPlanbomBo{
 		
 	/**
 	 * 更新领料计划bom表的计划数量
+	 * 
 	 * @param orderPlanbomId
 	 * @param carPlanNum
 	 */
@@ -109,6 +125,7 @@ public class ZgTorderPlanbomExBo extends ZgTorderPlanbomBo{
 	
 	/**
 	 * 获取领料计划下的详细bom
+	 * 
 	 * @param orderPlanId
 	 * @return
 	 */
@@ -119,6 +136,7 @@ public class ZgTorderPlanbomExBo extends ZgTorderPlanbomBo{
 	
 	/**
 	 * 获取领料计划下的详细bom(提前领料的bom)
+	 * 
 	 * @param orderPlanId
 	 * @return
 	 */
@@ -130,6 +148,7 @@ public class ZgTorderPlanbomExBo extends ZgTorderPlanbomBo{
 	
 	/**
 	 * 查找订单分组下面的详细bom(提前领料的分组bom)
+	 * 
 	 * @param groupId
 	 * @return
 	 */
@@ -140,6 +159,7 @@ public class ZgTorderPlanbomExBo extends ZgTorderPlanbomBo{
 	
 	/**
 	 * 设置物料为领料完成
+	 * 
 	 * @param cuid
 	 */
 	public boolean finishBom(String planBomId) {

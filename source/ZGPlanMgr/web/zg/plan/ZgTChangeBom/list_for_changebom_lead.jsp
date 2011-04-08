@@ -53,9 +53,8 @@
 			document.getElementById("grid-panel").style.width=maxWidth+'px';
 			
 		}
-		
+	
 		function look(cuid){
-		
 			if(parent.targetFrame) {
 				parent.targetFrame('${ctx}/zg/plan/ZgTBomManager/look.do?id='+cuid);
 			}
@@ -63,7 +62,7 @@
 	</script>
 	</head>
 	<body>
-		<form id="ec" action="<c:url value="/zg/plan/ZgTBomManager/listForChangeAudit.do"/>" method="post" style="display: inline;">
+		<form id="ec" action="<c:url value="/zg/plan/ZgTBomManager/listForChangeLead.do"/>" method="post" style="display: inline;">
 			
 			<div>
 				<div>
@@ -80,25 +79,31 @@
 									<td class="tableHeader" width="3%">
 										<input type='checkbox' onclick="setAllCheckboxState('items',this.checked)" />
 									</td>
-							<td class="tableHeader"  >单据编码</td>
-		                    <td class="tableHeader" >生产订单</td>
-			                <td class="tableHeader" >物料等级</td>
-							<td class="tableHeader" >创建时间</td>
-							<td class="tableHeader" >创建人</td>
-							<td class="tableHeader"  >创建人部门</td>
-							<td class="tableHeader"  >状态</td>
+							<td class="tableHeader"  >单据编码<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
+		                    <td class="tableHeader" >生产订单<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
+			                <td class="tableHeader" >物料等级<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
+							<td class="tableHeader" >创建时间<%=map.get("ec_image_PLAN_DATE")==null?"":map.get("ec_image_PLAN_DATE")%></td>
+							<td class="tableHeader" >创建人<%=map.get("ec_image_USER_NAME")==null?"":map.get("ec_image_USER_NAME")%></td>
+							<td class="tableHeader"  >创建人部门<%=map.get("ec_image_DEPARTMENT_NAME")==null?"":map.get("ec_image_DEPARTMENT_NAME")%></td>
+							<td class="tableHeader"  >状态<%=map.get("ec_image_STATE")==null?"":map.get("ec_image_STATE")%></td>
 
 								</tr>
 							</thead>
 							<tbody>
 								<c:forEach items="${page.result}" var="obj" varStatus="n">
 									<c:set var="trcss" value="${n.count%2==0?'odd':'even'}" />
-	
+									
+									
+									
+								
+								
 									<tr class="${trcss}" title="双击查看详情" ondblclick="look('${obj.CUID}')"  onmouseover="this.style.backgroundColor = '#EBF1FF'"  onmouseout="this.style.backgroundColor = '#FFFFFF'">
-
-							        <td width="3%" >
-							        <input type="checkbox" name="items" value="id=${obj.CUID}&"/>
-							        </td>
+									
+									
+						
+							<td width="3%" >
+							<input type="checkbox" name="items" value="id=${obj.CUID}&"/>
+							</td>
 										<td align="center">
 										${obj.CUID}
 										</td>
@@ -118,14 +123,19 @@
 										<td align="center">
 											${obj.ORGNAME}
 										</td>
+										
 										<td align="center">
-										<c:choose>
-										 <c:when test="${obj.STATE=='4'}">待品质部审核</c:when>
-										</c:choose>
-									   </td>
+											
+											<c:choose>
+								           
+								            <c:when test="${obj.STATE=='1'}">厂领导审核退回</c:when>
+								            <c:when test="${obj.STATE=='2'}">待厂领导审核</c:when>
+								           
+							</c:choose>
+												</td>
 								
 									</tr>
-								    </c:forEach> 
+								</c:forEach> 
 								
 								<tr>
 									<td colspan="10">

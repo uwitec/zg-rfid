@@ -9,6 +9,8 @@ public class Constants {
 	public static String isManulFinished="0";//手工结单
 	public static String isNotManulFinished="1";//非手工结单
 	
+	
+	
 	/*领料计划状态
 	*/
 	public enum OrderStatus {
@@ -37,8 +39,29 @@ public class Constants {
 		}
 	}
 	
-	
-	
+	/*
+	 * 领料计划bom状态
+	 */
+	public  enum OrderPlanbomStatus{
+		WAIT("0","待处理"),
+		SAVE("4","待处理"),
+		SUBMIT("4","待处理");
+		
+		private String value;
+		private String name;
+		
+		private OrderPlanbomStatus(String value,String name){
+			this.value = value;
+			this.name = name;
+		}
+		public String value() {
+			return this.value;
+		}
+
+		public String displayName() {
+			return this.name;
+		}
+	}
 	/*领料计划状态
 	*/
 	public enum OrderPlanStatus {
@@ -96,7 +119,32 @@ public class Constants {
 			return this.name;
 		}
 	}
-	
+	/*换料计划状态
+	*/
+	public enum ChangePlanStatus {
+		SAVE("0", "保存"),
+		REJECTAUDITING("1","厂领导审核退回"),
+		WAITAUDITING("2", "待厂领导审核"),
+		WAITAUDITINGC("4", "待品质部审核"),
+		DONE("8", "完成");
+		
+		private String value;
+
+		private String name;
+
+		private ChangePlanStatus(String value, String name) {
+			this.value = value;
+			this.name = name;
+		}
+
+		public String value() {
+			return this.value;
+		}
+
+		public String displayName() {
+			return this.name;
+		}
+	}
 	/*装车计划类型
 	 * 因为装车计划与仓库领料是用同一张表，所以用类型来区分
 	 * 1 装车计划
@@ -133,7 +181,7 @@ public class Constants {
 		PLTYPE("3", "批量"),
 		ZZTYPE("ABE", "总装"),
 		ADD("4","补领料"),
-		CHANGE("6","换料"),
+		CHANGE("change","换料"),
 		BACK("7","退料");
 
 		
@@ -206,7 +254,52 @@ public class Constants {
 			return this.name;
 		}
 	}
-	
+	public enum ReasonStatus {
+		PEAPLE("1","人为原因"),
+		YUANCAILIAO("2","原材料"),
+		LIUCANG("3","留仓待用"),
+		BAOFEI("4","建议报废"),
+		FANGONG("5","退回工厂返工"),
+		OTHER("6","其他");
+		
+		private String value;
+
+		private String name;
+
+		private ReasonStatus(String value, String name) {
+			this.value = value;
+			this.name = name;
+		}
+
+		public String value() {
+			return this.value;
+		}
+
+		public String displayName() {
+			return this.name;
+		}
+	}
+	 public enum TypeStatus{
+		    FACTORY("factory","工厂审核"),
+			QUALITY("quality","品质部审核");
+			
+			private String value;
+
+			private String name;
+
+			private TypeStatus(String value, String name) {
+				this.value = value;
+				this.name = name;
+			}
+
+			public String value() {
+				return this.value;
+			}
+
+			public String displayName() {
+				return this.name;
+			}
+	 }
 	/**接收数据*/
 	public final static String INTERFACE_DATA_STAUTS_INIT="0";
 	/**调用业务接口成功*/

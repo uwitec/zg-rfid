@@ -38,6 +38,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<thead>
 						<tr>
 		<td class="tableHeader"  width="3%" ><input type='checkbox' onclick="setAllCheckboxState('items',this.checked)" ></td>
+							
 							<td class="tableHeader">
 							订单号
 						</td>
@@ -67,8 +68,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<tr class="${trcss}" onmouseover="this.style.backgroundColor = '#EBF1FF'"  onmouseout="this.style.backgroundColor = '#FFFFFF'">
 							<td width="3%" >
 							<input type="checkbox"
-								value="orderAufnr=${obj.orderAufnr }&arbpl=${obj.arbpl}&matnr=${obj.matnr }&idnrk=${obj.idnrk }&msehl1=${obj.msehl1 }&menge=${obj.menge }&orderBomId=${obj.orderBomId }&storageId=${storageId }" name="items" />
+								value="orderBomId=${obj.CUID}&orderAufnr=${obj.AUFNR}&arbpl=${obj.ARBPL}&idnrk=${obj.IDNRK}&maktx2=${obj.MAKTX2}&storage_num=${obj.ALL_STORAGE_NUM}" name="items" />
 							</td>
+								
 							<td>
 									${obj.AUFNR}
 								</td>
@@ -90,6 +92,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									<td>
 									${obj.ALL_STORAGE_NUM}
 								</td>
+							
 					</c:forEach>
 						
 						<tr style="padding: 0px;" >

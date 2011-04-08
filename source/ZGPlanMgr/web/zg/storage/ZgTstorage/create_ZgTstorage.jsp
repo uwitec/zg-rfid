@@ -289,7 +289,7 @@
 	<body>
 		<%@ include file="/commons/messages.jsp"%>
 		<form action="${ctx}/zg/storage/ZgTstorage/save.do" method="post">
-			<input type="hidden" id="cuid" name="cuid" value="${model.cuid}" />
+			
 			<input type="hidden" name="type" value="${ type }" />
 			<input type="hidden" name="productType" value="${ productType }" />
 			<input type="hidden" name="state" value="${ model.state }" />

@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javassist.bytecode.stackmap.BasicBlock.Catch;
+
 import org.directwebremoting.dwrp.Batch;
 import org.springframework.stereotype.Component;
 
@@ -69,14 +71,25 @@ public class ZgTBomManagerDao extends BaseIbatisDao<ZgTorderPlan,java.lang.Strin
 	public Page pageOrderPlanForChange(PageRequest<Map> pageRequest) {
 		return pageQuery("ZgTBomManager.pageOrderPlanForChange","ZgTBomManager.pageOrderPlanForChange_count",pageRequest);
 	}
+	
+	public Page pageOrderPlanForChange1(PageRequest<Map> pageRequest) {
+		return pageQuery("ZgTBomManager.pageOrderPlanForChange1","ZgTBomManager.pageOrderPlanForChange_count",pageRequest);
+	}
 
 	/**
 	 * 根据单据编号查找其bom列表
-	 * @param id
+	 * @param id:
 	 * @return
 	 */
-	public List<Map> findBomListByPlanID(Map<String, String> params) {
-		return getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findBomListByPlanID");
+	public List<Map> findBomListByPlanID(String str) {
+		Map<String, Object> params=new HashMap<String, Object>();
+		params.put("cuid", str);
+		return getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findBomListByPlanID",params);
+	}
+	public List<Map> findqueryHistoryPlanID(String str) {
+		Map<String, Object> params=new HashMap<String, Object>();
+		params.put("cuid", str);
+		return getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findqueryHistoryByPlanID",params);
 	}
 
 	/**
@@ -89,6 +102,14 @@ public class ZgTBomManagerDao extends BaseIbatisDao<ZgTorderPlan,java.lang.Strin
 	}
 	
 	
-
-
+   public String getRoleCuidByUserId(String userId){
+	  List list=getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findRoleCuid", userId);
+	    
+	  if(list.size() >= 1) {
+			return list.get(0).toString();
+		} else {
+			return null;
+		}
+	}
 }
+

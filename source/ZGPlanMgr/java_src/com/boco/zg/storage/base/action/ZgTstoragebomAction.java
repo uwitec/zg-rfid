@@ -297,7 +297,7 @@ public class ZgTstoragebomAction extends BaseStruts2Action implements Preparable
 		String bomIds= this.getSession().getAttribute("bomIds")==null?"":this.getSession().getAttribute("bomIds").toString();
 		List<ZgTorderbomEx> bomListNew=new ArrayList<ZgTorderbomEx>();
 		for (ZgTorderbomEx obj : bomList) {
-			if(bomIds.indexOf(obj.getCuid())<0){
+			if(bomIds.indexOf(obj.getCuid())<0){//"TE1231234124124","AWDwfWFFW","GWTEGTWEG"
 				bomListNew.add(obj);
 			}
 		}
@@ -324,9 +324,9 @@ public class ZgTstoragebomAction extends BaseStruts2Action implements Preparable
 			obj.setMatnr((java.lang.String)params.get("matnr"));
 			obj.setIdnrk((java.lang.String)params.get("idnrk"));
 			obj.setMsehl1((java.lang.String)params.get("msehl1"));
-			obj.setMenge(Long.parseLong((String)params.get("menge")));
 			
-			obj.setOrderBomId((java.lang.String)params.get("orderBomId"));
+			
+		
 			obj.setMenge(Long.parseLong((java.lang.String)params.get("menge")));
 			obj.setOrderBomId((java.lang.String)params.get("orderBomId"));
 			obj.setZgTstorageId((java.lang.String)params.get("storageId"));

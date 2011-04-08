@@ -11,6 +11,7 @@
 	<result property="userid" column="user_id"/>
 	<result property="content" column="content"/>
 	<result property="orderplanid" column="order_plan_id"/>
+	
 </resultMap>
 
 	<!-- 审核页面显示数据的 -->
@@ -35,6 +36,7 @@
 		<result property="planEndTime" column="PLAN_END_TIME"/>
 		<result property="state" column="STATE"/>
 		<result property="auditingName" column="auditingName"/>
+		
     </resultMap>
 
 	<!-- 用于select查询公用抽取的列 -->
@@ -44,7 +46,7 @@
 		   create_time,
 		   user_id,
 		   content,
-		   order_plan_id
+		   order_plan_id		   
 		]]>
 	</sql>
 	
@@ -132,7 +134,7 @@
 	</select>
 	
 	<insert id="insert_ZgTorderPlanComment_orderId_userId">
-		<![CDATA[insert into zg_t_order_plan_comment(cuid,user_id,order_plan_id) values(#cuid#,#userid#,#orderplanid#)]]>
+		<![CDATA[insert into zg_t_order_plan_comment(cuid,user_id,order_plan_id,content,create_time,audit_type) values(#cuid#,#userid#,#orderplanid#,#content#,#createtime#,#audittype#)]]>
 		<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
 			select sys_guid() AS ID FROM DUAL
 		</selectKey>

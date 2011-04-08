@@ -104,6 +104,18 @@ public class ZgTorderPlan extends BaseEntity {
 	private java.lang.String plant;
 	private Double percent;
 	private String isManul;
+	private java.util.Date create_date;
+	private String extend1;
+	private java.lang.String backReason;
+	private String backZbz;
+	public String getExtend1() {
+		return extend1;
+	}
+
+	public void setExtend1(String extend1) {
+		this.extend1 = extend1;
+	}
+
 	//columns END
 	public java.lang.String getCuid() {
 		return this.cuid;
@@ -355,4 +367,29 @@ public class ZgTorderPlan extends BaseEntity {
 	public void setIsManul(String isManul) {
 		this.isManul = isManul;
 	}
+
+	public java.util.Date getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(java.util.Date create_date) {
+		this.create_date = create_date;
+	}
+
+	public java.lang.String getBackReason() {
+		return backReason;
+	}
+
+	public void setBackReason(java.lang.String backReason) {
+		this.backReason = backReason;
+	}
+
+	public String getBackZbz() {
+		return backZbz;
+	}
+
+	public void setBackZbz(String backZbz) {
+		this.backZbz = backZbz;
+	}
+
 }
