@@ -331,7 +331,7 @@
         (nvl(planbom.complete_num,0)-nvl(planbom.move_num,0)-nvl(planbom.back_num,0)-nvl(planbom.out_num,0)) remain_num,
         (nvl(storagestat.num,0)-nvl(storagestat.outnum,0)) semifinStoreNum
 	    <![CDATA[
-	        from ( select 
+	        from ( select distinct
 	        		t0.CUID as t0_CUID,
 	        		t0.LABEL_CN as t0_LABEL_CN,
 	        		t0.IDNRK as t0_IDNRK,
@@ -360,7 +360,7 @@
 	        from 
 	        ZG_T_ORDERBOM t0,
 	        fw_organization f0,zg_t_bom bom
-  			where t0.lgort=f0.cuid(+)  and t0.idnrk=bom.idnrk(+) and t0.lgort=bom.lgort(+) and t0.matkl=bom.matkl(+)
+  			where t0.lgort=f0.cuid(+)  and t0.idnrk=bom.idnrk(+)  and t0.matkl=bom.matkl(+)
  ) m
 	        left join  ( select 
 	        	t0.CUID as t0_CUID,
