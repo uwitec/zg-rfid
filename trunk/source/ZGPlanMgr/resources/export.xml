@@ -134,7 +134,6 @@
            and t.idnrk = bom.idnrk
            and bom.lgort = org.cuid(+)
            and bom.matkl = mat.id
-           and bom.lgort = mat.lgort
            and (bom.car_id is null or  bom.carnum is null)
            and zto.cuid=t.order_id
            order by  bom.lgort,bom.matkl
