@@ -198,7 +198,7 @@
 					when '#dtc#' is not null then '#dtc#'
 					when '#djzjc#' is not null then '#djzjc#'
 					ELSE '' END CASE from dual )
-					where b.idnrk='#idnrk#' and b.lgort='#lgort#' and b.type='1']]>
+					where b.idnrk='#idnrk#'  and b.type='1']]>
           </content>
           <!-- 动态sql条件 -->
           <dynamic>
