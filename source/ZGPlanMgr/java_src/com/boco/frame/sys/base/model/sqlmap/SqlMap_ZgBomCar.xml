@@ -239,6 +239,6 @@
     <update id="updateCarBomNum" parameterClass="zgBomCar">
     	update ZG_T_BOM set
     		car_id=#carinfoId# ,carNum=#carNum#
-    	where IDNRK=#idnrk# and MATKL=#matkl#
+    	where IDNRK=#idnrk# 
     </update>
 </sqlMap>

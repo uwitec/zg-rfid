@@ -360,7 +360,7 @@
 	        from 
 	        ZG_T_ORDERBOM t0,
 	        fw_organization f0,zg_t_bom bom
-  			where t0.lgort=f0.cuid(+)  and t0.idnrk=bom.idnrk(+)  and t0.matkl=bom.matkl(+)
+  			where t0.lgort=f0.cuid(+)  and t0.idnrk=bom.idnrk(+) 
  ) m
 	        left join  ( select 
 	        	t0.CUID as t0_CUID,
