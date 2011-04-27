@@ -616,15 +616,15 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
         sql.append("insert into ZG_MATERIEL                                                  ");
         sql.append("  (cuid, ID, PARENT_ID, MATERIEL_NAME, Type, lgort)                      ");
         sql.append("  select sys_guid(),temp.matkl,                                          ");
-        sql.append("         (select zm.cuid from ZG_MATERIEL zm where zm.id = temp.lgort),  ");
-        sql.append("        temp.name, '2', temp.lgort                                      ");
-        sql.append("    from (select t.matkl, t.lgort   ,t1.name                                     ");
-        sql.append("            from zg_t_orderbom t  ,ZG_MATERIEL_TEMP T1                                       ");
-        sql.append("          where  t.matkl=t1.id(+) and t.lgort is not null and t.matkl is not null        ");
+        sql.append("         (select zm.cuid from ZG_MATERIEL zm where zm.id = temp.lgort and rownum=1),  ");
+        sql.append("        temp.matkl, '2', temp.lgort                                      ");
+        sql.append("    from (select t.matkl, t.lgort                                       ");
+        sql.append("            from zg_t_orderbom t                                        ");
+        sql.append("          where   t.lgort is not null and t.matkl is not null        ");
         sql.append("             and t.matkl || '-' || t.lgort not in                        ");
         sql.append("                 (select zm.id || '-' ||zm.lgort                      ");
         sql.append("                    from ZG_MATERIEL zm)                                 ");
-        sql.append("           group by t.lgort, t.matkl,t1.name) temp                       ");
+        sql.append("           group by t.lgort, t.matkl) temp                       ");
         this.baseDao.executeSql(sql.toString());
         
         //同步zgtbom表
@@ -637,7 +637,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		sql.append("           where t.matkl is not null                                                     ");
 		sql.append("           and t.lgort is not null and                                                   ");
 		sql.append("          not exists (select 1 from zg_t_bom bom where bom.idnrk=t.idnrk                 ");
-		sql.append("          and bom.matkl=t.matkl and bom.lgort=t.lgort )     ) temp                       ");
+		sql.append("          )     ) temp                       ");
 	    this.baseDao.executeSql(sql.toString());
 	    
 	    //删除重复记录
