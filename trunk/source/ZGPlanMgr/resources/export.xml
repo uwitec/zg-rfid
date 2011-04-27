@@ -129,9 +129,7 @@
                 null as carName,
                 null as carNum
           from zg_t_orderbom t,zg_t_order zto,zg_t_bom bom, fw_organization org, zg_materiel mat
-         where t.matkl = bom.matkl
-           and t.lgort = bom.lgort
-           and t.idnrk = bom.idnrk
+         where  t.idnrk = bom.idnrk
            and bom.lgort = org.cuid(+)
            and bom.matkl = mat.id
            and (bom.car_id is null or  bom.carnum is null)
