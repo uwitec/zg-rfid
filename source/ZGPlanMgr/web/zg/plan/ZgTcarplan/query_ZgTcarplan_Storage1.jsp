@@ -16,6 +16,7 @@
 		<link type="text/css" href="${ctx}/resources/css/${_theme}/tools.css" rel="stylesheet" />
 	<link type="text/css" href="${ctx}/resources/css/${_theme}/form.css" rel="stylesheet" />
 	<link type="text/css" href="${ctx}/resources/css/${_theme}/images/frame/style.css" rel="stylesheet" />
+	<script type="text/javascript" src="${ctx}/dwr/interface/ZgTorderDwrAction.js"></script>
 
 
 	<script>
@@ -44,26 +45,32 @@
 			var listFrameH2 = maxHeight -78-document.getElementById("contentDiv2").offsetHeight;
 			var listFrameH3 = maxHeight -78-document.getElementById("contentDiv3").offsetHeight;
 			var listFrameH4 = maxHeight -78-document.getElementById("contentDiv4").offsetHeight;
+			var listFrameH5 = maxHeight -78-document.getElementById("contentDiv5").offsetHeight;
 		//	alert(listFrameH0+"   "+maxWidth);
 			document.getElementById("listFrame0").style.height = listFrameH0 + 'px';
 			document.getElementById("listFrame1").style.height = listFrameH1 + 'px';
 			document.getElementById("listFrame2").style.height = listFrameH2 + 'px';
 			document.getElementById("listFrame3").style.height = listFrameH3 + 'px';
 			document.getElementById("listFrame4").style.height = listFrameH4 + 'px';
+			document.getElementById("listFrame5").style.height = listFrameH5 + 'px';
 			document.getElementById("listFrame0").style.width = maxWidth + 'px';
 			document.getElementById("listFrame1").style.width = maxWidth + 'px';
 			document.getElementById("listFrame2").style.width = maxWidth + 'px';
 			document.getElementById("listFrame3").style.width = maxWidth + 'px';
 			document.getElementById("listFrame4").style.width = maxWidth + 'px';
+			document.getElementById("listFrame5").style.width = maxWidth + 'px';
 		}
 		
 		/* tabpages */
 		function nTabs(tabObj, obj) {
 		    var tabList = document.getElementById(tabObj).getElementsByTagName("li");
-		    //alert( obj.id))
-		    //alert(tabList);
+		//   	alert( obj.id);
+		 //  alert(tabList);
+		//    alert(tabList.length);
 		    for (i = 0; i < tabList.length; i++) {
+		    //	alert(tabList[i].id+"    "+ obj.id);
 		        if (tabList[i].id == obj.id) {
+		        	//alert(i);
 		        	if(i==0){
 		        		groupId="${planGroupList[0].cuid}";
 		        	}
@@ -77,6 +84,9 @@
 		        		groupId="${planGroupList[1].cuid}";
 		        	}
 		        	if(i==4){
+		        		groupId="${planGroupList[1].cuid}";
+		        	}
+		        	if(i==5){
 		        		groupId="${planGroupList[1].cuid}";
 		        	}
 		            document.getElementById(tabObj + "_title" + i).className = "current";
@@ -99,6 +109,29 @@
 		//		window.location="${ctx}/zg/plan/ZgTcarplan/query1.do?type=2&orderPlanType=${orderPlanType}&plant="+plant;
 		//	}
 			
+		}
+		function orderOnChange(orderInfo){
+   			var orderArr=orderInfo.split("-");
+   			$("#s_groupId5").val(orderArr[0]);
+   			$("#s_advance5").val(orderArr[1]);
+			document.getElementById("aufnr_span").innerText=orderArr[2];
+			var groupTab=document.getElementById("tab_title5");
+			nTabs('tab',groupTab);
+			ZgTorderDwrAction.getOrderListByPlanGroupId(orderArr[0],function(data){
+				$("#order_span1").attr('innerText',orderArr[2]);
+				$("#arbpl_span1").attr('innerText',data[0].arbpl);
+				$("#maktx2_span1").attr('innerText',data[0].maktx2);
+				$("#kdauf_span1").attr('innerText',data[0].kdauf);
+				$("#plant_span1").attr('innerText',data[0].plant);
+				$("#maktx1_span1").attr('innerText',data[0].maktx1);
+				$("#matnr_span1").attr('innerText',data[0].matnr);
+				$("#pmenge_span1").attr('innerText',data[0].pmenge);
+				$("#psmng_span1").attr('innerText',data[0].psmng);
+				$("#pxdat_span1").attr('innerText',data[0].pxdat.toLocaleDateString().replace("年","-").replace("月","-").replace("日",""));
+				$("#pcdat_span1").attr('innerText',data[0].pcdat.toLocaleDateString().replace("年","-").replace("月","-").replace("日",""));
+				
+				
+			});
 		}
 		
 	</script>
@@ -180,7 +213,16 @@
  				</c:forEach>
 	        </select>
           </c:when>
-        </c:choose></caption>
+        </c:choose>
+        
+      &nbsp;&nbsp;&nbsp;&nbsp;  更多订单: 
+      <select name="aufnr" id="aufnr" style="width:100px" onChange="orderOnChange(this.value)">
+      <option value=""   >请选择</option>
+	       		<c:forEach items="${planGroupList}" var="obj">
+	       		 	<option value="${ obj.cuid}-${obj.advance }-${obj.labelCn }"   >${ obj.labelCn}</option>
+ 				</c:forEach>
+	        </select>
+        </caption>
     </table>    
     <!-- tab页面1 -->
     <div class="tabpage" id="tab">
@@ -239,7 +281,7 @@
                	 	</span></a></li>
         		</c:when>
         			<c:when test="${n.count==4}">
-        		<input type="hidden" name="s_groupId3" id="s_groupId3" value="${group.cuid }"/>
+        			<input type="hidden" name="s_groupId3" id="s_groupId3" value="${group.cuid }"/>
         			<li id="tab_title3" onclick="nTabs('tab',this);"><a href="javascript:">
                	 	<span>
                	 	<c:choose>
@@ -270,6 +312,28 @@
         	
         	</form>
         </c:forEach>
+        
+        
+        
+        <form id="form5" action="${ctx}/zg/plan/ZgTcarplan/list.do" method="post" target="listFrame5">
+           <input type="hidden" name="bmClassId" value="<%=ZgTorderPlan.BM_CLASS_ID%>"/>
+			<input type="hidden" name="s_planType" value="${orderPlanType}"/>
+			<input type="hidden"  name="s_equalBmClassIdQuery"  value="${pageRequest.filters.equalBmClassIdQuery}"/>
+			<input type="hidden"  name="s_inSubBmClassIdQuery"  value="${pageRequest.filters.inSubBmClassIdQuery}"/>
+			<input type="hidden" name="s_arbpl" value="${arbpl }"/>
+			<input type="hidden" name="s_groupId" id="s_groupId5" value="${group.cuid }"/>
+			<input type="hidden" name="onload" id="onload" value="${onload }"/>
+			<input type="hidden" name="s_advance" id="s_advance5" value="${group.advance }"/>
+        		<input type="hidden" name="s_groupId5" id="s_groupId5" value="${group.cuid }"/>
+        			<li id="tab_title5" onclick="nTabs('tab',this);" class="current"><a href="javascript:">
+               	 	<span id="aufnr_span">
+               	 	
+               	 	</span></a></li>
+        	</form>
+        
+        
+        
+        
         </ul>
          <div class="main">
         <div id="tab_content0">
@@ -945,6 +1009,119 @@
 		</div>
             <!-- 列表框 -->
           <iframe id="listFrame4" src="" name="listFrame4" frameborder="0" width="100%" height="100%" scrolling="no"></iframe>
+        </div>
+        
+        
+        
+          <div id="tab_content5" class="none">
+         <div id="contentDiv5">
+            <table class="formitem" width="100%" cellpadding="0" cellspacing="1"
+			style="border-top: 1px solid #A8CFEB; margin-top: 3px;">
+			<thead>
+				<tr>
+					<td class="title" colspan="8">
+						订单信息
+					</td>
+				</tr>
+			</thead>
+			
+			<tbody id="tbody_1" style="display: block">
+				<tr>
+					<td colspan="8"
+						style="border: 1px solid #A8CFEB; border-width: 0 0 1px 0;">
+						<table border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td width="20"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th width="10%">
+						生产排产日期：
+					</th>
+					<td width="15%">
+							<span id="pcdat_span1"></span>
+					<fmt:formatDate value="${obj.pcdat}" pattern="yyyy-MM-dd" />
+					</td>
+					<th width="10%">
+						生产排序日期：
+					</th>
+					<td width="15%">
+						<span id="pxdat_span1"></span>
+					<fmt:formatDate value="${obj.pxdat}" pattern="yyyy-MM-dd" />
+					</td>
+					<th width="10%">
+						生产订单编号：
+					</th>
+					<td width="15%">
+					<span id="order_span1"></span>
+					</td>
+					<th width="10%">
+						生产线：
+					</th>
+					<td width="15%">
+						<span id="arbpl_span1"></span>
+					</td>
+						
+					
+				</tr>
+				<tr>
+				<th width="10%">
+						客户机型：
+					</th>
+					<td width="15%">
+						<span id="maktx2_span1"></span>
+					</td>
+					<th width="10%">
+						销售单号：
+					</th>
+					<td width="15%">
+					<span id="kdauf_span1"></span>
+					</td>
+					<th width="10%">
+						生产厂：
+					</th>
+					<td width="15%">
+						<span id="plant_span1"></span>
+					</td>
+					<th width="10%">
+						公司机型：
+					</th>
+					<td >
+						<span id="maktx1_span1"></span>
+					</td>
+					
+				
+				</tr>
+				<tr><th width="10%">
+						成品需求数量：
+					</th>
+					<td>
+						<span id="psmng_span1"></span>
+					</td>
+					
+					<th width="10%">
+						成品排序数量：
+					</th>
+					<td width="15%">
+					<span id="pmenge_span1"></span>
+					</td>
+					<th width="10%">
+						成品编号：
+					</th>
+					<td width="15%">
+							<span id="matnr_span1"></span>
+					</td>
+					
+						
+					
+				</tr>
+			</tbody>
+		</table>
+		</div>
+            <!-- 列表框 -->
+          <iframe id="listFrame5" src="" name="listFrame5" frameborder="0" width="100%" height="100%" scrolling="no"></iframe>
         </div>
         
     </div>
