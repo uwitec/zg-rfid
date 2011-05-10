@@ -18,40 +18,30 @@
 		<%@ include file="/commons/jquery.jsp"%>
 		<link type="text/css" href="${ctx}/resources/css/${_theme}/frame.css"
 			rel="stylesheet" />
+			<style>
+			.eXtremeTable {z-index: 2;width:100%;overflow: auto;}
+			</style>
 		<script type="text/javascript">
 		$(function() {
-			try{
-				$("a[attr='viewLink'],input[attr='viewLink']").bind("click",function(e){
-					var o = parent.accordion;
-					if(o) {
-						if(o.accordion( "option" , "active")+'' == '0') {
-							o.accordion("activate", 0);
-						}
-					}
-				});
-				$("input[dateFlag=true]")
-				.datepicker({
-					showAnim:'',showOtherMonths: true,
-					selectOtherMonths: true,
-					dateFormat:"yy-mm-dd"
-				});
-				if(initLayout) {
-					$(window).bind("load",initLayoutOwner);
-					$(window).bind("resize",initLayoutOwner);
-				}
-			}catch(e){}
+			init();
 		});
-		function initLayoutOwner() {
-			if(parent) {
-				var iframes = parent.document.getElementsByTagName("iframe");
-				for(var i = 0; i < iframes.length; i++) {
-					if(iframes[i].contentWindow == window) {
-						if(iframes[i].getAttribute("autolayout") == "true") {
-							iframes[i].style.height = (document.body.offsetHeight+20) +"px";
-						}
-					}
-				}
+		function init() {
+			doLayout();
+			$(window).bind("resize",doLayout);
+		}
+		function doLayout() {
+			var maxHeight = parent.document.getElementById("listFrame").style.height;
+			maxHeight = maxHeight.replace("px","")*1;
+			var height = maxHeight - 40;
+			
+			var historyDiv=document.getElementById("historyDiv");
+			//alert(historyDiv);
+			if(historyDiv!=null){
+				historyDiv.style.height="120px";
+				height = height - 157;
 			}
+			document.getElementById("bomDiv").style.height=height+"px";
+			
 		}
 		
 		//选择生产线及订单半成品
@@ -64,7 +54,8 @@
 				return;
 			}
 			var extend1=parent.document.getElementById("extend1").value;
-			var url='${ctx}/zg/plan/ZgTBomManager/queryBomlListByOrderId.do?orderId='+orderId+'&extend1='+extend1;
+			var sortf=parent.document.getElementById("plant").value;
+			var url='${ctx}/zg/plan/ZgTBomManager/queryBomlListByOrderId.do?orderId='+orderId+'&extend1='+extend1+'&sortf='+sortf;
 			var sFeatures="dialogHeight: 500px;dialogWidth:860px";
 			var returnValue = window.showModalDialog(url,'',sFeatures);
 			window.location.href ='${ctx}/zg/plan/ZgTBomManager/findBomListByPlanID.do?id=${id}&plant=${plant}&flag=temp';
@@ -94,6 +85,26 @@
 			form.submit();
 		}
 		
+		function buildupSubmitParams(id,state){
+			var josnString='';
+			var waitBackNumObj=document.getElementsByName("bomList.waitBackNum");
+			var cuidObj=document.getElementsByName("bomList.cuid");
+			for (var i=0; i<waitBackNumObj.length; i++) {
+					var waitBackNum = waitBackNumObj[i].value;
+					var cuid=cuidObj[i].value;
+					
+					josnString=josnString+'{' ;
+					josnString = josnString +'"waitBackNum":'+waitBackNum+',';
+					josnString = josnString +'"cuid":"'+cuid+'"},';
+			        
+			} 
+	        if(josnString.length>0){
+	        	josnString=josnString.substr(0,josnString.length-1);
+	        }
+	        josnString='['+josnString+']';
+	        return josnString;
+	    }
+		
 	</script>
 	</head>
 	<body>
@@ -114,7 +125,7 @@
 				</h2>
 					<div class="toolbar">
 					</div>
-				<div class="eXtremeTable">
+				<div class="eXtremeTable" style="height:120px" id="historyDiv">
 					<table border="0" cellspacing="1" cellpadding="0"
 						class="tableRegion" width="100%">
 						<thead>
@@ -185,7 +196,7 @@
 						物料列表
 					</h2>
 					<div class="toolbar">
-						<c:if test="${model.state =='1' || model.state =='0' || empty model.state}">
+						<c:if test="${model.state =='-7' || model.state =='-8' || empty model.state}">
 							<a href="javascript:addBom()"><span><img
 										src="<%=iconPath%>/addition.gif" />添加</span>
 							</a>
@@ -196,12 +207,12 @@
 						</c:if>
 						
 					</div>
-					<div class="eXtremeTable">
+						<div class="eXtremeTable" id="bomDiv">
 						<table id="ec_table" border="0" cellspacing="1" cellpadding="0"
 							class="tableRegion" width="100%">
 							<thead>
 								<tr>
-								   <c:if test="${model.state=='0'||model.state=='1'||empty model.state}">
+								   <c:if test="${model.state=='-8'||model.state=='-7'||empty model.state}">
 									<td class="tableHeader" width="3%">
 										<input type='checkbox'
 											onclick="setAllCheckboxState('items',this.checked)" />
@@ -224,7 +235,8 @@
 										备料库存
 									</td>
 									<td class="tableHeader">
-										换料数量
+										<c:if test="${planType=='CHANGE'}">换料数量</c:if>
+										<c:if test="${planType=='BACK'}">退料数量</c:if>
 									</td>
 								</tr>
 							</thead>
@@ -237,7 +249,7 @@
 									    <tr class="${trcss}"
 												onmouseover="this.style.backgroundColor = '#EBF1FF'"
 												onmouseout="this.style.backgroundColor = '#FFFFFF'">
-                                      <c:if test="${model.state=='0'||model.state=='1'||empty model.state}">
+                                      <c:if test="${model.state=='-7'||model.state=='-8'||empty model.state}">
 										<td width="3%" align="center">
 											<input type="checkbox" name="items" value="cuid=${obj.CUID}&" />
 										</td>
@@ -263,28 +275,13 @@
 										
 										<td>
 										    <c:choose>
-								            <c:when test="${model.state=='0'}">	
-								            <input type="text" maxValue="${obj.STORAGE_NUM}" maxLength="13" size="8" 
-											onchange="checkWait_back_num(this,'${obj.WAIT_BACK_NUM}')" size="8"
-											name="bomList[${num}].waitBackNum" value="${obj.WAIT_BACK_NUM}" id="WAIT_BACK_NUM_${num}"/>
-											<input type="hidden" name="bomList[${num}].cuid" value="${obj.CUID}" />
-											</c:when>
-								            <c:when test="${model.state=='1'}">	
-								            <input type="text" maxValue="${obj.STORAGE_NUM}" maxLength="13" size="8" 
-											onchange="checkWait_back_num(this,'${obj.WAIT_BACK_NUM}')" size="8"
-											name="bomList[${num}].waitBackNum" value="${obj.WAIT_BACK_NUM}" id="WAIT_BACK_NUM_${num}"/>
-											<input type="hidden" name="bomList[${num}].cuid"value="${obj.CUID}" />
-											</c:when>
-								            <c:when test="${model.state=='2'}">${obj.WAIT_BACK_NUM}</c:when>
-								            <c:when test="${model.state=='4'}">${obj.WAIT_BACK_NUM}</c:when>
-								             <c:when test="${model.state=='8'}">${obj.WAIT_BACK_NUM}</c:when>
-								              <c:otherwise> <input type="text" maxValue="${obj.STORAGE_NUM}" maxLength="13" size="8" 
-											onchange="checkWait_back_num(this,'${obj.WAIT_BACK_NUM}')" size="8"
-											name="bomList[${num}].waitBackNum" value="${obj.WAIT_BACK_NUM}" id="WAIT_BACK_NUM_${num}"/>
-											</c:otherwise>
-							                 </c:choose>
-											
-											 
+								            	<c:when test="${model.state=='-6'||model.state=='-4'||model.state=='0'}">${obj.WAIT_BACK_NUM}</c:when>
+								       
+								            	<c:otherwise> 
+								               	 	<input type="text" name="bomList.waitBackNum" value="${obj.WAIT_BACK_NUM}" id="WAIT_BACK_NUM_${num}" maxValue="${obj.STORAGE_NUM}" maxLength="13" size="8" 	onchange="checkWait_back_num(this,'${obj.WAIT_BACK_NUM}')" />
+													<input type="hidden" name="bomList.cuid"value="${obj.CUID}" />
+												</c:otherwise>
+							               </c:choose>
 										</td>
 									
 										</tr>
@@ -299,6 +296,8 @@
 							</tbody>
 						</table>
 					
+				</div>
+				</div>
 				</div>
 		</form>
 		

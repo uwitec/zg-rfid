@@ -99,7 +99,10 @@
 		   emp.org_id = org.cuid
 		   and fworg.type = '5'
 		   and org.org_id = fworg.cuid	
-		   and fworg.extend1='$planType$' 
+		   	<isNotEmpty prepend="AND" property="planType">
+	    		  fworg.extend1='$planType$' 
+	    	</isNotEmpty>
+		 
 		   <isNotEqual property="operatorId" compareValue="0">
 		   	and emp.user_id = '$operatorId$'
 		   </isNotEqual>

@@ -55,7 +55,7 @@ public class ZgTorderPlanbomExBo extends ZgTorderPlanbomBo{
 	}
 	public List<ZgTorderPlanbomEx> findBomBatchList(String orderPlanId) {
 		ZgTorderPlanbomEx entity = new ZgTorderPlanbomEx();
-		entity.setOrderPlanId("'"+orderPlanId+"'");
+		entity.setOrderPlanId(orderPlanId);
 		return zgTorderPlanbomExDao.findBatchByProperty(entity);
 	}
 	

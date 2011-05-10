@@ -99,4 +99,12 @@ public class ZgTorderPlanDao extends BaseIbatisDao<ZgTorderPlan,java.lang.String
 		
 		return pageQuery("ZgTorderPlan.pageSelect1",pr);
 	}
+
+	/**
+	 * 删除领料计划下面的BOM
+	 * @param planID
+	 */
+	public void deletePlanBomByPlanId(String planID) {
+		getSqlMapClientTemplate().delete("ZgTorderPlan.deletePlanBomByPlanId", planID);
+	}
 }

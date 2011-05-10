@@ -317,9 +317,11 @@ public class ZgTorderExBo extends ZgTorderBo {
 	/**
 	 * 根据领料计划组编号查询他的订单信息
 	 * @param groupId
+	 * @param orderPlanType
 	 */
 	public List<ZgTorder> getOrderInfoListByGroupId(String groupId) {
 		return zgTorderExDao.getOrderInfoListByGroupId(groupId);
+		
 	}
 
 	public ZgTorderExDao getZgTorderExDao() {
@@ -677,5 +679,16 @@ public class ZgTorderExBo extends ZgTorderBo {
 			usedNum=Long.parseLong((alllProdList.get(i)).get("USED_NUM").toString());//已投入使用数量
 			zgTorderExDao.updateProductNum(storageCuid,usedNum+finishNum*zdtyl);
 		}
+	}
+
+
+
+	/**
+	 * 根据生产订单编号,登陆人编号获取其负责的该订单的生产厂
+	 * @param orderId
+	 * @param userId
+	 */
+	public List<Map> getPlantByOrderId(String orderId, String userId) {
+		return zgTorderExDao.getPlantByOrderId(orderId,userId);
 	}
 }

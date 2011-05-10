@@ -20,6 +20,7 @@ import com.boco.frame.sys.base.model.FwOrganizationManager;
 import com.boco.zg.plan.base.model.*;
 import com.boco.zg.plan.base.dao.*;
 import com.boco.zg.plan.base.service.*;
+import com.boco.zg.util.Constants;
 
 /**
  * @author badqiu email:badqiu(a)gmail.com
@@ -53,6 +54,9 @@ public class FwOrganizationManagerDao extends BaseIbatisDao<FwOrganizationManage
 		Map parmsMap=new HashMap();
 		parmsMap.put("operatorId", operatorId);
 		parmsMap.put("sorftType", sorftType);
+		if(!Constants.OrderPlanType.CHANGE.value().equals(sorftType)){
+			parmsMap.put("needSortf", "1");
+		}
 		return this.getSqlMapClientTemplate().queryForList("FwOrganizationManager.getManagerOrgListByOperatorSorftType",parmsMap);
 
 	}

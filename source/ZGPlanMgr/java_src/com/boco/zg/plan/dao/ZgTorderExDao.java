@@ -40,6 +40,7 @@ import cn.org.rapid_framework.util.MapAndObject;
 
 import com.boco.zg.plan.base.model.ZgTorderPlanGroup;
 import com.boco.zg.plan.model.ZgTorderEx;
+import com.boco.zg.util.Constants;
 import com.boco.frame.sys.base.model.FwOrganization;
 import com.boco.frame.sys.base.model.Province;
 
@@ -192,6 +193,20 @@ public class ZgTorderExDao extends ZgTorderDao{
 	 */
 	public List<Map> getProdCountFromOrderBom(String orderId) {
 		return getSqlMapClientTemplate().queryForList("ZgTorderEx.getProdCountFromOrderBom",orderId);
+	}
+
+
+	/**
+	 * 根据生产订单编号,登陆人编号获取其负责的该订单的生产厂
+	 * @param orderId
+	 * @param userId
+	 */
+	public List<Map> getPlantByOrderId(String orderId, String userId) {
+		Map map=new HashMap();
+		map.put("orderId", orderId);
+		map.put("userId", userId);
+		return getSqlMapClientTemplate().queryForList("ZgTorderEx.getPlantByOrderId",map);
+		
 	}
 
 }

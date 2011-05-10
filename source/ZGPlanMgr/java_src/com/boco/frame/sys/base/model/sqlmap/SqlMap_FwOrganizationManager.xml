@@ -135,7 +135,9 @@
 		 <isNotEqual property="operatorId" compareValue="0">
 		 AND t.employee_id = '$operatorId$'
 		</isNotEqual>
-		    and org.extend1='$sorftType$'
+			<isNotEmpty prepend="AND" property="needSortf">
+	    		org.extend1='$sorftType$'
+	    	</isNotEmpty> 
 		    order by t.org_id
 	</select>
 	

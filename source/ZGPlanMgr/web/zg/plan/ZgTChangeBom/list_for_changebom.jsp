@@ -98,7 +98,7 @@
 								<c:forEach items="${page.result}" var="obj" varStatus="n">
 									<c:set var="trcss" value="${n.count%2==0?'odd':'even'}" />
 									<c:choose>
-									<c:when test="${obj.STATE=='1'||obj.STATE=='0'}">
+									<c:when test="${obj.STATE=='-8'||obj.STATE=='-7'}">
 									<tr class="${trcss}" title="双击修改" ondblclick="edit('${obj.CUID}')"  onmouseover="this.style.backgroundColor = '#EBF1FF'"  onmouseout="this.style.backgroundColor = '#FFFFFF'">
 									</c:when>
 									<c:otherwise>
@@ -132,11 +132,11 @@
 										<td align="center">
 											
 											<c:choose>
-								            <c:when test="${obj.STATE=='0'}">保存</c:when>
-								            <c:when test="${obj.STATE=='1'}">厂领导审核退回</c:when>
-								            <c:when test="${obj.STATE=='2'}">待厂领导审核</c:when>
-								            <c:when test="${obj.STATE=='4'}">待品质部审核</c:when>
-								            <c:otherwise>完成</c:otherwise>
+								            <c:when test="${obj.STATE=='-8'}">未提交</c:when>
+								            <c:when test="${obj.STATE=='-7'}">厂领导审核退回</c:when>
+								            <c:when test="${obj.STATE=='-6'}">待厂领导审核</c:when>
+								            <c:when test="${obj.STATE=='-4'}">待品质部审核</c:when>
+								            <c:otherwise>审核完成</c:otherwise>
 							</c:choose>
 											
 											

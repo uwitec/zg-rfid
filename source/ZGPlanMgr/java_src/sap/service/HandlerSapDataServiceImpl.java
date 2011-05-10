@@ -652,7 +652,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	    sql.append("  select max(t.rowid)                                                                      ");
 	    sql.append(" from zg_t_orderbom t,zg_t_order_planbom bom                                               ");
 	    sql.append("     where           bom.order_bom_id=t.cuid                                               ");
-	    sql.append("	and (bom.plan_num is null and  bom.complete_num  is null)                              ");
+	    sql.append("	and (nvl(bom.plan_num,0)=0 and  nvl(bom.complete_num,0)=0)                              ");
 	    sql.append("    group by t.idnrk, t.order_id, t.aufnr, t.arbpl, t.posnr   having count(1) > 1)         ");
 	    this.baseDao.executeSql(sql.toString());
   

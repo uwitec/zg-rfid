@@ -75,4 +75,15 @@ public class ZgTorderDwrAction extends BaseDwrAction {
 		return null;
 	}
 	
+	/**
+	 * 根据生产订单编号,登陆人编号获取其负责的该订单的生产厂
+	 * @param orderId
+	 * @return
+	 */
+	public List<Map> getPlantByOrderId(HttpServletRequest request,String orderId){
+		OperatorInfo operatorInfo = (OperatorInfo)this.getSessionOperatorInfo(request);
+		List<Map> list=this.getZgTorderExBo().getPlantByOrderId(orderId,operatorInfo.getOperatorId());
+		return this.getZgTorderExBo().getPlantByOrderId(orderId,operatorInfo.getOperatorId());
+	}
+	
 }

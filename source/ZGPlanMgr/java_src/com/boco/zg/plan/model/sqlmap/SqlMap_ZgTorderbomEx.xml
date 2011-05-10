@@ -91,7 +91,13 @@
     </select>
     <!-- 使用分页 查找订单号和生产线 ，findOrderArbplList未使用分页 -->
     <select id="findOrderArbplByPageRequest" resultMap="zgTorderbomExResult3">
-    		select  t.aufnr,t.cuid order_id,t.arbpl,o.label_cn,t.maktx1 from zg_t_order t,fw_organization o where t.arbpl=o.cuid 
+    		 select t.aufnr, t.cuid order_id, t.arbpl, o.label_cn, t.maktx1
+			   from zg_t_order t, fw_organization o
+			  where t.arbpl = o.cuid
+			    and exists (select 1
+			           from zg_t_order_planbom p
+			          where p.order_id = t.cuid
+			            and p.storage_num > 0)
     		<isNotEmpty prepend="AND" property="sqlQueryString">
 		    		$sqlQueryString$ 
 		    </isNotEmpty>
@@ -452,8 +458,8 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
 		     and bom.idnrk = orderbom.idnrk 
-		    and bom.lgort=orderbom.lgort
- 			and bom.matkl=orderbom.matkl
+		  <!--    and bom.lgort=orderbom.lgort
+ 			and bom.matkl=orderbom.matkl-->
 		   and orderbom.cuid = planbom.order_bom_id
 		    and planbom.order_plan_id = plan.cuid
 		   and plan.cuid = gop.order_plan_id
@@ -618,8 +624,8 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
 		     and bom.idnrk = orderbom.idnrk 
-		    and bom.lgort=orderbom.lgort
- 			and bom.matkl=orderbom.matkl
+		    <!--  and bom.lgort=orderbom.lgort
+ 			and bom.matkl=orderbom.matkl-->
 		   and orderbom.cuid = planbom.order_bom_id
 		    and planbom.order_plan_id = plan.cuid
 		   and plan.cuid = gop.order_plan_id
@@ -962,6 +968,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
    
           and  m.user_id = o.user_id
            and p.cuid = '$cuid$'
+           order by m.create_time desc
 			   
 			   </select>
      	
@@ -972,9 +979,11 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 			       (select sum(pb.storage_num)
 			          from zg_t_order_planbom pb
 			         where pb.order_bom_id = t.cuid) all_storage_num
-			  from zg_t_orderbom t, zg_t_order od
+			  from zg_t_orderbom t, zg_t_order od,fw_organization org
 			 where t.order_id = od.cuid
+			  and t.sortf = org.extend1
 			   and t.order_id = '$orderId$'
+			   and org.cuid='$sortf$'
 			   <isNotEmpty prepend="AND" property="changeBomIds">
 			    t.cuid not in ('$changeBomIds$')
 			   </isNotEmpty>

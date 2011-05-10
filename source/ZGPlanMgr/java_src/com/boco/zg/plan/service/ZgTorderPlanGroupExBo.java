@@ -229,6 +229,9 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 		Map paramsMap=new HashMap();
 		paramsMap.put("operatorId", operatorId);
 		paramsMap.put("planType", orderPlanType);
+		//if(orderPlanType.equals(Constants.OrderPlanType.CHANGE.value())||orderPlanType.equals(Constants.OrderPlanType.ADD.value())){//被 料，换料不需要生产厂条件来限制
+		//	paramsMap.put("notPlant", 1);
+		//}
 		paramsMap.put("arbpl", arbpl);
 		paramsMap.put("pxDate",  TimeFormatHelper.getFormatDate(pxDate, TimeFormatHelper.DATE_FORMAT));
 		paramsMap.put("plant", plant);
@@ -329,5 +332,14 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 
 	public void setZgTorderPlanGroupBo(ZgTorderPlanGroupBo zgTorderPlanGroupBo) {
 		this.zgTorderPlanGroupBo = zgTorderPlanGroupBo;
+	}
+
+	/**
+	 * @param planId
+	 * @param state
+	 */
+	public void updateGroupStateByOrderPlanId(String planId, String state) {
+		zgTorderPlanGroupExDao.updateGroupStateByOrderPlanId(planId,state);
+		
 	}
 }

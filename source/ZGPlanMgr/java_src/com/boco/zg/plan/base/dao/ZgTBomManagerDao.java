@@ -73,7 +73,7 @@ public class ZgTBomManagerDao extends BaseIbatisDao<ZgTorderPlan,java.lang.Strin
 	}
 	
 	public Page pageOrderPlanForChange1(PageRequest<Map> pageRequest) {
-		return pageQuery("ZgTBomManager.pageOrderPlanForChange1","ZgTBomManager.pageOrderPlanForChange_count",pageRequest);
+		return pageQuery("ZgTBomManager.pageOrderPlanForChange1","ZgTBomManager.pageOrderPlanForChange1_count",pageRequest);
 	}
 
 	/**
@@ -115,6 +115,37 @@ public class ZgTBomManagerDao extends BaseIbatisDao<ZgTorderPlan,java.lang.Strin
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * @param pageRequest
+	 * @return
+	 */
+	public Page pageListBackBom(PageRequest<Map> pageRequest) {
+		return pageQuery("ZgTBomManager.pageListBackBom","ZgTBomManager.pageListBackBom_count",pageRequest);
+
+	}
+
+	/**
+	 * 获取登陆领料人负责的生产厂
+	 * @param operatorId
+	 * @return
+	 */
+	public List<Map> getPlanListByOperatorId(String operatorId) {
+		Map<String, Object> params=new HashMap<String, Object>();
+		params.put("operatorId", operatorId);
+		return getSqlMapClientTemplate().queryForList("ZgTBomManager.getPlanListByOperatorId", params);
+	}
+
+	/**
+	 * 检查退料数量
+	 * @param bom
+	 */
+	public boolean checkBackNum(ZgTorderbomEx bom) {
+		Map bomMap=new HashMap();
+		bomMap.put("orderPlanbomId", bom.getOrderPlanbomId());
+		bomMap.put("backNum", bom.getBackNum());
+		return getSqlMapClientTemplate().queryForList("ZgTBomManager.checkBackNum", bomMap).size()>0;
 	}
 }
 

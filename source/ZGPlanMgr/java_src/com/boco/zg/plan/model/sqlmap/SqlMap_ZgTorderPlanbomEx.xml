@@ -326,19 +326,19 @@
 	    		$sqlQueryString$ 
 	    	</isNotEmpty>
 	    	<isNotEmpty prepend="AND" property="orderPlanId">
-	    		ORDER_PLAN_ID in ($orderPlanId$)
+	    		ORDER_PLAN_ID in ('$orderPlanId$')
        		</isNotEmpty>
        		<isNotEmpty prepend="AND" property="orderBomId">
-	       			ORDER_BOM_ID = $orderBomId$
+	       			ORDER_BOM_ID = '$orderBomId$'
        		</isNotEmpty>
        		<isNotEmpty prepend="AND" property="orderId">
-	       			ORDER_ID = $orderId$
+	       			ORDER_ID =' $orderId$'
        		</isNotEmpty>
 	    	<isNotEmpty prepend="AND" property="idnrk">
-	       			IDNRK = $idnrk$
+	       			IDNRK = '$idnrk$'
        		</isNotEmpty>
        		<isNotEmpty prepend="AND" property="maktx1">
-	       			MAKTX1 = $maktx1$
+	       			MAKTX1 = '$maktx1$'
        		</isNotEmpty>
        		<isNotEmpty prepend="AND" property="menge">
 	       			MENGE = $menge$
@@ -347,16 +347,16 @@
 	       			ZDTYL = $zdtyl$
        		</isNotEmpty>
        		<isNotEmpty prepend="AND" property="msehl1">
-	       			MSEHL1 = $msehl1$
+	       			MSEHL1 = '$msehl1$'
        		</isNotEmpty>
        		<isNotEmpty prepend="AND" property="lgort">
-	       			LGORT = $lgort$
+	       			LGORT = '$lgort$'
        		</isNotEmpty>
        		<isNotEmpty prepend="AND" property="departmentId">
-	       			DEPARTMENT_ID = $departmentId$
+	       			DEPARTMENT_ID = '$departmentId$'
        		</isNotEmpty>
        		<isNotEmpty prepend="AND" property="userId">
-	       			USER_ID = $userId$
+	       			USER_ID = '$userId$'
        		</isNotEmpty>
 	    	<isNotEmpty prepend="AND" property="planDate_start">
        			<![CDATA[PLAN_DATE >= to_date(#planDate_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
@@ -365,10 +365,10 @@
        			<![CDATA[PLAN_DATE <= to_date(#planDate_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
        		</isNotEmpty>
        		<isNotEmpty prepend="AND" property="planStartTime">
-	       			PLAN_START_TIME = $planStartTime$
+	       			PLAN_START_TIME = #planStartTime#
        		</isNotEmpty>
        		<isNotEmpty prepend="AND" property="planEndTime">
-	       			PLAN_END_TIME = $planEndTime$
+	       			PLAN_END_TIME = #planEndTime#
        		</isNotEmpty>
 	    </dynamic>	
 	</sql>

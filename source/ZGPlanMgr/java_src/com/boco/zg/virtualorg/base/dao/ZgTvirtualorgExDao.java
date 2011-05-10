@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 
+import com.boco.zg.util.Constants;
 import com.boco.zg.virtualorg.base.model.ZgTvirtualorg;
 import com.boco.zg.virtualorg.base.model.ZgTvirtualorgEx;
 
@@ -55,7 +56,9 @@ public class ZgTvirtualorgExDao extends BaseIbatisDao<ZgTvirtualorgEx,java.lang.
 	public List<Map> getPlantListByOperatorId(String operatorId,String orderPlanType) {
 		Map paramsMap=new HashMap();
 		paramsMap.put("operatorId", operatorId);
-		paramsMap.put("planType", orderPlanType);
+		if(!Constants.OrderPlanType.CHANGE.value().equals(orderPlanType)){
+			paramsMap.put("planType", orderPlanType);
+		}
 		return getSqlMapClientTemplate().queryForList("ZgTvirtualorgEx.getPlantListByOperatorId",paramsMap);
 	}
 

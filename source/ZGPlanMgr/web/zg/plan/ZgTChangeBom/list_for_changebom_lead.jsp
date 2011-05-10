@@ -128,8 +128,9 @@
 											
 											<c:choose>
 								           
-								            <c:when test="${obj.STATE=='1'}">厂领导审核退回</c:when>
-								            <c:when test="${obj.STATE=='2'}">待厂领导审核</c:when>
+								            <c:when test="${obj.STATE=='-7'}">厂领导审核退回</c:when>
+								            <c:when test="${obj.STATE=='-6'}">待厂领导审核</c:when>
+								             <c:when test="${obj.STATE=='-4'}">待品质部审核</c:when>
 								           
 							</c:choose>
 												</td>

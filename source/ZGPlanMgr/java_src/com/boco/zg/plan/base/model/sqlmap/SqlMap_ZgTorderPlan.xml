@@ -162,7 +162,8 @@
         	isManul,
         	extend1,
         	back_zbz,
-        	back_reason
+        	back_reason,
+        	create_date
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
@@ -179,7 +180,8 @@
         	#isManul#,
         	#extend1#,
         	#backZbz#,
-        	#backReason#
+        	#backReason#,
+        	sysdate
         )
     ]]>
 
@@ -210,6 +212,10 @@
 		 where CUID = #cuid#
 	</delete>
 	
+	<delete id="deletePlanBomByPlanId" parameterClass="java.lang.String">
+		 delete from zg_t_order_planbom t where t.order_plan_id='$cuid$'
+	</delete>
+	
 	 <select id="pageOrderPlanForChange_count" resultClass="long">
           	 select count(*)
 		 from zg_t_order_plan t,
@@ -217,7 +223,7 @@
 		       fw_operator     emp,
 		       fw_organization org,
            fw_employee     emo
-		 where t.plan_type = 'change'
+		 where t.plan_type = 'CHANGE'
 		   and t.order_id = od.cuid
 		   and t.user_id = emp.cuid
 		   and emo.cuid=emp.cuid
@@ -237,7 +243,7 @@
 		       fw_operator     emp,
 		       fw_organization org,
            fw_employee     emo
-		 where t.plan_type = 'change'
+		 where t.plan_type = 'CHANGE'
 		   and t.order_id = od.cuid
 		   and t.user_id = emp.cuid
 		   and emo.cuid=emp.cuid
@@ -767,7 +773,7 @@
 		       fw_operator     emp,
 		       fw_organization org,
            fw_employee     emo
-		 where t.plan_type = 'change'
+		 where t.plan_type = 'CHANGE'
 		   and t.order_id = od.cuid
 		   and t.user_id = emp.cuid
 		   and emo.cuid=emp.cuid

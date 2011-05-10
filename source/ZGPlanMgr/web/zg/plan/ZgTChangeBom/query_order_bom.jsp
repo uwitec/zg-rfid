@@ -69,6 +69,8 @@
 	<input type="hidden"  name="s_inSubBmClassIdQuery"  value="${pageRequest.filters.inSubBmClassIdQuery}"/>
 	<input type="hidden"  name="s_orderId"  value="${orderId}"/>
 	<input type="hidden"  name="s_extend1"  value="${extend1}"/>
+	<input type="hidden"  name="s_sortf"  value="${sortf}"/>
+	
 	<table class="formTable" cellpadding="0" cellspacing="0">
 			<thead>
 				<tr class="querybar">
