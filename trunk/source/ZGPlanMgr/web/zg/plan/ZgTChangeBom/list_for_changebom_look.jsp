@@ -29,23 +29,28 @@
 </style>
 		<script type="text/javascript">
 		$(function() {
-			try{
-				if(initLayout) {
-					$(window).bind("load",initLayout);
-					
-				}
-				 doLayout() ;
-			}catch(e){}
+			initAutoComplete("${ctx}/autoComplate/findRelationData.do");
+			doLayout();
+			$(window).bind("resize",doLayout);
+			$("form:first").submit();
 		});
 		
+		
 		function doLayout() {
-				var maxHeight = top.getContentHeight();
-				
-			var queryPanelH = document.getElementById("_queryPanel").style.height;
-			document.getElementById("resconfigResult").style.height = (maxHeight-queryPanelH) + 'px';
-			document.getElementById("_operatePanel").style.height = (maxHeight-queryPanelH) + 'px';
-			
+			var maxHeight = top.getContentHeight();
+			document.getElementById("_orderPanel").style.height = maxHeight + 'px';
+			var headTableH = document.getElementById("headTable").offsetHeight;
+			var orderTableH= document.getElementById("orderTable").offsetHeight;
+			var listFrameH = maxHeight - headTableH-orderTableH;
+			var commentTableObj=document.getElementById("commentTable");
+			if(commentTableObj!=null){
+				listFrameH=listFrameH-commentTableObj.offsetHeight;
+			}else{
+				listFrameH=listFrameH-50;
+			}
+			document.getElementById("listFrame").style.height = listFrameH + 'px';
 		}
+		
 		function choose(){
 		var back_reason=$("#back_reason").val();
 		if(back_reason=='6'){
@@ -58,9 +63,6 @@
 		//提交领料计划,num:1为通过；2为驳回    cuid为单id
 		function submitOrRejectPlan(num,cuid,obj){
 			obj.disabled=true;
-		
-			
-			
 			if(num==2){
 				rejectOpinionText=document.getElementById("rejectOpinion").value;
 				if(rejectOpinionText.Trim()=="请填写审核意见......"){
@@ -77,18 +79,18 @@
 		        rejectOpinionText=document.getElementById("rejectOpinion").value;
 		        
 		   }
-		   
+		   document.forms[0].target="_self";
 			document.forms[0].action="${ctx}/zg/plan/ZgTBomManager/examineOrderPlan.do?submitType="+num+"&rejectOpinionText="+rejectOpinionText+"&id="+cuid;
 			
 			document.forms[0].submit();
 		}
 		
-			function submitOrRejectPlan1(cuid,obj){
+		function submitOrRejectPlan1(cuid,obj){
 			obj.disabled=true;
 			
 				var back_reason=$("#back_reason").val();
 				if(back_reason==""){
-					alert("请选择换料原因");
+					alert("请选择退换料原因");
 					obj.disabled=false;
 					return;
 				}
@@ -97,7 +99,7 @@
 			   
 			  
 			
-		   
+		   document.forms[0].target="_self";
 			document.forms[0].action="${ctx}/zg/plan/ZgTBomManager/examineOrderPlan1.do?back_reason="+back_reason+"&id="+cuid+"&text="+text;
 			
 			document.forms[0].submit();
@@ -110,15 +112,6 @@
 		}
 		
 		
-		function init(state){
-			if($("#cuid").val()=='自动生成'){
-			   $("#b_submit").attr("disabled",true);
-			}
-			//	document.forms[0].submit();
-			if(state=='8'){//表单状态为提交状态
-				  $("#b_save").attr("disabled",true);
-			}
-		}
 		
 		function backToList(){
 			parent.document.forms[0].submit();
@@ -136,15 +129,16 @@
 	</script>
 	</head>
 	<body>
-	<form action="${ctx}/zg/plan/ZgTBomManager/queryHistory.do" method="post" target="listFrame">
-		<table width="100%" cellpadding="0" cellspacing="1"
+	<div id="_orderPanel" style="height:100px">		
+	<form action="${ctx}/zg/plan/ZgTBomManager/listChangeBom.do?id=${model.cuid}&planType=${model.planType}" method="post" target="listFrame">
+		<table id="headTable" width="100%" cellpadding="0" cellspacing="1"
 			style="border: 1px solid #A8CFEB;">
 			<thead>
 				<tr>
 					<td class="formToolbar">
 						<div class="button" style="text-align: left;">
 										
-						     <c:if test="${model.state=='2'}">
+						     <c:if test="${model.state=='-6'}">
 							 <a href="javascript:"><span onclick="submitOrRejectPlan(1,'${cuid}',this)">
 							 <img src="<%=iconPath%>/true.gif" />通过</span> </a>
 							 &nbsp;<a href="javascript:"><span onclick="submitOrRejectPlan(2,'${cuid}',this)">
@@ -152,14 +146,14 @@
 							 &nbsp;<a href="javascript:"><span onclick="if(parent.doQuery)parent.doQuery()">
 							 <img src="<%=iconPath%>/ico_007.gif" />返回</span> </a>
                              </c:if>
-                             <c:if test="${model.state=='4'}">
+                             <c:if test="${model.state=='-4'}">
                              <a href="javascript:"><span onclick="submitOrRejectPlan1('${cuid}',this)">
 							 <img src="<%=iconPath%>/true.gif" />通过</span> </a>
 							 &nbsp;<a href="javascript:"><span onclick="if(parent.doQuery)parent.doQuery()">
 							 <img src="<%=iconPath%>/ico_007.gif" />返回</span> </a>
                              </c:if>
                           
-                             <c:if test="${model.state=='1'||model.state=='3'}">
+                             <c:if test="${model.state=='-7'||model.state=='-5'}">
                              <a href="javascript:"><span onclick="if(parent.doQuery)parent.doQuery()">
 							 <img src="<%=iconPath%>/ico_007.gif" />返回</span> </a>
                              </c:if>
@@ -169,20 +163,40 @@
 			</thead>
 		</table>
 		
-			<table class="formitem" width="100%" cellpadding="0" cellspacing="1"
+			<table id="orderTable" class="formitem" width="100%" cellpadding="0" cellspacing="1"
 				style="border-top: 1px solid #A8CFEB; margin-top: 3px;">
 				<thead>
 					<tr>
+						<td class="title" colspan="10">
+							<img src="${ctx }/resources/images/frame/ico_noexpand.gif"
+								style="cursor: pointer" title="高级查询" alt="" id="img_1"
+								border="0" onclick="changeV('1')" />
+									<c:if test="${model.planType=='CHANGE'}">换料申请单</c:if>
+								<c:if test="${model.planType=='BACK'}">退料申请单</c:if>：${model.cuid}
+						</td>
+					</tr>
+				</thead>
+				<tbody id="tbody_1" style="display: block">
+					<tr>
+						<td colspan="10"
+							style="border: 1px solid #A8CFEB; border-width: 0 0 1px 0;">
+							<table border="0" cellpadding="0" cellspacing="0">
+								<tr>
+									<td width="20"></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					
+							<tr>
 						<th>
 							单据日期：
 						</th>
+						<td width="15%">
 						
-						<td width="15%" >
-								
-								<fmt:formatDate value="${model.create_date}" pattern="yyyy-MM-dd HH:mm:ss" />
+									<fmt:formatDate value="${model.create_date}" pattern="yyyy-MM-dd HH:mm:ss" />
 							</td>
-						
-						<th>
+			<th>
 							订单号：
 						</th>
 						<td width="15%">
@@ -192,8 +206,18 @@
 						<th>
 							物料等级：
 						</th>
-						<td width="15%">
+						<td width="12%">
+						
+							<input type="hidden" id="extend1"  name="extend1" value="${model.extend1}"/>
 							${model.extend1}
+						</td>
+						<th>
+							线体：
+						</th>
+						<td width="5%">
+						
+							<input type="hidden" id="plant"  name="plant" value="${model.plant}"/>
+							${model.plant}
 						</td>
 
 						 <th>
@@ -203,11 +227,12 @@
 								${model.userId_related.value}
 							
 							</td>
+							
 					</tr>
-				</thead>
+				</tbody>
 			</table>
-			   <c:if test="${model.state=='2'}">
-				<table class="formitem" width="100%" cellpadding="0" cellspacing="1"
+			   <c:if test="${model.state=='-6'||model.state=='-7'}">
+				<table id="commentTable" class="formitem" width="100%" cellpadding="0" cellspacing="1"
 					style="border-top: 1px solid #A8CFEB; margin-top: 3px;">
 					<thead>
 						<tr>
@@ -219,18 +244,19 @@
 								</center>
 							</td>
 							<td>
-								<textarea name="rejectOpinion" id="rejectOpinion" onpropertychange="if(value.length>50) value=value.substr(0,50)"
+								<textarea name="rejectOpinion" id="rejectOpinion" onpropertychange="if(value.length>50) value=value.substr(0,85)"
 								onpropertychange="checkLength(this,85);" maxlength="10" cols=130 rows=4 onFocus="clickTextarea()" onblur="moveTextarea()">请填写审核意见......</textarea>
 							</td>
 						</tr>
 					</thead>
 				</table>
 				</c:if>
-		 <c:if test="${model.state=='4'}">
+		 <c:if test="${model.state=='-4'}">
 		<table class="formitem" width="100%" cellpadding="0" cellspacing="1"
 				style="border-top: 1px solid #A8CFEB; margin-top: 3px;">
 		 <tr rowspan="2">
-		 <td  class="title" width="7%">换料原因：</td>
+		 <td  class="title" width="7%">		<c:if test="${model.planType=='CHANGE'}">换料原因</c:if>
+								<c:if test="${model.planType=='BACK'}">退料原因</c:if>：</td>
 		 <td onclick="choose()"  class="title">
 		 <select name="back_reason" id="back_reason" align="left" >
 		            <option value="">请选择</option>
@@ -253,12 +279,9 @@
 		 </c:if>
 
 	</form>
+		<iframe id="listFrame" src="" name="listFrame" frameborder="0" width="100%" height="100%" scrolling="no"></iframe>
+	</div>
 			
-	
-	<iframe id="resconfigResult"
-	    src="${ctx}/zg/plan/ZgTBomManager/listChangeBom.do?id=${model.cuid}"
-	   width="100%" style="height:378px" frameborder="0" marginwidth="0"
-	marginheight="0" onload=""></iframe>
 	
 
 	</body>

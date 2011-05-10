@@ -7,7 +7,6 @@
 package com.boco.zg.plan.base.action;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,7 +18,6 @@ import java.util.Map;
 import javacommon.base.BaseStruts2Action;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 
 import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
@@ -30,24 +28,26 @@ import com.boco.frame.sys.base.model.FwEmployee;
 import com.boco.frame.sys.base.model.FwOrganization;
 import com.boco.frame.sys.base.service.FwEmployeeBo;
 import com.boco.frame.sys.base.service.FwOrganizationBo;
+import com.boco.zg.plan.base.model.ZgTgroupOrderPlan;
+import com.boco.zg.plan.base.model.ZgTorder;
 import com.boco.zg.plan.base.model.ZgTorderPlan;
 import com.boco.zg.plan.base.model.ZgTorderPlanComment;
+import com.boco.zg.plan.base.model.ZgTorderPlanGroup;
 import com.boco.zg.plan.base.model.ZgTorderPlanbom;
 import com.boco.zg.plan.base.service.ZgTBomManagerBo;
 import com.boco.zg.plan.base.service.ZgTcarbomBo;
+import com.boco.zg.plan.base.service.ZgTgroupOrderPlanBo;
+import com.boco.zg.plan.base.service.ZgTorderBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanCommentBo;
+import com.boco.zg.plan.base.service.ZgTorderPlanGroupBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanbomBo;
 import com.boco.zg.plan.common.service.CommonService;
-import com.boco.zg.plan.model.ZgTorderPlanEx;
-import com.boco.zg.plan.model.ZgTorderPlanbomEx;
 import com.boco.zg.plan.model.ZgTorderbomEx;
-import com.boco.zg.plan.service.ZgTorderPlanExBo;
 import com.boco.zg.plan.service.ZgTorderPlanForBatchExBo;
+import com.boco.zg.plan.service.ZgTorderPlanGroupExBo;
 import com.boco.zg.plan.service.ZgTorderPlanbomExBo;
 import com.boco.zg.plan.service.ZgTorderbomExBo;
-import com.boco.zg.storage.base.model.ZgTstorage;
-import com.boco.zg.storage.model.ZgTstoragebomEx;
 import com.boco.zg.util.Constants;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
@@ -60,7 +60,6 @@ import com.opensymphony.xwork2.Preparable;
 
 
 public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable,ModelDriven{
-	
 
 
 	
@@ -109,9 +108,13 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	private static final String ORDERARBPL_LIST = "/zg/plan/ZgTChangeBom/query_orderArbplList.jsp";
 	private static final String ORDER_BOM = "/zg/plan/ZgTChangeBom/orderArbplList.jsp";
 
-	private ZgTorderPlanForBatchExBo zgTorderPlanForBatchExBo;
+
+	private static final String QUERY_BACK_BOM = "/zg/plan/ZgTChangeBom/query_back_bom.jsp";
+
+
+	private static final String LIST_BACK_BOM = "/zg/plan/ZgTChangeBom/list_back_bom.jsp";
+
 	private ZgTorderPlanCommentBo zgTorderPlanCommentBo;
-	private ZgTorderPlanbomBo zgTorderPlanbomBo;
 	private ZgTorderPlanbomExBo zgTorderPlanbomExBo;
 	private ZgTBomManagerBo zgTBomManagerBo;
 	private FwEmployeeBo fwEmployeeBo;
@@ -119,16 +122,19 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	private String id;
 	private String[] items;
 	private ZgTorderbomEx zgTorderbomEx;
+	private ZgTorderBo zgTorderBo;
 	private ZgTorderbomExBo zgTorderbomExBo;
 	private ZgTorderPlanBo zgTorderPlanBo;
 	private List<ZgTorderbomEx> bomList;
-	private List<Map> bol;
 	private ZgTorderPlanbom zgTorderPlanbom;
-	private String cuid;
 	private String s_state;
 	private Long waitBackNum;
 	private ZgTcarbomBo zgTcarbomBo;
 	private List<ZgTorderPlanComment> zgTorderPlanCommentList;
+	private ZgTorderPlanGroupBo zgTorderPlanGroupBo;
+	private ZgTgroupOrderPlanBo zgTgroupOrderPlanBo;
+	private ZgTorderPlanGroupExBo zgTorderPlanGroupExBo;
+	private FwOrganizationBo fwOrganizationBo;
 	
 	
 	public List<ZgTorderPlanComment> getZgTorderPlanCommentList() {
@@ -155,11 +161,9 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	public void setItems(String[] items) {
 		this.items = items;
 	}
+	
+	public List<FwOrganization> arbplList;
 
-	public void setZgTorderPlanForBatchExBo(
-			ZgTorderPlanForBatchExBo zgTorderPlanForBatchExBo) {
-		this.zgTorderPlanForBatchExBo = zgTorderPlanForBatchExBo;
-	}
 
 	public void prepare() throws Exception {
 		
@@ -225,6 +229,8 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 		OperatorInfo operatorInfo=(OperatorInfo) this.getRequest().getSession().getAttribute("operatorInfo");
 		FwEmployee fwEmployee = (FwEmployee)fwEmployeeBo.getById(operatorInfo.getOperatorId());
 		
+		String type=getRequest().getParameter("type");
+		
 		zgTorderPlan =new ZgTorderPlan();
 		zgTorderPlan.getUserId_related().setValue(fwEmployee.getLabelCn());
 		zgTorderPlan.setUserId(fwEmployee.getCuid());
@@ -234,9 +240,10 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 		zgTorderPlan.setPlanType(Constants.OrderPlanType.CHANGE.value());
 		String orderPlanId=zgTBomManagerBo.getCuid();
 		zgTorderPlan.setCuid(orderPlanId);
+		zgTorderPlan.setPlanType(type);
 		
 		Date nowDate=Calendar.getInstance().getTime();
-		 zgTorderPlan.setCreate_date(nowDate);
+		zgTorderPlan.setCreate_date(nowDate);
 		
 		return CREATE_FOR_CHANGE;
 	}
@@ -259,8 +266,7 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 				obj.put("isDel", true);
 				obj.put("isModity", true);
 			}
-		}
-			else if("temp".equals(flag)){// session中读取数据
+		}else if("temp".equals(flag)){// session中读取数据
 			bol=(List<Map>) this.getSession().getAttribute("bol");
 		}else {
 			bol=zgTBomManagerBo.findBomListByPlanID(id); //从数据库中获取数据  bom列表
@@ -273,13 +279,15 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 				bomIds=bomIds+obj.get("orderBomId")+",";
 			}
 		}
-		   this.getSession().setAttribute("bomIds", bomIds);
 		
-		   List<Map> map =new ArrayList<Map>();
-		   map=zgTBomManagerBo.findqueryHistoryPlanID(id); // 根据领料计划id查找历史审核记录
-		   getRequest().setAttribute("map", map);
-		
-		   return BOM_LIST;
+		this.getSession().setAttribute("bomIds", bomIds);
+
+		List<Map> map = new ArrayList<Map>();
+		map = zgTBomManagerBo.findqueryHistoryPlanID(id); // 根据领料计划id查找历史审核记录
+		getRequest().setAttribute("map", map);
+		getRequest().setAttribute("planType", getRequest().getParameter("planType"));
+
+		return BOM_LIST;
 	}
 	
 	/**
@@ -315,6 +323,8 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 		getRequest().setAttribute("orderId", getRequest().getParameter("orderId"));
 		// 物料等级
 		getRequest().setAttribute("extend1", getRequest().getParameter("extend1"));
+		
+		getRequest().setAttribute("sortf", getRequest().getParameter("sortf"));
 		
 		return QUERY_ORDER_BOM;
 	}
@@ -360,6 +370,7 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 		getRequest().setAttribute("pageRequest", pageRequest);
 		return QUERYFORCHANGEAUDIT;
 	}
+	
 	/*
 	 * 查询待品质部审核的列表
 	 * 
@@ -386,10 +397,13 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	 * 查询待厂领导审核列表
 	 */
 	public String listForChangeLead(){
+		
+		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		OperatorInfo operatorInfo=(OperatorInfo) this.getRequest().getSession().getAttribute("operatorInfo");
+		
 		String userId=operatorInfo.getUserId();
 		String roleId=zgTBomManagerBo.getRoleCuidByUserId(userId);
-		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+		
 		pageRequest.getFilters().put("roleId", roleId);
 		Page page = zgTBomManagerBo.pageOrderPlanForChange1(pageRequest);
 		savePage(page,pageRequest);
@@ -438,6 +452,7 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 		List<Map> map =new ArrayList<Map>();
 		map=zgTBomManagerBo.findqueryHistoryPlanID(id);
 		getRequest().setAttribute("map", map);
+		getRequest().setAttribute("planType", getRequest().getParameter("planType"));
 		return LIST_CHANGEBOM;
 	}
 	
@@ -461,6 +476,8 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 			zgTorderPlan.setBackZbz(back_zbz);
 			zgTorderPlanBo.update(zgTorderPlan);
 			
+			zgTorderPlanGroupExBo.updateGroupStateByOrderPlanId(zgTorderPlan.getCuid(),Constants.ChangePlanStatus.DONE.value());
+			
 			
 			ZgTorderPlanComment zgTorderPlanComment=new ZgTorderPlanComment();
 			Date nowDate=Calendar.getInstance().getTime();
@@ -476,7 +493,8 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 			zgTorderPlan.setBackReason(back_reason);
 			zgTorderPlanBo.update(zgTorderPlan);
 			
-			
+			zgTorderPlanGroupExBo.updateGroupStateByOrderPlanId(zgTorderPlan.getCuid(),Constants.ChangePlanStatus.DONE.value());
+
 			ZgTorderPlanComment zgTorderPlanComment=new ZgTorderPlanComment();
 			Date nowDate=Calendar.getInstance().getTime();
 			zgTorderPlanComment.setCreatetime(nowDate);
@@ -560,22 +578,39 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	 * 为换料单添加bom物料
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	public void generateBom() throws IOException{
 		List<Map> bol=(List<Map>) this.getSession().getAttribute("bol");
 		for(int i = 0; i < items.length; i++) {
 			Hashtable params = HttpUtils.parseQueryString(items[i]);
-			Map map=new HashMap();
-			map.put("CUID", (java.lang.String)params.get("orderBomId"));
-			map.put("PLANBOMID", (java.lang.String)params.get("orderPlanbomId"));
-			map.put("AUFNR", (java.lang.String)params.get("orderAufnr"));
-			map.put("ARBPL", (java.lang.String)params.get("arbpl"));
-			map.put("IDNRK",(java.lang.String)params.get("idnrk"));
-			map.put("MAKTX2", (java.lang.String)params.get("maktx2"));
-			map.put("STORAGE_NUM",(java.lang.String)params.get("storage_num"));
-			map.put("WAIT_BACK_NUM", 0);
-			map.put("isDel",false);
-			map.put("isModity", false);
-			bol.add(map);
+			String cuid=(java.lang.String)params.get("orderBomId");
+			boolean flag=true;
+			
+			for(Map map:bol){//查找原来的session中是否有该bom
+				if(map.get("CUID").toString().equals(cuid)){
+					map.put("isDel",false);
+					map.put("isModity", true);
+					flag=false;
+					break;
+				}
+			}
+			
+			if(flag){//原来的session中没有该bom 则新增进去
+				Map map=new HashMap();
+				map.put("CUID", (java.lang.String)params.get("orderBomId"));
+				map.put("PLANBOMID", (java.lang.String)params.get("orderPlanbomId"));
+				map.put("AUFNR", (java.lang.String)params.get("orderAufnr"));
+				map.put("ARBPL", (java.lang.String)params.get("arbpl"));
+				map.put("IDNRK",(java.lang.String)params.get("idnrk"));
+				map.put("MAKTX2", (java.lang.String)params.get("maktx2"));
+				map.put("STORAGE_NUM",(java.lang.String)params.get("storage_num"));
+				map.put("WAIT_BACK_NUM", 0);
+				map.put("isDel",false);
+				map.put("isModity", false);
+				bol.add(map);
+			}
+			
+			
 		}
 		
 		this.getSession().setAttribute("bol", bol);
@@ -607,6 +642,7 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 		for(int i = 0; i < items.length; i++) {
 			Hashtable params = HttpUtils.parseQueryString(items[i]);
 			zgTorderPlanBo.removeById((java.lang.String)params.get("id"));
+			zgTorderPlanBo.deletePlanBomByPlanId((java.lang.String)params.get("id"));
 		}
 		return LIST_FOR_CHANGEBOM;
 	}
@@ -622,20 +658,43 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	public void save() throws IOException {
 		List<Map> bol=(List<Map>) this.getSession().getAttribute("bol");
 	    String update=this.getRequest().getParameter("update");
+	    ZgTorder zgTorder=zgTorderBo.getById(zgTorderPlan.getOrderId());
 		
 	    if(isNullOrEmptyString(update)){
+	    	ZgTorderPlanGroup zgTorderPlanGroup=new ZgTorderPlanGroup();
+	    	
 			zgTorderPlan.setState(Constants.ChangePlanStatus.SAVE.value());
-			zgTorderPlan.setPlanType(Constants.OrderPlanType.CHANGE.value());
+			//zgTorderPlan.setPlanType(Constants.OrderPlanType.CHANGE.value());
+			zgTorderPlan.setIsManul("1");
 			zgTorderPlanBo.saveOrderPlan1(zgTorderPlan);
+			String orderPlanId=zgTorderPlan.getCuid();
+			
+			//插入计划分组表
+			ZgTorderPlanGroup group=new ZgTorderPlanGroup();
+			group.setLabelCn(zgTorder.getAufnr());
+			group.setState(Constants.ChangePlanStatus.SAVE.value());
+			group.setPercent(0d);
+			group.setPlanType(zgTorderPlan.getPlanType());
+			group.setPsbh(zgTorder.getPsbh());
+			group.setIndexNo(10000l);
+			String groupId=(String) zgTorderPlanGroupBo.save(group);
+			
+			ZgTgroupOrderPlan gop=new ZgTgroupOrderPlan();
+			gop.setOrderPlanId(orderPlanId);
+			gop.setGroupId(groupId);
+			zgTgroupOrderPlanBo.save(gop);
+			
 			zgTBomManagerBo.synSessionBomToDataBase(bol,zgTorderPlan);
+			
+			
 			
 		}else {
 			zgTorderPlan.setState(Constants.ChangePlanStatus.SAVE.value());
-			zgTorderPlan.setPlanType(Constants.OrderPlanType.CHANGE.value());
+		//	zgTorderPlan.setPlanType(Constants.OrderPlanType.CHANGE.value());
 			zgTorderPlanBo.update(zgTorderPlan);
 		
 			zgTBomManagerBo.updateOrderPlanBomWaitBackNum(bol,zgTorderPlan);
-			}
+		}
 			
 		forwardQuery("操作成功");
 		
@@ -646,18 +705,37 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 		
 
 	    String update=this.getRequest().getParameter("update");// 区别是新建的时候提交，还是编辑的时候提交
-		
+		ZgTorder zgTorder=zgTorderBo.getById(zgTorderPlan.getOrderId());
 	    if(isNullOrEmptyString(update)){
 			zgTorderPlan.setState(Constants.ChangePlanStatus.WAITAUDITING.value());
-			zgTorderPlan.setPlanType(Constants.OrderPlanType.CHANGE.value());
+//			zgTorderPlan.setPlanType(Constants.OrderPlanType.CHANGE.value());
 			zgTorderPlanBo.saveOrderPlan1(zgTorderPlan);
+			String orderPlanId=zgTorderPlan.getCuid();
+			
+			//插入计划分组表
+			ZgTorderPlanGroup group=new ZgTorderPlanGroup();
+			group.setLabelCn(zgTorder.getAufnr());
+			group.setState(Constants.ChangePlanStatus.SAVE.value());
+			group.setPercent(0d);
+			group.setPlanType(zgTorderPlan.getPlanType());
+			group.setPsbh(zgTorder.getPsbh());
+			group.setIndexNo(10000l);
+			String groupId=(String) zgTorderPlanGroupBo.save(group);
+			
+			ZgTgroupOrderPlan gop=new ZgTgroupOrderPlan();
+			gop.setOrderPlanId(orderPlanId);
+			gop.setGroupId(groupId);
+			zgTgroupOrderPlanBo.save(gop);
+			
+			
+			
 			zgTBomManagerBo.synSessionBomToDataBase(bol,zgTorderPlan);
 		}else {
 		    
 			zgTBomManagerBo.updateOrderPlanBomWaitBackNum(bol,zgTorderPlan);
 			}
 			zgTorderPlan.setState(Constants.ChangePlanStatus.WAITAUDITING.value());
-			zgTorderPlan.setPlanType(Constants.OrderPlanType.CHANGE.value());
+		//	zgTorderPlan.setPlanType(Constants.OrderPlanType.CHANGE.value());
 			zgTorderPlanBo.update(zgTorderPlan);
 			
 		forwardQuery("操作成功");
@@ -680,11 +758,12 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 		getRequest().setAttribute("arbpl", arbpl);
 		return ORDERARBPL_LIST;
 	}
+	
 	public String findOrderArbplList(){
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
-//		
-			Page page= zgTorderbomExBo.findOrderArbplByPageRequest(pageRequest);
-			savePage(page, pageRequest);
+		
+		Page page= zgTorderbomExBo.findOrderArbplByPageRequest(pageRequest);
+		savePage(page, pageRequest);
 	
 		return ORDER_BOM;
 	}
@@ -710,20 +789,21 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	 * 更改session中的换料数量
 	 * @throws IOException
 	 */
-	public String saveInOutBom() throws IOException{
+	public String saveChangOrderBom() throws IOException{
 		List<Map> sessionBomList=(List<Map>) this.getSession().getAttribute("bol");
 		if(null!=bomList){
 			for (ZgTorderbomEx bom : bomList) {
 				if(bom!=null){
 					for (Map temp : sessionBomList) {
 						if(bom.getCuid().equals(temp.get("CUID"))){
-							//System.out.println("XXXXXXXXXXXXXXXXXXXXX"+":"+bom.getWaitBackNum());
+							System.out.println("XXXXXXXXXXXXXXXXXXXXX"+":"+bom.getWaitBackNum());
 							temp.put("WAIT_BACK_NUM",bom.getWaitBackNum());
 							temp.put("CAR_NUM",bom.getWaitBackNum());
 							
 							// temp.put("PLANBOMID", bom.getOrderPlanbomId());
 							
 							temp.put("isModity", true);
+							break;
 						}
 					}
 				}
@@ -732,7 +812,42 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 		}
 		return SUCCESS;
 	}
+	
+	public String queryBackBom(){
+		CommonService.defultDateSet(getRequest(), "planDate_start", "planDate_end");
+		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+		getRequest().setAttribute("pageRequest", pageRequest);
+		
+		//获取登陆领料人负责的生产厂
+		List<Map> plantList=zgTBomManagerBo.getPlanListByOperatorId(getSessionOperatorId());
+		getRequest().setAttribute("planList", plantList);
+		
+		return QUERY_BACK_BOM;
+	}
 
+	
+	/*
+	 * 查询退料物料列表 根据查询结果分页
+	 * 
+	 */
+	public String listBackBom(){
+		CommonService.defultDateSet(getRequest(), "planDate_start", "planDate_end");  //显示前两天后五天的时间
+		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS); 
+		// Map params=pageRequest.getFilters();
+		// params.put("cuid", "123");
+		Page page = zgTBomManagerBo.pageListBackBom(pageRequest);  
+		getRequest().setAttribute("count", page.getResult().size());
+		savePage(page,pageRequest);
+		return LIST_BACK_BOM;
+	}
+	
+	/**
+	 * 退料处理
+	 */
+	public void backBom(){
+//		zgTBomManagerBo.backBom(bomList);
+	}
+	
 	public ZgTorderPlanBo getZgTorderPlanBo() {
 		return zgTorderPlanBo;
 	}
@@ -776,5 +891,43 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	public void setZgTcarbomBo(ZgTcarbomBo zgTcarbomBo) {
 		this.zgTcarbomBo = zgTcarbomBo;
 	}
+
+
+	public void setZgTorderBo(ZgTorderBo zgTorderBo) {
+		this.zgTorderBo = zgTorderBo;
+	}
+
+	public void setZgTgroupOrderPlanBo(ZgTgroupOrderPlanBo zgTgroupOrderPlanBo) {
+		this.zgTgroupOrderPlanBo = zgTgroupOrderPlanBo;
+	}
+
+	public void setZgTorderPlanGroupBo(ZgTorderPlanGroupBo zgTorderPlanGroupBo) {
+		this.zgTorderPlanGroupBo = zgTorderPlanGroupBo;
+	}
+
+	public ZgTgroupOrderPlanBo getZgTgroupOrderPlanBo() {
+		return zgTgroupOrderPlanBo;
+	}
+
+	public void setZgTorderPlanGroupExBo(ZgTorderPlanGroupExBo zgTorderPlanGroupExBo) {
+		this.zgTorderPlanGroupExBo = zgTorderPlanGroupExBo;
+	}
+
+
+
+	public FwOrganizationBo getFwOrganizationBo() {
+		return fwOrganizationBo;
+	}
+
+	public void setFwOrganizationBo(FwOrganizationBo fwOrganizationBo) {
+		this.fwOrganizationBo = fwOrganizationBo;
+	}
+
+	public List<FwOrganization> getArbplList() {
+		FwOrganization fwOrganization=new FwOrganization();
+		fwOrganization.setType(Constants.orgType.arbpl.value());
+		return fwOrganizationBo.findByProperty(fwOrganization, "t0_CUID", true);
+	}
+
 	
 }

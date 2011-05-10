@@ -64,4 +64,13 @@ public class ZgTorderPlanBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 	public Page findorderPlanByPageRequest(PageRequest<Map> pageRequest) {
 		return zgTorderPlanDao.findorderPlanByPageRequest(pageRequest);
 	}
+	
+	
+	/**
+	 * 删除领料计划下面的BOM
+	 * @param string planID
+	 */
+	public void deletePlanBomByPlanId(String planID) {
+		zgTorderPlanDao.deletePlanBomByPlanId(planID);
+	}
 }

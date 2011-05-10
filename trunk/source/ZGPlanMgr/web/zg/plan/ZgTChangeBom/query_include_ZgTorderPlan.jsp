@@ -54,11 +54,16 @@
 	<input type="hidden"  name="s_matnr"  value="${pageRequest.filters.matnr}" />
 	
 	<input type="hidden"  name="s_maktx1"  value="${pageRequest.filters.maktx1}" />
-	<input type="hidden"  name="s_plant"  value="${pageRequest.filters.splant}" />
+	<input type="hidden"  name="s_plant"  value="${pageRequest.filters.plant}" />
 	<input type="hidden"  name="s_arbpl"  value="${pageRequest.filters.arbpl}" />
 	<input type="hidden"  name="s_departmentId"  value="${pageRequest.filters.departmentId}" />
 	
 	<input type="hidden"  name="s_cuid"  value="${pageRequest.filters.cuid}" />
+	
+	<input type="hidden"  name="s_type"  value="${pageRequest.filters.type}" />
+	<input type="hidden"  name="s_createDate_start"  value="${pageRequest.filters.createDate_start}" />
+	<input type="hidden"  name="s_createDate_end"  value="${pageRequest.filters.createDate_end}" />
+	<input type="hidden"  name="s_state"  value="${pageRequest.filters.state}" />
 	
 		
 	

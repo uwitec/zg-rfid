@@ -410,7 +410,7 @@
 													<img src="<%=iconPath%>/ico_pause.gif" alt="暂停领料" />
 												</c:if>
 											
-												<c:if test="${group.key.state=='-1'}">
+												<c:if test="${obj.state=='-1'||obj.state=='-8'||obj.state=='-6'||obj.state=='-7'||obj.state=='-4'}">
 													<img src="<%=iconPath%>/ico_plan.gif" alt="计划中，不可调整" />
 												</c:if>
 
@@ -478,7 +478,7 @@
 																			<img src="<%=iconPath%>/ico_pause.gif" alt="暂停领料" />
 																			</c:if>
 																		
-																			<c:if test="${group.key.state=='-1'}">
+																			<c:if test="${obj.state=='-1'||obj.state=='-8'||obj.state=='-6'||obj.state=='-7'||obj.state=='-4'}">
 																				<img src="<%=iconPath%>/ico_plan.gif" alt="计划中，不可调整" />
 																			</c:if>
 							
@@ -586,7 +586,7 @@
 																			<img src="<%=iconPath%>/ico_pause.gif" alt="暂停领料" />
 																			</c:if>
 																		
-																			<c:if test="${group.key.state=='-1'}">
+																			<c:if test="${obj.state=='-1'||obj.state=='-8'||obj.state=='-6'||obj.state=='-7'||obj.state=='-4'}">
 																				<img src="<%=iconPath%>/ico_plan.gif" alt="计划中，不可调整" />
 																			</c:if>
 							
@@ -696,7 +696,7 @@
 																			<img src="<%=iconPath%>/ico_pause.gif" alt="暂停领料" />
 																			</c:if>
 																		
-																			<c:if test="${group.key.state=='-1'}">
+																			<c:if test="${obj.state=='-1'||obj.state=='-8'||obj.state=='-6'||obj.state=='-7'||obj.state=='-4'}">
 																				<img src="<%=iconPath%>/ico_plan.gif" alt="计划中，不可调整" />
 																			</c:if>
 							

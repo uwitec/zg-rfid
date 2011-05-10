@@ -144,6 +144,7 @@ public class ZgTorderbomEx extends BaseEntity {
 	
 	private Long validNum;
 	private Long waitBackNum;
+	private Long backNum;
 	
 	
 	
@@ -593,5 +594,13 @@ public class ZgTorderbomEx extends BaseEntity {
 
 	public void setWaitBackNum(Long waitBackNum) {
 		this.waitBackNum = waitBackNum;
+	}
+
+	public Long getBackNum() {
+		return backNum;
+	}
+
+	public void setBackNum(Long backNum) {
+		this.backNum = backNum;
 	}
 }

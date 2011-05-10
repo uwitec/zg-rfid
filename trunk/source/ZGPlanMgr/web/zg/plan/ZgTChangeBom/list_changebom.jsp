@@ -34,28 +34,31 @@
 	border: 0;
 	background: transparent;
 }
+.eXtremeTable {z-index: 2;width:100%;overflow: auto;}
 </style>
 		<script type="text/javascript">
 		
 		
 		
-		$(function() {
-			try{
-				if(initLayout) {
-					$(window).bind("load",initLayout);
-					
-				}
-				doLayout() ;
-				
-			}catch(e){}
+	$(function() {
+			init();
 		});
-		
+		function init() {
+			doLayout();
+			$(window).bind("resize",doLayout);
+		}
 		function doLayout() {
-			var maxHeight = parent.document.getElementById("resconfigResult").style.height;
-		//	alert(maxHeight);
-		//	maxHeight = maxHeight.replace("px","")*1;
-		//	var height = maxHeight - 17;
-		//	document.getElementById("grid-data-panel").style.height=height+'px';
+			var maxHeight = parent.document.getElementById("listFrame").style.height;
+			maxHeight = maxHeight.replace("px","")*1;
+			var height = maxHeight - 40;
+			
+			var historyDiv=document.getElementById("historyDiv");
+			if(historyDiv!=null){
+				historyDiv.style.height="120px";
+				height = height - 157;
+			}
+			document.getElementById("bomDiv").style.height=height+"px";
+			
 		}	
 	</script>
 	</head>
@@ -72,7 +75,7 @@
 				</h2>
 					<div class="toolbar">
 					</div>
-				<div class="eXtremeTable">
+				<div class="eXtremeTable" style="height:120px" id="historyDiv">
 					<table border="0" cellspacing="1" cellpadding="0"
 						class="tableRegion" width="100%">
 						<thead>
@@ -119,7 +122,7 @@
 				<div class="toolbar">
 				</div>
 				
-				<div class="eXtremeTable">
+				<div class="eXtremeTable" id="bomDiv">
 					<table id="ec_table" border="0" cellspacing="1" cellpadding="0"
 						class="tableRegion" width="100%">
 						<thead>
@@ -137,7 +140,8 @@
 									基本单位
 								</td>
 								<td class="tableHeader">
-									换料数量
+											<c:if test="${planType=='CHANGE'}">换料数量</c:if>
+								<c:if test="${planType=='BACK'}">退料数量</c:if>
 								</td>
 								
 							</tr>

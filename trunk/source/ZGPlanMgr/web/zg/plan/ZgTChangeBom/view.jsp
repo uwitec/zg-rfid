@@ -81,11 +81,32 @@
 	color: #1d5987;
 }
 </style>
+<script type="text/javascript">
+		$(function() {
+			initAutoComplete("${ctx}/autoComplate/findRelationData.do");
+			doLayout();
+			$(window).bind("resize",doLayout);
+			$("form:first").submit();
+		});
+		
+		
+		function doLayout() {
+			var maxHeight = top.getContentHeight();
+			document.getElementById("_orderPanel").style.height = maxHeight + 'px';
+			var headTableH = document.getElementById("headTable").offsetHeight;
+			var orderTableH= document.getElementById("orderTable").offsetHeight;
+			var listFrameH = maxHeight - headTableH-orderTableH;
+			document.getElementById("listFrame").style.height = listFrameH + 'px';
+		}
+		
+</script>
 
 </head>
 <body>
 	<%@ include file="/commons/messages.jsp" %>
-	<div id="infoPanel">
+	<div id="_orderPanel" style="height:100px">	
+	<form action="${ctx}/zg/plan/ZgTBomManager/findBomListByPlanID.do?id=${model.cuid}" method="post" target="listFrame" >
+	<div id="headTable">
 			<table width="100%" cellpadding="0" cellspacing="1"
 				style="border: 1px solid #A8CFEB;">
 				<thead>
@@ -102,21 +123,22 @@
 				</thead>
 			</table>
 		</div>
-	 <table class="formitem" width="100%" cellpadding="0" cellspacing="1"
+	 <table id="orderTable" class="formitem" width="100%" cellpadding="0" cellspacing="1"
 				style="border-top: 1px solid #A8CFEB; margin-top: 3px;">
 				<thead>
 					<tr>
-						<td class="title" colspan="8">
+						<td class="title" colspan="10">
 							<img src="${ctx }/resources/images/frame/ico_noexpand.gif"
 								style="cursor: pointer" title="高级查询" alt="" id="img_1"
 								border="0" onclick="changeV('1')" />
-							换料申请单
+									<c:if test="${model.planType=='CHANGE'}">换料申请单</c:if>
+								<c:if test="${model.planType=='BACK'}">退料申请单</c:if>：${model.cuid}
 						</td>
 					</tr>
 				</thead>
 				<tbody id="tbody_1" style="display: block">
 					<tr>
-						<td colspan="8"
+						<td colspan="10"
 							style="border: 1px solid #A8CFEB; border-width: 0 0 1px 0;">
 							<table border="0" cellpadding="0" cellspacing="0">
 								<tr>
@@ -144,8 +166,18 @@
 						<th>
 							物料等级：
 						</th>
-						<td width="15%">
+						<td width="12%">
+						
+							<input type="hidden" id="extend1"  name="extend1" value="${model.extend1}"/>
 							${model.extend1}
+						</td>
+						<th>
+							线体：
+						</th>
+						<td width="5%">
+						
+							<input type="hidden" id="plant"  name="plant" value="${model.plant}"/>
+							${model.plant}
 						</td>
 
 						 <th>
@@ -159,10 +191,9 @@
 					</tr>
 				</tbody>
 			</table>
-	  <iframe
-				src="${ctx}/zg/plan/ZgTBomManager/findBomListByPlanID.do?id=${model.cuid}"
-				autolayout="true" name="listFrame" frameborder="0" width="100%"
-				height="100%" align="top" scrolling="no" />
+			</form>
+				<iframe id="listFrame" src="" name="listFrame" frameborder="0" width="100%" height="100%" scrolling="no"></iframe>
+</div>
 	</body>
 </html>
 	  

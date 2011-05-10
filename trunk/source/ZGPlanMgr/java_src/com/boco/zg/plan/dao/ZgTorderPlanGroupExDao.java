@@ -160,6 +160,19 @@ public class ZgTorderPlanGroupExDao extends ZgTorderPlanGroupDao{
 	}
 
 
+	/**
+	 * @param planId
+	 * @param state
+	 */
+	public int updateGroupStateByOrderPlanId(String planId, String state) {
+		Map paramsMap=new HashMap();
+		paramsMap.put("planId", planId);
+		paramsMap.put("state", state);
+		return getSqlMapClientTemplate().update("ZgTorderPlanGroupEx.updateGroupStateByOrderPlanId", paramsMap);
+		
+	}
+
+
 
 
 }

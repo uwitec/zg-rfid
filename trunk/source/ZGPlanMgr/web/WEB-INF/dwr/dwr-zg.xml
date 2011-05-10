@@ -106,5 +106,10 @@
 				value="com.boco.zg.bom.base.action.ZgTbomDwrAction" />
 		</create>
 		
+		<create creator="new" javascript="ZgTBomManagerDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.zg.plan.action.ZgTBomManagerDwrAction" />
+		</create>
+		
 	</allow>
 </dwr>

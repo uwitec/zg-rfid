@@ -63,6 +63,8 @@ public class LoadRequestProcessThread implements Runnable {
 	
 	
 	private static Object synLock=new Object();
+	private static Object planLock=new Object();
+	private static Object orderLock=new Object();
 	
 	private SapClient getSapClient() {
 		return (SapClient)ApplicationContextHolder.getBean("sapClient");
@@ -482,24 +484,29 @@ public class LoadRequestProcessThread implements Runnable {
 				}
 				
 				
-				
-				//判断订单是否新增订单
-				int isAddOrder=handlerSapDataService.isAddOrder(posKey,aufnr,arbpl);
-				if(isAddOrder==-1){//不是新增 1 更新订单辅表　更新订单信息　　判断需求的排序数量是否发生变化，如果发生变化，则得去变更相应的　orderbom,orderplanBom表　
-					handlerSapDataService.pxOrderInfoModify(arbpl, posKey,	psmng, pmenge,batchNo,isPsbhChange,psbh);
-				}else if (isAddOrder==0) {//该订单新增的，则直接插入订单辅表，订单表，订单bom表，再由后面统一生成领料计划
-					handlerSapDataService.pxOrderAdd(plant, posKey, pxDate,batchNo);
-				}else if(isAddOrder==3) {//折分生产线
-					handlerSapDataService.addOrderForChangeArbpl( aufnr, plant,posKey, pxDate,batchNo);
-				}else if (isAddOrder==1) {//之前的数据是排产数据  1 保存订单辅表　更新订单信息　　判断需求的排序数量是否发生变化，如果发生变化，则得去变更相应的　orderbom,orderplanBom表　
-					handlerSapDataService.handlePcToPxData(aufnr, plant,arbpl, posKey, psmng, pmenge, pxDate,batchNo);
-				}else if (isAddOrder==2) {//2新增（生产厂为新增，订单不是新增）
-					handlerSapDataService.pxOrderAddPlanInfo(aufnr, plant,	newPlant, arbpl, posKey, pxDate);
+				synchronized (orderLock) {//同步锁
+					//判断订单是否新增订单
+					int isAddOrder=handlerSapDataService.isAddOrder(posKey,aufnr,arbpl);
+					if(isAddOrder==-1){//不是新增 1 更新订单辅表　更新订单信息　　判断需求的排序数量是否发生变化，如果发生变化，则得去变更相应的　orderbom,orderplanBom表　
+						handlerSapDataService.pxOrderInfoModify(arbpl, posKey,	psmng, pmenge,batchNo,isPsbhChange,psbh);
+					}else if (isAddOrder==0) {//该订单新增的，则直接插入订单辅表，订单表，订单bom表，再由后面统一生成领料计划
+						handlerSapDataService.pxOrderAdd(plant, posKey, pxDate,batchNo);
+					}else if(isAddOrder==3) {//折分生产线
+						handlerSapDataService.addOrderForChangeArbpl( aufnr, plant,posKey, pxDate,batchNo);
+					}else if (isAddOrder==1) {//之前的数据是排产数据  1 保存订单辅表　更新订单信息　　判断需求的排序数量是否发生变化，如果发生变化，则得去变更相应的　orderbom,orderplanBom表　
+						handlerSapDataService.handlePcToPxData(aufnr, plant,arbpl, posKey, psmng, pmenge, pxDate,batchNo);
+					}else if (isAddOrder==2) {//2新增（生产厂为新增，订单不是新增）
+						handlerSapDataService.pxOrderAddPlanInfo(aufnr, plant,	newPlant, arbpl, posKey, pxDate);
+					}
 				}
+				
 				
 			}
 			//生成计划领料
-			handlerSapDataService.generateCarPlan(batchNo);
+			synchronized (planLock) {//同步锁
+				handlerSapDataService.generateCarPlan(batchNo);
+			}
+			
 			
 			// 处理数据完后删除临时表的数据
 			// 执行完后修改日志状态

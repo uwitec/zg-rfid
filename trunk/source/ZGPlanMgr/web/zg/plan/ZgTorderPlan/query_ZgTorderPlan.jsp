@@ -170,6 +170,13 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
        		 	 <c:if test="${obj.orgId==defaultOrgId }"><option value="${ obj.orgId}"  selected >${ obj.orgId}</option></c:if>
        		</c:forEach>
         </select> </c:when>
+           <c:when test="${pageRequest.filters.planType=='CHANGE'}">换料领料  &nbsp;&nbsp;&nbsp;&nbsp;生产厂：
+           <select name="plant" id="plant" style="width:100px" onChange="plantOnChange(this.value)">
+       		<c:forEach items="${mangerOrgListCHANGE}" var="obj">
+       		 <c:if test="${obj.orgId!=defaultOrgId }"><option value="${ obj.orgId}"   >${ obj.orgId}</option></c:if>
+       		 	 <c:if test="${obj.orgId==defaultOrgId }"><option value="${ obj.orgId}"  selected >${ obj.orgId}</option></c:if>
+       		</c:forEach>
+        </select> </c:when>
         </c:choose>
        </if>	
        <c:if test="${ empty viewModel }">

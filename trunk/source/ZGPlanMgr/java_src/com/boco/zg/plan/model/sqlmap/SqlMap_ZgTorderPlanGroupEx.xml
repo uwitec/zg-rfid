@@ -48,6 +48,11 @@
     ]]>
     </update>
     
+    <update id="updateGroupStateByOrderPlanId" parameterClass="java.util.HashMap">
+    <![CDATA[
+         update zg_t_order_plan_group p set p.state=#state# where exists (select 1 from zg_t_group_order_plan op where op.group_id=p.cuid and op.order_plan_id=#planId#)
+    ]]>
+    </update>
     
     
         <update id="updateZgtorderPlanStateByGroupId" parameterClass="java.util.HashMap">
@@ -132,7 +137,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		          zg_t_order zto,
        zg_t_order_aide aide
 		 where zto.cuid=aide.order_id
- 		and aide.plant=plan.plant 	 
+		and aide.plant=plan.plant
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   and vorg.org_id=plan.plant 
 		   and emp.org_id = vorg.cuid
@@ -154,7 +159,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		    <![CDATA[    and zto.order_state<>'-1' 
 		    and zto.freeze<>'4']]>
 		     
-		   and plan.plant='$plant$'
+            and plan.plant='$plant$'
 		   
 		   <isNotEmpty prepend="AND" property="planType">
        	     oup.plan_type = '$planType$'
@@ -205,7 +210,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		 and bom.carnum is not null
 		 and 
 		 zto.cuid=aide.order_id
- 		and aide.plant=plan.plant 	 and
+ 		and aide.plant=plan.plant and
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   vorg.org_id=plan.plant
 		   and emp.org_id = vorg.cuid

@@ -120,7 +120,7 @@
 										</td>
 										<td align="center">
 										<c:choose>
-										 <c:when test="${obj.STATE=='4'}">待品质部审核</c:when>
+										 <c:when test="${obj.STATE=='-4'}">待品质部审核</c:when>
 										</c:choose>
 									   </td>
 								

@@ -122,11 +122,11 @@ public class Constants {
 	/*换料计划状态
 	*/
 	public enum ChangePlanStatus {
-		SAVE("0", "保存"),
-		REJECTAUDITING("1","厂领导审核退回"),
-		WAITAUDITING("2", "待厂领导审核"),
-		WAITAUDITINGC("4", "待品质部审核"),
-		DONE("8", "完成");
+		SAVE("-8", "未提交"),
+		REJECTAUDITING("-7","厂领导审核退回"),
+		WAITAUDITING("-6", "待厂领导审核"),
+		WAITAUDITINGC("-4", "待品质部审核"),
+		DONE("0", "审批完成");
 		
 		private String value;
 
@@ -181,8 +181,8 @@ public class Constants {
 		PLTYPE("3", "批量"),
 		ZZTYPE("ABE", "总装"),
 		ADD("4","补领料"),
-		CHANGE("change","换料"),
-		BACK("7","退料");
+		CHANGE("CHANGE","换料"),
+		BACK("BACK","退料");
 
 		
 		private String value;

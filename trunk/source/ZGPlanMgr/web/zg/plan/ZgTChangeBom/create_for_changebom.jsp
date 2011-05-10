@@ -21,9 +21,8 @@
 			type="text/css" rel="stylesheet" />
 		<link type="text/css" href="${ctx}/resources/css/${_theme}/frame.css"
 			rel="stylesheet" />
-		<script src="${ctx}/dwr/interface/ZgTorderbomDwrAction.js"
-			type="text/javascript"></script>
-		<script type='text/javascript' src='${ctx}/dwr/interface/ZgTbomDwrAction.js'></script>
+		<script type="text/javascript" src="${ctx}/dwr/interface/ZgTBomManagerDwrAction.js"></script>
+		<script type="text/javascript" src="${ctx}/dwr/interface/ZgTorderDwrAction.js"></script>
 		<style>
 .extendTd {
 	
@@ -82,27 +81,49 @@
 }
 </style>
 		<script type="text/javascript">
+		
 		$(function() {
+		
 			initAutoComplete("${ctx}/autoComplate/findRelationData.do");
 			var img = "<img src='"+ctx+"/resources/images/frame/autocomplete.png'/>";
 			$("#orderId_value").after(img);
-			//$("form:first").submit();
+			doLayout();
+			$(window).bind("resize",doLayout);
+			$("form:first").submit();
 		});
+		
+		
+		function doLayout() {
+			var maxHeight = top.getContentHeight();
+			document.getElementById("_orderPanel").style.height = maxHeight + 'px';
+			var headTableH = document.getElementById("headTable").offsetHeight;
+			var orderTableH= document.getElementById("orderTable").offsetHeight;
+			var listFrameH = maxHeight - headTableH-orderTableH;
+			document.getElementById("listFrame").style.height = listFrameH + 'px';
+		}
+		
+		
+		
 		var orderID ="";
 		
 		
-		function addStorage(){
+		function saveChangeOrder(){
 			var items=document.frames('listFrame').document.getElementsByName("items");
 			if(items.length<=0){
 				alert('请添加物料');
 				return;
 			}
-			document.frames['listFrame'].saveBom();
-			var form=document.forms[0];
-			
-			
-			form.action="${ctx}/zg/plan/ZgTBomManager/save.do";
-			form.submit();
+			var buildupSubmitParams=document.frames('listFrame').buildupSubmitParams();
+			ZgTBomManagerDwrAction.saveChangOrderBom(buildupSubmitParams,function(data){
+				if(data=="success") {
+					var form=document.forms[0];
+					form.target="_self";
+					form.action="${ctx}/zg/plan/ZgTBomManager/save.do";
+					form.submit();
+				}else {
+					alert("系统繁忙，请稍后再试");
+				}
+			});
 
 		}
 		function selectOrderArbpl(){
@@ -125,6 +146,7 @@
 				
 				$("#orderId_label").val(aufnr);
 				$("#orderId_value").val(orderID);
+				generatePlantSelect(orderID);
 			   }
 			}else{
 		    if(items.length<=0){
@@ -143,23 +165,33 @@
 				
 				$("#orderId_label").val(aufnr);
 				$("#orderId_value").val(orderID);
+				generatePlantSelect(orderID);
 			   }
 			}else{
-			alert("请先删除当前订单号下的物料，然后再选择");
-			return;
+				alert("请先删除当前订单号下的物料，再进行该操作");
+				return;
 			}
 		}
+		
 	}
-	    function selectectend1(){
+	
+	function generatePlantSelect(orderId){
+		ZgTorderDwrAction.getPlantByOrderId(orderId,function(data){
+			//alert(data);
+			DWRUtil.removeAllOptions("plant");  
+			DWRUtil.addOptions("plant",data,"PLANT","PLANT");
+		});
+	}
+	function selectectend1(){
 	      
 	     var items=document.frames('listFrame').document.getElementsByName("items");
 	     if(items.length>0){
-	      alert("请先删除该物料等级下物料，然后再选择");
-	      return;
+	      	alert("请先清空物料列表下的物料，再进行该操作");
+	      	return;
 	     }
 	    
-	    }
-		function submitStorage(){
+	  }
+		function submitChangeOrder(){
 			var items=document.frames('listFrame').document.getElementsByName("items");
 			if(items.length<=0){
 				alert('请添加物料');
@@ -167,8 +199,6 @@
 			}
 			//alert(items.length);
 			for(var i=0;i<items.length;i++){
-				//alert(i);
-				//alert(document.frames('listFrame').document.getElementById('WAIT_BACK_NUM_'+i));
 				
 				wait_back_num=document.frames('listFrame').document.getElementById('WAIT_BACK_NUM_'+i).value;
 				if(wait_back_num==0){
@@ -178,29 +208,34 @@
 			}
 			
 			
-		document.frames['listFrame'].saveBom();
-			
-			var form=document.forms[0];
-			
-			form.action="${ctx}/zg/plan/ZgTBomManager/submit.do";
-			form.submit();
-			}
+			var buildupSubmitParams=document.frames('listFrame').buildupSubmitParams();
+			ZgTBomManagerDwrAction.saveChangOrderBom(buildupSubmitParams,function(data){
+				if(data=="success") {
+					var form=document.forms[0];
+					form.target="_self";
+					form.action="${ctx}/zg/plan/ZgTBomManager/submit.do";
+					form.submit();
+				}else {
+					alert("系统繁忙，请稍后再试");
+				}
+			});
+		}
 	</script>
 	</head>
 	<body>
 		<%@ include file="/commons/messages.jsp"%>
-		
-		<form action="${ctx}/zg/plan/ZgTBomManager/findBomListByPlanID.do" method="post" >
+	<div id="_orderPanel" style="height:100px">		
+		<form action="${ctx}/zg/plan/ZgTBomManager/findBomListByPlanID.do?planType=${model.planType}" method="post"  target="listFrame" >
 			<input type="hidden" id="cuid" name="cuid" value="${model.cuid}" />
-			<table width="100%" cellpadding="0" cellspacing="1"
+			<table id="headTable" width="100%" cellpadding="0" cellspacing="1"
 				style="border: 1px solid #A8CFEB;">
 				<thead>
 					<tr>
 						<td class="formToolbar">
 
 							<div class="button" style="text-align: left;">
-								<a href="javascript:addStorage()"><span><img src="<%=iconPath%>/icon_tool_049.gif" />保存</span></a>
-								<a href="javascript:submitStorage()"><span><img src="<%=iconPath%>/true.gif" />提交</span></a>
+								<a href="javascript:saveChangeOrder()"><span><img src="<%=iconPath%>/icon_tool_049.gif" />保存</span></a>
+								<a href="javascript:submitChangeOrder()"><span><img src="<%=iconPath%>/true.gif" />提交</span></a>
 								<a href="javascript:if(parent.doQuery)parent.doQuery()"><span><img src="<%=iconPath%>/ico_007.gif" />返回</span></a>
 							</div>
 						</td>
@@ -208,20 +243,23 @@
 				</thead>
 			</table>
 
-			<table class="formitem" width="100%" cellpadding="0" cellspacing="1"
+			<table id="orderTable"  class="formitem" width="100%" cellpadding="0" cellspacing="1"
 				style="border-top: 1px solid #A8CFEB; margin-top: 3px;">
 				<thead>
 					<tr>
-						<td class="title" colspan="8">
+						<td class="title" colspan="10">
 							<img src="${ctx }/resources/images/frame/ico_noexpand.gif"
-								style="cursor: pointer" title="高级查询" alt="" id="img_1"
+								style="cursor: pointer" title="" alt="" id="img_1"
 								border="0" onclick="changeV('1')" />
+								<c:if test="${model.planType=='CHANGE'}">换料申请单</c:if>
+								<c:if test="${model.planType=='BACK'}">退料申请单</c:if>
+								
 						</td>
 					</tr>
 				</thead>
 				<tbody id="tbody_1" style="display: block">
 					<tr>
-						<td colspan="8"
+						<td colspan="10"
 							style="border: 1px solid #A8CFEB; border-width: 0 0 1px 0;">
 							<table border="0" cellpadding="0" cellspacing="0">
 								<tr>
@@ -249,16 +287,28 @@
 								columnNameLower="orderId" bmClassId="FW_ORGANIZATION"
 								column="m.t0_LABEL_CN"  value=""/>
 							<input type="hidden" id="orderId_value" name="orderId" />
+							<input type="hidden" id="planType" name="planType"  value="${ model.planType}"/>
 						</td>
 						<th>
 							物料等级：
 						</th>
-						<td width="15%" onclick="selectectend1()">
+						<td width="12%" onclick="selectectend1()">
 					
 							<select name="extend1" id="extend1" >
 								<option value="A">A级物料</option>
 								<option value="B">B级物料</option>
 								<option value="C">C级物料</option>
+							</select>
+							
+						</td>
+						
+						<th>
+							线体：
+						</th>
+						<td width="5%" onclick="selectectend1()">
+					
+							<select name="plant" id="plant" >
+								<option value="">请选择</option>
 							</select>
 							
 						</td>
@@ -276,10 +326,10 @@
 				</tbody>
 			</table>
 		</form>
-		<iframe
-			src="${ctx}/zg/plan/ZgTBomManager/findBomListByPlanID.do?id=${model.cuid}"
-			autolayout="true" name="listFrame" frameborder="0" width="100%"
-			height="100%" align="top" scrolling="no" />
+			<iframe id="listFrame" src="" name="listFrame" frameborder="0" width="100%" height="100%" scrolling="no"></iframe>
+		
+		</div>
+	
 
 	</body>
 </html>

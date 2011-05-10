@@ -4,7 +4,7 @@
 <%@ include file="/commons/taglibs.jsp" %>
 <%
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
-String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
+String expandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 %>
 <html>
 <head>
@@ -72,6 +72,8 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 		<input type="hidden" name="s_planType" value="${pageRequest.filters.planType}"/>
 		<input type="hidden"  name="s_equalBmClassIdQuery"  value="${pageRequest.filters.equalBmClassIdQuery}"/>
 		<input type="hidden"  name="s_inSubBmClassIdQuery"  value="${pageRequest.filters.inSubBmClassIdQuery}"/>
+		
+		
 		<table id="query_table" class="query_panel" cellpadding="0" cellspacing="0">
 			<thead>
 				<tr class="querybar">
@@ -80,37 +82,41 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							<img src="<%=expandIcon %>" for="tbody_1"/>
 						</label>
 					</td>
+					<td width="80px" class="label">单据类型：</td>
+					<td  width="80px">
+						<select name="s_type" id="s_type" >
+						    <option value="CHANGE">	换料</option>
+							<option value="BACK" >退料</option>
+						</select>
+					</td>
 					<td width="80px" class="label">
 						开始时间：
 					</td>
-					<td width="180px">
+					<td width="120px">
 						<input type="text" dateFlag="true" id="s_createDate_start" name="s_createDate_start" value="${planDate_start }" size="20"  maxlength="40" readonly="true"/>
 					</td>
 					<td width="80px" class="label">结束时间：</td>
-					<td width="180px">
+					<td width="120px">
 						<input type="text" dateFlag="true" id="s_createDate_end" name="s_createDate_end" value="${planDate_end }" size="20"  maxlength="40"　readonly="true"/>
 					</td>
 				
-					<td width="80px" class="label">单据状态：</td>
-					<td>
-				<select name="s_state" id="s_state">
 					
-					<option value="4">待品质部审核</option>
-				</select>
-					</td>
 				</tr>
 			</thead>
-			<tbody attr="tbody_1" class="querybar unexpand">
+			<tbody attr="tbody_1" class="querybar expand">
 				<tr>
+				
 					<td width="20px" align="center" rowspan="3" ></td>
-						<td class="label">生产订单</td>
-						<td><input type="text" size="20" name="s_aufnr"/></td>
-						<td class="label"></td>
-						<td>
-						</td>
-					<td class="label"></td>
-					<td>
+					<td width="80px" class="label">单据状态：</td>
+					<td width="80px">
+				<select name="s_state" id="s_state">
+					<option value="-4">待品质部审核</option>
+				</select>
 					</td>
+						<td class="label" width="80px">生产订单：</td>
+						<td><input type="text" size="20" name="s_aufnr"/></td>
+				</tr>
+					
 			</tbody>
 			<tfoot class="querybar">
 				<tr>
@@ -123,6 +129,9 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 				</tr>
 			</tfoot>
 		</table>
+		
+		
+		
 	</form>
 	<iframe id="listFrame" src="" name="listFrame" frameborder="0" width="100%" height="100%" align="top" scrolling="no" ></iframe>
 </div>

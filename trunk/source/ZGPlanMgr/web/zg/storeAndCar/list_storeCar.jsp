@@ -170,7 +170,7 @@
 							<td ondblclick="edit('${obj.bomId}','${n.count-1}code','${n.count-1}carLabelCn')" title="双击修改车型信息">
 								<label id ="${n.count-1}carLabelCn">${obj.carLabelCn}</label>
 							</td>	
-							<td ondblclick="carNumChange('${n.count-1}carNumLabel','${n.count-1}carNum','${n.count-1}oldCarNum','${obj.bomId}')" title="双击修改装车数量">
+							<td ondblclick="carNumChange('${n.count-1}carNumLabel','${n.count-1}carNum','${n.count-1}oldCarNum','${obj.bomId}')" title="双击填写退料数量">
 								<label id="${n.count-1}carNumLabel">${obj.carNum}</label>
 								<input type="hidden" id="${n.count-1}oldCarNum" value="${obj.carNum}" />
 								<input type="text" id="${n.count-1}carNum" onblur="editCarNum(this,'${n.count-1}carNumLabel','${n.count-1}carNum','${n.count-1}oldCarNum','${obj.bomId}')" value="${obj.carNum}" style="width:80px" maxlength="13"  style="display:none" />

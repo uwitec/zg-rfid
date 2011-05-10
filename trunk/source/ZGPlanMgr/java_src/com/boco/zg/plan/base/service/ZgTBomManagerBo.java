@@ -6,29 +6,25 @@
 
 package com.boco.zg.plan.base.service;
 
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+import javacommon.base.BaseManager;
+import javacommon.base.EntityDao;
+
 import org.springframework.stereotype.Component;
 
 import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 
-import java.util.*;
-
-import javacommon.base.*;
-import javacommon.util.*;
-import javacommon.base.model.*;
-
-import cn.org.rapid_framework.util.*;
-import cn.org.rapid_framework.web.util.*;
-import cn.org.rapid_framework.page.*;
-import cn.org.rapid_framework.page.impl.*;
-import cn.org.rapid_framework.beanutils.BeanUtils;
-
-import com.boco.zg.plan.base.model.*;
-import com.boco.zg.plan.base.dao.*;
-import com.boco.zg.plan.base.service.*;
+import com.boco.zg.plan.base.dao.ZgTBomManagerDao;
+import com.boco.zg.plan.base.model.ZgTcarbom;
+import com.boco.zg.plan.base.model.ZgTcarplan;
+import com.boco.zg.plan.base.model.ZgTorderPlan;
+import com.boco.zg.plan.base.model.ZgTorderPlanbom;
 import com.boco.zg.plan.model.ZgTorderbomEx;
-import com.boco.zg.storage.base.model.ZgTstoragebom;
-import com.boco.zg.storage.model.ZgTstoragebomEx;
+import com.boco.zg.util.Constants;
 
 /**
  * @author 翁钦
@@ -41,6 +37,8 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 	private ZgTBomManagerDao zgTBomManagerDao;
     private ZgTorderPlanbomBo zgTorderPlanbomBo;
     private ZgTorderPlanbom zgTorderPlanbom;
+    private ZgTcarplanBo zgTcarplanBo;
+    private ZgTcarbomBo zgTcarbomBo;
 
 	/* (non-Javadoc)
 	 * @see javacommon.base.BaseManager#getEntityDao()
@@ -112,19 +110,20 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 			//if(obj.get("isDel")==null){
 			 boolean b=((Boolean)obj.get("isDel")).booleanValue();
 			 if(b==false){
-			ZgTorderPlanbom zgTorderPlanbom=new ZgTorderPlanbom();
-			
-			
-			zgTorderPlanbom.setOrderPlanId(zgTorderPlan.getCuid());
-			
-			zgTorderPlanbom.setOrderId(zgTorderPlan.getOrderId());
-			
-		   //zgTorderPlanbom.setCuid(String.valueOf(obj.get("CUID")));
-			zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
-			zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
-			zgTorderPlanbom.setOrderBomId(String.valueOf(obj.get("CUID")));
-			zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
-			zgTorderPlanbomBo.save1(zgTorderPlanbom);
+					ZgTorderPlanbom zgTorderPlanbom=new ZgTorderPlanbom();
+					
+					
+					zgTorderPlanbom.setOrderPlanId(zgTorderPlan.getCuid());
+					
+					zgTorderPlanbom.setOrderId(zgTorderPlan.getOrderId());
+					
+				   //zgTorderPlanbom.setCuid(String.valueOf(obj.get("CUID")));
+					zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+					zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+					zgTorderPlanbom.setOrderBomId(String.valueOf(obj.get("CUID")));
+					zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
+					zgTorderPlanbom.setState("0");
+					zgTorderPlanbomBo.save1(zgTorderPlanbom);
 				}
 			 }
 			
@@ -159,6 +158,7 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 				zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
 				zgTorderPlanbom.setOrderBomId(String.valueOf(obj.get("CUID")));
 				zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
+				zgTorderPlanbom.setState("0");
 				zgTorderPlanbomBo.save1(zgTorderPlanbom);
 			}else if(((Boolean)obj.get("isModity")).booleanValue()==true&&obj.get("PBID")!=null){ //代表数据修改过但这个是从数据库中获取
 				if(obj.get("isDel")==null){ //删除为空代表数据库中获取的数据没有删除状态
@@ -181,6 +181,7 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 					zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
 					zgTorderPlanbom.setOrderBomId(String.valueOf(obj.get("CUID")));
 					zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
+					zgTorderPlanbom.setState("0");
 					zgTorderPlanbomBo.save1(zgTorderPlanbom);
 				}
 		  }
@@ -225,6 +226,89 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 
 	public ZgTBomManagerDao getZgTBomManagerDao() {
 		return zgTBomManagerDao;
+	}
+
+	/**
+	 * @param pageRequest
+	 * @return
+	 */
+	public Page pageListBackBom(PageRequest<Map> pageRequest) {
+		return zgTBomManagerDao.pageListBackBom(pageRequest);
+	}
+
+	/**
+	 * 获取登陆领料人负责的生产厂
+	 * @param operatorId
+	 * @return
+	 */
+	public List<Map> getPlanListByOperatorId(String operatorId) {
+		return zgTBomManagerDao.getPlanListByOperatorId(operatorId);
+	}
+
+	/**
+	 * 检查退料数量
+	 * @param bom
+	 */
+	public boolean checkBackNum(ZgTorderbomEx bom) {
+		return zgTBomManagerDao.checkBackNum(bom);
+		
+	}
+
+	/**
+	 * 退料处理
+	 * @param bomList
+	 */
+	public void backBom(List<ZgTorderbomEx> bomList,String operatorId,String storageId) {
+		int num=0;
+		String carPlanId="";
+		for(ZgTorderbomEx obj:bomList){
+			if(num==0){//生产退料单据
+				ZgTcarplan zgTcarplan = new ZgTcarplan(); 
+				zgTcarplan.setCreateUserId(operatorId);
+				zgTcarplan.setCreateDate(Calendar.getInstance().getTime());
+				zgTcarplan.setCarUser(operatorId);
+				zgTcarplan.setCarState(Constants.CarPlanStatus.DONE.value());
+				zgTcarplan.setOrderPlanType(Constants.OrderPlanType.BACK.value());
+				zgTcarplan.setType(Constants.CarPlanType.STOREGETDATA.value());
+				zgTcarplan.setIsManul(Constants.isNotManulFinished);
+				carPlanId=zgTcarplanBo.saveCarplan(zgTcarplan);
+			}
+			
+			ZgTorderPlanbom planbom=zgTorderPlanbomBo.getById(obj.getOrderPlanbomId());
+			if(planbom.getWaitBackNum()<obj.getBackNum()){
+				continue;
+			}
+			
+			//退料单据明细
+			ZgTcarbom bom = new ZgTcarbom();
+			bom.setCarPlanId(carPlanId);
+			bom.setOrderPlanbomId(bom.getOrderPlanbomId());
+			bom.setPlanNum(obj.getBackNum());
+			bom.setRealNum(obj.getBackNum());
+			zgTcarbomBo.save(bom);
+			
+			//更新退料BOM数量
+			planbom.setWaitBackNum(planbom.getWaitBackNum()-obj.getBackNum());
+			planbom.setBackNum(planbom.getBackNum()+obj.getBackNum());
+			planbom.setStorageNum(planbom.getStorageNum()+obj.getBackNum());
+			if(!planbom.getState().equals(Constants.OrderPlanStatus.FINISHED.value())&&planbom.getCarNum()==planbom.getCompleteNum()){
+				if(planbom.getWaitBackNum()==0){
+					planbom.setState(Constants.OrderPlanStatus.FINISHED.value());
+				}
+			}
+			
+			zgTorderPlanbomBo.save(planbom);
+			
+			//更新退料申请单状态
+		}
+	}
+
+	public ZgTcarplanBo getZgTcarplanBo() {
+		return zgTcarplanBo;
+	}
+
+	public void setZgTcarplanBo(ZgTcarplanBo zgTcarplanBo) {
+		this.zgTcarplanBo = zgTcarplanBo;
 	} 
  }
 
