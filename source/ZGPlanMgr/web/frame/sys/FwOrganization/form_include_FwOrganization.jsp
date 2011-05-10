@@ -103,23 +103,23 @@
 </tr>
 <tr>
 		<td  class="label">
-			<span class="alterlabel">*</span><%=FwOrganization.ALIAS_LEVEL_NUM%>：
+			<span class="alterlabel"></span><%=FwOrganization.ALIAS_LEVEL_NUM%>：
 		</td>
 		<td>
 			<input type="text" value="${model.levelNum}" size="30"
-				readonly="true" name="levelNum" id="levelNum" maxlength="8"
-				class="number" />
+			name="levelNum" id="levelNum" maxlength="8"
+				/>
 
 		</td>
 	</tr>
 	<tr>
 
 		<td  class="label">
-			<span class="alterlabel">*</span><%=FwOrganization.ALIAS_SEQ%>：
+			<span class="alterlabel"></span><%=FwOrganization.ALIAS_SEQ%>：
 		</td>
 		<td>
 			<input type="text" value="${model.seq}" size="30" name="seq"
-				maxlength="85" class="required"   />
+				maxlength="85"   />
 
 		</td>
 		</tr>
