@@ -69,8 +69,8 @@ public class ZgTorderPlanGroup extends BaseEntity {
 	
 	//columns START
 	private java.lang.String cuid;
-	private java.lang.String labelCn;
 	private java.lang.String state;
+	private java.lang.String labelCn;
 	private java.lang.Double percent;
 	private java.lang.String planType;
 	private java.lang.Long psbh;

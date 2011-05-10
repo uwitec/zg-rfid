@@ -39,18 +39,13 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 		function doLayout() {
 			var maxHeight = parent.document.getElementById("listFrame"+parent.num).style.height;
 			var maxWidth = parent.document.getElementById("listFrame0").style.width;
-				maxWidth=maxWidth.replace("px","")*1;
+			maxWidth=maxWidth.replace("px","")*1;
 			maxHeight = maxHeight.replace("px","")*1;
 			var height = maxHeight - 17;
 			maxWidth=maxWidth-10;
 			document.getElementById("grid-data-panel").style.height=height+'px';
-		//	if("${pageRequest.filters.planType}"=="ABE"){
-				document.getElementById("grid-data-panel").style.width=(maxWidth-122)+'px';
-				document.getElementById("grid-panel").style.width=(maxWidth-122)+'px';
-		//	}else{
-		//		document.getElementById("grid-data-panel").style.width=maxWidth+'px';
-		//		document.getElementById("grid-panel").style.width=maxWidth+'px';
-		//	}
+			document.getElementById("grid-data-panel").style.width=(maxWidth-122)+'px';
+			document.getElementById("grid-panel").style.width=(maxWidth-122)+'px';
 		}
 		
 		function edit(cuid){

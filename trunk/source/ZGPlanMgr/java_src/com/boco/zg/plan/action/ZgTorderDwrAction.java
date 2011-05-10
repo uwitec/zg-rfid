@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import cn.org.rapid_framework.util.ApplicationContextHolder;
 
 import com.boco.frame.login.pojo.OperatorInfo;
+import com.boco.zg.plan.base.model.ZgTorder;
 import com.boco.zg.plan.service.ZgTorderExBo;
 import com.boco.zg.plan.service.ZgTorderbomExBo;
 
@@ -84,6 +85,10 @@ public class ZgTorderDwrAction extends BaseDwrAction {
 		OperatorInfo operatorInfo = (OperatorInfo)this.getSessionOperatorInfo(request);
 		List<Map> list=this.getZgTorderExBo().getPlantByOrderId(orderId,operatorInfo.getOperatorId());
 		return this.getZgTorderExBo().getPlantByOrderId(orderId,operatorInfo.getOperatorId());
+	}
+	
+	public List<ZgTorder> getOrderListByPlanGroupId(String groupId) {
+		return getZgTorderExBo().getOrderInfoListByGroupId(groupId);
 	}
 	
 }
