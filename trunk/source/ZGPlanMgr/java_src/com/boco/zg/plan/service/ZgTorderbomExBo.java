@@ -770,4 +770,13 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 		  zgTorderbomDao.deleteById(id);
 	}
 
+	/**
+	 *  更新物料的自有物料组编号
+	 * @param idnrk
+	 * @param matkl
+	 */
+	public void setSelfMatkl(String idnrk, String matkl) {
+		zgTorderbomExDao.setSelfMatkl(idnrk,matkl);
+	}
+
 }

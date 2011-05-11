@@ -400,6 +400,24 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
     ]]>
     </update>
     
+        <update id="updateOrderbomSelfMatkl" parameterClass="java.util.HashMap">
+    <![CDATA[
+        UPDATE ZG_T_ORDERBOM  t SET
+	       t.matkl_self='$matkl$'
+	    WHERE t.idnrk='$idnrk$'
+    ]]>
+    </update>
+    
+        <update id="updateBomSelfMatkl" parameterClass="java.util.HashMap">
+    <![CDATA[
+        UPDATE ZG_T_BOM  t SET
+	       t.matkl_self='$matkl$'
+	    WHERE t.idnrk='$idnrk$'
+    ]]>
+    </update>
+    
+    
+    
     <resultMap id="zgTorderbomExResult4" class="zgTorderbomEx">
     	<result property="cuid" column="cuid"/>
 		<result property="idnrk" column="IDNRK"/>
@@ -453,7 +471,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
 		   and morg.matkl = mat.id
-		   and mat.id = bom.matkl
+		   and mat.id = bom.matkl_self
 		   and mat.lgort = bom.lgort
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
@@ -618,7 +636,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
-		   and morg.matkl = mat.id
+		   and morg.matkl_self = mat.id
 		   and mat.id = bom.matkl
 		   and mat.lgort = bom.lgort
 		    and vorg.org_id=plan.plant 

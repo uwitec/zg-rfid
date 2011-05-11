@@ -213,6 +213,17 @@ public class ZgTorderbomDwrAction extends BaseDwrAction {
 		}
 		return StringHelper.isEmpty(msg)?"OK":msg;
 	}
+	
+	/**
+	 * 更新物料的自有物料组编号
+	 * @param idnrk
+	 * @param matkl
+	 * @return
+	 */
+	public String setSelfMatkl(String idnrk,String matkl){
+		getZgTorderbomExBo().setSelfMatkl(idnrk,matkl);
+		return "OK";
+	}
 
 
 	

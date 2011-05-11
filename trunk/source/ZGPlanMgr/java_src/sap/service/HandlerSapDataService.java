@@ -332,6 +332,17 @@ public interface HandlerSapDataService {
 	public SapResult handlerBackBOM(int batchNo);
 
 
+	/**
+	 * 处理自有物料组
+	 * 需在系统中增加一物料组，该物料组是在原来物料组的基础上进行细分，对于SAP每个同步过来的物料都需维护该物料组，
+	 * 只要维护过一次下一次就下载时就不用再进行给维护，系统进行记忆功能，维护是在BOM标识调整时进行维护，
+	 * 没有维护不能把生产订单下发领料。
+	 * @param batchNo
+	 * @param type 排序px 排产pc  变更bg
+	 */
+	public void handlerMatklSelfData(int batchNo,String type);
+
+
 	
 
 }

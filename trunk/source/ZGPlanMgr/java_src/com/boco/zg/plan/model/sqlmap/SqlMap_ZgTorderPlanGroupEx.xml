@@ -143,11 +143,9 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
 		   and morg.matkl = mat.id
-		   and mat.id = bom.matkl
+		   and mat.id = bom.matkl_self
 		   and mat.lgort = bom.lgort
 		   and bom.idnrk = orderbom.idnrk 
-		  	and   bom.lgort = orderbom.lgort 
-		   and bom.matkl=orderbom.matkl
 		     and bom.car_id is not null
 		   and bom.carnum is not null
 		   </isNotEqual>
@@ -200,10 +198,9 @@ and t.state<>'9' and gop.group_id='$groupId$')
        			   zg_t_bom                 bom,
                 zg_materiel              ma
        			
-		 where orderbom.matkl=bom.matkl
-		 and orderbom.idnrk=bom.idnrk
-		 and orderbom.lgort=bom.lgort
-		 and bom.matkl=ma.id
+		 where 
+		  orderbom.idnrk=bom.idnrk
+		 and bom.matkl_self=ma.id
 		 and bom.lgort=ma.lgort
 		 
 		 and bom.car_id is not null

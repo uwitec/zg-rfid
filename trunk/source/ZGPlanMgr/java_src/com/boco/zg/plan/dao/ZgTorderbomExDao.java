@@ -319,4 +319,19 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 
 	}
 
+
+	/** 更新物料的自有物料组编号
+	 * 
+	 * @param idnrk
+	 * @param matkl
+	 */
+	public void setSelfMatkl(String idnrk, String matkl) {
+		Map paramsMap=new HashMap();
+		paramsMap.put("idnrk", idnrk);
+		paramsMap.put("matkl", matkl);
+		getSqlMapClientTemplate().update("ZgTorderbomEx.updateOrderbomSelfMatkl",paramsMap);
+		getSqlMapClientTemplate().update("ZgTorderbomEx.updateBomSelfMatkl",paramsMap);
+		
+	}
+
 }
