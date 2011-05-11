@@ -81,11 +81,17 @@ public class LoadRequestProcessThread implements Runnable {
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_01")) {
 				this.handlerPxData();
 				this.handleSuppliersData();
+				
+				//处理自有物料组数据
+				handlerMatklSelfData(batchNo,"px");
 			}
 			// 处理排产数据
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_02")) {
 				this.handlerPcData();
 				this.handleSuppliersData();
+				
+				//处理自有物料组数据
+				handlerMatklSelfData(batchNo,"pc");
 			}
 			//批量领料bom组件
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_03")) {
@@ -95,6 +101,9 @@ public class LoadRequestProcessThread implements Runnable {
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_04")) {
 				this.handlerChangeData();
 				this.handleSuppliersData();
+				
+				//处理自有物料组数据
+				handlerMatklSelfData(batchNo,"bg");
 			}
 			
 			// 领料数据回传sap接口
@@ -106,6 +115,7 @@ public class LoadRequestProcessThread implements Runnable {
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_06")) {
 				this.handlerBackBOM();
 			}
+
 			
 			getHandlerSapDataService().synBomMateriel();
 			
@@ -119,6 +129,17 @@ public class LoadRequestProcessThread implements Runnable {
 	}
 	
 	
+
+	/**
+	 * 
+	 * @param batchNo
+	 * @param type 排序px 排产pc  变更bg
+	 */
+	private void handlerMatklSelfData(int batchNo,String type) {
+		HandlerSapDataService handlerSapDataService = getHandlerSapDataService();
+		handlerSapDataService.handlerMatklSelfData(batchNo,type);
+		
+	}
 
 	private DataSourceTransactionManager getTransactionManager() {
 		return (DataSourceTransactionManager)ApplicationContextHolder.getBean("transactionManager");
@@ -507,6 +528,7 @@ public class LoadRequestProcessThread implements Runnable {
 				handlerSapDataService.generateCarPlan(batchNo);
 			}
 			
+					
 			
 			// 处理数据完后删除临时表的数据
 			// 执行完后修改日志状态

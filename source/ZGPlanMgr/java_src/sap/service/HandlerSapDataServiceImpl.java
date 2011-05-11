@@ -1960,5 +1960,38 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		if(list.size()==0) return 0l;
 		return IbatisDAOHelper.getLongValue(list.get(0), "WAITBACKNUM");
 	}
+
+	/**
+	 * 处理自有物料组
+	 * 需在系统中增加一物料组，该物料组是在原来物料组的基础上进行细分，对于SAP每个同步过来的物料都需维护该物料组，
+	 * 只要维护过一次下一次就下载时就不用再进行给维护，系统进行记忆功能，维护是在BOM标识调整时进行维护，
+	 * 没有维护不能把生产订单下发领料。
+	 */
+	public void handlerMatklSelfData(int batchNo,String type){
+		StringBuffer sqlBuffer=new StringBuffer();
+		sqlBuffer.append("select to_char(t.pcdat,'yyyy-mm-dd') pcdat,to_char(t.pxdat,'yyyy-mm-dd') pxdat from zg_t_order_temp t where t.batch_no='"+batchNo+"' and rownum=1");
+		List<Map> list=this.baseDao.findDynQuery(sqlBuffer.toString());
+		if(list.size()>0){
+			//排产日期
+			String pcDatStr=list.get(0).get("PCDAT").toString();
+			String pxDatStr=list.get(0).get("PXDAT").toString();
+		
+			if("pc".equals(type)){//排产接口 ，则更新当天的排产数据
+				sqlBuffer=new StringBuffer();
+				sqlBuffer.append("update zg_t_orderbom t set t.matkl_self=(select bom.matkl_self from zg_t_bom bom where t.idnrk=bom.idnrk and rownum=1) ");
+				sqlBuffer.append(" where exists (select 1 from zg_t_order od where to_char(od.pcdat,'yyyy-mm-dd')='"+pcDatStr+"' and t.order_id=od.cuid)");
+				
+			}else {//排序和变更接口 则更新当天的排序数据
+				sqlBuffer=new StringBuffer();
+				sqlBuffer.append("update zg_t_orderbom t set t.matkl_self=(select bom.matkl_self from zg_t_bom bom where t.idnrk=bom.idnrk and rownum=1) ");
+				sqlBuffer.append(" where exists (select * from zg_t_order_aide aide where to_char(aide.px_date,'yyyy-mm-dd')='"+pxDatStr+"' and t.order_id=aide.order_id)");
+				this.baseDao.executeSql(sqlBuffer.toString());
+			}
+			
+			this.baseDao.executeSql(sqlBuffer.toString());
+		}
+		
+		
+	}
 	
 }

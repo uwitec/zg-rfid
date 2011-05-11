@@ -117,6 +117,7 @@ public class ZgTorderbom extends BaseEntity {
 	private String planStartTime;
 	private String planEndTime;
 	private String carNum;
+	private String matklSelf;
 	private Long remainNum;// 备料库存数量
 	private Long moveNum;
 	private Long planNum;
@@ -497,6 +498,14 @@ public class ZgTorderbom extends BaseEntity {
 
 	public void setBomNum(Long bomNum) {
 		this.bomNum = bomNum;
+	}
+
+	public String getMatklSelf() {
+		return matklSelf;
+	}
+
+	public void setMatklSelf(String matklSelf) {
+		this.matklSelf = matklSelf;
 	}
 
 	

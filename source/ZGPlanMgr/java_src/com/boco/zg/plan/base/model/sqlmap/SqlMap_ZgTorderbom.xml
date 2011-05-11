@@ -41,6 +41,8 @@
 		<result property="completeNum" column="complete_Num" />
 		<!-- 半成品库存数量 -->
 		<result property="semifinStoreNum" column="semifinStoreNum"/>
+		<result property="matklSelf" column="t0_MATKL_self"/>
+		
     </resultMap>
     
     <!-- 用于select查询公用抽取的列 -->
@@ -72,7 +74,8 @@
             M.STORAGE_STATE,
             m.f0_label_cn as m_f0_label_cn,
             t0_carnum,
-            m.t0_POSNR
+            m.t0_POSNR,
+            m.t0_MATKL_self
 	    ]]>
 	</sql>
 	
@@ -166,6 +169,7 @@
         	ZDTYL ,
         	MENGE ,
         	MATKL ,
+        	MATKL_SELF,
         	SORTF ,
         	SORTF_H ,
         	LGORT ,
@@ -188,6 +192,7 @@
         	#zdtyl# ,
         	#menge# ,
         	#matkl# ,
+        	#matklSelf#,
         	#sortf# ,
         	#sortfH# ,
         	#lgort# ,
@@ -225,7 +230,8 @@
 	        ZRZQD = #zrzqd# ,
 	        storage_num=#storageNum#,
 	        storage_state=#storageState#,
-	        posnr=#posnr#
+	        posnr=#posnr#,
+	        matkl_Self=#matklSelf#,
 	    WHERE CUID = #cuid#
     ]]>
     </update>
@@ -269,7 +275,8 @@
              		t0.storage_state,
        				f0.label_cn as f0_label_cn,
        				t0.posnr as t0_POSNR,
-       				null as t0_carnum
+       				null as t0_carnum,
+       				t0.MATKL_self as t0_MATKL_self
 	        from 
 	        ZG_T_ORDERBOM t0,
 	        fw_organization f0
@@ -356,7 +363,8 @@
              		t0.storage_state,
        				f0.label_cn as f0_label_cn,
        				t0.POSNR as t0_posnr,
-       				bom.carnum t0_carnum
+       				bom.carnum t0_carnum,
+       				t0.MATKL_self as t0_MATKL_self
 	        from 
 	        ZG_T_ORDERBOM t0,
 	        fw_organization f0,zg_t_bom bom
@@ -442,7 +450,8 @@
              		t0.storage_state,
        				f0.label_cn as f0_label_cn,
        				t0.POSNR as t0_posnr,
-       				null as t0_carnum
+       				null as t0_carnum,
+       				t0.MATKL_self as t0_MATKL_self
 	        from 
 	        ZG_T_ORDERBOM t0,
 	        fw_organization f0
@@ -530,7 +539,8 @@
              		t0.storage_state,
        				f0.label_cn as f0_label_cn,
        				t0.POSNR as t0_POSNR,
-       				null as t0_carnum
+       				null as t0_carnum,
+       				t0.MATKL_self as t0_MATKL_self
 	        from 
 	        ZG_T_ORDERBOM t0,
 	        fw_organization f0
@@ -617,7 +627,8 @@
              		t0.storage_state,
        				f0.label_cn as f0_label_cn,
        				t0.POSNR as t0_POSNR,
-       				null as t0_carnum
+       				null as t0_carnum,
+       				t0.MATKL_self as t0_MATKL_self
 	        from 
 	        ZG_T_ORDERBOM t0,
 	        fw_organization f0
