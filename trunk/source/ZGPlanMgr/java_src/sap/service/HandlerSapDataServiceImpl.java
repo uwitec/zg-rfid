@@ -630,9 +630,9 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
         //同步zgtbom表
         sql=new StringBuffer();
         sql.append("insert into ZG_T_BOM                                                                     ");
-        sql.append("  (CUID, IDNRK, MAKTX, MATKL, LGORT, TYPE, MSEHL)                                        ");
-        sql.append("  select sys_guid(), temp.IDNRK,temp.MAKTX2,temp.MATKL, temp.LGORT, '1',   temp.MSEHL2   ");
-		sql.append("    from (select distinct t.IDNRK,   t.MAKTX2, t.MATKL, t.LGORT,  t.MSEHL2               ");
+        sql.append("  (CUID, IDNRK, MAKTX, MATKL, LGORT, TYPE, MSEHL,matkl_self)                                        ");
+        sql.append("  select sys_guid(), temp.IDNRK,temp.MAKTX2,temp.MATKL, temp.LGORT, '1',   temp.MSEHL2,matkl_self   ");
+		sql.append("    from (select distinct t.IDNRK,   t.MAKTX2, t.MATKL, t.LGORT,  t.MSEHL2 ,t.matkl_self              ");
 		sql.append("            from zg_t_orderbom t                                                         ");
 		sql.append("           where t.matkl is not null                                                     ");
 		sql.append("           and t.lgort is not null and                                                   ");
@@ -1988,6 +1988,11 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 				this.baseDao.executeSql(sqlBuffer.toString());
 			}
 			
+			this.baseDao.executeSql(sqlBuffer.toString());
+			
+			//TODO 初期 如果没有设置过的bom自有物料组默认为原来的物料组
+			sqlBuffer=new StringBuffer();
+			sqlBuffer.append("update zg_t_orderbom t set t.matkl_self=t.matkl where  t.sortf in ('ABC','ABE','ABD') and t.matkl_self is null ");
 			this.baseDao.executeSql(sqlBuffer.toString());
 		}
 		
