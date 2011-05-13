@@ -19,6 +19,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 	<script type="text/javascript" src="${ctx}/scripts/gridEditor.js"></script>
 	<script type="text/javascript">
 		$(function() {
+			initAutoComplete("${ctx}/autoComplate/findRelationData.do");
 			init();
 		});
 		function init() {
@@ -66,6 +67,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 			var idnrkObjs=document.getElementsByName("idnrks");
 			var carNumObjs=document.getElementsByName("carNum");
 			var cuids=document.getElementsByName("cuids");
+			var matklSelfs=document.getElementsByName("matklSelf");
 			var flag=true;
 			for(var v=0;v<lgortObjs.length;v++){
 				var sortf=document.getElementById(cuids[v].value).value;
@@ -78,6 +80,18 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 					}
 					
 				}
+				
+				if(matklSelfs[v].value==''){
+					if(sortf=='ABC'||sortf=='ABD'||sortf=='ABE'){
+						alert("组件："+idnrkObjs[v].value+' 未设置自有物料组，会导致无法领料，请确认!');
+						obj.disabled = false;
+						flag=false;
+						break;
+					}
+					
+				}
+				
+				
 				if(carNumObjs[v].value==''||carNumObjs[v].value==0){
 					if(sortf=='ABC'||sortf=='ABD'||sortf=='ABE'){
 						alert("组件："+idnrkObjs[v].value+" 未设置装车规格，会导致无法领料，请设置装车规格!");
@@ -154,6 +168,22 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 			}
 		}
 		
+		function matklSet(count,idnrk,posnr){
+			var sFeatures="dialogHeight: 400px;dialogWidth:300px";
+			var returnValue = window.showModalDialog(ctx+"/explorer/tree/commonTree.jsp?templateId=store_car1",'sada',sFeatures);
+			if(returnValue) {
+				var id = returnValue.id;
+				var label=returnValue.label;
+				label=label.substring(label.indexOf("(")+1,label.indexOf(")"));
+				ZgTorderbomDwrAction.setSelfMatkl(idnrk,label,function(data){
+					
+				});
+				$("#"+idnrk+"-"+posnr+"-span").attr("innerText",label);
+				
+				var matklSelfs=document.getElementsByName("matklSelf");
+				matklSelfs[count].value=label;
+			}
+		}
 	</script>
 </head>
 <body>
@@ -192,6 +222,8 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 						<td class="tableHeader" style="color:red">排序字符串</td>
 						<td class="tableHeader">原排序字符串</td>
 						<td class="tableHeader">BOM组件描述</td>
+						<td class="tableHeader">物料组</td>
+						<td class="tableHeader">自有物料组</td>
 						<td class="tableHeader">基本单位</td>
 						<td class="tableHeader">组件单台用量</td>
 						<td class="tableHeader">组件需求用量</td>
@@ -208,6 +240,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							</div>
 						</td>
 					</tr>
+					<c:set var="bomNum" value="0"/>
 				<c:forEach items="${orderboms}" var="orderbom">
 				<c:if test="${orderbom.key.idnrk ne matnr}">
 					<tr class="${trcss}">
@@ -222,6 +255,12 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 						<td align="center">${orderbom.key.sortf}</td>
 						<td align="left">
 							<c:out value='${orderbom.key.maktx2}'/>
+						</td>
+						<td align="left">
+							<c:out value='${orderbom.key.matkl}'/>
+						</td>
+						<td align="left"  >
+							<c:out value='${orderbom.key.matklSelf}'/>
 						</td>
 						<td align="center">${orderbom.key.msehl1}</td>
 						<td align="center">${orderbom.key.zdtyl}</td>
@@ -263,11 +302,14 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 								<input type="hidden"  readonly="readonly" name="cuids"  value="${obj.cuid}_sortfSel"/>
 								<input type="hidden"  readonly="readonly" name="idnrks"  value="${obj.idnrk}"/>
 								<input type="hidden" readonly="readonly" name="carNum" value="${obj.carNum}"/>
+								<input type="hidden" readonly="readonly" name="matklSelf" value="${obj.matklSelf}"/>
 							</td>
 							</c:otherwise>
 							</c:choose>
 							<td align="center" style="color:red"  ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.sortf}</td>
 							<td align="left" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')"> ${obj.maktx2}</td>
+							<td align="left" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')"> ${obj.matkl}</td>
+							<td align="left" style="color:red" ondblclick="matklSet('${bomNum },${obj.idnrk}','${obj.matkl }')" title="双击设置物料组"> ${obj.matklSelf}:::</td>
 							<td align="center" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.msehl1}</td>
 							<td align="center" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.zdtyl}</td>
 							<td align="center" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.menge}</td>
@@ -279,7 +321,6 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							<c:if test="${orderbom.key.idnrk ne matnr}">
 								<input type="checkbox" name="items" value="id=${obj.cuid}&"/>
 							</c:if>
-						
 							&nbsp;${obj.idnrk}</td>
 							<c:choose>
 							<c:when test="${obj.sortf eq 'CE' || obj.sortf eq 'DE'|| obj.sortf eq 'D'|| obj.sortf eq 'E'}">
@@ -292,11 +333,18 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 								<input type="hidden"  readonly="readonly" name="cuids"  value="${obj.cuid}_sortfSel"/>
 								<input type="hidden"  readonly="readonly" name="idnrks"  value="${obj.idnrk}"/>
 								<input type="hidden" readonly="readonly" name="carNum" value="${obj.carNum}"/>
+								<input type="hidden" readonly="readonly" name="matklSelf" value="${obj.matklSelf}"/>
 							</td>
 							</c:otherwise>
 							</c:choose>
 							<td align="center">${obj.sortf}</td>
 							<td align="left"> ${obj.maktx2}</td>
+								<td align="left"> ${obj.matkl}</td>
+									<td align="left"  ondblclick="matklSet(${bomNum },'${obj.idnrk}','${obj.posnr}')" title="双击设置物料组"> 
+									
+									<span id="${obj.idnrk}-${obj.posnr }-span">${obj.matklSelf}</span>
+									
+									</td>
 							<td align="center">${obj.msehl1}</td>
 							<td align="center">${obj.zdtyl}</td>
 							<td align="center">${obj.menge}</td>
@@ -305,6 +353,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 						
 						</c:if>
 					</tr>
+					<c:set var="bomNum" value="${bomNum+1}"/>
 					</c:forEach>
 				</c:forEach>
 				</tbody>

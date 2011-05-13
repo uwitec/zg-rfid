@@ -13,6 +13,7 @@
 		<result property="labelCn" column="t0_LABEL_CN"/>
 		<result property="carPlanId" column="t0_CAR_PLAN_ID"/>
 		<result property="orderPlanbomId" column="t0_ORDER_PLANBOM_ID"/>
+		<result property="storageUserId" column="storage_User_Id"/>
     </resultMap>
     
     <!-- 用于select查询公用抽取的列 -->
@@ -25,7 +26,8 @@
 	        m.t0_REAL_NUM,
 	        m.t0_LABEL_CN,
 	        m.t0_CAR_PLAN_ID,
-	        m.t0_ORDER_PLANBOM_ID
+	        m.t0_ORDER_PLANBOM_ID,
+	        m.storage_User_Id
 	    ]]>
 	</sql>
 	
@@ -57,7 +59,10 @@
        		</isNotEmpty>    
 		    <isNotEmpty prepend="AND" property="orderPlanbomId">
 	       			m.t0_ORDER_PLANBOM_ID like #orderPlanbomId#
-       		</isNotEmpty>    
+       		</isNotEmpty>   
+       		<isEqual prepend="AND" property="storageUserId" compareValue="null">
+       				m.storage_User_Id is null
+       		</isEqual> 
 	    </dynamic>	
 	</sql>
 	
@@ -72,7 +77,8 @@
         	REAL_NUM ,
         	LABEL_CN ,
         	CAR_PLAN_ID ,
-        	ORDER_PLANBOM_ID 
+        	ORDER_PLANBOM_ID ,
+        	storage_user_id
         ) VALUES (
         	#cuid# ,
         	#orderBomId# ,
@@ -81,7 +87,8 @@
         	#realNum# ,
         	#labelCn# ,
         	#carPlanId# ,
-        	#orderPlanbomId# 
+        	#orderPlanbomId# ,
+        	#storageUserId#
         )
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
@@ -98,7 +105,8 @@
 	        REAL_NUM = #realNum# ,
 	        LABEL_CN = #labelCn# ,
 	        CAR_PLAN_ID = #carPlanId# ,
-	        ORDER_PLANBOM_ID = #orderPlanbomId# 
+	        ORDER_PLANBOM_ID = #orderPlanbomId# ,
+	        storage_user_id=#storageUserId#
 	    WHERE 
 	        CUID = #cuid# 
     ]]>
@@ -121,7 +129,8 @@
 	        		t0.REAL_NUM as t0_REAL_NUM,
 	        		t0.LABEL_CN as t0_LABEL_CN,
 	        		t0.CAR_PLAN_ID as t0_CAR_PLAN_ID,
-	        		t0.ORDER_PLANBOM_ID as t0_ORDER_PLANBOM_ID
+	        		t0.ORDER_PLANBOM_ID as t0_ORDER_PLANBOM_ID,
+	        		t0.storage_User_Id as storage_User_Id
 	        from 
 	        ZG_T_CARBOM t0
  ) m
@@ -140,7 +149,8 @@
 	        		t0.REAL_NUM as t0_REAL_NUM,
 	        		t0.LABEL_CN as t0_LABEL_CN,
 	        		t0.CAR_PLAN_ID as t0_CAR_PLAN_ID,
-	        		t0.ORDER_PLANBOM_ID as t0_ORDER_PLANBOM_ID
+	        		t0.ORDER_PLANBOM_ID as t0_ORDER_PLANBOM_ID,
+	        		t0.storage_User_Id as storage_User_Id
 	        from 
 	        ZG_T_CARBOM t0
  ) m
@@ -157,7 +167,8 @@
 	        		t0.REAL_NUM as t0_REAL_NUM,
 	        		t0.LABEL_CN as t0_LABEL_CN,
 	        		t0.CAR_PLAN_ID as t0_CAR_PLAN_ID,
-	        		t0.ORDER_PLANBOM_ID as t0_ORDER_PLANBOM_ID
+	        		t0.ORDER_PLANBOM_ID as t0_ORDER_PLANBOM_ID,
+	        		t0.storage_User_Id as storage_User_Id
 	        from 
 	        ZG_T_CARBOM t0
  ) m
@@ -178,7 +189,8 @@
 	        		t0.REAL_NUM as t0_REAL_NUM,
 	        		t0.LABEL_CN as t0_LABEL_CN,
 	        		t0.CAR_PLAN_ID as t0_CAR_PLAN_ID,
-	        		t0.ORDER_PLANBOM_ID as t0_ORDER_PLANBOM_ID
+	        		t0.ORDER_PLANBOM_ID as t0_ORDER_PLANBOM_ID,
+	        		t0.storage_User_Id as storage_User_Id
 	        from 
 	        ZG_T_CARBOM t0
  ) m
@@ -201,7 +213,8 @@
 	        		t0.REAL_NUM as t0_REAL_NUM,
 	        		t0.LABEL_CN as t0_LABEL_CN,
 	        		t0.CAR_PLAN_ID as t0_CAR_PLAN_ID,
-	        		t0.ORDER_PLANBOM_ID as t0_ORDER_PLANBOM_ID
+	        		t0.ORDER_PLANBOM_ID as t0_ORDER_PLANBOM_ID,
+	        		t0.storage_User_Id as storage_User_Id
 	        from 
 	        ZG_T_CARBOM t0
  ) m

@@ -56,6 +56,7 @@ public class ZgTcarbomEx extends BaseEntity {
 	private String planType;
 	private String lgort;
 	private Long supCarNum;
+	private String storageUserId;
 	
 	private  List<ZgTcarbomSuppliers> supList;
 
@@ -309,5 +310,13 @@ public class ZgTcarbomEx extends BaseEntity {
 
 	public void setSupCarNum(Long supCarNum) {
 		this.supCarNum = supCarNum;
+	}
+
+	public String getStorageUserId() {
+		return storageUserId;
+	}
+
+	public void setStorageUserId(String storageUserId) {
+		this.storageUserId = storageUserId;
 	}
 }

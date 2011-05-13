@@ -231,7 +231,7 @@
 	        storage_num=#storageNum#,
 	        storage_state=#storageState#,
 	        posnr=#posnr#,
-	        matkl_Self=#matklSelf#,
+	        matkl_Self=#matklSelf#
 	    WHERE CUID = #cuid#
     ]]>
     </update>

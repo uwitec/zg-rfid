@@ -551,4 +551,16 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 	public void setZgTorderSuppliersBo(ZgTorderSuppliersBo zgTorderSuppliersBo) {
 		this.zgTorderSuppliersBo = zgTorderSuppliersBo;
 	}
+
+	/**
+	 * 判断装车计划是否已经全部领完
+	 * @param carPlanId
+	 * @return
+	 */
+	public boolean isFinishedCarPlan(String carPlanId) {
+		StringBuffer sqlBuffer=new StringBuffer();
+		sqlBuffer.append("select * from zg_t_carbom t where t.car_plan_id='"+carPlanId+"' and t.storage_user_id is null");
+		List<Map> list=((ZgTcarbomDao)this.getEntityDao()).findDynQuery(sqlBuffer.toString());
+		return list.size()==0;
+	}
 }

@@ -17,7 +17,9 @@
         	REAL_NUM ,
         	LABEL_CN ,
         	CAR_PLAN_ID ,
-        	ORDER_PLANBOM_ID 
+        	ORDER_PLANBOM_ID  ,
+        	storage_user_id
+        	
         ) VALUES (
         	#cuid# ,
         	#orderBomId# ,
@@ -26,7 +28,8 @@
         	#realNum# ,
         	#labelCn# ,
         	#carPlanId# ,
-        	#orderPlanbomId# 
+        	#orderPlanbomId#  ,
+        	#storageUserId#
         )
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >

@@ -2,6 +2,7 @@ package com.boco.zg.plan.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import sap.SapClient;
 
 import cn.org.rapid_framework.util.ApplicationContextHolder;
+import cn.org.rapid_framework.web.util.HttpUtils;
 
 import com.boco.frame.login.pojo.OperatorInfo;
 import com.boco.frame.meta.dao.IbatisDAOHelper;
@@ -114,36 +116,58 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 *                     complete=complete+real_num 注：complete 为领料计划已经领取数量
 	 *                    state：如果complete=carNum则为9已完成 否则为8
 	 *      carplan表：状态改为已提交  
+	 *      modify by wengqin 2011/05/12 同一个装车计划分多次刷卡，选哪个物料刷哪些物料的装车数量 如果领料计划的物料没有刷卡完，则不计算领料进度
 	 * @param carPlanId
+	 *  @param storageUserId
+	 *   @param orderPlanBomIds 本次需要确认领料的物料
+	 *   返回值：该装车计划是否已经全部物料领完
 	 */
-	public void storagePlanSubmitById(String carPlanId,String storageUserId) {
+	public boolean storagePlanSubmitById(String carPlanId,String storageUserId,String orderPlanBomIds) {
 		ZgTcarplan zgTcarplan = zgTcarplanBo.getById(carPlanId);
 		ZgTcarbom param = new ZgTcarbom();
 		param.setCarPlanId(zgTcarplan.getCuid());
+		param.setStorageUserId("null");
 		List<ZgTcarbom> carbomList = zgTcarbomBo.findByProperty(param);
+		boolean flag=true;
 		for(ZgTcarbom carbom : carbomList) {
 			String orderPlanbomId = carbom.getOrderPlanbomId();
-			ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(orderPlanbomId);
-			Long carNum = planbom.getCarNum()==null?new Long(0):planbom.getCarNum();
-			Long planNum = planbom.getPlanNum()==null?new Long(0):planbom.getPlanNum();
-			Long completeNum = planbom.getCompleteNum()==null?new Long(0):planbom.getCompleteNum();
 			
-			Long realNum = carbom.getRealNum()==null?new Long(0):carbom.getRealNum();
-			Long cPlanNum = carbom.getPlanNum()==null?new Long(0):carbom.getPlanNum();
-			planNum = planNum - (cPlanNum - realNum);
-			completeNum = completeNum + realNum;
-			planbom.setPlanNum(planNum);
-			planbom.setCompleteNum(completeNum);
-			planbom.setStorageNum(planbom.getStorageNum()+realNum);
-			if(carNum <= completeNum) {
-				planbom.setState(Constants.CarPlanStatus.DONE.value());
+			if(orderPlanBomIds.contains(orderPlanbomId)||orderPlanBomIds.equals("ALL")){//选哪个物料刷哪些物料的装车数量
+				ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(orderPlanbomId);
+				Long carNum = planbom.getCarNum()==null?new Long(0):planbom.getCarNum();
+				Long planNum = planbom.getPlanNum()==null?new Long(0):planbom.getPlanNum();
+				Long completeNum = planbom.getCompleteNum()==null?new Long(0):planbom.getCompleteNum();
+				
+				Long realNum = carbom.getRealNum()==null?new Long(0):carbom.getRealNum();
+				Long cPlanNum = carbom.getPlanNum()==null?new Long(0):carbom.getPlanNum();
+				planNum = planNum - (cPlanNum - realNum);
+				completeNum = completeNum + realNum;
+				planbom.setPlanNum(planNum);
+				planbom.setCompleteNum(completeNum);
+				planbom.setStorageNum(planbom.getStorageNum()+realNum);
+				if(carNum <= completeNum) {
+					planbom.setState(Constants.CarPlanStatus.DONE.value());
+				}
+				zgTorderPlanbomBo.update(planbom);
+				
+				//更新仓库管理员
+				carbom.setStorageUserId(storageUserId);
+				zgTcarbomBo.update(carbom);
+				
+			}else {
+				flag=false;
 			}
-			zgTorderPlanbomBo.update(planbom);
+			
 		}
-		zgTcarplan.setCarState(Constants.CarPlanStatus.SUBMIT.value());
-		zgTcarplan.setCarDate(Calendar.getInstance().getTime());
-		zgTcarplan.setStorageUserId(storageUserId);
-		zgTcarplanBo.update(zgTcarplan);
+		//如果没有领完料，不用更新领料计划状态
+		if(flag==true){
+			zgTcarplan.setCarState(Constants.CarPlanStatus.SUBMIT.value());
+			zgTcarplan.setCarDate(Calendar.getInstance().getTime());
+			zgTcarplan.setStorageUserId(storageUserId);
+			zgTcarplanBo.update(zgTcarplan);
+		}
+		return flag;
+		
 	}
 	
 
@@ -223,7 +247,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		sql.append("	decode(sign(planbom.car_num - planbom.complete_num), -1, 0,  ");
 		sql.append("	 decode(sign((planbom.car_num - planbom.complete_num) - (nvl(planbom.car_num, 0) -  nvl(planbom.plan_num, 0) + carbom.plan_num)),");
 		sql.append("	 -1, planbom.car_num - planbom.complete_num,  nvl(planbom.car_num, 0) - nvl(planbom.plan_num, 0) +  carbom.plan_num)   ) max_value,");//呈现：本次需求数量
-		sql.append("     bom.carnum carCount,orderbom.zbz");
+		sql.append("     bom.carnum carCount,orderbom.zbz,carbom.storage_user_id");
 		sql.append(" from zg_t_carplan       car, ");
 		sql.append("	zg_t_carbom        carbom, ");
 		sql.append("	zg_t_order_planbom planbom, ");
@@ -349,6 +373,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 			
 			List<ZgTcarbomEx> editList=new ArrayList<ZgTcarbomEx>();
 			List<ZgTcarbomEx> newList=new ArrayList<ZgTcarbomEx>();
+			if(carbomList==null) return;
 			for(ZgTcarbomEx bom:carbomList){
 				
 				//插入装车计划表
@@ -428,12 +453,27 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 *     4 更新planbom表的数量及carplan表的状态
 	 *     5 更新领料计划表的状态及领料进度
 	 *     6 更新领料计划组表的状态及领料进度
+	 *     
+	 *     modify by wengqin 2011/05/12 同一个装车计划分多次刷卡，选哪个物料刷哪些物料的装车数量 如果领料计划的物料没有刷卡完，则不计算领料进度
+	 * @param items 识别哪个物料勾选 
 	 * @param carbomList
 	 * @param operatorInfo
 	 * @param storageUserId 仓管员id
 	 */
-	public String  confirmCarPlan(List<ZgTcarbomEx> carbomList,OperatorInfo operatorInfo,String storageUserId) {
+	public String  confirmCarPlan(String[] items,List<ZgTcarbomEx> carbomList,OperatorInfo operatorInfo,String storageUserId) {
 		String result="noTurn";
+		
+		//<!--modify by wengqin 2011/05/12 同一个装车计划分多次刷卡，选哪个物料刷哪些物料的装车数量- 如果领料计划的物料没有刷卡完，则不计算领料进度
+		String orderPlanBomIds="";
+		for(String item:items){
+			Hashtable params = HttpUtils.parseQueryString(item);
+			orderPlanBomIds=orderPlanBomIds+"'"+params.get("orderPlanbomId")+"',";
+		}
+		if(orderPlanBomIds.length()>0){
+			orderPlanBomIds=orderPlanBomIds.substring(0,orderPlanBomIds.length()-1);
+		}
+		//-->
+		
 		
 		List<ZgTcarbomEx> newList=new ArrayList<ZgTcarbomEx>();
 		
@@ -475,54 +515,77 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 			//3 设定仓管员
 //			updateCarPlanStorageUserId(carPlanId, storageUserId);
 			//4 更新planbom表的数量及carplan表的状态 及仓管员信息
-			storagePlanSubmitById(carPlanId,storageUserId);
+			boolean isCarPlanFinished=storagePlanSubmitById(carPlanId,storageUserId,orderPlanBomIds);
 			
-			//获取本次装车计划所涉及的订单
-			List<ZgTorderPlan> planList=zgTorderPlanExBo.getOrderPlanListByCarPlanId(carPlanId);
-			List<ZgTorderPlanGroup> planGrouList=zgTorderPlanGroupExBo.getPlanGroupListByCarPlanId(carPlanId);
-			
-			//5 更新领料计划表的状态及领料进度
-			for(ZgTorderPlan plan:planList){
-				String state=zgTorderPlanExBo.getState(plan.getCuid());
-				plan.setState(state);
-				if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())){
-					plan.setState(Constants.OrderPlanStatus.SAVE.value());
-				}
-			
-				double percent=zgTorderPlanExBo.getPercent(plan.getCuid());
-				if(percent>=1){//领料为100%,但是领料状态没有完成，是因为有一些领的工艺规则没有配置完全,设置领料进度为99%
-					if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())){
-						percent=0.99;
-					}
-				}
-				plan.setPercent(percent);
-				zgTorderPlanBo.update(plan);
-				
-				if(state.equals(Constants.OrderPlanStatus.FINISHED.value())){//领料计划完成　则回传sap接口
-					int batchNo=this.zgTcarplanDao.getSeq("SEQ_BATCH_NO");
-					getSapClient().businessHandler("5", plan.getCuid(),batchNo);
-				}
-				
-			}
-			
-			for(ZgTorderPlanGroup group:planGrouList){
-				String state=zgTorderPlanGroupExBo.getState(group.getCuid());
-				if(!Constants.OrderPlanStatus.FINISHED.value().equals(state)){
-					state=Constants.OrderPlanStatus.SAVE.value();
-				}
-				group.setState(state);
-				double percent=zgTorderPlanGroupExBo.getPercent(group.getCuid());
-				if(percent>=1){//领料为100%,但是领料状态没有完成，是因为有一些领的工艺规则没有配置完全,设置领料进度为99%
-					result="turn";
-					if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())){
-						percent=0.99;
-					}
-				}
-				group.setPercent(percent);
-				zgTorderPlanGroupExBo.update(group);
+			if(isCarPlanFinished){//该装车计划已经领完，则进行相应的状态变化，计划进度
+				result = doProcessPlanByCarPlanId(carPlanId);
 			}
 			
 			
+			
+			
+		}
+		return result;
+	}
+
+
+	/**
+	 * 根据装车计划编号计算领料计划进度
+	 * @param result
+	 * @param carPlanId
+	 * @return
+	 */
+	public String doProcessPlanByCarPlanId( String carPlanId) {
+		
+		ZgTcarplan zgTcarplan = zgTcarplanBo.getById(carPlanId);
+		zgTcarplan.setCarState(Constants.CarPlanStatus.SUBMIT.value());
+		zgTcarplan.setCarDate(Calendar.getInstance().getTime());
+		zgTcarplanBo.update(zgTcarplan);
+		
+		String result="noTurn";
+		//获取本次装车计划所涉及的订单
+		List<ZgTorderPlan> planList=zgTorderPlanExBo.getOrderPlanListByCarPlanId(carPlanId);
+		List<ZgTorderPlanGroup> planGrouList=zgTorderPlanGroupExBo.getPlanGroupListByCarPlanId(carPlanId);
+		
+		//5 更新领料计划表的状态及领料进度
+		for(ZgTorderPlan plan:planList){
+			String state=zgTorderPlanExBo.getState(plan.getCuid());
+			plan.setState(state);
+			if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())){
+				plan.setState(Constants.OrderPlanStatus.SAVE.value());
+			}
+		
+			double percent=zgTorderPlanExBo.getPercent(plan.getCuid());
+			if(percent>=1){//领料为100%,但是领料状态没有完成，是因为有一些领的工艺规则没有配置完全,设置领料进度为99%
+				if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())){
+					percent=0.99;
+				}
+			}
+			plan.setPercent(percent);
+			zgTorderPlanBo.update(plan);
+			
+			if(state.equals(Constants.OrderPlanStatus.FINISHED.value())){//领料计划完成　则回传sap接口
+				int batchNo=this.zgTcarplanDao.getSeq("SEQ_BATCH_NO");
+				getSapClient().businessHandler("5", plan.getCuid(),batchNo);
+			}
+			
+		}
+		
+		for(ZgTorderPlanGroup group:planGrouList){
+			String state=zgTorderPlanGroupExBo.getState(group.getCuid());
+			if(!Constants.OrderPlanStatus.FINISHED.value().equals(state)){
+				state=Constants.OrderPlanStatus.SAVE.value();
+			}
+			group.setState(state);
+			double percent=zgTorderPlanGroupExBo.getPercent(group.getCuid());
+			if(percent>=1){//领料为100%,但是领料状态没有完成，是因为有一些领的工艺规则没有配置完全,设置领料进度为99%
+				result="turn";
+				if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())){
+					percent=0.99;
+				}
+			}
+			group.setPercent(percent);
+			zgTorderPlanGroupExBo.update(group);
 		}
 		return result;
 	}
