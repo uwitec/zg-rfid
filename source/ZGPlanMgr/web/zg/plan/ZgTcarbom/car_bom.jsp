@@ -59,6 +59,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if(null==form){
 					form=document.frames['listFrame'].document.getElementById("carList");
 				}
+				var obj=document.frames['listFrame'].document.getElementsByName("hasConfirm");
+				if(obj!=null&&obj!=undefined&&obj.length>0){
+					alert("该装车计划已经有物料刷卡确认不能取消!");
+					butsetDisable(false);
+					return;
+				}
+				
 				form.action="${ctx}/zg/plan/ZgTcarplan/cancleCarPlan.do?lgort=${lgort }";
 				form.submit();
 				return;
@@ -68,12 +75,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		}
 		
 		function confirmCarPlan(obj){
+			var items = document.frames('listFrame').document.getElementsByName("items");
+			var flag = false;
+			for(var i = 0; i < items.length;i++) {
+				if(items[i].checked) {
+					flag=true;
+					break;
+				}
+			}
+			if(flag==false){
+				alert("请选择要领料的物料！");
+				return;
+			}
+			
 			butsetDisable(true);
 			if(!checkNum()){
 				butsetDisable(false);
 				return;
 			}
-		
+	
 			
 			var result = openDialog1("${ctx}/zg/plan/ZgTcarbom/rfid.jsp?lgort=${lgort}",600,280);
 			
@@ -165,38 +185,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        return jsonStr;
 	    }
 	    
-	    function checkNum(){
-	    	var jsonStr='';
-			var items = document.frames['listFrame'].document.getElementsByName("items");
-		    if (items.length > 0) {
-		        for (var i = 0; i < items.length; i++){
-		        	var carNum=document.frames['listFrame'].document.getElementById("carbomList["+i+"].planNum").value*1;
-		        	if(carNum=='0'){
-		        		alert("实际装车数量不能为零，请确认！");
-						return;
-		        	}
-		        	var supItems=document.frames['listFrame'].document.getElementsByName("items"+i);
-		        	var carSupNumAll=0;
-		        	for (var j = 0; j < supItems.length; j++){
-		        	   var carSupNum=document.frames['listFrame'].document.getElementById("carbomList["+i+"].supList["+j+"].carNum").value;
-		        	   carSupNumAll=carSupNumAll+carSupNum*1;
-		        	}
-		        	if(carNum!=carSupNumAll&&supItems.length>0){
-		        		alert("装车数量与具体供应商数量不相等，请确认！");
-		        		return false;
-		        	}
-		        	
-		        }
-		    }
-		    
-		    return true;
-	    }
 	    
 	    function checkNum(){
 	    	var jsonStr='';
 			var items = document.frames['listFrame'].document.getElementsByName("items");
 		    if (items.length > 0) {
 		        for (var i = 0; i < items.length; i++){
+		       		 if(items[i].checked) {
+				
 		        	var carNum=document.frames['listFrame'].document.getElementById("carbomList["+i+"].planNum").value*1;
 		        	if(carNum=='0'){
 		        		alert("实际装车数量不能为零，请确认！");
@@ -212,7 +208,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		        		alert("装车数量与具体供应商数量不相等，请确认！");
 		        		return false;
 		        	}
-		        	
+		        	}
 		        }
 		    }
 		    

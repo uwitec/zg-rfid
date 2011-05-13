@@ -224,11 +224,14 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 						</tr>
 					</thead>
 					<tbody>
+					<c:set var="num" value="0"></c:set>
 					<c:forEach items="${bomList}" var="obj" varStatus="n">
 						<c:set var="trcss" value="${index%2==0?'odd':'even'}"/>
 						<tr class="${trcss}">
 							<td width="3%" >
-								<input type="checkbox" name="items" value="cuid=${obj.CUID }&carNum=${obj.CAR_NUM }&planNum=${obj.PLAN_NUM }&orderBomId=${obj.ORDER_BOM_ID }&orderPlanbomId=${obj.ORDER_PLANBOM_ID }&rowNum=${n.count-1}&idnrk=${obj.IDNRK}&aufnr=${obj.AUFNR}"/>
+							<c:if test="${empty obj.STORAGE_USER_ID}">
+								<input type="checkbox" name="items" value="count=${num}&cuid=${obj.CUID }&carNum=${obj.CAR_NUM }&planNum=${obj.PLAN_NUM }&orderBomId=${obj.ORDER_BOM_ID }&orderPlanbomId=${obj.ORDER_PLANBOM_ID }&rowNum=${num}&idnrk=${obj.IDNRK}&aufnr=${obj.AUFNR}&carPlanId=${pageRequest.filters.carPlanId}"/>
+							</c:if>
 							</td>
 							<td align="left">${obj.IDNRK}</td>
 							<td align="left">${obj.MAKTX2}</td>
@@ -238,36 +241,67 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 							<td align="center">${obj.CAR_NUM}</td>
 							<td align="center">${obj.MAX_VALUE}</td>
 							<td align="center">
-								<input type="hidden" name="carbomList[${n.count-1}].lgort" id="carbomList[${n.count-1}].lgort" value="${pageRequest.filters.lgort }"/>
-								<input type="hidden" name="carbomList[${n.count-1}].cuid" id="carbomList[${n.count-1}].lgort" value="${obj.CUID }"/>
-								<input type="hidden" name="carbomList[${n.count-1}].carId" id="carbomList[${n.count-1}].lgort" value="${pageRequest.filters.carId }"/>
-								<input type="hidden" name="carbomList[${n.count-1}].orderBomId" id="carbomList[${n.count-1}].lgort" value="${obj.ORDER_BOM_ID }"/>
-								<input type="hidden" name="carbomList[${n.count-1}].orderPlanbomId" id="carbomList[${n.count-1}].lgort" value="${obj.ORDER_PLANBOM_ID }"/>
-								<input type="hidden" name="carbomList[${n.count-1}].orderId" id="carbomList[${n.count-1}].lgort" value="${obj.ORDER_ID}"/>
-								<input type="hidden" name="carbomList[${n.count-1}].carPlanId" id="carbomList[${n.count-1}].lgort" value="${pageRequest.filters.carPlanId}"/>
-								<input type="hidden" name="carbomList[${n.count-1}].planType" id="carbomList[${n.count-1}].lgort" value="${pageRequest.filters.planType}"/>
-								<input type="hidden"  maxlength="13" onchange="checkPlanNum(this,'${n.count-1}')" size="8" name="carbomList[${n.count-1}].realNum" id="carbomList[${n.count-1}].realNum" value="${obj.CAR_PLAN_NUM}"/>
-								<input type="text" maxValue="${obj["MAX_VALUE"]}" oldValue="${obj.CAR_PLAN_NUM}" maxlength="13" onchange="checkPlanNum(this,'${n.count-1}')" size="8" name="carbomList[${n.count-1}].planNum" id="carbomList[${n.count-1}].planNum" value="${obj.CAR_PLAN_NUM}"/>
+								
+							<c:if test="${empty obj.STORAGE_USER_ID}">
+								<input type="hidden" name="carbomList[${num}].lgort" id="carbomList[${num}].lgort" value="${pageRequest.filters.lgort }"/>
+								<input type="hidden" name="carbomList[${num}].cuid" id="carbomList[${num}].lgort" value="${obj.CUID }"/>
+								<input type="hidden" name="carbomList[${num}].carId" id="carbomList[${num}].lgort" value="${pageRequest.filters.carId }"/>
+								<input type="hidden" name="carbomList[${num}].orderBomId" id="carbomList[${num}].lgort" value="${obj.ORDER_BOM_ID }"/>
+								<input type="hidden" name="carbomList[${num}].orderPlanbomId" id="carbomList[${num}].lgort" value="${obj.ORDER_PLANBOM_ID }"/>
+								<input type="hidden" name="carbomList[${num}].orderId" id="carbomList[${num}].lgort" value="${obj.ORDER_ID}"/>
+								<input type="hidden" name="carbomList[${num}].carPlanId" id="carbomList[${num}].lgort" value="${pageRequest.filters.carPlanId}"/>
+								<input type="hidden" name="carbomList[${num}].planType" id="carbomList[${num}].lgort" value="${pageRequest.filters.planType}"/>
+								<input type="hidden"  maxlength="13" onchange="checkPlanNum(this,'${num}')" size="8" name="carbomList[${num}].realNum" id="carbomList[${num}].realNum" value="${obj.CAR_PLAN_NUM}"/>
+								<input type="text" maxValue="${obj["MAX_VALUE"]}" oldValue="${obj.CAR_PLAN_NUM}" maxlength="13" onchange="checkPlanNum(this,'${num}')" size="8" name="carbomList[${num}].planNum" id="carbomList[${num}].planNum" value="${obj.CAR_PLAN_NUM}"/>
+								<c:set var="num" value="${num+1}"></c:set>
+							</c:if>
+							<c:if test="${not empty obj.STORAGE_USER_ID}">
+							<input type="hidden" name="hasConfirm"/>
+								${obj.COMPLETE_NUM}
+							</c:if>
 							</td>
 						</tr>
 						<c:forEach items="${obj.subList}" var="sup" varStatus="v">
 							<tr class="${trcss}">
 							<td width="3%" >
-								<input type="hidden" name="items${n.count-1 }" />
+							<c:if test="${empty obj.STORAGE_USER_ID}">
+								<input type="hidden" name="items${num-1 }" />
+							</c:if>
+								
 							</td>
 							<td colSpan="1" align="left">供应商编号：${sup.lifnr}</td>
 							<td  colSpan="2"  align="left">&nbsp;&nbsp;供应商：${sup.lifnrName}</td>
 							<td align="center" colSpan="2"> 批次:
-							<input type="text"  maxlength="80" size="8" name="carbomList[${n.count-1}].supList[${v.count-1 }].batchno" id="carbomList[${n.count-1}].supList[${v.count-1 }].batchno" value="${sup.batchno}"/></td>
+								<c:if test="${empty obj.STORAGE_USER_ID}">
+									<input type="text"  maxlength="80" size="8" name="carbomList[${num-1}].supList[${v.count-1 }].batchno" id="carbomList[${num-1}].supList[${v.count-1 }].batchno" value="${sup.batchno}"/>
+								</c:if>
+								<c:if test="${not empty obj.STORAGE_USER_ID}">
+									${sup.batchno}
+								</c:if>
+								
 							<td colSpan="2">
-							认证清单：<input type="text"  maxlength="80" size="8" name="carbomList[${n.count-1}].supList[${v.count-1 }].zrzqd" id="carbomList[${n.count-1}].supList[${v.count-1 }].zrzqd" value="${sup.zrzqd}"/></td>
+							认证清单：
+							<c:if test="${empty obj.STORAGE_USER_ID}">
+									<input type="text"  maxlength="80" size="8" name="carbomList[${num-1}].supList[${v.count-1 }].zrzqd" id="carbomList[${num-1}].supList[${v.count-1 }].zrzqd" value="${sup.zrzqd}"/>
+								</c:if>
+								<c:if test="${not empty obj.STORAGE_USER_ID}">
+									${sup.zrzqd}
+								</c:if>
 							</td>
 							<td align="center">
-								<input type="hidden" name="carbomList[${n.count-1}].supList[${v.count-1 }].cuid" id="carbomList[${n.count-1}].supList[${v.count-1 }].cuid"  value="${sup.cuid}"/>
-								<input type="hidden" name="carbomList[${n.count-1}].supList[${v.count-1 }].carBomId" id="carbomList[${n.count-1}].supList[${v.count-1 }].cuid"  value="${sup.carBomId}"/>
-								<input type="hidden" name="carbomList[${n.count-1}].supList[${v.count-1 }].lifnr" id="carbomList[${n.count-1}].supList[${v.count-1 }].cuid"  value="${sup.lifnr}"/>
-								<input type="hidden" name="carbomList[${n.count-1}].supList[${v.count-1 }].lifnrName" id="carbomList[${n.count-1}].supList[${v.count-1 }].cuid"  value="${sup.lifnrName}"/>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" maxValue="${obj["MAX_VALUE"]}" oldValue="${sup.carNum}" maxlength="13" onchange="checkSupPlanNum(this,'${n.count-1}')" size="8" name="carbomList[${n.count-1}].supList[${v.count-1 }].carNum" id="carbomList[${n.count-1}].supList[${v.count-1 }].carNum" value="${sup.carNum}"/>
+							
+							<c:if test="${empty obj.STORAGE_USER_ID}">
+								<input type="hidden" name="carbomList[${num-1}].supList[${v.count-1 }].cuid" id="carbomList[${num-1}].supList[${v.count-1 }].cuid"  value="${sup.cuid}"/>
+								<input type="hidden" name="carbomList[${num-1}].supList[${v.count-1 }].carBomId" id="carbomList[${num-1}].supList[${v.count-1 }].cuid"  value="${sup.carBomId}"/>
+								<input type="hidden" name="carbomList[${num-1}].supList[${v.count-1 }].lifnr" id="carbomList[${num-1}].supList[${v.count-1 }].cuid"  value="${sup.lifnr}"/>
+								<input type="hidden" name="carbomList[${num-1}].supList[${v.count-1 }].lifnrName" id="carbomList[${num-1}].supList[${v.count-1 }].cuid"  value="${sup.lifnrName}"/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" maxValue="${obj["MAX_VALUE"]}" oldValue="${sup.carNum}" maxlength="13" onchange="checkSupPlanNum(this,'${num-1}')" size="8" name="carbomList[${num-1}].supList[${v.count-1 }].carNum" id="carbomList[${num-1}].supList[${v.count-1 }].carNum" value="${sup.carNum}"/>
+							</c:if>
+							<c:if test="${not empty obj.STORAGE_USER_ID}">
+								${sup.carNum}
+							</c:if>
+							
+								
 							</td>
 							</tr>
 						</c:forEach>

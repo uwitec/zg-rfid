@@ -45,6 +45,7 @@ public class ZgTcarbom extends BaseEntity {
 	private java.lang.String orderPlanbomId;
 	private Long oldRealNum;
 	private long oldPlanNum;
+	private String storageUserId;
 	
 	
 
@@ -162,5 +163,13 @@ public class ZgTcarbom extends BaseEntity {
 
 	public void setOldPlanNum(long oldPlanNum) {
 		this.oldPlanNum = oldPlanNum;
+	}
+
+	public String getStorageUserId() {
+		return storageUserId;
+	}
+
+	public void setStorageUserId(String storageUserId) {
+		this.storageUserId = storageUserId;
 	}
 }

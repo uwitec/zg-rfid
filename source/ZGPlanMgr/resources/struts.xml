@@ -278,6 +278,7 @@
     	<action name="invokeSapPxData" method="invokeSapPxData"  class="sap.SapDataTestAction"></action>
     	<action name="invokeSapBackBomData" method="invokeSapBackBomData"  class="sap.SapDataTestAction"></action>
 		<action name="invokeSapPcData" method="invokeSapPcData"  class="sap.SapDataTestAction"></action>
+		<action name="invokeSapBgData" method="invokeSapBgData"  class="sap.SapDataTestAction"></action>
 		<action name="test" method="test"  class="sap.SapDataTestAction"></action>		
 		<action name="invokeSapBatchBomData" method="invokeSapBatchBomData"  class="sap.SapDataTestAction"></action>
     </package>

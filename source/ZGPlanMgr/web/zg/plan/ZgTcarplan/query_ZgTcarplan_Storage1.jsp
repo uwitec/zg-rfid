@@ -33,7 +33,10 @@
 		function init() {
 			doLayout();
 			$(window).bind("resize",doLayout);
-			$("form:first").submit();
+			var form =document.getElementById("form0");
+			if(form!=null){
+				form.submit();
+			}
 		      
 		}
 		function doLayout() {

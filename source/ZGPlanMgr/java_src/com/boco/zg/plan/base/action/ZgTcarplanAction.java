@@ -33,7 +33,6 @@ import com.boco.frame.meta.base.model.TmdEnumevalue;
 import com.boco.frame.meta.dao.IbatisDAOHelper;
 import com.boco.frame.meta.service.FwOrganizationExBo;
 import com.boco.frame.sys.base.model.FwOrganization;
-import com.boco.frame.sys.base.model.FwOrganizationManager;
 import com.boco.frame.sys.base.service.FwEmployeeBo;
 import com.boco.frame.sys.base.service.FwOrganizationBo;
 import com.boco.zg.bom.base.model.ZgTbom;
@@ -45,7 +44,6 @@ import com.boco.zg.plan.base.model.ZgTorderPlanGroup;
 import com.boco.zg.plan.base.service.ZgTcarbomBo;
 import com.boco.zg.plan.base.service.ZgTcarbomSuppliersBo;
 import com.boco.zg.plan.base.service.ZgTcarplanBo;
-import com.boco.zg.plan.base.service.ZgTorderPlanbomBo;
 import com.boco.zg.plan.base.service.ZgTorderSuppliersBo;
 import com.boco.zg.plan.common.service.CommonService;
 import com.boco.zg.plan.model.ZgTcarbomEx;
@@ -551,7 +549,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 	public void confirmCarPlan() throws IOException{
 		OperatorInfo operatorInfo=(OperatorInfo) getSession().getAttribute("operatorInfo");
 		String storageUserId=getRequest().getParameter("storageUserId");
-		String result=zgTcarplanExBo.confirmCarPlan(carbomList,operatorInfo,storageUserId);
+		String result=zgTcarplanExBo.confirmCarPlan(items,carbomList,operatorInfo,storageUserId);
 		rendHtml("alert('操作成功!');window.returnValue='"+result+"';window.close();");
 	}
 
@@ -580,27 +578,40 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		rendHtml("window.returnValue='OK';window.close()");
 	}
 	
-	public String deleteBom(){
+	public String deleteBom() throws IOException{
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		String planType=IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "planType");
 		String bomCuids=IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "bomCuids");
 		//	getRequest().getParameter("planType");
 		OperatorInfo operatorInfo=(OperatorInfo) getSession().getAttribute("operatorInfo");
 		
+		String carPlanId="";
 		for(int i = 0; i < items.length; i++) {
 			Hashtable params = HttpUtils.parseQueryString(items[i]);
 			
 			String cuid=(java.lang.String)params.get("cuid");
 			String orderBomId=(java.lang.String)params.get("orderBomId");
 			String orderPlanbomId=(java.lang.String)params.get("orderPlanbomId");
+			carPlanId=(String)params.get("carPlanId");
 			
 			if(StringHelper.isEmpty(cuid)){
 				bomCuids=bomCuids.replace(orderBomId,"");
+				
 			}else {
 				zgTcarplanExBo.deleteBom(cuid,orderPlanbomId);
 			}
 			
 		}
+		
+		//判断是否所有物料已经装车 此种情况是由于物料可以分开刷卡引起的
+		if(bomCuids.length()<30&&carPlanId.length()>0){//编辑物料的时候，如果删除物料剩下的全是已经刷卡确认过的物料，则直接结掉该装车计划
+			if(zgTcarbomExBo.isFinishedCarPlan(carPlanId)){
+				String result=zgTcarplanExBo.doProcessPlanByCarPlanId(carPlanId);
+				rendHtml("alert('操作成功!');window.returnValue='"+result+"';window.close();");
+				return null;
+			}
+		}
+		
 		
 		pageRequest.getFilters().put("bomCuids", bomCuids);
 		String groupId=IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "groupId");
@@ -766,7 +777,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		for(int i = 0; i < items.length; i++) {
 			Hashtable params = HttpUtils.parseQueryString(items[i]);
 			String carPlanId = (java.lang.String)params.get("id");
-			zgTcarplanExBo.storagePlanSubmitById(carPlanId,"");
+			zgTcarplanExBo.storagePlanSubmitById(carPlanId,"","ALL");
 		}
 		promtAndQuery("操作成功");
 	}

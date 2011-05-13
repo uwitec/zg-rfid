@@ -66,6 +66,24 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 				obj.disabled = false;
 			}
 		}
+		
+		function matklSet(idnrk,posnr){
+			var sFeatures="dialogHeight: 400px;dialogWidth:300px";
+			var returnValue = window.showModalDialog(ctx+"/explorer/tree/commonTree.jsp?templateId=store_car1",'sada',sFeatures);
+			if(returnValue) {
+				var id = returnValue.id;
+				var label=returnValue.label;
+				label=label.substring(label.indexOf("(")+1,label.indexOf(")"));
+				ZgTorderbomDwrAction.setSelfMatkl(idnrk,label,function(data){
+					
+				});
+				alert(label);
+				$("#"+idnrk+"-"+posnr+"-span").attr("innerText",label);
+				
+				//var matklSelfs=document.getElementsByName("matklSelf");
+				//matklSelfs[count].value=label;
+			}
+		}
 	</script>
 </head>
   
@@ -97,6 +115,8 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 						<td class="tableHeader" style="color:red">BOM组件编号</td>
 						<td class="tableHeader">排序字符串</td>
 						<td class="tableHeader">BOM组件描述</td>
+						<td class="tableHeader">物料组</td>
+						<td class="tableHeader">自有物料组</td>
 						<td class="tableHeader">基本单位</td>
 						<td class="tableHeader">组件单台用量</td>
 						<td class="tableHeader">组件需求用量</td>
@@ -125,6 +145,10 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 						
 						<td align="center">${orderbom.key.sortf}</td>
 						<td align="left">${orderbom.key.maktx2}</td>
+						<td align="left"> ${obj.matkl}</td>
+						<td align="left"  ondblclick="matklSet('${obj.idnrk}','${obj.posnr}')" title="双击设置物料组"> 
+							<span id="${obj.idnrk}-${obj.posnr }-span">${obj.matklSelf}</span>
+						</td>
 						<td align="center">${orderbom.key.msehl1}</td>
 						<td align="center">${orderbom.key.zdtyl}</td>
 						<td align="center"></td>
@@ -162,6 +186,8 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							</c:otherwise>
 							</c:choose>
 						<td align="left">${obj.maktx2}</td>
+						<td align="left" > ${obj.matkl}</td>
+						<td align="left" ondblclick="matklSet('${obj.idnrk}','${obj.posnr }')" title="双击设置物料组"><span id="${obj.idnrk}-${obj.posnr }-span">${obj.matklSelf}</span></td>
 						<td align="center">${obj.msehl1}</td>
 						<td align="center">${obj.zdtyl}</td>
 						<td align="center">${obj.menge}</td>

@@ -553,7 +553,7 @@ public class ZgTcarbomAction extends BaseStruts2Action implements Preparable,Mod
 		zgTcarbomExBo.updateCarboms(carbomList,true);
 		zgTcarbomExBo.updateZgtcarPlanState(carbomList.get(0).getCarPlanId(),Constants.CarPlanStatus.SUBMIT.value(),Calendar.getInstance().getTime(),storageUserId);
 
-		zgTcarplanExBo.storagePlanSubmitById(carPlanId,"");
+		zgTcarplanExBo.storagePlanSubmitById(carPlanId,"","ALL");
 		rendHtml("if(parent.doQuery)parent.doQuery()");
 	}
 	
