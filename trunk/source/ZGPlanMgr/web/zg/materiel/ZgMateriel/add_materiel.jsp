@@ -39,7 +39,20 @@
 						ZgMaterielDwrAction.validId(parentId,id,function(sameIdFlag){
 							if(sameIdFlag){
 								DWREngine.setAsync(false);
-								ZgMaterielDwrAction.saveMateriel(materielName,parentId,id,function(cuid){
+								var lgortObj=document.getElementsByName("lgort");
+								var lgort="";
+								for(var i=0;i<lgortObj.length;i++){
+									if(lgortObj[i].checked==true){
+										lgort=lgort+lgortObj[i].value+",";
+										
+									}
+								}
+								if(lgort.length==0){
+									alert("请选择仓库!");
+									return;
+								}
+								lgort=lgort.substring(0,lgort.length-1);
+								ZgMaterielDwrAction.saveMateriel(materielName,parentId,lgort,id,function(cuid){
 									obj.cuid=cuid;
 								});
 								obj.materielName=materielName;
@@ -92,6 +105,15 @@
 					<table class="form_table" cellpadding="0" cellspacing="1" style="margin-top: 3px;">
 						<tbody attr="tbody_1">
 						<tr>
+							<td class="label">
+								<span style="color:red">*</span>物料组ID：
+							</td>
+							<td>
+								<input type="text" name="Id" id="id" maxlength="20" size="30"class="required" onfocus="idValidSpanHidden()"/>
+								<span id="idValid" style="display:none">不能同名物料组ID!</span>
+							</td>
+						</tr>
+						<tr>
 							<td  class="label">
 								<span style="color:red">*</span>物料组名称：
 							</td>	
@@ -101,23 +123,25 @@
 							</td>
 						</tr>
 						
-						<tr>
-							<td class="label">
-								<span style="color:red">*</span>物料组ID：
-							</td>
-							<td>
-								<input type="text" name="Id" id="id" maxlength="20" size="30"class="required" onfocus="idValidSpanHidden()"/>
-								<span id="idValid" style="display:none">该机构下有同名物料组ID!</span>
-							</td>
-						</tr>
+						
 						
 						<tr>
 							<td  class="label">
-								上层机构名称：
+								上层物料组：
 							</td>	
 							<td>
 								<label>${parentName}</label>
 						   		<input type="hidden" name="parentId" value="${parentOrgId }" id="parentId"/>
+							</td>
+						</tr>
+						<tr>
+							<td  class="label">
+								所属仓库：
+							</td>	
+							<td>
+							<c:forEach items="${mList}" var="item">
+								<input type="checkBox" name="lgort" value="${item.LGORT }"/>${item.LGORT}
+							</c:forEach>
 							</td>
 						</tr>
 						<tr>

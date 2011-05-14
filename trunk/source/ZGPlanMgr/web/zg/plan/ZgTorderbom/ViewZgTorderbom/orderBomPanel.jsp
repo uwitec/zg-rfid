@@ -67,21 +67,23 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 			}
 		}
 		
-		function matklSet(idnrk,posnr){
+		function matklSet(matkl,idnrk,posnr){
 			var sFeatures="dialogHeight: 400px;dialogWidth:300px";
-			var returnValue = window.showModalDialog(ctx+"/explorer/tree/commonTree.jsp?templateId=store_car1",'sada',sFeatures);
+			
+			matkl=matkl.substring(matkl.indexOf("(")+1,matkl.indexOf(")"));
+			var returnValue = window.showModalDialog(ctx+"/zg/plan/ZgTorderbom/materiel_tree.jsp?matkl="+matkl,'sada',sFeatures);
 			if(returnValue) {
 				var id = returnValue.id;
 				var label=returnValue.label;
+				var contect=label;
 				label=label.substring(label.indexOf("(")+1,label.indexOf(")"));
 				ZgTorderbomDwrAction.setSelfMatkl(idnrk,label,function(data){
 					
 				});
-				alert(label);
-				$("#"+idnrk+"-"+posnr+"-span").attr("innerText",label);
+				$("#"+idnrk+"-"+posnr+"-span").attr("innerText",contect);
 				
-				//var matklSelfs=document.getElementsByName("matklSelf");
-				//matklSelfs[count].value=label;
+			//	var matklSelfs=document.getElementsByName("matklSelf");
+			//	matklSelfs[count].value=label;
 			}
 		}
 	</script>
@@ -145,9 +147,11 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 						
 						<td align="center">${orderbom.key.sortf}</td>
 						<td align="left">${orderbom.key.maktx2}</td>
-						<td align="left"> ${obj.matkl}</td>
-						<td align="left"  ondblclick="matklSet('${obj.idnrk}','${obj.posnr}')" title="双击设置物料组"> 
-							<span id="${obj.idnrk}-${obj.posnr }-span">${obj.matklSelf}</span>
+							<td align="left">
+							<c:if test="${obj.matkl!='()'}">${obj.matkl}</c:if>
+						</td>
+						<td align="left"  >
+							<c:if test="${obj.matklSelf!='()'}">${obj.matklSelf}</c:if>
 						</td>
 						<td align="center">${orderbom.key.msehl1}</td>
 						<td align="center">${orderbom.key.zdtyl}</td>
@@ -186,9 +190,12 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							</c:otherwise>
 							</c:choose>
 						<td align="left">${obj.maktx2}</td>
-						<td align="left" > ${obj.matkl}</td>
-						<td align="left" ondblclick="matklSet('${obj.idnrk}','${obj.posnr }')" title="双击设置物料组"><span id="${obj.idnrk}-${obj.posnr }-span">${obj.matklSelf}</span></td>
-						<td align="center">${obj.msehl1}</td>
+							<td align="left"> <c:if test="${obj.matkl!='()'}">${obj.matkl}</c:if></td>
+									<td align="left"  ondblclick="matklSet('${obj.matkl}','${obj.idnrk}','${obj.posnr}')" title="双击设置物料组"> 
+									
+									<span id="${obj.idnrk}-${obj.posnr }-span"><c:if test="${obj.matklSelf!='()'}">${obj.matklSelf}</c:if></span>
+									
+									</td><td align="center">${obj.msehl1}</td>
 						<td align="center">${obj.zdtyl}</td>
 						<td align="center">${obj.menge}</td>
 						<td align="left">${obj.lgort}</td>
