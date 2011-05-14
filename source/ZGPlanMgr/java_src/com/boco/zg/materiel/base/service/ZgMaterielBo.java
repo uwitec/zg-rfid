@@ -133,8 +133,8 @@ public class ZgMaterielBo extends BaseManager<ZgMateriel,java.lang.String>{
 	public String findIdByParentId(String parentId) {
 		return zgMaterielDao.findIdByParentId(parentId);
 	}
-	public void delMateriel(String cuid) {
-		zgMaterielDao.delMateriel(cuid);
+	public void delMateriel(String id) {
+		zgMaterielDao.delMateriel(id);
 	}
 	public boolean findMaterielData(String cuid) {
 		int num=zgMaterielDao.findMaterielDataFromZgMaterielVirtual(cuid).intValue();
@@ -241,6 +241,7 @@ public class ZgMaterielBo extends BaseManager<ZgMateriel,java.lang.String>{
 		return true;
 	}
 	
+	
 	public boolean isLorgNode(String cuid) {
 		String parentId=zgMaterielDao.findParentId(cuid);
 		if(parentId==null){
@@ -278,6 +279,37 @@ public class ZgMaterielBo extends BaseManager<ZgMateriel,java.lang.String>{
 	}
 	public void setZgMaterielExDao(ZgMaterielExDao zgMaterielExDao) {
 		this.zgMaterielExDao = zgMaterielExDao;
+	}
+	/**
+	 * 	//获取父物料组的仓库列表
+	 * @param parentOrgId
+	 * @return
+	 */
+	public List<Map> findLgortListById(String id) {
+		return zgMaterielDao.findLgortListById(id);
+	}
+	
+	/**
+	 * @param id
+	 * @param lgort
+	 * @return
+	 */
+	public String getCuidByIdAndLgort(String id, String lgort) {
+		return zgMaterielDao.getCuidByIdAndLgort(id,lgort);
+	}
+	/**
+	 * @param parentId
+	 * @return
+	 */
+	public List<Map> findLgortListByCuidId(String cuid) {
+		return zgMaterielDao.findLgortListByCuidId(cuid);
+	}
+	/**
+	 * @param id
+	 * @return
+	 */
+	public boolean validId1(String id) {
+		return zgMaterielDao.validId1(id);
 	}
 	
 }

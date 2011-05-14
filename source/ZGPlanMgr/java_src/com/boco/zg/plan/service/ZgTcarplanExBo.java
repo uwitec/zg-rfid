@@ -256,7 +256,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		sql.append("	and car.car_state <> '8' ");
 		sql.append("	and car.cuid = carbom.car_plan_id ");
 		sql.append("	and carbom.order_planbom_id = planbom.cuid ");
-		sql.append("	and carbom.order_bom_id = orderbom.cuid and bom.idnrk = orderbom.idnrk  and bom.lgort=orderbom.lgort and car.ORDER_PLAN_TYPE='"+planType+"'");
+		sql.append("	and carbom.order_bom_id = orderbom.cuid and bom.idnrk = orderbom.idnrk   and car.ORDER_PLAN_TYPE='"+planType+"'");
 		sql.append("	and car.storage_id='"+lgort+"'");
 
 		  

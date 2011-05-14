@@ -22,15 +22,20 @@ public class ZgMaterielDwrAction extends BaseDwrAction{
 	 * @param lgort
 	 * @return
 	 */
-	public  String saveMateriel(String materielName,String parentId,String id){
-		ZgMateriel entity =new ZgMateriel();
-		entity.setMaterielName(materielName);
-		entity.setParentId(parentId);
-		entity.setId(id);
-		entity.setType(new Long(2));
-		entity.setLgort(findLgortByParentId(parentId));
-		String cuid=getZgMaterielBo().saveMateriel(entity);
-		return cuid;
+	public  String saveMateriel(String materielName,String parentId,String lgorts,String id){
+		String[] lgortArr=lgorts.split(",");
+		for(String lgort:lgortArr){
+			String praentCuid=getZgMaterielBo().getCuidByIdAndLgort(parentId,lgort);
+			ZgMateriel entity =new ZgMateriel();
+			entity.setMaterielName(materielName);
+			entity.setParentId(praentCuid);
+			entity.setId(id);
+			entity.setType(new Long(2));
+			entity.setLgort(lgort);
+			String cuid=getZgMaterielBo().saveMateriel(entity);
+		}
+		return id;
+		
 	}
 	
 	/**
@@ -49,19 +54,23 @@ public class ZgMaterielDwrAction extends BaseDwrAction{
 	public boolean findMaterielData(String cuid){
 		return getZgMaterielBo().findMaterielData(cuid);
 	}
-	public void delMateriel(String cuid){
-		getZgMaterielBo().delMateriel(cuid);
+	public void delMateriel(String id){
+		getZgMaterielBo().delMateriel(id);
 	}
-	public void updateMateriel(String cuid,String materielName,String id,String parentOrgId,String lgort){
-		ZgMateriel entity=new ZgMateriel();
-		entity.setCuid(cuid);
-		entity.setMaterielName(materielName);
-		entity.setId(id);
-		entity.setParentId(parentOrgId);
-		Long type=new Long(2);
-		entity.setType(type);
-		entity.setLgort(lgort);
-		getZgMaterielBo().updateMateriel(entity);
+	public void updateMateriel(String cuid,String materielName,String id,String parentOrgId,String lgorts){
+		String[] lgortArr=lgorts.split(",");
+		getZgMaterielBo().delMateriel(id);
+		for(String lgort:lgortArr){
+			String praentCuid=getZgMaterielBo().getCuidByIdAndLgort(parentOrgId,lgort);
+			ZgMateriel entity =new ZgMateriel();
+			entity.setMaterielName(materielName);
+			entity.setParentId(praentCuid);
+			entity.setId(id);
+			entity.setType(new Long(2));
+			entity.setLgort(lgort);
+			getZgMaterielBo().saveMateriel(entity);
+		}
+		
 	}
 	/**
 	 * 后台判断物料组树节点是否是叶子节点
@@ -78,7 +87,7 @@ public class ZgMaterielDwrAction extends BaseDwrAction{
 	 * @return
 	 */
 	public boolean validId(String parentId,String id){
-		return getZgMaterielBo().validId(parentId,id);
+		return getZgMaterielBo().validId1(id);
 	}
 	
 	/**
@@ -116,8 +125,8 @@ public class ZgMaterielDwrAction extends BaseDwrAction{
 	 * @param cuid
 	 * @return
 	 */
-	public boolean isLorgNode(String cuid){
-		return getZgMaterielBo().isLorgNode(cuid);
+	public boolean isLorgNode(String id){
+		return getZgMaterielBo().isLorgNode(id);
 	}
 
 }

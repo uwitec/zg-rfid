@@ -23,6 +23,7 @@ import com.boco.frame.meta.base.model.TmdEnumevalue;
 import com.boco.frame.sys.base.model.ZgMateriel;
 import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.ModelDriven;
+import com.sun.mail.handlers.message_rfc822;
 
 import java.util.*;
 
@@ -291,20 +292,43 @@ public class ZgMaterielAction extends BaseStruts2Action implements Preparable,Mo
 		String parentName=getRequest().getParameter("parentOrgName");
 		getRequest().setAttribute("parentOrgId", parentOrgId);
 		getRequest().setAttribute("parentName", parentName);
+		//获取父物料组的仓库列表
+		List<Map> list=zgMaterielBo.findLgortListById(parentOrgId);
+		getRequest().setAttribute("mList", list);
 		return ADD_MATERIEL_JSP;
 	}
 	
 	
 	public String editMateriel(){
-		String cuid=getRequest().getParameter("cuid");
-		zgMateriel=zgMaterielBo.getByCuid(cuid);
+		String id=getRequest().getParameter("id");
+		zgMateriel=zgMaterielBo.getByCuid(id);
 		getRequest().setAttribute("parentName", getRequest().getParameter("parentName"));
 		getRequest().setAttribute("id", zgMateriel.getId());
-		getRequest().setAttribute("parentId", zgMateriel.getParentId());
+		
 		getRequest().setAttribute("type", zgMateriel.getType());
 		getRequest().setAttribute("lgort", zgMateriel.getLgort());
-		getRequest().setAttribute("cuid",cuid );
+		getRequest().setAttribute("id",id );
 		getRequest().setAttribute("materielName",zgMateriel.getMaterielName());
+		
+		ZgMateriel parentMat=zgMaterielBo.getById(zgMateriel.getParentId());
+		getRequest().setAttribute("parentId", parentMat.getId());
+		
+		//获取父结点的仓库列表
+		List<Map> parentLgortList=zgMaterielBo.findLgortListById(parentMat.getId());
+		
+		//该物料组的仓库列表
+		List<Map>	lgortList=zgMaterielBo.findLgortListById(id);
+		
+		for(Map mat:parentLgortList){
+			for(Map temp:lgortList){
+				if(temp.get("LGORT").toString().equals(mat.get("LGORT").toString())){
+					mat.put("checked", "check");
+					break;
+				}
+			}
+		}
+		
+		getRequest().setAttribute("parentLgortList", parentLgortList);
 		
 //		getRequest().setAttribute("parentName", getRequest().getParameter("orgName"));
 		return EDIT_MATERIEL_JSP;
