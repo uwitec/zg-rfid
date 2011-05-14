@@ -68,9 +68,21 @@
 					DWREngine.setAsync(false);
 					ZgMaterielDwrAction.validNameForUpdate(cuid,parentId,materielName,function(sameNameFlag){
 						if(sameNameFlag){
-							ZgMaterielDwrAction.validIdForUpdate(cuid,parentId,id,function(sameIdFlag){
-								if(sameIdFlag){
+						//	ZgMaterielDwrAction.validIdForUpdate(cuid,parentId,id,function(sameIdFlag){
+							//	if(sameIdFlag){
 									DWREngine.setAsync(false);
+									var lgortObj=document.getElementsByName("lgort");
+									var lgort="";
+									for(var i=0;i<lgortObj.length;i++){
+										if(lgortObj[i].checked==true){
+											lgort=lgort+lgortObj[i].value+",";
+											
+										}
+									}
+									if(lgort.length==0){
+										alert("请选择仓库!");
+										return;
+									}
 									ZgMaterielDwrAction.updateMateriel(cuid,materielName,id,parentId,lgort);
 									alert('修改成功!');
 									var obj=new Object();
@@ -78,10 +90,10 @@
 									obj.materielName=materielName;
 									window.returnValue=obj;
 									window.close();
-								}else{
-									document.getElementById('idValid').style.display="";
-								}
-							});
+								//}else{
+								//	document.getElementById('idValid').style.display="";
+							//	}
+							//});
 						}else{
 							document.getElementById('materielNameValid').style.display="";
 						}
@@ -140,6 +152,15 @@
 					<table class="form_table" cellpadding="0" cellspacing="1" style="margin-top: 3px;">
 						<tbody attr="tbody_1">
 						<tr>
+							<td class="label">
+								<span style="color:red">*</span>物料组ID：
+							</td>
+							<td>
+								<input type="text" readonly="true" name="id" id="id" value="${id }" maxlength="20" size="30"class="required" onfocus="idValidSpanHidden()" />
+								<span id="idValid" style="display:none">该机构下有同名物料组ID!</span>
+							</td>
+						</tr>
+						<tr>
 							<td  class="label">
 								<span style="color:red">*</span>物料组名称：
 							</td>	
@@ -150,27 +171,42 @@
 							</td>
 						</tr>
 						
-						<tr>
-							<td class="label">
-								<span style="color:red">*</span>物料组ID：
-							</td>
-							<td>
-								<input type="text" name="id" id="id" value="${id }" maxlength="20" size="30"class="required" onfocus="idValidSpanHidden()" />
-								<span id="idValid" style="display:none">该机构下有同名物料组ID!</span>
-							</td>
-						</tr>
+						
 						<tr>
 							<td class="label">上层机构：</td>
 							<td>
-								<input type="text" size="30"  value="${parentName}" autocompleteTo="true" xtype="tree:1" id="parentName_label" name="parentName_label" columnNameLower="parentName" bmClassId="ZG_MATERIEL" column="m.t0_LABEL_CN" class="required" onfocus="selfValidSapnHidden()" />
+							${parentName}
+								<input type="hidden" size="30"  value="${parentName}" autocompleteTo="true" xtype="tree:1" id="parentName_label" name="parentName_label" columnNameLower="parentName" bmClassId="ZG_MATERIEL" column="m.t0_LABEL_CN" class="required" onfocus="selfValidSapnHidden()" />
 						   		<span id="selfValid" style="display:none">不能选择自己作为上层机构!</span>
 						   		<span id="sameMateriel" style="display:none">此机构下有同名的物料组!</span>
 						   		<input type="hidden" name="parentName_value" id="parentName_value" value="${parentId }"/> 
 						<!--    <label>${parentName }</label>
 								<input type="hidden" name="parentId" value="${parentId }" id="parentId"/>  -->	
-								<input type="hidden" name="lgort" value="${lgort }"id="lgort"/>
 							</td>
 						</tr>
+						
+						<td  class="label">
+								所属仓库：
+							</td>	
+							<td>
+								<c:forEach items="${parentLgortList}" var="obj" varStatus="status">
+									<c:if test="${status.count%7==0}">
+									<br/>
+									
+									</c:if>
+											<c:choose>
+													<c:when test="${obj.checked=='check'}">
+														<input type="checkBox" checked="true" name="lgort" value="${obj.LGORT}"/>${obj.LGORT}
+													</c:when>
+													<c:otherwise>
+														<input type="checkBox"  name="lgort" value="${obj.LGORT}"/>${obj.LGORT}
+													</c:otherwise>
+											</c:choose>
+	
+				
+								</c:forEach>
+							</td>
+						
 						<tr>
 							<td class="label">标识：</td>
 							<td>
