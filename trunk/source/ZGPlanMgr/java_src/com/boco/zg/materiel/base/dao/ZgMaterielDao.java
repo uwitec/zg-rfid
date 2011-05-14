@@ -195,5 +195,44 @@ public class ZgMaterielDao extends BaseIbatisDao<ZgMateriel,java.lang.String>{
 		return getSqlMapClientTemplate().delete("ZgMateriel.removeVorgById",paramsMap);
 	}
 
+	/**
+	 * 获取父物料组的仓库列表
+	 * @param id
+	 * @return
+	 */
+	public List<Map> findLgortListById(String id) {
+		return getSqlMapClientTemplate().queryForList("ZgMateriel.findLgortListById",id);
+	}
+
+	/**
+	 * @param id
+	 * @param lgort
+	 * @return
+	 */
+	public String getCuidByIdAndLgort(String id, String lgort) {
+		Map params=new HashMap();
+		params.put("id", id);
+		params.put("lgort", lgort);
+		Object result=(getSqlMapClientTemplate().queryForObject("ZgMateriel.getCuidByIdAndLgort",params));
+		return result==null?"":result.toString();
+	}
+
+	/**
+	 * @param cuid
+	 * @return
+	 */
+	public List<Map> findLgortListByCuidId(String cuid) {
+		return getSqlMapClientTemplate().queryForList("ZgMateriel.findLgortListByCuidId",cuid);
+	}
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	public boolean validId1(String id) {
+		return getSqlMapClientTemplate().queryForList("ZgMateriel.validId1",id).size()==0;
+	}
+
+
 
 }

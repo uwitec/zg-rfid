@@ -409,7 +409,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		this.baseDao.executeSql(updateBomMengeSql.toString());
 //		Map planBom = getPlanBom(aufnr,matnr,matnr1,idnrk,posnr,arbpl);
 		if(planBom != null) {
-			Long completeNum = IbatisDAOHelper.getLongValue(planBom, "COMPLETE_NUM");
+			Long completeNum = IbatisDAOHelper.getLongValue(planBom, "COMPLETE_NUM")==null?0l:IbatisDAOHelper.getLongValue(planBom, "COMPLETE_NUM");
 			String orderBomId = IbatisDAOHelper.getStringValue(planBom, "ORDER_BOM_ID");
 			String planBomId=IbatisDAOHelper.getStringValue(planBom, "CUID");
 			if(!StringUtils.isBlank(orderBomId)) {

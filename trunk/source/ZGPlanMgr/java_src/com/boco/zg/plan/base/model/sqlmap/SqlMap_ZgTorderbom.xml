@@ -265,7 +265,7 @@
 	        		t0.MSEHL2 as t0_MSEHL2,
 	        		t0.ZDTYL as t0_ZDTYL,
 	        		t0.MENGE as t0_MENGE,
-	        		t0.MATKL as t0_MATKL,
+	        		 (select t.materiel_name from zg_materiel t where t.id=t0.matkl and rownum=1)||'('||t0.MATKL||')'  as t0_MATKL, 
 	        		t0.SORTF as t0_SORTF,
 	        		t0.SORTF_H as t0_SORTF_H,
 	        		t0.LGORT as t0_LGORT,
@@ -276,7 +276,7 @@
        				f0.label_cn as f0_label_cn,
        				t0.posnr as t0_POSNR,
        				null as t0_carnum,
-       				t0.MATKL_self as t0_MATKL_self
+       				(select t.materiel_name from zg_materiel t where t.id=t0.MATKL_self and rownum=1)||'('||t0.MATKL||')' as t0_MATKL_self
 	        from 
 	        ZG_T_ORDERBOM t0,
 	        fw_organization f0
@@ -353,7 +353,7 @@
 	        		t0.MSEHL2 as t0_MSEHL2,
 	        		t0.ZDTYL as t0_ZDTYL,
 	        		t0.MENGE as t0_MENGE,
-	        		t0.MATKL as t0_MATKL,
+	        		 (select t.materiel_name from zg_materiel t where t.id=t0.matkl and rownum=1)||'('||t0.MATKL||')'  as t0_MATKL,
 	        		t0.SORTF as t0_SORTF,
 	        		t0.SORTF_H as t0_SORTF_H,
 	        		t0.LGORT as t0_LGORT,
@@ -364,7 +364,7 @@
        				f0.label_cn as f0_label_cn,
        				t0.POSNR as t0_posnr,
        				bom.carnum t0_carnum,
-       				t0.MATKL_self as t0_MATKL_self
+       				 (select t.materiel_name from zg_materiel t where t.id=t0.MATKL_self and rownum=1)||'('||t0.MATKL_self||')' as t0_MATKL_self
 	        from 
 	        ZG_T_ORDERBOM t0,
 	        fw_organization f0,zg_t_bom bom
