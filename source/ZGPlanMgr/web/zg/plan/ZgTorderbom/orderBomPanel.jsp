@@ -168,17 +168,21 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 			}
 		}
 		
-		function matklSet(count,idnrk,posnr){
+		function matklSet(matkl,count,idnrk,posnr){
 			var sFeatures="dialogHeight: 400px;dialogWidth:300px";
-			var returnValue = window.showModalDialog(ctx+"/explorer/tree/commonTree.jsp?templateId=store_car1",'sada',sFeatures);
+			
+			matkl=matkl.substring(matkl.indexOf("(")+1,matkl.indexOf(")"));
+		//	alert(ctx+"/zg/plan/ZgTorderbom/materiel_tree.jsp?matkl="+matkl);
+			var returnValue = window.showModalDialog(ctx+"/zg/plan/ZgTorderbom/materiel_tree.jsp?matkl="+matkl,'sada',sFeatures);
 			if(returnValue) {
 				var id = returnValue.id;
 				var label=returnValue.label;
+				var contect=label;
 				label=label.substring(label.indexOf("(")+1,label.indexOf(")"));
 				ZgTorderbomDwrAction.setSelfMatkl(idnrk,label,function(data){
 					
 				});
-				$("#"+idnrk+"-"+posnr+"-span").attr("innerText",label);
+				$("#"+idnrk+"-"+posnr+"-span").attr("innerText",contect);
 				
 				var matklSelfs=document.getElementsByName("matklSelf");
 				matklSelfs[count].value=label;
@@ -257,10 +261,10 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							<c:out value='${orderbom.key.maktx2}'/>
 						</td>
 						<td align="left">
-							<c:out value='${orderbom.key.matkl}'/>
+							<c:if test="${obj.matkl!='()'}">${obj.matkl}</c:if>
 						</td>
 						<td align="left"  >
-							<c:out value='${orderbom.key.matklSelf}'/>
+							<c:if test="${obj.matklSelf!='()'}">${obj.matklSelf}</c:if>
 						</td>
 						<td align="center">${orderbom.key.msehl1}</td>
 						<td align="center">${orderbom.key.zdtyl}</td>
@@ -308,8 +312,11 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							</c:choose>
 							<td align="center" style="color:red"  ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.sortf}</td>
 							<td align="left" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')"> ${obj.maktx2}</td>
-							<td align="left" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')"> ${obj.matkl}</td>
-							<td align="left" style="color:red" ondblclick="matklSet('${bomNum },${obj.idnrk}','${obj.matkl }')" title="双击设置物料组"> ${obj.matklSelf}:::</td>
+							<td align="left" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">
+							<c:if test="${obj.matkl!='()'}">${obj.matkl}</c:if> </td>
+							<td align="left" style="color:red" ondblclick="matklSet('${obj.matkl}','${bomNum },${obj.idnrk}','${obj.posnr }')" title="双击设置物料组">
+							<span id="${obj.idnrk}-${obj.posnr }-span"><c:if test="${obj.matklSelf!='()'}">${obj.matklSelf}</c:if></span>
+							 </td>
 							<td align="center" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.msehl1}</td>
 							<td align="center" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.zdtyl}</td>
 							<td align="center" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.menge}</td>
@@ -339,10 +346,10 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							</c:choose>
 							<td align="center">${obj.sortf}</td>
 							<td align="left"> ${obj.maktx2}</td>
-								<td align="left"> ${obj.matkl}</td>
-									<td align="left"  ondblclick="matklSet(${bomNum },'${obj.idnrk}','${obj.posnr}')" title="双击设置物料组"> 
+								<td align="left"> <c:if test="${obj.matkl!='()'}">${obj.matkl}</c:if></td>
+									<td align="left"  ondblclick="matklSet('${obj.matkl}',${bomNum },'${obj.idnrk}','${obj.posnr}')" title="双击设置物料组"> 
 									
-									<span id="${obj.idnrk}-${obj.posnr }-span">${obj.matklSelf}</span>
+									<span id="${obj.idnrk}-${obj.posnr }-span"><c:if test="${obj.matklSelf!='()'}">${obj.matklSelf}</c:if></span>
 									
 									</td>
 							<td align="center">${obj.msehl1}</td>

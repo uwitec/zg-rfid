@@ -26,6 +26,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		var leafFlage=new Boolean()
 		leafFlage=false;
 		var parentName=null;
+		var level=0;
 		Ext.onReady(function() {
 			
 			var navTreePanel = new DRM.NTTreePanel({
@@ -104,11 +105,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					},
 					{id:'gear',
 						handler:function(){
+							if(level==1) {alert("不能编辑一级物料组!");return;}
 							DWREngine.setAsync(false);
 							ZgMaterielDwrAction.isLorgNode(orgId,function(lorgNode){
 								if(lorgNode!=false&&orgId!=null&&obj!=null){
 									var sFeatures="dialogHeight: 300px;dialogWidth:550px";
-									var firstShowQueryUrl="${ctx}/zg/materiel/ZgMateriel/editMateriel.do?cuid="+orgId+"&orgName="+URLEncoder.encode(orgName)+"&parentName="+URLEncoder.encode(parentName);
+									var firstShowQueryUrl="${ctx}/zg/materiel/ZgMateriel/editMateriel.do?id="+orgId+"&orgName="+URLEncoder.encode(orgName)+"&parentName="+URLEncoder.encode(parentName);
 									var returnValue=window.showModalDialog(firstShowQueryUrl,'',sFeatures);
 									if(returnValue!=null){
 										if(returnValue.parentId==obj.node.parentNode.attributes.cuid){
@@ -196,6 +198,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			
 			
 			navTreePanel.on("_click",function(orgArgs, extArgs){
+				level=orgArgs.node.getDepth() ;
 				obj=orgArgs;
 				orgId = orgArgs.node.attributes.cuid;
 				var parentOrgId = orgArgs.node.parentNode;//父节点
