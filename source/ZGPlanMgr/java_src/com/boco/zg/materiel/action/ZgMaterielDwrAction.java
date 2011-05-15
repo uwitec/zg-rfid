@@ -87,7 +87,7 @@ public class ZgMaterielDwrAction extends BaseDwrAction{
 	 * @return
 	 */
 	public boolean validId(String parentId,String id){
-		return getZgMaterielBo().validId1(id);
+		return getZgMaterielBo().validId1(parentId,id);
 	}
 	
 	/**
