@@ -103,7 +103,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<td>${obj.userId}</td>
 							<td>${obj.rfidCode}</td>
 							<td>${obj.labelCn}</td>
-							<td>${obj.password}</td>
+							<td>****</td>
 							<td>${obj.effectTimeString}</td>
 							<td>${obj.orgId_related.value }</a></td>
 							<td>${obj.sex_enum.value}</td>	

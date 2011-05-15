@@ -47,7 +47,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</tr>
 					<tr>	
 						<td class="label"><%=FwEmployee.ALIAS_PASSWORD%></td>	
-						<td><s:property value="%{model.password}" /></td>
+						<td>****</td>
 						
 						<td class="label"><%=FwEmployee.ALIAS_CREATE_TIME%></td>	
 						<td><s:property value="%{model.createTimeString}" /></td>
