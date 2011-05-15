@@ -101,7 +101,21 @@
 			<span  style="color:red">*</span><%=FwEmployee.ALIAS_PASSWORD%>：
 		</td>	
 		<td>
-	   		<input type="text" value="${model.password}" size="30" maxlength="9" name="password"  class="required"/>
+		<c:if test="${empty model.cuid}">
+			<input type="text" value="${model.password}" size="30" maxlength="9" name="password"  class="required"/>
+		</c:if>
+		<c:if test="${not empty model.cuid}">
+		<c:choose>
+			<c:when test="${operatorId=='0'}">
+				<input type="text" value="${model.password}" size="30" maxlength="9" name="password"  class="required"/>
+			</c:when>
+			<c:otherwise>
+				****
+				<input type="hidden" value="${model.password}" size="30" maxlength="9" name="password"  />
+			</c:otherwise>
+		</c:choose>
+		</c:if>
+	   		
 		</td>
 	</tr>
 	<tr>
