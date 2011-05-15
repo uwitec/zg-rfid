@@ -308,8 +308,8 @@ public class ZgMaterielBo extends BaseManager<ZgMateriel,java.lang.String>{
 	 * @param id
 	 * @return
 	 */
-	public boolean validId1(String id) {
-		return zgMaterielDao.validId1(id);
+	public boolean validId1(String parentId,String id) {
+		return zgMaterielDao.validId1(parentId,id);
 	}
 	
 }

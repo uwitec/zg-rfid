@@ -229,8 +229,11 @@ public class ZgMaterielDao extends BaseIbatisDao<ZgMateriel,java.lang.String>{
 	 * @param id
 	 * @return
 	 */
-	public boolean validId1(String id) {
-		return getSqlMapClientTemplate().queryForList("ZgMateriel.validId1",id).size()==0;
+	public boolean validId1(String parentId,String id) {
+		Map params=new HashMap();
+		params.put("parentId", parentId);
+		params.put("id", id);
+		return getSqlMapClientTemplate().queryForList("ZgMateriel.validId1",params).size()==0;
 	}
 
 
