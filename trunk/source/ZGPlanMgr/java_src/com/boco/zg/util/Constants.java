@@ -528,5 +528,31 @@ public class Constants {
 		}
 	}
 	
+	/*排序类型：
+	 * 
+	*/
+	public enum PxType {
+		PC("pc","排产"),
+		PX("px", "排序"),
+		BG("bg", "变更");
+		
+		private String value;
+
+		private String name;
+
+		private PxType(String value, String name) {
+			this.value = value;
+			this.name = name;
+		}
+
+		public String value() {
+			return this.value;
+		}
+
+		public String displayName() {
+			return this.name;
+		}
+	}
+	
 	
 }

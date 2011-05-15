@@ -265,7 +265,7 @@
 	        		t0.MSEHL2 as t0_MSEHL2,
 	        		t0.ZDTYL as t0_ZDTYL,
 	        		t0.MENGE as t0_MENGE,
-	        		 (select t.materiel_name from zg_materiel t where t.id=t0.matkl and rownum=1)||'('||t0.MATKL||')'  as t0_MATKL, 
+	        		t0.MATKL as t0_MATKL, 
 	        		t0.SORTF as t0_SORTF,
 	        		t0.SORTF_H as t0_SORTF_H,
 	        		t0.LGORT as t0_LGORT,
@@ -276,7 +276,7 @@
        				f0.label_cn as f0_label_cn,
        				t0.posnr as t0_POSNR,
        				null as t0_carnum,
-       				(select t.materiel_name from zg_materiel t where t.id=t0.MATKL_self and rownum=1)||'('||t0.MATKL||')' as t0_MATKL_self
+       				t0.MATKL_self as  t0_MATKL_self
 	        from 
 	        ZG_T_ORDERBOM t0,
 	        fw_organization f0
@@ -324,7 +324,7 @@
 	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
 	        left join zg_t_order_planbom planbom 
           on planbom.order_bom_id=m.t0_CUID 
-        where m.t0_CUID =#cuid# 
+        where m.t0_CUID =#cuid# and rownum=1
         ]]>
     </select>
     
