@@ -108,17 +108,9 @@
 					        			 ztb.car_id=zc.cuid(+)
 						       			and zm.id(+)=ztb.matkl
 	        ]]>
-		    	<isEqual property="zgBomCarType" compareValue="1">
-	    		<![CDATA[
-	    			and ztb.lgort=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid=#orgId#)
-	    		]]>
-		    	</isEqual>
-		    	<isEqual property="zgBomCarType" compareValue="2">
-		    		<![CDATA[
-		    			and ztb.lgort=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid=#parentOrgId#)
-		    			and ztb.matkl=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid=#orgId#)
-		    		]]>
-		    	</isEqual>
+	          	<isNotEmpty prepend="AND" property="orgId">
+	          		zm.id='$orgId$'
+	          	</isNotEmpty>
 		    <![CDATA[ )m ]]>
     	<include refid="dynamicWhere"/>
     	<dynamic prepend="ORDER BY">
@@ -155,17 +147,9 @@
 					        			 ztb.car_id=zc.cuid(+)
 						       			and zm.id(+)=ztb.matkl
 			]]>
-		    	<isEqual property="zgBomCarType" compareValue="1">
-	    		<![CDATA[
-	    			and ztb.lgort=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid=#orgId#)
-	    		]]>
-		    	</isEqual>
-		    	<isEqual property="zgBomCarType" compareValue="2">
-		    		<![CDATA[
-		    			and ztb.lgort=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid=#parentOrgId#)
-		    			and ztb.matkl=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid=#orgId#)
-		    		]]>
-		    	</isEqual>
+		    	<isNotEmpty prepend="AND" property="orgId">
+	          		zm.id='$orgId$'
+	          	</isNotEmpty>
 		    <![CDATA[ )m ]]>
     	<include refid="dynamicWhere"/>
 		<![CDATA[)]]>

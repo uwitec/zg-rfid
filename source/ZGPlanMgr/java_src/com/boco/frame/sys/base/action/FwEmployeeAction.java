@@ -298,6 +298,7 @@ public class FwEmployeeAction extends BaseStruts2Action implements Preparable,Mo
 			getRequest().setAttribute("orgIds", orgIds);
 			getRequest().setAttribute("orgNames", orgNames);
 		}
+		getRequest().setAttribute("operatorId", getSessionOperatorId());
 		
 		return EDIT_JSP;
 	}

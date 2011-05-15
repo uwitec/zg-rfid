@@ -78,12 +78,12 @@ public class ZgBomCarAction extends BaseStruts2Action implements Preparable,Mode
 	public String queryForStoreCar(){
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		getRequest().setAttribute("pageRequest", pageRequest);
-//		getRequest().setAttribute("orgId", orgId);
-//		getRequest().setAttribute("parentOrgId", parentOrgId);//把父节点的ID也放进去
-//		String parentName=zgBomCarBo.findParentOrgIdName(parentOrgId);//parentOrgId其实这个是父ID的cuid
-//		String materielGroupName=zgBomCarBo.findmaterielGroupName(orgId);//parentOrgId其实这个是父ID的cuid
-//		getRequest().setAttribute("parentName", parentName);
-//		getRequest().setAttribute("materielGroupName", materielGroupName);
+		//getRequest().setAttribute("orgId", orgId);
+		//getRequest().setAttribute("parentOrgId", parentOrgId);//把父节点的ID也放进去
+		//String parentName=zgBomCarBo.findParentOrgIdName(parentOrgId);//parentOrgId其实这个是父ID的cuid
+		//String materielGroupName=zgBomCarBo.findmaterielGroupName(orgId);//parentOrgId其实这个是父ID的cuid
+		//getRequest().setAttribute("parentName", parentName);
+		//getRequest().setAttribute("materielGroupName", materielGroupName);
 		return QUERY_FOR_STORECAR_JSP;
 	}
 	
