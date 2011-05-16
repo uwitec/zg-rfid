@@ -303,6 +303,8 @@
           <valid></valid>
         </col>
         <col id="maktx1" name="产品型号" datatype="string" desc=""></col>
+         <col id="kdauf" name="销售订单号" datatype="string" desc=""></col>
+        <col id="kdpos" name="销售订单项目编号 " datatype="string" desc=""></col>
         <col id="plant" name="领料部门" datatype="string" desc=""></col>
         <col id="arbpl" name="领料线体" datatype="string" desc=""></col>
         
@@ -314,8 +316,6 @@
         <col id="complete_num" name="领料数量" datatype="string" desc=""></col>
         <col id="lifnr" name="供应商代码" datatype="string" desc=""></col>
         <col id="lifnr_name" name="供应商" datatype="string" desc=""></col>
-        <col id="kdauf" name="销售订单号" datatype="string" desc=""></col>
-        <col id="kdpos" name="销售订单项目编号 " datatype="string" desc=""></col>
       </cols>
       <!--设置对应的Sql语句-->
       <sqls defaultsql="export">
