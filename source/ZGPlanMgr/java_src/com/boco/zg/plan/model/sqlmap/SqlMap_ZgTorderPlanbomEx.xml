@@ -509,8 +509,6 @@
      		   zg_t_bom tbom
 		 where 
 		    bom.idnrk=tbom.idnrk(+)
- 			and bom.lgort=tbom.lgort(+)
- 			and bom.matkl=tbom.matkl(+) 
   			and plan.cuid = planBom.Order_Plan_Id
 		   and planBom.Order_Bom_Id = bom.cuid
 		   and org.cuid(+) = bom.lgort
@@ -590,8 +588,6 @@
      		   zg_t_bom tbom,zg_materiel ma
 		 where 
 		    bom.idnrk=tbom.idnrk(+)
- 			and bom.lgort=tbom.lgort(+)
- 			and bom.matkl=tbom.matkl(+) 
   			and plan.cuid = planBom.Order_Plan_Id
 		   and planBom.Order_Bom_Id = bom.cuid
 		   and org.cuid(+) = bom.lgort

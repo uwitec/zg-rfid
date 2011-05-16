@@ -144,7 +144,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		   and vorg.cuid = morg.org_id
 		   and morg.matkl = mat.id
 		   and mat.id = bom.matkl_self
-		   and mat.lgort = bom.lgort
+		   and mat.lgort = orderbom.lgort
 		   and bom.idnrk = orderbom.idnrk 
 		     and bom.car_id is not null
 		   and bom.carnum is not null

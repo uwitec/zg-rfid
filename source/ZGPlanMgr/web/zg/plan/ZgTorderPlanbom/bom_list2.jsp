@@ -316,7 +316,7 @@ body,html {
 										<c:set var="waitBackNumAll" value="0" />
 												<c:forEach items="${orderbom.value}" var="obj1"
 													varStatus="m">
-													<c:set var="mengeAll" value="${mengeAll + obj1.menge}" />\
+													<c:set var="mengeAll" value="${mengeAll + obj1.menge}" />
 														<c:set var="waitBackNumAll" value="${waitBackNumAll + obj1.waitBackNum}" />
 													<c:set var="completeNumAll"	value="${completeNumAll + obj1.completeNum}" />
 												</c:forEach>
