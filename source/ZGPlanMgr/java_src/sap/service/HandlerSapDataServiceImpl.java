@@ -197,26 +197,35 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		this.baseDao.executeSql(sql);
 	}
 	
-	public void doUpdateChange(int batchNo, String aufnr,String arbpl) {
+	public void doUpdateChange(int batchNo, String aufnr,String arbpl,String pxType) {
 		StringBuffer querySql=new StringBuffer();
 		querySql=new StringBuffer();
 		querySql.append("select t.* ");
 		querySql.append("  from zg_t_orderbom_temp_all t                                           ");
 		querySql.append(" where t.batch_no = "+batchNo+"                                           ");
 		querySql.append("  and t.aufnr = '"+aufnr+"'                                              ");
-		querySql.append("  and t.arbpl = '"+arbpl+"'                                              ");
+		if(Constants.PxType.BG.value().equals(pxType)){
+		}else {
+			querySql.append("  and t.arbpl = '"+arbpl+"'                                              ");
+		}
+		
 		querySql.append("   and t.operate_type  is not  null                                       ");
 		List bomList = this.baseDao.findDynQuery(querySql.toString());
 		
 		StringBuffer findTempAufnrSql = new StringBuffer();
 		//新增情况不用做任何业务判断，直接将数据插入bom表
-		this.addSapBomsData(batchNo,1,aufnr,arbpl);
+		this.addSapBomsData(batchNo,1,aufnr,arbpl,pxType);
 		//查询调整和作废的bom
 		findTempAufnrSql.append("select t.* ");
 		findTempAufnrSql.append("  from zg_t_orderbom_temp_all t                                           ");
 		findTempAufnrSql.append(" where t.batch_no = "+batchNo+"                                           ");
 		findTempAufnrSql.append("  and t.aufnr = '"+aufnr+"'                                              ");
-		findTempAufnrSql.append("  and t.arbpl = '"+arbpl+"'                                              ");
+		
+		if(Constants.PxType.BG.value().equals(pxType)){
+		}else {
+			findTempAufnrSql.append("  and t.arbpl = '"+arbpl+"'                                              ");
+		}
+		
 		findTempAufnrSql.append("   and t.operate_type <> 1                                                ");
 		List<Map> list = this.baseDao.findDynQuery(findTempAufnrSql.toString());
 		List<Map> updateList = new ArrayList<Map>();
@@ -229,18 +238,21 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			String idnrk = IbatisDAOHelper.getStringValue(map, "IDNRK","");
 			String posnr=IbatisDAOHelper.getStringValue(map, "POSNR", "");
 			
+			
+			
 			if(operateType.intValue() == 2) {//调整
 				Map planBom = getPlanBom(aufnr,matnr,matnr1,idnrk,posnr,arbpl);
+				
 				if(planBom == null) { //还未生成领料计划，直接更新数据
-					this.updateBomMenge(map,planBom);
+					this.updateBomMenge(map,planBom,pxType,arbpl);
 				}else{
 					Long completeNum = IbatisDAOHelper.getLongValue(planBom, "COMPLETE_NUM");
 					if(completeNum == null || completeNum.intValue() == 0) {//还未领取，直接更新数据
-						this.updateBomMenge(map,planBom);
+						this.updateBomMenge(map,planBom,pxType,arbpl);
 					}else if(menge >= completeNum){//新的需求数目大于完成数目，直接更新数据
-						this.updateBomMenge(map,planBom);
+						this.updateBomMenge(map,planBom,pxType,arbpl);
 					}else if(menge < completeNum){//新的需求数目小于完成数目，需要生成退货单（同时更新数据）
-						this.updateBomMenge(map,planBom);
+						this.updateBomMenge(map,planBom,pxType,arbpl);
 //						this.createBackPlan(map);
 					}
 				}
@@ -249,14 +261,14 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 				if(null!=planBom){
 					String planNum=IbatisDAOHelper.getStringValue(planBom, "PLAN_NUM");
 					if("0".equals(planNum)) {
-						this.deleteBom(map);
+						this.deleteBom(map,arbpl);
 						this.deletePlanBom(map);
 					}else {
-						this.updateBomMenge(map,planBom);
+						this.updateBomMenge(map,planBom,pxType,arbpl);
 //						this.createBackPlan(map);
 					}
 				}else {
-					this.deleteBom(map);
+					this.deleteBom(map,arbpl);
 				}
 				
 			}
@@ -299,37 +311,10 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		this.baseDao.executeSql(deleteBuffer.toString());
 	}
 
-	/**
-	 * 更新bom，但是不做订单调整的相关处理，用于重复推送订但是不是调单调整的时候处理
-	 * @param batchNo
-	 * @param aufnr
-	 */
-	public void doUpdateChangeForPxRepeat(int batchNo, String aufnr,String arbpl) {
-		
-		StringBuffer findTempAufnrSql = new StringBuffer();
-		//新增情况不用做任何业务判断，直接将数据插入bom表
-		this.addSapBomsData(batchNo,1,aufnr,arbpl);
-		//查询调整和作废的bom
-		findTempAufnrSql.append("select t.* ");
-		findTempAufnrSql.append("  from zg_t_orderbom_temp_all t                                           ");
-		findTempAufnrSql.append(" where t.batch_no = "+batchNo+"                                           ");
-		findTempAufnrSql.append("   and t.aufnr = '"+aufnr+"'                                              ");
-		findTempAufnrSql.append(" and t.arbpl = '"+arbpl+"'                                              ");
-		findTempAufnrSql.append("   and t.operate_type <> 1                                                ");
-		List<Map> list = this.baseDao.findDynQuery(findTempAufnrSql.toString());
-		for(Map map : list) {
-			Long operateType = IbatisDAOHelper.getLongValue(map, "OPERATE_TYPE");
-			if(operateType.intValue() == 2) {//调整
-				this.updateBomMenge(map,new HashMap());
-			}else if(operateType.intValue() == 3) {//作废
-					this.deleteBom(map);
-			}
-		}
-	}
 	
 	private Map getPlanBom(String aufnr, String matnr,String matnr1,String idnrk,String posnr,String arbpl) {
 		StringBuffer findPlanBomSql = new StringBuffer();
-		findPlanBomSql.append("select pb.cuid,ob.cuid as order_bom_id,ob.order_id,pb.car_num,nvl(pb.plan_num,0) plan_num,pb.complete_num  ");
+		findPlanBomSql.append("select ob.arbpl,pb.cuid,ob.cuid as order_bom_id,ob.order_id,pb.car_num,nvl(pb.plan_num,0) plan_num,pb.complete_num  ");
 		findPlanBomSql.append("  from zg_t_orderbom ob, zg_t_order_planbom pb  ,zg_t_order_plan p                                  ");
 		findPlanBomSql.append(" where ob.cuid = pb.order_bom_id                                                   ");
 		findPlanBomSql.append("   and p.cuid=pb.order_plan_id                                                     ");
@@ -347,14 +332,14 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		}
 	}
 	
-	private void deleteBom(Map map) {
+	private void deleteBom(Map map,String arbpl) {
 		Long menge = IbatisDAOHelper.getLongValue(map, "MENGE");
 		String aufnr = IbatisDAOHelper.getStringValue(map, "AUFNR");
 		String matnr = IbatisDAOHelper.getStringValue(map, "MATNR");
 		String matnr1 = IbatisDAOHelper.getStringValue(map, "MATNR1");
 		String idnrk = IbatisDAOHelper.getStringValue(map, "IDNRK");
 		String posnr = IbatisDAOHelper.getStringValue(map, "POSNR","");
-		String arbpl=IbatisDAOHelper.getStringValue(map, "ARBPL", "");
+//		String arbpl=IbatisDAOHelper.getStringValue(map, "ARBPL", "");
 		//删除订单BOM表需求数量
 		StringBuffer updateBomMengeSql = new StringBuffer();
 		updateBomMengeSql.append("delete from zg_t_orderbom   ");
@@ -375,7 +360,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 * 更新orderplanbom,除了排序号，
 	 * @param map
 	 */
-	public void updateBomMenge(Map map,Map planBom) {
+	public void updateBomMenge(Map map,Map planBom,String pxType,String arbpl) {
 		Long zdtyl=IbatisDAOHelper.getLongValue(map, "ZDTYL");
 		String matkl = IbatisDAOHelper.getStringValue(map, "MATKL","");
 		Long menge = IbatisDAOHelper.getLongValue(map, "MENGE");
@@ -384,13 +369,19 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		String matnr1 = IbatisDAOHelper.getStringValue(map, "MATNR1");
 		String idnrk = IbatisDAOHelper.getStringValue(map, "IDNRK");
 		String posnr = IbatisDAOHelper.getStringValue(map, "POSNR");
-		String arbpl=IbatisDAOHelper.getStringValue(map, "ARBPL");
+//		String arbpl=IbatisDAOHelper.getStringValue(map, "ARBPL");
+		
 		
 		StringBuffer updateBomMengeSql = new StringBuffer();
 		updateBomMengeSql.append("update zg_t_orderbom ob set ");
 		Set set = map.keySet();
 		for (Object key : set) {
 			if(!NOTINSTR.contains(key.toString())){
+				if(Constants.PxType.BG.value().equals(pxType)){
+					if("ARBPL".equals(key.toString())){//订单变更时候不用管生产线
+						continue;
+					}
+				}
 				String value=map.get(key)==null?"":map.get(key).toString();
 				updateBomMengeSql.append( key+"='"+value+"',");
 			}
@@ -524,32 +515,45 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	public void doUpdateOrder(String aufnr,String arbpl, int batchNo,String px,String plant) {
 		StringBuffer updateOrderSql = new StringBuffer();
 		updateOrderSql.append("update zg_t_order t");
-		updateOrderSql.append(" set (SUBMIT_USER,SUBMIT_DATE,MANDT,PXDAT,PLANT,MIPOS,PCDAT,ARBPL,ARBPL1,MATNR,KDAUF,KDPOS,KDTXT,ZCKPP,MAKTX2,MAKTX1,ZZCKS,ATWRT2,PSMNG,PMENGE,ZTXT02,ZDBLC,BRGEW2,CRDAT,CPUTM,CRNAM,MRNAM,ZMUZE,MNAME,FBDAT,FBUZE,FNAME,PFLAG,LABEL_CN,psbh) =");
-		updateOrderSql.append("(Select SUBMIT_USER,SUBMIT_DATE,MANDT,PXDAT,'"+plant+"',MIPOS,PCDAT,ARBPL,ARBPL1,MATNR,KDAUF,KDPOS,KDTXT,ZCKPP,MAKTX2,MAKTX1,ZZCKS,ATWRT2,PSMNG,PMENGE,ZTXT02,ZDBLC,BRGEW2,CRDAT,CPUTM,CRNAM,MRNAM,ZMUZE,MNAME,FBDAT,FBUZE,FNAME,'"+px +"' as PFLAG,LABEL_CN,psbh  from zg_t_order_temp temp ");
-		updateOrderSql.append(" where temp.aufnr='"+aufnr+"' and temp.arbpl='"+arbpl+"' and temp.batch_no="+batchNo+" and     rownum=1)");
-		updateOrderSql.append(" where t.aufnr='"+aufnr+"' and t.arbpl='"+arbpl+"'");
+		updateOrderSql.append(" set (ARBPL1,PFLAG,psbh) =");
+		updateOrderSql.append("(Select ARBPL1,'"+px +"' as PFLAG,psbh  from zg_t_order_temp temp ");
+		updateOrderSql.append(" where temp.aufnr='"+aufnr+"' and temp.batch_no="+batchNo+" and     rownum=1)");
+		updateOrderSql.append(" where t.aufnr='"+aufnr+"'");
 		this.baseDao.executeSql(updateOrderSql.toString());
 		
 	}
 	
 	public static void main(String[] args) {
-		new HandlerSapDataServiceImpl().addSapBomsData(12, 1,"aufnr","arbpl");
+		new HandlerSapDataServiceImpl().addSapBomsData(12, 1,"aufnr","arbpl","");
 	}
 	
 	/**
-	 * 添加bom，如果isAddOrder该bom的订单处于排序状态，则同时把该bom插入到orderplanbom表中
+	 * 添加bom，如果该bom的订单处于排序状态，则同时把该bom插入到orderplanbom表中
 	 */
-	public void addSapBomsData(int batchNo,Integer operateType,String aufnr,String arbpl) {
+	public void addSapBomsData(int batchNo,Integer operateType,String aufnr,String arbpl,String pxType) {
 		String updateOrderIdSql = "update Zg_t_Orderbom_Temp_All t set t.order_id = (select cuid from ZG_T_ORDER o where o.aufnr = t.aufnr and t.arbpl=o.arbpl and rownum=1) WHERE  aufnr='"+aufnr+"' and arbpl='"+arbpl+"' and BATCH_NO = "+batchNo;
+		if(Constants.PxType.BG.value().equals(pxType)){
+			updateOrderIdSql = "update Zg_t_Orderbom_Temp_All t set t.order_id = (select cuid from ZG_T_ORDER o where o.aufnr = t.aufnr and o.arbpl='"+arbpl+"' and rownum=1) WHERE  aufnr='"+aufnr+"' and BATCH_NO = "+batchNo;
+		
+		}
+		
 		this.baseDao.executeSql(updateOrderIdSql);
 		StringBuffer insertBuffer = new StringBuffer();
 		StringBuffer sqlBuffer=new StringBuffer();
-		insertBuffer.append("INSERT INTO zg_t_orderbom(CUID,ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_NUM,STORAGE_STATE,posnr)" +
-				"SELECT SYS_GUID(),ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_NUM,STORAGE_STATE,posnr FROM Zg_t_Orderbom_Temp_All a WHERE BATCH_NO = "+batchNo+"   and a.aufnr='"+aufnr+"'     and a.arbpl='"+arbpl+"'");
+		
 		
 		sqlBuffer.append("select temp.menge, b.cuid orderBomId,  t.cuid orderId,   temp.sortf from Zg_t_Orderbom_Temp_All temp,    zg_t_order  t,      zg_t_orderbom      b ");
 		sqlBuffer.append("   where temp.order_id = t.cuid   and t.pflag = 'X'     and b.order_id = t.cuid   and b.idnrk = temp.idnrk   and b.arbpl = t.arbpl   and b.posnr = temp.posnr   ");
-		sqlBuffer.append("  and temp.batch_no = "+batchNo+"    and temp.aufnr='"+aufnr+"'   and temp.arbpl='"+arbpl+"'");
+		sqlBuffer.append("  and temp.batch_no = "+batchNo+"    and temp.aufnr='"+aufnr+"'");
+		if(!Constants.PxType.BG.value().equals(pxType)){
+			sqlBuffer.append("   and temp.arbpl='"+arbpl+"'");
+			insertBuffer.append("INSERT INTO zg_t_orderbom(CUID,ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_NUM,STORAGE_STATE,posnr)" +
+					"SELECT SYS_GUID(),ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_NUM,STORAGE_STATE,posnr FROM Zg_t_Orderbom_Temp_All a WHERE BATCH_NO = "+batchNo+"   and a.aufnr='"+aufnr+"'");
+			insertBuffer.append("     and a.arbpl='"+arbpl+"'");
+		}else {//变更接口时不用理生产线
+			insertBuffer.append("INSERT INTO zg_t_orderbom(CUID,ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_NUM,STORAGE_STATE,posnr)" +
+					"SELECT SYS_GUID(),ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,IDNRK,ORDER_ID,AUFNR,'"+arbpl+"',MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_NUM,STORAGE_STATE,posnr FROM Zg_t_Orderbom_Temp_All a WHERE BATCH_NO = "+batchNo+"   and a.aufnr='"+aufnr+"'");
+		}
 		
 		if(operateType!=null){
 			insertBuffer.append(" and operate_type="+operateType);
@@ -665,6 +669,11 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	    
 	    sql=new StringBuffer();
 	    sql.append("delete  from zg_t_order_plan t where not exists (select 1 from zg_t_order_planbom bom where t.cuid=bom.order_plan_id)");
+	    this.baseDao.executeSql(sql.toString());
+	    
+	    //提前领料物料组管理 
+	    sql=new StringBuffer();
+	    sql.append("update zg_materiel m    set m.advance = '1'  where m.id in (select t.Id   from zg_materiel t    where t.advance = '1'         and t.type = '2')");
 	    this.baseDao.executeSql(sql.toString());
 	}
 
@@ -986,60 +995,6 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		this.baseDao.executeSql(sql.toString());
 	}
 	
-	/**
-	 * 更新orderplanbom,除了排序号，
-	 * @param map
-	 */
-	public void updateBomMenge(Map map,String orderId) {
-		Long zdtyl=IbatisDAOHelper.getLongValue(map, "ZDTYL");
-		String matkl = IbatisDAOHelper.getStringValue(map, "MATKL","");
-		Long menge = IbatisDAOHelper.getLongValue(map, "MENGE");
-		String aufnr = IbatisDAOHelper.getStringValue(map, "AUFNR");
-		String matnr = IbatisDAOHelper.getStringValue(map, "MATNR");
-		String matnr1 = IbatisDAOHelper.getStringValue(map, "MATNR1");
-		String idnrk = IbatisDAOHelper.getStringValue(map, "IDNRK");
-		String posnr = IbatisDAOHelper.getStringValue(map, "POSNR");
-		String arbpl=IbatisDAOHelper.getStringValue(map, "ARBPL");
-		
-		StringBuffer updateBomMengeSql = new StringBuffer();
-		updateBomMengeSql.append("update zg_t_orderbom ob set ");
-		Set set = map.keySet();
-		for (Object key : set) {
-			if(!NOTINSTR.contains(key.toString())){
-				if(key.toString().equals("ORDER_ID")){
-					updateBomMengeSql.append( key+"='"+orderId+"',");
-				}else {
-					String value=map.get(key)==null?"":map.get(key).toString();
-					updateBomMengeSql.append( key+"='"+value+"',");
-				}
-			
-			}
-			
-		}
-		String sql=updateBomMengeSql.toString();
-		sql=sql.substring(0,sql.length()-1);
-		updateBomMengeSql=new StringBuffer();
-		updateBomMengeSql.append(sql);
-		//修改订单BOM表
-	
-		updateBomMengeSql.append(" where aufnr = '"+aufnr+"'                      ");
-		updateBomMengeSql.append("   and matnr = '"+matnr+"'                      ");
-		updateBomMengeSql.append("   and matnr1 = '"+matnr1+"'                    ");
-		updateBomMengeSql.append("   and idnrk = '"+idnrk+"'                      ");
-		updateBomMengeSql.append("   and posnr = '"+posnr+"'                      ");
-		updateBomMengeSql.append("   and arbpl = '"+arbpl+"'                      ");
-		this.baseDao.executeSql(updateBomMengeSql.toString());
-		Map planBom = getPlanBom(aufnr,matnr,matnr1,idnrk,posnr,arbpl);
-		if(planBom != null) {
-			String orderBomId = IbatisDAOHelper.getStringValue(planBom, "ORDER_BOM_ID");
-			if(!StringUtils.isBlank(orderBomId)) {
-			StringBuffer updatePlanBomSql = new StringBuffer();
-			updatePlanBomSql.append("update zg_t_order_planbom set car_num = '"+menge+"' ");
-			updatePlanBomSql.append(" where order_bom_id = '"+orderBomId+"'              ");
-				this.baseDao.executeSql(updatePlanBomSql.toString());
-			}
-		}
-	}
 	
 	/**
 	 * 更新领料计划生产厂
@@ -1245,9 +1200,9 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		// 比对
 		CompareSapDataService service = getCompareSapDataService();
 		try {
-			service.compareBomDataByBatchNoAndAufnr(batchNo,aufnr,arbpl);	// 比对完后处理数据
+			service.compareBomDataByBatchNoAndAufnr(batchNo,aufnr,arbpl,Constants.PxType.PX.value());	// 比对完后处理数据
 			
-			doUpdateChange(batchNo,aufnr,arbpl);
+			doUpdateChange(batchNo,aufnr,arbpl,Constants.PxType.PX.value());
 			
 		} catch (Exception e) {
 			log.error("compareBomDataByBatchNoAndAufnr方法，对比数据失败,批次--"+batchNo+" :",e);
@@ -1311,9 +1266,9 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		// 比对
 		CompareSapDataService service = getCompareSapDataService();
 		try {
-			service.compareBomDataByBatchNoAndAufnr(batchNo,aufnr,arbpl);	// 比对完后处理数据
+			service.compareBomDataByBatchNoAndAufnr(batchNo,aufnr,arbpl,Constants.PxType.PX.value());	// 比对完后处理数据
 			
-			doUpdateChange(batchNo,aufnr,arbpl);
+			doUpdateChange(batchNo,aufnr,arbpl,Constants.PxType.PX.value());
 			
 			
 			
@@ -1662,7 +1617,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 */
 	private void updateorderFreeze(String aufnr,String arbpl, String freeze) {
 		StringBuffer sql=new StringBuffer();
-		sql.append("update zg_t_order t set t.freeze='"+freeze+"' where t.aufnr='"+aufnr+"' and t.arbpl='"+arbpl+"'");
+		sql.append("update zg_t_order t set t.freeze='"+freeze+"' where t.aufnr='"+aufnr+"'");
 		this.baseDao.executeSql(sql.toString());
 		
 	}
@@ -1674,7 +1629,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 */
 	private void updateOrderState(String aufnr,String arbpl, String state) {
 		StringBuffer sql=new StringBuffer();
-		sql.append("update zg_t_order t set t.order_state='"+state+"' where t.aufnr='"+aufnr+"' and t.arbpl='"+arbpl+"'");
+		sql.append("update zg_t_order t set t.order_state='"+state+"' where t.aufnr='"+aufnr+"'");
 		this.baseDao.executeSql(sql.toString());
 	}
 	

@@ -61,7 +61,7 @@
 	       carplan.storage_user_id,
 	       op1.label_cn storage_user_name,
 	       sup.batchno,
-           sup.zrzqd
+           sup.zrzqd,zto.kdauf,zto.KDPOS
 	  from zg_t_carbom           carbom,
 	       zg_t_carplan          carplan,
 	       zg_t_order            zto,

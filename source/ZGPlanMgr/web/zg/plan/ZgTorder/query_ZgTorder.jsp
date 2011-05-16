@@ -79,9 +79,21 @@
 			document.forms[0].action = "${ctx}/zg/plan/ZgTorder/list.do";
 		}
 		
+		function exportNotMatklSelfData(){
+			document.forms[0].action = "${ctx}/zg/plan/ZgTorder/exportNotMatklSelfBom.do";
+			document.forms[0].submit();
+			document.forms[0].action = "${ctx}/zg/plan/ZgTorder/list.do";
+		}
+		
+		
 		function importData()
 		{
 			window.open("${ctx}/zg/tempFile/Import.jsp?template=importBomCar", "newwindow", "height=480, width=640,scrollbars=no, resizable=yes, toolbar=no, menubar=no, status=no");
+		}
+		
+		function importtMatklSelfData()
+		{
+			window.open("${ctx}/zg/tempFile/Import.jsp?template=importtMatklSelfData", "newwindow", "height=480, width=640,scrollbars=no, resizable=yes, toolbar=no, menubar=no, status=no");
 		}
 	</script>
 </head>
@@ -110,7 +122,7 @@
 					<td width="100px" class="label">排产结束时间：</td>
 					<td width="180px">
 						<input type="hidden" id="afterTime_oldValue" value="${ pcdat_end}"/>
-						<input type="text" dateFlag2="true" value="${ pcdat_end}" name="s_pcdat_end" id="s_pcdat_end" readonly = "true" onchange="checkBeforeAndAfterTime('s_pcdat_start','s_pcdat_end','afterTime_oldValue','开始时间','结束时间',2)"/>
+						<input type="text" dateFlag="true" value="${ pcdat_end}" name="s_pcdat_end" id="s_pcdat_end" readonly = "true" onchange="checkBeforeAndAfterTime('s_pcdat_start','s_pcdat_end','afterTime_oldValue','开始时间','结束时间',2)"/>
 					</td>
 					<td width="120px" class="label">生产订单处理状态：</td>
 					<td>
@@ -184,7 +196,10 @@
 							</c:if>
 							<!-- <a href="javascript:exportData()"><span><img src="<%=iconPath%>/page_excel.png" />导出</span></a> -->
 							<a href="javascript:exportData()"><span><img src="<%=iconPath%>/page_excel.png" />导出未设置规格数据</span></a>
+						<!-- 	<a href="javascript:exportNotMatklSelfData()"><span><img src="<%=iconPath%>/page_excel.png" />导出未设置物料组物料</span></a>-->
 							<a href="javascript:importData()"><span><img src="<%=iconPath%>/page_excel.png" />导入规格数据</span></a>
+						<!-- 	<a href="javascript:importtMatklSelfData()"><span><img src="<%=iconPath%>/page_excel.png" />导入物料组</span></a>-->
+							
 						</div>
 					</td>
 				</tr>

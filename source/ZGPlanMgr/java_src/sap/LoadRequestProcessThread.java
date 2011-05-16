@@ -354,6 +354,10 @@ public class LoadRequestProcessThread implements Runnable {
 	}
 	}
 
+	/**
+	 * modify by wengqin:原来是订单号生产线变更，现在是根据订单号变更
+	 * @throws SapServiceException
+	 */
 	private void handlerChangeData()  throws SapServiceException{
 		try {
 			// 更新关系
@@ -369,32 +373,38 @@ public class LoadRequestProcessThread implements Runnable {
 				throw new SapServiceException("变更数据中有多个订单！");
 			}else{
 				aufnr = ((String)list.get(0).get("AUFNR")).trim();
-				String arbpl=IbatisDAOHelper.getStringValue(list.get(0), "ARBPL", "").trim();
-				List<Map> listOrder = this.getBaseDao().queryBySql("select cuid,AUFNR,t.plant,t.pflag from zg_t_order t where t.AUFNR='"+aufnr+"' and arbpl= '"+arbpl+"'");
+//				String arbpl=IbatisDAOHelper.getStringValue(list.get(0), "ARBPL", "").trim();
+//				List<Map> listOrder = this.getBaseDao().queryBySql("select cuid,AUFNR,t.plant,t.pflag from zg_t_order t where t.AUFNR='"+aufnr+"' and arbpl= '"+arbpl+"'");
+				List<Map> listOrder = this.getBaseDao().queryBySql("select cuid,AUFNR,t.plant,t.pflag,t.arbpl from zg_t_order t where t.AUFNR='"+aufnr+"'");
 				if(listOrder==null || listOrder.size()==0){
-					log.warn("变更数据中的订单在生产库中找不到对应的记录！,批次--"+batchNo+"  订单--"+aufnr+"  生产线--"+arbpl);
+					log.warn("变更数据中的订单在生产库中找不到对应的记录！,批次--"+batchNo+"  订单--"+aufnr);
 					throw new SapServiceException("变更数据中的订单在生产库中找不到对应的记录！");
 				}
-				// 比对
-				CompareSapDataService service = getCompareSapDataService();
-				service.compareBomDataByBatchNoAndAufnr(batchNo,aufnr,arbpl);
-				// 比对完后处理数据
 				
-				Map<String, Object> map=listOrder.get(0);
-				String plant=IbatisDAOHelper.getStringValue(map, "PLANT", "").trim();
-				String pflag=IbatisDAOHelper.getStringValue(map, "PFLAG","").trim(); 
+				for(Map order:listOrder){
+					
+					String arbpl=IbatisDAOHelper.getStringValue(order, "ARBPL", "").trim();
+					// 比对
+					CompareSapDataService service = getCompareSapDataService();
+					
+					//清空操作类型 
+					service.deleteOperatorTypeByBatchNo(batchNo);
+					
+					service.compareBomDataByBatchNoAndAufnr(batchNo,aufnr,arbpl,Constants.PxType.BG.value());
+					// 比对完后处理数据
+					
+					Map<String, Object> map=listOrder.get(0);
+					String plant=IbatisDAOHelper.getStringValue(map, "PLANT", "").trim();
+					String pflag=IbatisDAOHelper.getStringValue(map, "PFLAG","").trim(); 
+					
+					handlerSapDataService.doUpdateOrder(aufnr,arbpl, batchNo, pflag, plant);
+					handlerSapDataService.doUpdateChange(batchNo,aufnr,arbpl,Constants.PxType.BG.value());
+					
+					//变更接口处理订单状态
+					handlerSapDataService.doProcessOrderState(batchNo,aufnr,arbpl);
+					
+				}
 				
-				handlerSapDataService.doUpdateOrder(aufnr,arbpl, batchNo, pflag, plant);
-				handlerSapDataService.doUpdateChange(batchNo,aufnr,arbpl);
-				
-				//变更接口处理订单状态
-				handlerSapDataService.doProcessOrderState(batchNo,aufnr,arbpl);
-//				Date pxDate=(Date) list.get(0).get("PXDAT");
-//				String orderId=listOrder.get(0).get("CUID").toString();
-//				plant=list.get(0).get("PLANT").toString().trim();
-//				
-//				//更新辅表的排序日期
-//				handlerSapDataService.updateZgTorderAide(orderId,plant,pxDate);
 				
 			}
 			// 执行完后修改日志状态

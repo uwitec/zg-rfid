@@ -72,6 +72,8 @@ for(SortInfo si:list){
 							<td class="tableHeader">生产订单号<%=map.get("ec_image_t0_PCDAT")==null?"":map.get("ec_image_t0_PCDAT")%></td>
 							<td class="tableHeader">产品编码<%=map.get("ec_image_t0_AUFNR")==null?"":map.get("ec_image_t0_AUFNR")%></td>
 							<td class="tableHeader">产品型号<%=map.get("ec_image_t0_ARBPL")==null?"":map.get("ec_image_t0_ARBPL")%></td>
+							<td class="tableHeader">销售订单号<%=map.get("ec_image_t0_AUFNR")==null?"":map.get("ec_image_t0_AUFNR")%></td>
+							<td class="tableHeader">销售订单项目编号<%=map.get("ec_image_t0_ARBPL")==null?"":map.get("ec_image_t0_ARBPL")%></td>
 							<td class="tableHeader">领料部门<%=map.get("ec_image_t0_MAKTX2")==null?"":map.get("ec_image_t0_MAKTX2")%></td>
 							<td class="tableHeader">领料线体<%=map.get("ec_image_t0_KDAUF")==null?"":map.get("ec_image_t0_KDAUF")%></td>
 							<td class="tableHeader">物料编码<%=map.get("ec_image_t0_PLANT")==null?"":map.get("ec_image_t0_PLANT")%></td>
@@ -92,6 +94,8 @@ for(SortInfo si:list){
 							<td>${obj.AUFNR}</td>
 							<td>${obj.MATNR}</td>
 							<td>${obj.MAKTX1}</td>
+							<td>${obj.KDAUF}</td>
+							<td>${obj.KDPOS}</td>
 							<td align="center">${obj.PLANT }
 							</td>
 							<td>${obj.ARBPL}</td>
@@ -108,7 +112,7 @@ for(SortInfo si:list){
 						</tr>
 					</c:forEach>
 						<tr>
-							<td colspan="13" >
+							<td colspan="15" >
 								<%@include file="/frame/default/ux/pagebar.jsp" %>
 							</td>
 						</tr>

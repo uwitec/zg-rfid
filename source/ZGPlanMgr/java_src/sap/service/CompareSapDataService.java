@@ -13,13 +13,19 @@ public interface CompareSapDataService {
 	
 	public void compareOrderDataByBatchNo(int batchNo) throws Exception;
 
-	public void compareBomDataByBatchNoAndAufnr(int batchNo, String aufnr,String arbpl)  throws Exception;
+	public void compareBomDataByBatchNoAndAufnr(int batchNo, String aufnr,String arbpl,String type)  throws Exception;
 	
 	/**
 	 * 对比批量bom
 	 * @param batchNo
 	 */
 	public void compareBatchBomByBatchNo(int batchNo) ;
+
+	/**
+	 * 清空操作类型 
+	 * @param batchNo
+	 */
+	public void deleteOperatorTypeByBatchNo(int batchNo);
 
 	
 	

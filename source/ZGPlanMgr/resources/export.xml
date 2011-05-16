@@ -36,6 +36,43 @@
       </sqls>
     </command>
   </template>
+  
+  
+  <!-- 未设置物料组的物料 -->
+  <template id="importtMatklSelfData" name="按物料组导出物料" defaultCommand="import">
+    <command id="import" sheetName="Sheet1" errInfo="导入失败">
+      <!--对模板中的列进行描述    	
+      -->
+      <cols>
+        <col id="idnrk" name="物料" datatype="string" desc=""></col>
+        <col id="maktx" name="物料描述" datatype="string" desc="">
+          <!--如果要进行列的验证在这里扩展-->
+          <valid></valid>
+        </col>
+        <col id="lgort" name="库位" datatype="string" desc=""></col>
+         <col id="label_cn" name="仓储地点描述" datatype="string" desc=""></col>
+        <col id="matkl" name="物料组" datatype="string" desc=""></col>
+        <col id="materiel_name" name="物料组描述" datatype="string" desc=""></col>
+        <col id="matkl_self" name="新物料组" datatype="string" desc=""></col>
+      </cols>
+	       <!--设置对应的Sql语句-->
+	      <sqls defaultsql="insert">
+	      	<!-- 设置sql相关信息 -->
+	        <sql id="insert">
+	          <!-- SQL内容 -->
+	          <content>
+		          <![CDATA[ 
+		         	 update zg_t_bom t set t.matkl_self='#matkl_self#' where t.idnrk='#idnrk#'
+		          ]]>
+	          </content>
+	          <!-- 动态sql条件 -->
+	          <dynamic>
+	          </dynamic>
+	        </sql>
+	      </sqls>
+    </command>
+  </template>
+  
 
  <!--物料组管理导出的模板-->
   <template id="exportBomCar" name="导出物料组" defaultCommand="import">
@@ -144,6 +181,54 @@
   </template>
   
   
+  
+  
+  
+  
+  <!-- 未设置物料组的物料 -->
+  <template id="exportNotMatklSelfBom" name="按物料组导出物料" defaultCommand="export">
+    <command id="exportcommand" sheetName="Sheet1" errInfo="导入失败">
+      <!--对模板中的列进行描述    	
+      -->
+      <cols>
+        <col id="idnrk" name="物料" datatype="string" desc=""></col>
+        <col id="maktx" name="物料描述" datatype="string" desc="">
+          <!--如果要进行列的验证在这里扩展-->
+          <valid></valid>
+        </col>
+        <col id="lgort" name="库位" datatype="string" desc=""></col>
+         <col id="label_cn" name="仓储地点描述" datatype="string" desc=""></col>
+        <col id="matkl" name="物料组" datatype="string" desc=""></col>
+        <col id="materiel_name" name="物料组描述" datatype="string" desc=""></col>
+        <col id="matkl_self" name="新物料组" datatype="string" desc=""></col>
+      </cols>
+      <!--设置对应的Sql语句-->
+      <sqls defaultsql="export">
+        <sql id="export">
+          <content>
+          <![CDATA[
+                 select distinct t.idnrk,
+                           t.lgort,
+                           org.label_cn label_cn,
+                           t.maktx,
+                           t.msehl,
+                            t.matkl,
+                           mat.materiel_name,
+                           t.matkl_self
+             from zg_t_bom t, fw_organization org, zg_materiel mat
+            where t.matkl_self is null
+              and t.lgort = org.cuid(+)
+              and mat.id = t.matkl
+          ]]>
+          </content>
+          
+        </sql>
+      </sqls>
+    </command>
+  </template>
+  
+  
+  
   <!-- 临时配置导入 -->
    <template id="importTemp" name="中文名" defaultCommand="import">
     <command id="import" sheetName="Sheet1" errInfo="导入失败">
@@ -229,6 +314,8 @@
         <col id="complete_num" name="领料数量" datatype="string" desc=""></col>
         <col id="lifnr" name="供应商代码" datatype="string" desc=""></col>
         <col id="lifnr_name" name="供应商" datatype="string" desc=""></col>
+        <col id="kdauf" name="销售订单号" datatype="string" desc=""></col>
+        <col id="kdpos" name="销售订单项目编号 " datatype="string" desc=""></col>
       </cols>
       <!--设置对应的Sql语句-->
       <sqls defaultsql="export">
@@ -247,7 +334,7 @@
 	       sup.lifnr,
 	      sum(nvl(sup.car_num,0))  complete_num,
 	       sum(planbom.car_num) car_num,
-	       sup.lifnr_name
+	       sup.lifnr_name, zto.kdauf,zto.KDPOS
 	  from zg_t_carbom           carbom,
 	       zg_t_carplan          carplan,
 	       zg_t_order            zto,
@@ -313,7 +400,7 @@
 	          orderbom.sortf,
 	          orderbom.lgort,
 	          sup.lifnr,
-	          sup.lifnr_name ,emu.orgname
+	          sup.lifnr_name ,emu.orgname, zto.kdauf,zto.KDPOS
        		</isEmpty>
         </dynamic>
         <content>
@@ -335,6 +422,8 @@
           <!--如果要进行列的验证在这里扩展-->
           <valid></valid>
         </col>
+        <col id="kdauf" name="销售订单号" datatype="string" desc=""></col>
+        <col id="kdpos" name="销售订单项目编号 " datatype="string" desc=""></col>
         <col id="maktx1" name="产品型号" datatype="string" desc=""></col>
         <col id="plant" name="领料部门" datatype="string" desc=""></col>
         <col id="arbpl" name="领料线体" datatype="string" desc=""></col>
@@ -380,7 +469,7 @@
 	       carplan.storage_user_id,
 	       op1.label_cn storage_user_name,
 	       sup.batchno,
-           sup.zrzqd
+           sup.zrzqd,zto.kdauf,zto.KDPOS
 	  from zg_t_carbom           carbom,
 	       zg_t_carplan          carplan,
 	       zg_t_order            zto,
@@ -407,35 +496,35 @@
 	    and carplan.order_plan_type <>'3'  
 	      and sup.car_num>0     ]]>
 	   </content>
-          <dynamic prepend="">
-       		<isNotEmpty prepend="AND" property="date_start">
-	       			 carbom.car_date>=to_date('$date_start$','yyyy-mm-dd hh24:mi:ss') 
+          <dynamic>
+       		<isNotEmpty id="date_start">
+	       		and	 carbom.car_date>=to_date('#date_start#','yyyy-mm-dd hh24:mi:ss') 
        		</isNotEmpty>  
-       		<isNotEmpty prepend="AND" property="date_end">
-	       			to_date('$date_end$','yyyy-mm-dd hh24:mi:ss') >= carbom.car_date
+       		<isNotEmpty id="date_end">
+	       		and	to_date('#date_end#','yyyy-mm-dd hh24:mi:ss') >= carbom.car_date
        		</isNotEmpty>  
-       		<isNotEmpty prepend="AND" property="aufnr">
-	       		  zto.aufnr like '%'||'$aufnr$'||'%'
-       		</isNotEmpty> 
-       		<isNotEmpty prepend="AND" property="matnr">
-       			  zto.matnr like '%'||'$matnr$'||'%'
+       		<isNotEmpty id="aufnr">
+	       		and  zto.aufnr like '%#aufnr#%'
+	       	</isNotEmpty>
+         	<isNotEmpty id="matnr">
+       			 and zto.matnr like  '%#matnr#%'
        		</isNotEmpty>   
-       		<isNotEmpty prepend="AND" property="plantWhere">
-       			  ($plantWhere$)
+       		<isNotEmpty id="plantWhere">
+       			and  (#plantWhere#)
        		</isNotEmpty>  
-       		<isNotEmpty prepend="AND" property="arbpl">
-	       		  zto.arbpl like '%'||'$arbpl$'||'%'
+       		<isNotEmpty id="arbpl">
+	       		and  zto.arbpl like '%#arbpl#%'
        		</isNotEmpty> 
-       			<isNotEmpty prepend="AND" property="idnrk">
-	       		  orderbom.idnrk like '%'||'$idnrk$'||'%'
-       		</isNotEmpty> 
-       		
-       			<isNotEmpty prepend="AND" property="suppliers">
-	       		  sup.lifnr_name like '%'||'$suppliers$'||'%'
+       			<isNotEmpty id="idnrk">
+	       		and  orderbom.idnrk like   '%#idnrk#%'
        		</isNotEmpty> 
        		
-       			<isNotEmpty prepend="AND" property="lgort">
-	       		  orderbom.lgort like '%'||'$lgort$'||'%'
+       			<isNotEmpty id="suppliers">
+	       		and  sup.lifnr_name like  '%#suppliers#%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty id="lgort">
+	       		and  orderbom.lgort like   '%#lgort#%'
        		</isNotEmpty> 
        		
 	    </dynamic>	
@@ -522,11 +611,11 @@
 	       		and	  zto.arbpl like '%#arbpl#%'
        		</isNotEmpty> 
        			<isNotEmpty id="idnrk">
-	       		and  bom.idnrk like '%#idnrk#%'
+	       		and  bom.idnrk like  '%#idnrk#%'
        		</isNotEmpty> 
        		
        			<isNotEmpty id="suppliers">
-	       		and  sup.lifnr_name like '%#suppliers#%'
+	       		and  sup.lifnr_name like  '%#suppliers#%'
        		</isNotEmpty> 
        		
        			<isNotEmpty id="lgort">

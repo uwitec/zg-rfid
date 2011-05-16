@@ -34,7 +34,7 @@ public class ServiceInitMain
     static
     {
         Properties connectProperties = new Properties();
-        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.130.251");
+        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.130.2");
         connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, "00");
         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "889");
         connectProperties.setProperty(DestinationDataProvider.JCO_USER, "barcode");
@@ -47,7 +47,7 @@ public class ServiceInitMain
         createDataFile(DESTINATION_NAME2, "jcoDestination", connectProperties);
         
         Properties servertProperties = new Properties();
-        servertProperties.setProperty(ServerDataProvider.JCO_GWHOST, "192.168.130.251");
+        servertProperties.setProperty(ServerDataProvider.JCO_GWHOST, "192.168.130.2");
         servertProperties.setProperty(ServerDataProvider.JCO_GWSERV, "sapgw00");
         servertProperties.setProperty(ServerDataProvider.JCO_PROGID, "NETSERVER01");
         servertProperties.setProperty(ServerDataProvider.JCO_REP_DEST, "ABAP_AS_WITHOUT_POOL");

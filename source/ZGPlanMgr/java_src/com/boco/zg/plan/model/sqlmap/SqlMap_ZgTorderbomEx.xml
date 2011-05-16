@@ -570,7 +570,8 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
          carbom.order_bom_id is not null
        	 and  plan.car_user = '$operatorId$'
            and plan.car_state = '0'
-           and plan.cuid = carbom.car_plan_id)
+           and plan.cuid = carbom.car_plan_id
+           and carbom.storage_user_id is  null)
 		   <isNotEmpty prepend="AND" property="planType">
 		    oup.plan_type = '$planType$'
 		   </isNotEmpty>
@@ -734,7 +735,8 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
           carbom.order_bom_id is not null
        	 and  plan.car_user = '$operatorId$'
            and plan.car_state = '0'
-           and plan.cuid = carbom.car_plan_id)
+           and plan.cuid = carbom.car_plan_id
+           and carbom.storage_user_id is  null)
            
 		   <isNotEmpty prepend="AND" property="planType">
 		    oup.plan_type = '$planType$'

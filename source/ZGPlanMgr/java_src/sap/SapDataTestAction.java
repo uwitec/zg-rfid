@@ -177,7 +177,7 @@ public class SapDataTestAction extends BaseStruts2Action
 		
 		//写入关系数据
 		String[] bomFields = {"ARBPL","AUFNR","MATNR","MAKTX1","IDNRK","MAKTX2","MSEHL2","ZDTYL","MENGE","MATKL","SORTF","LGORT","POSNR"};
-		List<Map> list = excelService.parseExcelFile("E:\\sap\\ZSTFC_CONNECTION_RFID_04_BAPIRET2_22070.xls",bomFields,"ZG_T_ORDERBOM_TEMP");
+		List<Map> list = excelService.parseExcelFile("E:\\sap\\ZSTFC_CONNECTION_RFID_04_ZLLXM2_22070.xls",bomFields,"ZG_T_ORDERBOM_TEMP");
 		int i = 0;
 		for(Map map : list){
 			i++;
@@ -193,7 +193,7 @@ public class SapDataTestAction extends BaseStruts2Action
 			j++;
 			map.put("BATCH_NO", batchNo);
 			map.put("CUID", batchNo+"-"+j);
-			map.put("MATNR1", map.get("IDNRK"));
+			map.put("MATNR1", map.get("MATNR"));
 			getHandlerSapDataService().insertDynamicTable("ZG_T_ORDERBOM_TEMP_ALL", map);
 		}
 		//写入订单数据

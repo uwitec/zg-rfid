@@ -222,6 +222,19 @@ public class ZgTorderAction extends BaseStruts2Action implements Preparable,Mode
 		
 		return EXPORT_STORECAR;
 	}
+	
+	public String exportNotMatklSelfBom()
+	{
+		
+		getRequest().getSession().setAttribute("ex_template","exportNotMatklSelfBom");
+		
+		Map parmsMap=new HashMap();
+		parmsMap.put("operatorId", getSessionOperatorId());
+		getRequest().getSession().setAttribute("ex_in", parmsMap);
+		
+		
+		return EXPORT_STORECAR;
+	}
 
 	public FwOrganizationExBo getFwOrganizationExBo() {
 		return fwOrganizationExBo;
