@@ -74,7 +74,7 @@
 	   and planbom.cuid = carbom.order_planbom_id
 	   and sup.car_bom_id = carbom.cuid
 	    and zto.order_state<>'-1' 
-	   and carplan.car_state='8'
+	    and carbom.storage_user_id is not null
 	     and carplan.order_plan_type <>'3'  
 	       and sup.car_num>0    ]]>
 	    <include refid="dynamicWhere"/>
@@ -112,7 +112,7 @@
 	           and orderbom.order_id = carbom.order_id
 	           and planbom.cuid = carbom.order_planbom_id
 	           and sup.car_bom_id = carbom.cuid
-	            and carplan.car_state='8'
+	          and carbom.storage_user_id is not null
 	          and carplan.order_plan_type <>'3'   
 	            and sup.car_num>0   ]]>
 	             <include refid="dynamicWhere"/>
