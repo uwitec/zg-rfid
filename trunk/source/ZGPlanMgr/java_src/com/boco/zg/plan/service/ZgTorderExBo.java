@@ -281,7 +281,14 @@ public class ZgTorderExBo extends ZgTorderBo {
 				}
 				plan.setIsManul(isManul);//手工结单
 				plan.setState(state);
-				String orderPlanId=(String) zgTorderPlanDao.save(plan);
+				
+				String orderPlanId="";
+				try {
+					orderPlanId=(String) zgTorderPlanDao.save(plan);
+				} catch (Exception e) {//并发的时候插入偶尔会不成功,主鍵重复
+					orderPlanId=(String) zgTorderPlanDao.save(plan);
+				}
+				
 				planMap.put(bom.getAufnr()+"_"+bom.getSortf(), plan);
 				
 				//插入计划分组表

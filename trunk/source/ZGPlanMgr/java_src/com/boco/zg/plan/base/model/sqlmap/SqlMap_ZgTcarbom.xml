@@ -106,7 +106,8 @@
 	        LABEL_CN = #labelCn# ,
 	        CAR_PLAN_ID = #carPlanId# ,
 	        ORDER_PLANBOM_ID = #orderPlanbomId# ,
-	        storage_user_id=#storageUserId#
+	        storage_user_id=#storageUserId#,
+	        CAR_DATE=#carDate#
 	    WHERE 
 	        CUID = #cuid# 
     ]]>

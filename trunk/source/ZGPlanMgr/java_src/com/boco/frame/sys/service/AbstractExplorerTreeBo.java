@@ -121,7 +121,7 @@ public abstract class AbstractExplorerTreeBo implements IExtCardTreeBo{
 		}
 		int pageNum = pNode.getOffset();
 		//获取每页条数
-		int pageSize = 50;
+		int pageSize = 100;
 		PageRequestExt pageRequest = new PageRequestExt();
 		pageRequest.setPageNumber(1);
 		pageRequest.setPageSize(pageSize);
