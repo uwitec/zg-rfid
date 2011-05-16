@@ -25,11 +25,37 @@
 	<link type="text/css" href="${ctx}/resources/css/${_theme}/form.css" rel="stylesheet" />
 	<style>
 		html,body{overflow: hidden;margin: 0;padding: 0}
+		.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+.ui-timepicker-div dl{ text-align: left; }
+.ui-timepicker-div dl dt{ height: 25px; }
+.ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
+		
 	</style>
 	<script type="text/javascript" src="${ctx}/scripts/jquery_ex/jquery_ui_autocomplate_ex.js"></script>
+	<script type="text/javascript" src="${ctx}/scripts/jquery_ex/jquery-ui-timepicker-addon.js"></script>
 	<script type="text/javascript">
 		$(function() {
 			init();
+			$("#s_date_start").datetimepicker({
+			showSecond: true, //显示秒
+			timeFormat: "hh:mm:ss",//格式化时间
+			dateFormat:"yy-mm-dd",
+			stepHour: 1,//设置步长
+			stepMinute: 1,
+			stepSecond: 1
+			});
+			
+				$("#s_date_end").datetimepicker({
+			showSecond: true, //显示秒
+			timeFormat: "hh:mm:ss",//格式化时间
+			dateFormat:"yy-mm-dd",
+			stepHour: 1,//设置步长
+			stepMinute: 1,
+			stepSecond: 1
+			});
+
+			
 		});
 		function init() {
 			initSplit();
@@ -103,11 +129,11 @@
 						领料开始时间：
 					</td>
 					<td width="180px"　>
-						<input type="text" dateFlag="true" value="${ date_start}"  name="s_date_start" id="s_date_start" readonly = "true" onchange="checkBeforeAndAfterTime('s_date_start','s_date_end','beforeTime_oldValue','领料开始时间','领料结束时间',1)"/>
+						<input type="text" dateTimeFlag="true" style="width:140px" value="${ date_start}"  name="s_date_start" id="s_date_start" readonly = "true" />
 					</td>
 					<td width="100px" class="label">领料结束时间：</td>
 					<td width="*">
-						<input type="text" dateFlag="true" value="${ date_end}" name="s_date_end" id="s_date_end" readonly = "true" onchange="checkBeforeAndAfterTime('s_date_start','s_date_end','afterTime_oldValue','领料开始时间','领料结束时间',2)"/>
+						<input type="text" dateTimeFlag="true"  style="width:140px"  value="${ date_end}" name="s_date_end" id="s_date_end" readonly = "true" />
 					</td>
 					
 				</tr>

@@ -121,7 +121,7 @@ for(SortInfo si:list){
 						</tr>
 					</c:forEach>
 						<tr>
-							<td colspan="18" >
+							<td colspan="19" >
 								<%@include file="/frame/default/ux/pagebar.jsp" %>
 							</td>
 						</tr>

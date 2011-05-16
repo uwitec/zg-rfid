@@ -27,8 +27,26 @@
 		html,body{overflow: hidden;margin: 0;padding: 0}
 	</style>
 	<script type="text/javascript" src="${ctx}/scripts/jquery_ex/jquery_ui_autocomplate_ex.js"></script>
+		<script type="text/javascript" src="${ctx}/scripts/jquery_ex/jquery-ui-timepicker-addon.js"></script>
 	<script type="text/javascript">
 		$(function() {
+			$("#s_date_start").datetimepicker({
+			showSecond: true, //显示秒
+			timeFormat: "hh:mm:ss",//格式化时间
+			dateFormat:"yy-mm-dd",
+			stepHour: 1,//设置步长
+			stepMinute: 1,
+			stepSecond: 1
+			});
+			
+				$("#s_date_end").datetimepicker({
+			showSecond: true, //显示秒
+			timeFormat: "hh:mm:ss",//格式化时间
+			dateFormat:"yy-mm-dd",
+			stepHour: 1,//设置步长
+			stepMinute: 1,
+			stepSecond: 1
+			});
 			init();
 		});
 		function init() {
@@ -103,11 +121,11 @@
 						领料开始时间：
 					</td>
 					<td width="180px"　>
-						<input type="text" dateFlag="true" value="${ date_start}"  name="s_date_start" id="s_date_start" readonly = "true" onchange="checkBeforeAndAfterTime('s_date_start','s_date_end','beforeTime_oldValue','领料开始时间','领料结束时间',1)"/>
+						<input type="text"  style="width:140px"  value="${ date_start}"  name="s_date_start" id="s_date_start" readonly = "true" onchange="checkBeforeAndAfterTime('s_date_start','s_date_end','beforeTime_oldValue','领料开始时间','领料结束时间',1)"/>
 					</td>
 					<td width="100px" class="label">领料结束时间：</td>
 					<td width="*">
-						<input type="text" dateFlag="true" value="${ date_end}" name="s_date_end" id="s_date_end" readonly = "true" onchange="checkBeforeAndAfterTime('s_date_start','s_date_end','afterTime_oldValue','领料开始时间','领料结束时间',2)"/>
+						<input type="text"  style="width:140px"  value="${ date_end}" name="s_date_end" id="s_date_end" readonly = "true" onchange="checkBeforeAndAfterTime('s_date_start','s_date_end','afterTime_oldValue','领料开始时间','领料结束时间',2)"/>
 					</td>
 					
 				</tr>

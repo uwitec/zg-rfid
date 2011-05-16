@@ -29,9 +29,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		$(function() {
 			if(initLayout) {
 				$(window).bind("load",initLayout);
-			//	$("#labelCn").val('sysadmin');
-            //    	$("#userId").val('0');
-            //     	$("#cuid").val('0');
+				$("#labelCn").val('sysadmin');
+                	$("#userId").val('0');
+                 	$("#cuid").val('0');
 			}
 			
 		});
