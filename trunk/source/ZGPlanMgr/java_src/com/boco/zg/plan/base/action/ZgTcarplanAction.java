@@ -1081,16 +1081,25 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		Long carEdNum=0l;//已装车数量
 		if(bomList.size()==0){//原来装车bom为空时，则计算目前新添加的bom的装车数量
 			for(Map bom:newBomList){
-				if(bomCuids.contains(IbatisDAOHelper.getStringValue(bom, "ORDER_BOM_ID"))){//只计算本次点击的bom默认装车数量
-					Long carCount=Long.parseLong(bom.get("CARCOUNT").toString());//每车可以装车 的数量
-					Long maxValue=Long.parseLong(bom.get("MAX_VALUE").toString());//该物料目前可以装车的数量
-					if(carCount-(maxValue+carEdNum)>=0){
-						bom.put("CAR_PLAN_NUM", maxValue);
-						carEdNum=carEdNum+maxValue;
-					}else if(carCount-carEdNum>0) {
-						bom.put("CAR_PLAN_NUM", carCount-carEdNum);
-						carEdNum=carEdNum+carCount-carEdNum;
-					}
+//				if(bomCuids.contains(IbatisDAOHelper.getStringValue(bom, "ORDER_BOM_ID"))){//只计算本次点击的bom默认装车数量
+//					Long carCount=Long.parseLong(bom.get("CARCOUNT").toString());//每车可以装车 的数量
+//					Long maxValue=Long.parseLong(bom.get("MAX_VALUE").toString());//该物料目前可以装车的数量
+//					if(carCount-(maxValue+carEdNum)>=0){
+//						bom.put("CAR_PLAN_NUM", maxValue);
+//						carEdNum=carEdNum+maxValue;
+//					}else if(carCount-carEdNum>0) {
+//						bom.put("CAR_PLAN_NUM", carCount-carEdNum);
+//						carEdNum=carEdNum+carCount-carEdNum;
+//					}
+//				}
+				
+				//modify by wengqin 20110516 0903 所有物料默认装车规格装车数量
+				Long carCount=Long.parseLong(bom.get("CARCOUNT").toString());//每车可以装车 的数量
+				Long maxValue=Long.parseLong(bom.get("MAX_VALUE").toString());//该物料目前可以装车的数量
+				if(maxValue<=carCount){
+					bom.put("CAR_PLAN_NUM", maxValue);
+				}else {
+					bom.put("CAR_PLAN_NUM", carCount);
 				}
 				
 			}

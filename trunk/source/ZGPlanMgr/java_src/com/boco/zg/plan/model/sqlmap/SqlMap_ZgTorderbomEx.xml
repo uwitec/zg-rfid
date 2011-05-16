@@ -472,7 +472,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		   and vorg.cuid = morg.org_id
 		   and morg.matkl = mat.id
 		   and mat.id = bom.matkl_self
-		   and mat.lgort = bom.lgort
+		   and mat.lgort = orderbom.lgort
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
 		     and bom.idnrk = orderbom.idnrk 
@@ -554,7 +554,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		   and vorg.cuid = morg.org_id
 		   and morg.matkl = mat.id
 		   and mat.id = bom.matkl_self
-		   and mat.lgort = bom.lgort
+		   and mat.lgort = orderbom.lgort
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
 		     and bom.idnrk = orderbom.idnrk 
@@ -636,7 +636,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		   and vorg.cuid = morg.org_id
 		   and morg.matkl = mat.id
 		   and mat.id = bom.matkl_self
-		   and mat.lgort = bom.lgort
+		   and mat.lgort = orderbom.lgort
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
 		     and bom.idnrk = orderbom.idnrk 
@@ -718,7 +718,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		   and vorg.cuid = morg.org_id
 		   and morg.matkl = mat.id
 		   and mat.id = bom.matkl_self
-		   and mat.lgort = bom.lgort
+		   and mat.lgort = orderbom.lgort
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
 		     and bom.idnrk = orderbom.idnrk 
