@@ -56,7 +56,7 @@
 	       sup.lifnr,
 	       sum(nvl(sup.car_num,0)) complete_num,
 	       sum(planbom.car_num) car_num,
-	       sup.lifnr_name
+	       sup.lifnr_name, zto.kdauf,zto.KDPOS
 	  from zg_t_carbom           carbom,
 	       zg_t_carplan          carplan,
 	       zg_t_order            zto,
@@ -88,7 +88,7 @@
 	          orderbom.sortf,
 	          orderbom.lgort,
 	          sup.lifnr,
-	          sup.lifnr_name,orgname ]]>
+	          sup.lifnr_name,orgname, zto.kdauf,zto.KDPOS ]]>
 
 	</select>   
 	
@@ -126,7 +126,7 @@
 	                  orderbom.sortf,
 	                  orderbom.lgort,
 	                  sup.lifnr,
-	                  sup.lifnr_name,emu.orgname) ]]>
+	                  sup.lifnr_name,emu.orgname,zto.kdauf,zto.KDPOS) ]]>
 
 	  </select>
 </sqlMap>

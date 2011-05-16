@@ -29,9 +29,8 @@ public interface HandlerSapDataService {
 	 * @param aufnr
 	 * @param arbpl
 	 */
-	public void doUpdateChange(int batchNo, String aufnr,String arbpl);
+	public void doUpdateChange(int batchNo, String aufnr,String arbpl,String pxType);
 	
-	public void  doUpdateChangeForPxRepeat(int batchNo, String aufnr,String arbpl);
 
 	/**
 	 * 批量领料计划bom接口bom组件更新处理
@@ -104,9 +103,8 @@ public interface HandlerSapDataService {
 	 */
 	public void doUpdateZGtorderByPosKey(String posKey,int batchNO);
 	
-	public void updateBomMenge(Map map,Map planBom);
+	public void updateBomMenge(Map map,Map planBom,String pxType,String arbpl);
 	
-	public void updateBomMenge(Map map,String orderId);
 
 	/**
 	 * 插入订单

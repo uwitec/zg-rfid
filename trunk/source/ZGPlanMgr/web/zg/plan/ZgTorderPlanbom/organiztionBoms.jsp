@@ -22,7 +22,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		Ext.onReady(function() {
 			var navTreePanel = new DRM.NTTreePanel({
 				region : 'west',
-				width:200,
+				width:300,
 				templateId	:	'carplan_create_tree_lv1',
 				isInit		: true
 			});

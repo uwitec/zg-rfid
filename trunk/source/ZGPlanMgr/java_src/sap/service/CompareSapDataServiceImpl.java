@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.boco.zg.util.Constants;
+
 
 @Component
 public class CompareSapDataServiceImpl implements CompareSapDataService {
@@ -107,14 +109,14 @@ public class CompareSapDataServiceImpl implements CompareSapDataService {
 	}
 
 	//数据变更时比对BOM组件
-	public void compareBomDataByBatchNoAndAufnr(int batchNo, String aufnr,String arbpl) throws Exception {
+	public void compareBomDataByBatchNoAndAufnr(int batchNo, String aufnr,String arbpl,String type) throws Exception {
 		try{
 			//比对新增BOM数据
-			this.compareAddOrderBoms(batchNo, aufnr,arbpl);
+			this.compareAddOrderBoms(batchNo, aufnr,arbpl,type);
 			//比对修改BOM数据
-			this.compareEditOrderBoms(batchNo, aufnr,arbpl);
+			this.compareEditOrderBoms(batchNo, aufnr,arbpl,type);
 			//比对删除BOM数据
-			this.compareDeleteOrderBoms(batchNo, aufnr,arbpl);
+			this.compareDeleteOrderBoms(batchNo, aufnr,arbpl,type);
 		}catch(Exception e){
 			log.error("compareBomDataByBatchNoAndAufnr方法，对比数据失败,批次--"+batchNo+" :",e);
 			throw new Exception("比对数据失败,"+e.getMessage());
@@ -122,41 +124,86 @@ public class CompareSapDataServiceImpl implements CompareSapDataService {
 		
 	}
 	
-	private void compareDeleteOrderBoms(int batchNo, String aufnr,String arbpl) {
+	private void compareDeleteOrderBoms(int batchNo, String aufnr,String arbpl,String pxType) {
 		StringBuffer deleteBufferSql = new StringBuffer();
 		deleteBufferSql.append("insert into  zg_t_orderbom_temp_all (ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,CUID ,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_STATE ,STORAGE_NUM,posnr,operate_type,batch_no)");
 		deleteBufferSql.append("select ZDTYL,0 as MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,CUID ,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_STATE ,STORAGE_NUM,posnr,").append(CompareSapDataService.DELETE).append(",").append(batchNo);
 		deleteBufferSql.append(" from zg_t_orderbom m where m.aufnr='"+aufnr+"' and m.arbpl='"+arbpl+"' and not exists(select 1 from zg_t_orderbom_temp_all t");
-		deleteBufferSql.append(" where t.batch_no = ").append(batchNo).append(" and t.aufnr = m.aufnr  and t.arbpl=m.arbpl and t.idnrk=m.idnrk and m.posnr=t.posnr)");
+		deleteBufferSql.append(" where t.batch_no = ").append(batchNo);
+		
+		
+		if(Constants.PxType.BG.value().equals(pxType)){//变更时不需要生产线来确定
+			deleteBufferSql.append(" and t.aufnr = m.aufnr  and t.idnrk=m.idnrk and m.posnr=t.posnr)");
+		}else {
+			deleteBufferSql.append(" and t.aufnr = m.aufnr  and t.arbpl=m.arbpl and t.idnrk=m.idnrk and m.posnr=t.posnr)");
+
+		}
+		
+		
 		this.baseDao.executeSql(deleteBufferSql.toString());
 	}
 
-	private void compareEditOrderBoms(int batchNo,String aufnr,String arbpl) {
+	private void compareEditOrderBoms(int batchNo,String aufnr,String arbpl,String pxType) {
 		StringBuffer updateBufferSql = new StringBuffer();
-		updateBufferSql.append("update ZG_T_ORDERBOM_TEMP_ALL s set s.operate_type= ").append(CompareSapDataService.EDIT);
-		updateBufferSql.append(" where batch_no="+batchNo);
-		updateBufferSql.append(" and exists (");
-		updateBufferSql.append("select 1 from (");
-		updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,ARBPL,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM_TEMP_ALL t where t.batch_no=").append(batchNo).append(" and t.operate_type is null ").append(" and t.aufnr = '"+aufnr+"'  and t.arbpl='"+arbpl+"'");
-		updateBufferSql.append(" minus ");
-		updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,ARBPL,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM S WHERE S.aufnr='"+aufnr+"' and s.arbpl='"+arbpl+"') m where  s.idnrk=m.idnrk and  s.aufnr=m.aufnr and  s.matnr=m.matnr");
-		updateBufferSql.append(")");
+		if(Constants.PxType.BG.value().equals(pxType)){//变更时不需要生产线来确定
+			updateBufferSql.append("update ZG_T_ORDERBOM_TEMP_ALL s set s.operate_type= ").append(CompareSapDataService.EDIT);
+			updateBufferSql.append(" where batch_no="+batchNo);
+			updateBufferSql.append(" and exists (");
+			updateBufferSql.append("select 1 from (");
+			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM_TEMP_ALL t where t.batch_no=").append(batchNo).append(" and t.operate_type is null ");
+			updateBufferSql.append(" and t.aufnr = '"+aufnr+"'");
+			updateBufferSql.append(" minus ");
+			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM S WHERE S.aufnr='"+aufnr+"' and s.arbpl='"+arbpl+"') m where  s.idnrk=m.idnrk and  s.aufnr=m.aufnr and  s.matnr=m.matnr");
+			updateBufferSql.append(")");
+		}else {
+			updateBufferSql.append("update ZG_T_ORDERBOM_TEMP_ALL s set s.operate_type= ").append(CompareSapDataService.EDIT);
+			updateBufferSql.append(" where batch_no="+batchNo);
+			updateBufferSql.append(" and exists (");
+			updateBufferSql.append("select 1 from (");
+			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,ARBPL,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM_TEMP_ALL t where t.batch_no=").append(batchNo).append(" and t.operate_type is null ");
+			updateBufferSql.append(" and t.aufnr = '"+aufnr+"'  and t.arbpl='"+arbpl+"'");
+			updateBufferSql.append(" minus ");
+			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,ARBPL,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM S WHERE S.aufnr='"+aufnr+"' and s.arbpl='"+arbpl+"') m where  s.idnrk=m.idnrk and  s.aufnr=m.aufnr and  s.matnr=m.matnr");
+			updateBufferSql.append(")");
+		}
+		
+		
 		this.baseDao.executeSql(updateBufferSql.toString());
 	}
 
-	private void compareAddOrderBoms(int batchNo,String aufnr,String arbpl) {
+	private void compareAddOrderBoms(int batchNo,String aufnr,String arbpl,String pxType) {
 		StringBuffer addBufferSql = new StringBuffer();
 		addBufferSql.append("update ZG_T_ORDERBOM_TEMP_ALL temp set operate_type = ").append(CompareSapDataService.ADD).append(" ");
 		addBufferSql.append(" where temp.operate_type is null and temp.batch_no = ");
 		addBufferSql.append(batchNo);
-		addBufferSql.append("    and temp.aufnr='"+aufnr+"'  and temp.arbpl='"+arbpl+"' and not exists (select 1 from ");
+		if(Constants.PxType.BG.value().equals(pxType)){
+			addBufferSql.append("    and temp.aufnr='"+aufnr+"'  and not exists (select 1 from ");
+		}else {
+			addBufferSql.append("    and temp.aufnr='"+aufnr+"'  and temp.arbpl='"+arbpl+"' and not exists (select 1 from ");
+
+		}
 		addBufferSql.append(" ZG_T_ORDERBOM s where  S.aufnr='"+aufnr+"'  and s.arbpl='"+arbpl+"' and s.IDNRK = temp.IDNRK  and temp.posnr=s.posnr)");
 		this.baseDao.executeSql(addBufferSql.toString());
 	}
 	
-public static void main(String[] args) {
-	new CompareSapDataServiceImpl().compareEditOrderBoms(30542,"6000075621","J1-N01");
-}
-	
+	public static void main(String[] args) {
+		new CompareSapDataServiceImpl().compareEditOrderBoms(30542,"6000075621","J1-N01","");
+	}
+
+	/* (non-Javadoc)
+	 * @see sap.service.CompareSapDataService#deleteOperatorTypeByBatchNo(int)
+	 */
+	public void deleteOperatorTypeByBatchNo(int batchNo) {
+		
+		StringBuffer delBuffer=new StringBuffer();
+		delBuffer.append(" delete from zg_t_orderbom_temp_all t where t.operate_type='3' and t.batch_no='"+batchNo+"'");
+		this.baseDao.executeSql(delBuffer.toString());
+		
+		StringBuffer updateBuffer=new StringBuffer();
+		updateBuffer.append("update zg_t_orderbom_temp_all t set t.operate_type ='' where t.batch_no='"+batchNo+"'");
+		this.baseDao.executeSql(updateBuffer.toString());
+		
+	}
+		
 
 }

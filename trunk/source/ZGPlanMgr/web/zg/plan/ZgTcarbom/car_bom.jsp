@@ -159,6 +159,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var items = document.frames['listFrame'].document.getElementsByName("items");
 		    if (items.length > 0) {
 		        for (var i = 0; i < items.length; i++){
+					if(items[i].checked){
 		            	jsonStr=jsonStr+'{' ;
 		           		var params =new QueryString(items[i].value);
 		           		var orderPlanbomId=params["orderPlanbomId"];
@@ -175,6 +176,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		           		jsonStr = jsonStr + '"aufnr":"'+aufnr+'",';
 		           		jsonStr = jsonStr + '"carPlanNum":"'+carPlanNum+'",';
 		           		jsonStr = jsonStr +'"planNum":"'+planNum+'"},';
+		           	}
 		        }
 		    }
 		     if(jsonStr.length>0){
