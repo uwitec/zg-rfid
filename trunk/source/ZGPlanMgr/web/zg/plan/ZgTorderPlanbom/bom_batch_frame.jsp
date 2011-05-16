@@ -31,12 +31,43 @@
 		<script type="text/javascript">
 		$(function() {
 			try{
+				initAutoCompleteTo("${ctx}/autoComplate/findRelationData.do");
 				if(initLayout) {
 					$(window).bind("load",initLayout);
 					
 				}
 			}catch(e){}
 		});
+		function initAutoCompleteTo(url) {
+			var a = $("input[autocompleteTo]");
+			for(var i = 0 ; i < a.length; i++) {
+			
+				var o = a[i];
+				var xtype = $(o).attr("xtype");
+				var columnNameLower = $(o).attr("columnNameLower");
+				var bmClassId = $(o).attr("bmClassId");
+				var column = $(o).attr("column");
+				$("#"+columnNameLower+"_label").css("cursor","pointer");
+				$("#"+columnNameLower+"_value").val(document.getElementById("orgId_value").value);//初始化值为空value
+				var img = "<img src='"+ctx+"/resources/images/frame/autocomplete.png'/>";
+				$("#"+columnNameLower+"_value").after(img);
+			if(xtype.indexOf("tree:") != -1){
+					var templateId = xtype.substring(xtype.indexOf(":")+1);
+					$("#"+columnNameLower+"_label").attr("readonly",true);
+					var sFeatures="dialogHeight: 400px;dialogWidth:300px";
+					$(o).bind("click",function() {
+						var returnValue = window.showModalDialog(ctx+"/explorer/tree/commonTree.jsp?templateId="+templateId,'',sFeatures);
+						if(returnValue) {
+							var id = returnValue.id.substring(0);//截取了第一个逗号
+							var label = returnValue.label.substring(0);//截取了第一个逗号
+							$("#"+$(this).attr("columnNameLower")+"_value").val(id);
+							$("#"+$(this).attr("columnNameLower")+"_label").val(label);
+							changeGroup(id);
+						}
+					});
+				}
+			}
+		}
 		
 		//保存领料计划
 		function addPlan(id,obj) {
@@ -243,9 +274,9 @@
 	    }
 		
 		//批量设置的领料组设置
-		function changeGroup(obj) {
-			if(obj.value != "") {
-				CommonDwrAction.getUsersByOrgId(obj.value,function(data){
+		function changeGroup(orgId) {
+			if(orgId!= "") {
+				CommonDwrAction.getUsersByOrgId(orgId,function(data){
 					buildSel("userSel",data);
 				});
 			}else {
@@ -276,12 +307,34 @@
 		//批量设置
 		function setAll() {
 			setValues('carnums','carnumSel');
-			setValues('groups','groupSel');
-			setValues('groupOldNames','groupSel');
+			setValues1('groups','orgId');
+			setValues1('groupOldNames','orgId');
 			setValues('employees','userSel');
 			setValues('planDates','planDateInput');
 			setValues('planStartTimes','planStartTimeSel');
 			setValues('planEndTimes','planEndTimeSel');
+		}
+		
+		function setValues1(targets,valueEl) {
+			var items = resconfigResult.document.getElementsByName("items");
+			var bomTable = resconfigResult.document.getElementById("ec_table");
+			for(var i = 0; i < items.length;i++) {
+				if(items[i].checked) {
+					if(window.frames["resconfigResult"].changeOther){
+						window.frames["resconfigResult"].changeOther(items[i].value);
+					}
+					var row = bomTable.rows[i+1];
+					var inputs = row.getElementsByTagName("input");
+					for(var j = 0 ; j < inputs.length;j++) {
+						if(inputs[j].getAttribute("attr")==targets) {
+							inputs[j].value = $("#"+valueEl+"_value").val();
+						}
+						if(inputs[j].name==targets+"_label") {
+							inputs[j].value = $("#"+valueEl+"_label").val();
+						}
+					}
+				}
+			}
 		}
 		
 		function setValues(targets,valueEl) {
@@ -388,12 +441,13 @@
 							计划领取数量：
 							<input type="text" id="carnumSel" size="8" maxlength="8" onchange="checkNumTitle(this)" value="0"/>
 							领料组:
-							<select id="groupSel" onchange="changeGroup(this)">
-								<option value="">请选择...</option>
-								<c:forEach items="${roles}" var="role">
-									<option value="${role.cuid}">${role.labelCn}</option>
-								</c:forEach>
-							</select>
+							
+							<input type="text" size="10"  maxlength="40" autocompleteTo="true" 
+							xtype="tree:1" id="orgId_label" columnNameLower="orgId" bmClassId="FW_ORGANIZATION" 
+							column="m.t0_LABEL_CN" />
+	   						<input type="hidden" id="orgId_value" />
+							
+							
 							领料人:
 							<select style="width:100px" id="userSel">
 								<option value="">请选择...</option>

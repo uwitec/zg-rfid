@@ -110,7 +110,7 @@
 					<td width="100px" class="label">排产结束时间：</td>
 					<td width="180px">
 						<input type="hidden" id="afterTime_oldValue" value="${ pcdat_end}"/>
-						<input type="text" dateFlag="true" value="${ pcdat_end}" name="s_pcdat_end" id="s_pcdat_end" readonly = "true" onchange="checkBeforeAndAfterTime('s_pcdat_start','s_pcdat_end','afterTime_oldValue','开始时间','结束时间',2)"/>
+						<input type="text" dateFlag2="true" value="${ pcdat_end}" name="s_pcdat_end" id="s_pcdat_end" readonly = "true" onchange="checkBeforeAndAfterTime('s_pcdat_start','s_pcdat_end','afterTime_oldValue','开始时间','结束时间',2)"/>
 					</td>
 					<td width="120px" class="label">生产订单处理状态：</td>
 					<td>
