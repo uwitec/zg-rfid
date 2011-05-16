@@ -2,6 +2,7 @@ package com.boco.zg.plan.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -152,6 +153,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 				
 				//更新仓库管理员
 				carbom.setStorageUserId(storageUserId);
+				carbom.setCarDate(Calendar.getInstance().getTime());
 				zgTcarbomBo.update(carbom);
 				
 			}else {

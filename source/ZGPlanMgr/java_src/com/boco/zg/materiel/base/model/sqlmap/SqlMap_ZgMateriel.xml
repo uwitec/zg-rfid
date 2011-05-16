@@ -310,7 +310,9 @@
   			 select t.cuid from zg_materiel t where t.id='$id$' and t.lgort='$lgort$' and rownum=1
   		</select>
   		<select id="validId1" resultClass="java.lang.String">
-  			 select t.cuid from zg_materiel t where t.id='$cuid$'
+  			 select * from zg_materiel t where t.parent_id in (select temp.cuid from zg_materiel temp where temp.id='$parentId$')
+and t.id='$id$'
+
   		</select>	
   	
   	

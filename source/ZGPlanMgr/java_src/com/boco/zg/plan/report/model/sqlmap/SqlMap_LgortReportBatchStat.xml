@@ -7,10 +7,10 @@
 <sql id="dynamicWhere">
 	    <dynamic prepend="">
        		<isNotEmpty prepend="AND" property="date_start">
-	       			 carplan.car_date>=to_date('$date_start$','yyyy-mm-dd') 
+	       			 carplan.car_date>=to_date('$date_start$','yyyy-mm-dd hh24:mi:ss') 
        		</isNotEmpty>  
        		<isNotEmpty prepend="AND" property="date_end">
-	       			to_date('$date_end$','yyyy-mm-dd')+1 >= carplan.car_date
+	       			to_date('$date_end$','yyyy-mm-dd hh24:mi:ss') >= carplan.car_date
        		</isNotEmpty>  
        		<isNotEmpty prepend="AND" property="aufnr">
 	       		  zto.aufnr like '%'||'$aufnr$'||'%'

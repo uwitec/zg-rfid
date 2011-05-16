@@ -6,6 +6,8 @@
 
 package com.boco.zg.plan.base.model;
 
+import java.util.Date;
+
 import javacommon.base.BaseEntity;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -46,6 +48,7 @@ public class ZgTcarbom extends BaseEntity {
 	private Long oldRealNum;
 	private long oldPlanNum;
 	private String storageUserId;
+	private java.util.Date carDate;
 	
 	
 
@@ -171,5 +174,13 @@ public class ZgTcarbom extends BaseEntity {
 
 	public void setStorageUserId(String storageUserId) {
 		this.storageUserId = storageUserId;
+	}
+
+	public java.util.Date getCarDate() {
+		return carDate;
+	}
+
+	public void setCarDate(java.util.Date carDate) {
+		this.carDate = carDate;
 	}
 }
