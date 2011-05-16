@@ -99,7 +99,7 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 	 * @return
 	 */
 	public String queryLgortReport(){
-		CommonService.defultDateTimeSet(getRequest(), "date_start", "date_end",-1,-1);
+		CommonService.defultDateTimeSet(getRequest(), "date_start", "date_end",0,0);
 		return  QUERYLGORTREPORT;
 	}
 	
@@ -177,7 +177,7 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 	 * @return
 	 */
 	public String queryLgortReportBatch(){
-		CommonService.defultDateTimeSet(getRequest(), "date_start", "date_end",-1,-1);
+		CommonService.defultDateTimeSet(getRequest(), "date_start", "date_end",0,0);
 		return  QUERYLGORTREPORTBATCH;
 	}
 	

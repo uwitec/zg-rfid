@@ -265,16 +265,16 @@
 	   and planbom.cuid = carbom.order_planbom_id
 	   and sup.car_bom_id = carbom.cuid
 	    and zto.order_state<>'-1' 
-	   and carplan.car_state='8'
+	    and carbom.storage_user_id is not null
 	     and carplan.order_plan_type <>'3'  
 	     and sup.car_num>0  ]]>
 	   </content>
           <dynamic>
           	<isNotEmpty id="date_start">
-	       			AND carplan.car_date>=to_date('#date_start#','yyyy-mm-dd') 
+	       			AND carplan.car_date>=to_date('#date_start#','yyyy-mm-dd hh24:mi:ss') 
        		</isNotEmpty>  
        		<isNotEmpty id="date_end">
-	       			AND to_date('#date_end#','yyyy-mm-dd')+1 >= carplan.car_date
+	       			AND to_date('#date_end#','yyyy-mm-dd hh24:mi:ss') >= carplan.car_date
        		</isNotEmpty>  
        		<isNotEmpty id="aufnr">
 	       		 AND zto.aufnr like  '%#aufnr#%'
@@ -370,13 +370,13 @@
 	       orderbom.sortf,
 	       orderbom.lgort,
 	       sup.lifnr,
-	        sup.car_num  real_num,
+	           sup.car_num real_num,
 	       planbom.car_num,
 	       sup.lifnr_name,
 	       carplan.car_user,
 	       op.label_cn car_user_name,
 	       to_char(carplan.create_date,'yyyy-MM-dd hh24:mi:ss') create_date,
-	       to_char(carplan.car_date,'yyyy-MM-dd hh24:mi:ss') car_date,
+	       to_char(carbom.car_date,'yyyy-MM-dd hh24:mi:ss') car_date,
 	       carplan.storage_user_id,
 	       op1.label_cn storage_user_name,
 	       sup.batchno,
@@ -393,52 +393,52 @@
               t_plant_enumevalue emu
 	 where aide.order_id=zto.cuid
          and aide.plant=emu.plantid
-         and  op.cuid = carplan.car_user
-	   and op1.cuid = carplan.storage_user_id
+         and op.cuid = carplan.car_user
+	   and op1.cuid = carbom.storage_user_id
 	   and carbom.car_plan_id = carplan.cuid
 	   and carbom.order_id = zto.cuid
 	   and carbom.order_bom_id = orderbom.cuid
 	   and orderbom.order_id = carbom.order_id
 	   and planbom.cuid = carbom.order_planbom_id
 	   and sup.car_bom_id = carbom.cuid
-	      and sup.car_num>0
+	    and sup.car_num>0
 	     and zto.order_state<>'-1' 
-	   and carplan.car_state = '8'
-	    and carplan.order_plan_type <>'3'    ]]>
+	   and carbom.storage_user_id is not null
+	    and carplan.order_plan_type <>'3'  
+	      and sup.car_num>0     ]]>
 	   </content>
-          <dynamic>
-          	<isNotEmpty id="date_start">
-	       			AND carplan.car_date>=to_date('#date_start#','yyyy-mm-dd') 
+          <dynamic prepend="">
+       		<isNotEmpty prepend="AND" property="date_start">
+	       			 carbom.car_date>=to_date('$date_start$','yyyy-mm-dd hh24:mi:ss') 
        		</isNotEmpty>  
-       		<isNotEmpty id="date_end">
-	       			AND to_date('#date_end#','yyyy-mm-dd')+1 >= carplan.car_date
+       		<isNotEmpty prepend="AND" property="date_end">
+	       			to_date('$date_end$','yyyy-mm-dd hh24:mi:ss') >= carbom.car_date
        		</isNotEmpty>  
-       		<isNotEmpty id="aufnr">
-	       		 AND zto.aufnr like  '%#aufnr#%'
+       		<isNotEmpty prepend="AND" property="aufnr">
+	       		  zto.aufnr like '%'||'$aufnr$'||'%'
        		</isNotEmpty> 
-       		<isNotEmpty id="matnr">
-       			 AND zto.matnr like  '%#matnr#%'
+       		<isNotEmpty prepend="AND" property="matnr">
+       			  zto.matnr like '%'||'$matnr$'||'%'
        		</isNotEmpty>   
-       		
-       		<isNotEmpty id="plantWhere">
-       			  and (#plantWhere#)
+       		<isNotEmpty prepend="AND" property="plantWhere">
+       			  ($plantWhere$)
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="arbpl">
+	       		  zto.arbpl like '%'||'$arbpl$'||'%'
+       		</isNotEmpty> 
+       			<isNotEmpty prepend="AND" property="idnrk">
+	       		  orderbom.idnrk like '%'||'$idnrk$'||'%'
        		</isNotEmpty> 
        		
-       		<isNotEmpty id="arbpl">
-	       		AND  zto.arbpl like   '%#arbpl#%'
-       		</isNotEmpty> 
-       			<isNotEmpty id="idnrk">
-	       		AND  orderbom.idnrk like  '%#idnrk#%' 
+       			<isNotEmpty prepend="AND" property="suppliers">
+	       		  sup.lifnr_name like '%'||'$suppliers$'||'%'
        		</isNotEmpty> 
        		
-       			<isNotEmpty id="suppliers">
-	       		AND  sup.lifnr_name like  '%#suppliers#%' 
+       			<isNotEmpty prepend="AND" property="lgort">
+	       		  orderbom.lgort like '%'||'$lgort$'||'%'
        		</isNotEmpty> 
        		
-       			<isNotEmpty id="lgort">
-	       		AND  orderbom.lgort like  '%#lgort#%' 
-       		</isNotEmpty> 
-        </dynamic>
+	    </dynamic>	
         <content>
            
         </content>
@@ -503,10 +503,10 @@
 	   </content>
           <dynamic>
           	<isNotEmpty id="date_start">
-	       		and carplan.car_date>=to_date('#date_start#','yyyy-mm-dd') 
+	       		and carplan.car_date>=to_date('#date_start#','yyyy-mm-dd hh24:mi:ss') 
        		</isNotEmpty>  
        		<isNotEmpty id="date_end">
-	       		and	to_date('#date_end#','yyyy-mm-dd')+1 >= carplan.car_date
+	       		and	to_date('#date_end#','yyyy-mm-dd hh24:mi:ss') >= carplan.car_date
        		</isNotEmpty>  
        		<isNotEmpty id="aufnr">
 	       		and  zto.aufnr like '%#aufnr#%'
@@ -623,10 +623,10 @@
 	   </content>
           <dynamic>
           	<isNotEmpty id="date_start">
-	       			and carplan.car_date>=to_date('#date_start#','yyyy-mm-dd') 
+	       			and carplan.car_date>=to_date('#date_start#','yyyy-mm-dd hh24:mi:ss') 
        		</isNotEmpty>  
        		<isNotEmpty id="date_end">
-	       		and	to_date('#date_end#','yyyy-mm-dd')+1 >= carplan.car_date
+	       		and	to_date('#date_end#','yyyy-mm-dd hh24:mi:ss')+1 >= carplan.car_date
        		</isNotEmpty>  
        		<isNotEmpty id="aufnr">
 	       		and  zto.aufnr like '%#aufnr#%'
