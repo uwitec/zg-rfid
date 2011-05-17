@@ -645,13 +645,13 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	    this.baseDao.executeSql(sql.toString());
 	    
 	    //删除重复记录
-	    sql=new StringBuffer();
+	 /*   sql=new StringBuffer();
 	    sql.append("   delete from zg_t_bom t where t.rowid in (                                             ");
 	    sql.append(" select  max(t.rowid) from zg_t_bom t where t.type='1' group by t.matkl,t.lgort,t.idnrk having count(1)>1 )");  
-	    this.baseDao.executeSql(sql.toString());
+	    this.baseDao.executeSql(sql.toString());*/
 	    
 	    //因为同步等原因可能会导致bom重复下载，这里主要是删除重复的bom
-	    sql=new StringBuffer();
+	 /*   sql=new StringBuffer();
 	    sql.append("   delete from zg_t_orderbom t where t.rowid in (                                         "); 
 	    sql.append("  select max(t.rowid)                                                                      ");
 	    sql.append(" from zg_t_orderbom t,zg_t_order_planbom bom                                               ");
@@ -665,11 +665,11 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	    sql.append("    where not exists                                                                       ");
 	    sql.append("    (select 1 from zg_t_orderbom t where t.cuid = bom.order_bom_id)                        ");
 	    sql.append("  and  not exists (select 1 from zg_t_bom v where v.cuid=bom.bom_id)");
-	    this.baseDao.executeSql(sql.toString());
+	    this.baseDao.executeSql(sql.toString());*/
 	    
-	    sql=new StringBuffer();
+	/*    sql=new StringBuffer();
 	    sql.append("delete  from zg_t_order_plan t where not exists (select 1 from zg_t_order_planbom bom where t.cuid=bom.order_plan_id)");
-	    this.baseDao.executeSql(sql.toString());
+	    this.baseDao.executeSql(sql.toString());*/
 	    
 	    //提前领料物料组管理 
 	    sql=new StringBuffer();
@@ -1498,7 +1498,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 */
 	private boolean isStartCar(String orderId) {
 		//
-		String sql="select * from zg_t_order_planbom bom  where bom.order_id='"+orderId+"' and bom.complete_num>0";
+		String sql="select * from zg_t_order_planbom bom  where bom.order_id='"+orderId+"' and bom.plan_num>0";
 		return this.baseDao.queryBySql(sql).size()>0;
 	}
 
