@@ -1381,9 +1381,13 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		if(list.size()>0){
 			Map map=(Map) list.get(0);
 			String sourceArbpl=IbatisDAOHelper.getStringValue(map, "ARBPL1");
+			String arbpl=IbatisDAOHelper.getStringValue(map, "ARBPL");
 			Long pmenge=IbatisDAOHelper.getLongValue(map, "PMENGE");
 			String aufnr=IbatisDAOHelper.getStringValue(map, "AUFNR");
 			StringBuffer upSql=new StringBuffer();
+			if(arbpl.equals(sourceArbpl)){
+				return;
+			}
 			
 			//获取原生产线订单
 			Map orderMap=getOrderMapByAufntArbpl(aufnr,sourceArbpl);
@@ -1521,7 +1525,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 */
 	private List getTempOrderByPoskeyBatchNo(String posKey, int batchNo) {
 		String sql;
-		sql="select temp.arbpl,temp.arbpl1,temp.pmenge,temp.aufnr from ZG_T_ORDER_temp temp " +
+		sql="select temp.arbpl,temp.arbpl1,temp.pmenge,temp.aufnr,temp.plant from ZG_T_ORDER_temp temp " +
 				"where  temp.poskey ='"+posKey+"'   and temp.batch_no='"+batchNo+"' and rownum=1";
 		List list=this.baseDao.queryBySql(sql);
 		return list;
@@ -1536,6 +1540,17 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		deleteOrderPlanByOrderId(orderId,"");
 		deleteOrderBomByOrderId(orderId);
 		deleteOrderByOrderId(orderId);
+		deleteOrderByOrderAideId(orderId);
+	}
+
+	/**
+	 * @param orderId
+	 */
+	private void deleteOrderByOrderAideId(String orderId) {
+		StringBuffer sql=new StringBuffer();
+		sql.append("delete from zg_t_order_aide t where t.order_id='"+orderId+"'");
+		this.baseDao.executeSql(sql.toString());
+		
 	}
 
 	/**
