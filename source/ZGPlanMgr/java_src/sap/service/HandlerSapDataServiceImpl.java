@@ -185,17 +185,17 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		baseDao.insertDynamicTable(tableName, map);
 	}
 
-	public void deletePcOrderBoms(int batchNo) {
+	/*public void deletePcOrderBoms(int batchNo) {
 		String sql = "DELETE FROM ZG_T_ORDERBOM t where EXISTS(SELECT 1 FROM ZG_T_ORDER O WHERE O.CUID=T.ORDER_ID AND O.order_state = '-1' and exists "+
 		"(select 1 from ZG_T_ORDER_temp e where e.aufnr=t.aufnr and  e.batch_no ="+batchNo+"))";
 		this.baseDao.executeSql(sql);
-	}
+	}*/
 
-	public void deletePcOrders(int batchNo) {
+	/*public void deletePcOrders(int batchNo) {
 		String sql = "DELETE FROM ZG_T_ORDER t where t.order_state = '-1' and exists "+
 		"(select 1 from ZG_T_ORDER_temp e where e.aufnr=t.aufnr and  e.batch_no ="+batchNo+")";
 		this.baseDao.executeSql(sql);
-	}
+	}*/
 	
 	public void doUpdateChange(int batchNo, String aufnr,String arbpl,String pxType) {
 		StringBuffer querySql=new StringBuffer();
@@ -754,7 +754,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 * 根据订单编号删除领料计划分组表
 	 * @param orderId
 	 */
-/*	private void deleteOrderPlanGroupByOrderId(String orderId,String plant){
+	/*private void deleteOrderPlanGroupByOrderId(String orderId,String plant){
 		StringBuffer sql=new StringBuffer();
 		sql.append(" delete from zg_t_order_plan_group t where exists(                      ");
 		sql.append("       select 1 from zg_t_order_plan plan ,zg_t_group_order_plan gop    ");
@@ -768,7 +768,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 * 根据订单编号删除领料计划
 	 * @param orderId
 	 */
-/*	private void deleteOrderPlanByOrderId(String orderId,String plant){
+	/*private void deleteOrderPlanByOrderId(String orderId,String plant){
 		StringBuffer sql=new StringBuffer();
 		sql.append("delete from zg_t_order_plan plan where plan.order_id='"+orderId+"'");
 		if(!StringHelper.isEmpty(plant)){
@@ -816,11 +816,11 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 * 根据订单编号删除订单表
 	 * @param orderId
 	 */
-	private void deleteOrderByOrderId(String orderId){
+	/*private void deleteOrderByOrderId(String orderId){
 		StringBuffer sql=new StringBuffer();
 		sql.append("delete from zg_t_order t where t.cuid='"+orderId+"'");
 		this.baseDao.executeSql(sql.toString());
-	}
+	}*/
 	
 
 	/**
@@ -1461,7 +1461,8 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 */
 	private void productBackBomData(Long menge, Map planBom) {
 		if(planBom != null) {
-			Long completeNum = IbatisDAOHelper.getLongValue(planBom, "COMPLETE_NUM");
+			
+			Long completeNum = IbatisDAOHelper.getLongValue(planBom, "COMPLETE_NUM")==null?0l:IbatisDAOHelper.getLongValue(planBom, "COMPLETE_NUM");
 			String orderBomId = IbatisDAOHelper.getStringValue(planBom, "ORDER_BOM_ID");
 			String planBomId=IbatisDAOHelper.getStringValue(planBom, "CUID");
 			if(!StringUtils.isBlank(orderBomId)) {
@@ -1973,6 +1974,22 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			this.baseDao.executeSql(sqlBuffer.toString());
 		}
 		
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see sap.service.HandlerSapDataService#deletePcOrderBoms(int)
+	 */
+	public void deletePcOrderBoms(int batchNo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see sap.service.HandlerSapDataService#deletePcOrders(int)
+	 */
+	public void deletePcOrders(int batchNo) {
+		// TODO Auto-generated method stub
 		
 	}
 	
