@@ -22,12 +22,8 @@
 	<script>
 		var num=0;
 		var groupId="${planGroupList[0].cuid}";
-		function opensub()
-		{
-		window.open("zc.htm", "newwindow", "height=450, width=800,scrollbars=yes, resizable=yes, toolbar=no, menubar=no, status=no");
-		}
 		
-			$(function() {
+		$(function() {
 			init();
 		});
 		function init() {
@@ -42,6 +38,9 @@
 		function doLayout() {
 			var maxHeight = top.getContentHeight();
 			var maxWidth = top.getContentWidth();
+			if('${arbpl}'==''){
+				maxWidth=maxWidth+120;
+			}
 			document.getElementById("_queryPanel").style.height = maxHeight + 'px';
 			var listFrameH0 = maxHeight - 78-document.getElementById("contentDiv0").offsetHeight;
 			var listFrameH1 = maxHeight -78-document.getElementById("contentDiv1").offsetHeight;
