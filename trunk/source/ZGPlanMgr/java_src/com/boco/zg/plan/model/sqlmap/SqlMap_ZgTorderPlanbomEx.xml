@@ -431,7 +431,7 @@
 	<!-- 查找订单分组下面的bom -->
     <select id="findBomListByGroupId" resultMap="zgTorderPlanbomExResult">
 		<![CDATA[
-					  select bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,bom.menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
+					  select distinct bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,bom.menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
 			org.label_cn org_name,bom.zbz,         decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per ,bom.posnr,bom.aufnr,
      		  tbom.car_id,
       		 tbom.carnum,planbom.wait_back_num from zg_t_group_order_plan oup,zg_t_order_plan plan,
@@ -439,10 +439,8 @@
        			zg_t_bom              tbom
 			
 			where 
-			 bom.idnrk=tbom.idnrk(+)
- 			and bom.lgort=tbom.lgort(+)
- 			and bom.matkl=tbom.matkl(+) and
-			 oup.order_plan_id=plan.cuid
+			 bom.idnrk=tbom.idnrk
+ 			 and oup.order_plan_id=plan.cuid
 			and plan.cuid=planBom.Order_Plan_Id
 			and planBom.Order_Bom_Id=bom.cuid
 			and org.cuid(+)=bom.lgort
@@ -456,7 +454,7 @@
     	<!-- 查找订单分组下面的bom 提前领料 -->
      <select id="findBomListByGroupIdAdvance" resultMap="zgTorderPlanbomExResult">
 		<![CDATA[
-					  select bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,bom.menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
+					  select distinct bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,bom.menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
 			org.label_cn org_name,bom.zbz,         decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per,bom.posnr,bom.aufnr,
     		  tbom.car_id,
       		 tbom.carnum,planbom.wait_back_num from zg_t_group_order_plan oup,zg_t_order_plan plan,
@@ -464,15 +462,13 @@
        			zg_t_bom              tbom,zg_materiel ma
 			
 			where 
-			 bom.idnrk=tbom.idnrk(+)
- 			and bom.lgort=tbom.lgort(+)
- 			and bom.matkl=tbom.matkl(+) and
-			 oup.order_plan_id=plan.cuid
+			 bom.idnrk=tbom.idnrk
+ 			and	 oup.order_plan_id=plan.cuid
 			and plan.cuid=planBom.Order_Plan_Id
 			and planBom.Order_Bom_Id=bom.cuid
 			and org.cuid(+)=bom.lgort
-			and tbom.matkl=ma.id
-         	and ma.lgort=tbom.lgort
+			and tbom.matkl_self=ma.id
+         	and ma.lgort=bom.lgort
          	and ma.advance='1'
         ]]>
       	<isNotEmpty prepend="AND" property="groupId">
@@ -483,7 +479,7 @@
     
     
      <select id="findBomListByOrderPlanId" resultMap="zgTorderPlanbomExResult">
-				select bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl,
+				select distinct bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl,
 		       bom.idnrk,
 		       bom.maktx2,
 		       bom.matnr,
@@ -508,7 +504,7 @@
 		       fw_organization       org,
      		   zg_t_bom tbom
 		 where 
-		    bom.idnrk=tbom.idnrk(+)
+		    bom.idnrk=tbom.idnrk
   			and plan.cuid = planBom.Order_Plan_Id
 		   and planBom.Order_Bom_Id = bom.cuid
 		   and org.cuid(+) = bom.lgort
@@ -562,7 +558,7 @@
     </select>
     
     <select id="findBomListByOrderPlanIdAdvance" resultMap="zgTorderPlanbomExResult">
-				select bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl,
+				select disctinct bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl,
 		       bom.idnrk,
 		       bom.maktx2,
 		       bom.matnr,
@@ -592,7 +588,7 @@
 		   and planBom.Order_Bom_Id = bom.cuid
 		   and org.cuid(+) = bom.lgort
 		   and tbom.matkl=ma.id
-         	and ma.lgort=tbom.lgort
+         	and ma.lgort=bom.lgort
          	and ma.advance='1'
 		      
 		  <isNotEmpty prepend="AND" property="orderPlanId">

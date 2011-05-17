@@ -77,6 +77,9 @@ public class LoadRequestProcessThread implements Runnable {
 
 	public void run() {
 		try {
+			if(log.isInfoEnabled()){
+				log.info("SAP处理线程:"+batchNo+" 开始");
+			}
 			// 处理排序数据
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_01")) {
 				this.handlerPxData();
@@ -126,6 +129,7 @@ public class LoadRequestProcessThread implements Runnable {
 			getTsysIfaceLogBo().update(tsysIfaceLog);
 			log.error("run方法错误，批次--"+batchNo+":",e);
 		}
+		log.info("SAP处理线程:"+batchNo+" 结束");
 	}
 	
 	
@@ -481,7 +485,10 @@ public class LoadRequestProcessThread implements Runnable {
             3 poskey　如果接口数据中的poskey在rfid中没有，则新增
 	 */
 	@SuppressWarnings("unchecked")
-	private void handlerPxData() {
+	private void handlerPxData() {	
+		if(log.isInfoEnabled()){
+			log.info("enter the method handlerPxData 线程:"+batchNo);
+		}
 		try {
 			HandlerSapDataService handlerSapDataService = getHandlerSapDataService();
 			// 更新关系
@@ -493,6 +500,10 @@ public class LoadRequestProcessThread implements Runnable {
 			
 			//读取本次要处理的订单
 			List<Map> orderMapList=this.getBaseDao().queryBySql("select temp.* from zg_t_order_temp temp where temp.batch_no = "+batchNo);
+			
+			if(log.isInfoEnabled()){
+				log.info("线程:"+batchNo+" 共找到"+orderMapList.size()+"个订单");
+			}
 			
 			Map plantPxDateMap=getPlantPxDateMap();
 			
@@ -518,6 +529,9 @@ public class LoadRequestProcessThread implements Runnable {
 				synchronized (orderLock) {//同步锁
 					//判断订单是否新增订单
 					int isAddOrder=handlerSapDataService.isAddOrder(posKey,aufnr,arbpl);
+					if(log.isInfoEnabled()){
+						log.info("线程:"+batchNo+" 处理"+aufnr+"订单,订单类型为:"+isAddOrder);
+					}
 					if(isAddOrder==-1){//不是新增 1 更新订单辅表　更新订单信息　　判断需求的排序数量是否发生变化，如果发生变化，则得去变更相应的　orderbom,orderplanBom表　
 						handlerSapDataService.pxOrderInfoModify(arbpl, posKey,	psmng, pmenge,batchNo,isPsbhChange,psbh);
 					}else if (isAddOrder==0) {//该订单新增的，则直接插入订单辅表，订单表，订单bom表，再由后面统一生成领料计划
@@ -535,6 +549,9 @@ public class LoadRequestProcessThread implements Runnable {
 			}
 			//生成计划领料
 			synchronized (planLock) {//同步锁
+				if(log.isInfoEnabled()){
+					log.info("线程:"+batchNo+" 开始生成领料计划");
+				}
 				handlerSapDataService.generateCarPlan(batchNo);
 			}
 			
@@ -636,6 +653,13 @@ public class LoadRequestProcessThread implements Runnable {
 
 	public void setFunction(JCoFunction function) {
 		this.function = function;
+	}
+	
+	public static void main(String[] args) {
+		if(log.isInfoEnabled()){
+			log.info("SAP处理线程: 开始");
+		}
+		log.warn("SAP处理线程: 开始");
 	}
 
 
