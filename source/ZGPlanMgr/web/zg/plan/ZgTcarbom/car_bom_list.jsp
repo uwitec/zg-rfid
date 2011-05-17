@@ -338,8 +338,6 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 							<br /><br /> </font>
 						<c:forEach items="${bomList}" var="obj" varStatus="n">
 							<c:if test="${empty obj.STORAGE_USER_ID}">
-								
-							
 							<font style="font-size: 10px;"> 
 							<c:if test="${fn:indexOf(aufnrs,',')>0}">
 								订单编号:${obj.AUFNR}<br />
