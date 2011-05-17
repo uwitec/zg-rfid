@@ -18,6 +18,7 @@
 
 <head>
 	<base href="<%=basePath%>" />
+	<base target="_self"/>
 	<title>订单查询</title>
 	<%@ include file="/commons/meta.jsp" %>
 	<%@ include file="/commons/jquery.jsp" %>
