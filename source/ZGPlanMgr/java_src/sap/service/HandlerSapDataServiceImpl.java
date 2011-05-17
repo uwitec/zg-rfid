@@ -739,9 +739,9 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			String plant=orderMap.get("DELPLANT").toString();
 			String aufnr=orderMap.get("AUFNR").toString();
 			
-			deleteOrderPlanGroupByOrderId(orderId,plant);
-			deleteOrderPlanBomByOrderId(orderId,plant);
-			deleteOrderPlanByOrderId(orderId,plant);
+//			deleteOrderPlanGroupByOrderId(orderId,plant);
+//			deleteOrderPlanBomByOrderId(orderId,plant);
+//			deleteOrderPlanByOrderId(orderId,plant);
 
 //			deleteOrderBomByOrderId(orderId,plant);
 			deleteOrderAideByOrderId(orderId,plant);
@@ -754,7 +754,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 * 根据订单编号删除领料计划分组表
 	 * @param orderId
 	 */
-	private void deleteOrderPlanGroupByOrderId(String orderId,String plant){
+/*	private void deleteOrderPlanGroupByOrderId(String orderId,String plant){
 		StringBuffer sql=new StringBuffer();
 		sql.append(" delete from zg_t_order_plan_group t where exists(                      ");
 		sql.append("       select 1 from zg_t_order_plan plan ,zg_t_group_order_plan gop    ");
@@ -762,26 +762,26 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		sql.append("       and gop.group_id=t.cuid                                          ");
 		sql.append("       and plan.order_id='"+orderId+"'   and plan.plant='"+plant+"'    )");
 		this.baseDao.executeSql(sql.toString());
-	}
+	}*/
 	
 	/**
 	 * 根据订单编号删除领料计划
 	 * @param orderId
 	 */
-	private void deleteOrderPlanByOrderId(String orderId,String plant){
+/*	private void deleteOrderPlanByOrderId(String orderId,String plant){
 		StringBuffer sql=new StringBuffer();
 		sql.append("delete from zg_t_order_plan plan where plan.order_id='"+orderId+"'");
 		if(!StringHelper.isEmpty(plant)){
 			sql.append(" and plan.plant='"+plant+"'")	;
 		}
 		this.baseDao.executeSql(sql.toString());
-	}
+	}*/
 	
 	/**
 	 * 根据订单编号删除领料计划
 	 * @param orderId
 	 */
-	private void deleteOrderPlanBomByOrderId(String orderId,String plant){
+/*	private void deleteOrderPlanBomByOrderId(String orderId,String plant){
 		StringBuffer sql=new StringBuffer();
 		if(!StringHelper.isEmpty(plant)){
 			sql.append("delete from zg_t_order_planbom t where  exists(select 1 FROM Zg_t_Order_Plan plan where plan.order_id='"+orderId+"' and plan.plant='"+plant+"' and plan.cuid=t.order_plan_id)");
@@ -790,17 +790,17 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			sql.append("delete from zg_t_order_planbom t where  t.order_id='"+orderId+"'");
 		}
 		this.baseDao.executeSql(sql.toString());
-	}
+	}*/
 	
 	/**
 	 * 根据订单编号删除订单BOM
 	 * @param orderId
 	 */
-	private void deleteOrderBomByOrderId(String orderId){
+/*	private void deleteOrderBomByOrderId(String orderId){
 		StringBuffer sql=new StringBuffer();
 		sql.append("delete from zg_t_orderbom t where t.order_id='"+orderId+"'");
 		this.baseDao.executeSql(sql.toString());
-	}
+	}*/
 	
 	/**
 	 * 根据订单编号删除订单辅表
@@ -1352,9 +1352,22 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			oldOrderId=orderList.get(0).get("CUID")==null?"":orderList.get(0).get("CUID").toString()	;
 		}
 		
+		
+		sql="select od.cuid from zg_t_order_temp t,zg_t_order od where  t.aufnr=od.aufnr and t.arbpl=od.arbpl and t.poskey='"+posKey+"' and t.batch_no='"+batchNo+"'";
+		orderList = this.baseDao.queryBySql(sql);
+		if(orderList.size()>0){//不是拆分生产订单，只是没有该poskey 直接返回
+			String orderId=IbatisDAOHelper.getStringValue(orderList.get(0), "CUID");
+			saveZgTorderAide(orderId,plant,pxDate,posKey);
+			return;
+		}
+		
 		String orderId=saveZgTorderForChangeArbpl(posKey,batchNo,orderState);
 		
 		saveZgTorderAide(orderId,plant,pxDate,posKey);
+		
+		
+		
+		
 		addSapBomsDataByPosKey(batchNo, posKey,orderId);
 		
 		if(!StringHelper.isEmpty(oldOrderId)&&orderState.equals(Constants.OrderPlanStatus.SUBMIT.value())){//更新订单bom的制作标识为原来订单的制作标识
@@ -1384,6 +1397,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			String arbpl=IbatisDAOHelper.getStringValue(map, "ARBPL");
 			Long pmenge=IbatisDAOHelper.getLongValue(map, "PMENGE");
 			String aufnr=IbatisDAOHelper.getStringValue(map, "AUFNR");
+			String plant=IbatisDAOHelper.getStringValue(map, "PLANT");
 			StringBuffer upSql=new StringBuffer();
 			if(arbpl.equals(sourceArbpl)){
 				return;
@@ -1398,7 +1412,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	
 			if(pmenge>=sourceOrderMenge){//排序数量＝原来订单的排序数量
 				if(!isStartCar){//如果没有开始领料，则直接删除订单
-					deleteOrderDateByOrderId(sourceOrderId);
+					deleteOrderDateByOrderId(sourceOrderId,plant);
 					return;
 				}
 			}
@@ -1535,23 +1549,16 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 * 删除订单相关数据
 	 * @param sourceOrderId
 	 */
-	private void deleteOrderDateByOrderId(String orderId) {
-		deleteOrderPlanBomByOrderId(orderId,"");
-		deleteOrderPlanByOrderId(orderId,"");
-		deleteOrderBomByOrderId(orderId);
-		deleteOrderByOrderId(orderId);
-		deleteOrderByOrderAideId(orderId);
+	private void deleteOrderDateByOrderId(String orderId,String plant) {
+//		deleteOrderPlanBomByOrderId(orderId,"");
+//		deleteOrderPlanByOrderId(orderId,"");
+//		deleteOrderBomByOrderId(orderId);
+//		deleteOrderByOrderId(orderId);
+		deleteOrderAideByOrderId(orderId,plant);
+		deleteOrderByOrderIdPlant(orderId,plant);
 	}
 
-	/**
-	 * @param orderId
-	 */
-	private void deleteOrderByOrderAideId(String orderId) {
-		StringBuffer sql=new StringBuffer();
-		sql.append("delete from zg_t_order_aide t where t.order_id='"+orderId+"'");
-		this.baseDao.executeSql(sql.toString());
-		
-	}
+
 
 	/**
 	 * 变更接口处理订单状态
