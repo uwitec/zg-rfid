@@ -322,7 +322,8 @@
 	        	 from
 		        ZG_T_ORDER t0
 	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
-	        left join zg_t_order_planbom planbom 
+	        left join (select pb.order_bom_id from zg_t_order_planbom  pb ,zg_t_order_plan p  where p.plan_type in ('ABE','ABC','ABD')
+          and p.cuid=pb.order_plan_id) planbom 
           on planbom.order_bom_id=m.t0_CUID 
         where m.t0_CUID =#cuid# and rownum=1
         ]]>
