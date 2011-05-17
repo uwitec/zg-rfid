@@ -1079,7 +1079,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		
 		
 		Long carEdNum=0l;//已装车数量
-		if(bomList.size()==0){//原来装车bom为空时，则计算目前新添加的bom的装车数量
+		//if(bomList.size()==0){//原来装车bom为空时，则计算目前新添加的bom的装车数量
 			for(Map bom:newBomList){
 //				if(bomCuids.contains(IbatisDAOHelper.getStringValue(bom, "ORDER_BOM_ID"))){//只计算本次点击的bom默认装车数量
 //					Long carCount=Long.parseLong(bom.get("CARCOUNT").toString());//每车可以装车 的数量
@@ -1103,7 +1103,8 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 				}
 				
 			}
-		}else {
+		//}
+		if(bomList.size()>0) {
 			carPlanId=bomList.get(0).get("CAR_PLAN_ID").toString();
 		}
 		
