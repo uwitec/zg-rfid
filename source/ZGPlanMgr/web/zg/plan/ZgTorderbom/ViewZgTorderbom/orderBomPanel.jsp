@@ -144,8 +144,9 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 								<a href="javascript:">${orderbom.key.idnrk}</a>
 							</div>
 						</td>
-						
-						<td align="center">${orderbom.key.sortf}</td>
+						<td editable="true" editdata="sortfList" align="center">
+								<input type="text" edittype="value" style="border:0;width:60px" readonly="readonly" name="sortfs" id="${orderbom.key.cuid}_sortfSel" key="${orderbom.key.cuid}" value="${orderbom.key.sortf}"/>
+							</td>
 						<td align="left">${orderbom.key.maktx2}</td>
 							<td align="left">
 							<c:if test="${obj.matkl!='()'}">${obj.matkl}</c:if>
@@ -172,11 +173,11 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							<tr class="${trcss}">
 								<td align="left" colspan="2">&nbsp;&nbsp;${obj.idnrk}</td>
 							</c:if>
-						<c:choose>
+					<!--	<c:choose>
 							<c:when test="${obj.sortf eq 'CE' || obj.sortf eq 'DE'|| obj.sortf eq 'C'|| obj.sortf eq 'D'|| obj.sortf eq 'E'}">
 							<td align="center"><input type="text" style="border:0;width:60px" readonly="readonly" name="sortfs" id="${obj.cuid}_sortfSel" key="${obj.cuid}" value="${obj.sortf}"/></td>
 							</c:when>
-							<c:otherwise>
+							<c:otherwise>-->
 							<c:if test="${obj.planNum>0}">
 							<td align="center">	<input type="text" style="border:0;width:60px" readonly="readonly" name="sortfs" id="${obj.cuid}_sortfSel" key="${obj.cuid}" value="${obj.sortf}"/></td>
 							</c:if>
@@ -186,9 +187,9 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 								<input type="text" edittype="value" style="border:0;width:60px" readonly="readonly" name="sortfs" id="${obj.cuid}_sortfSel" key="${obj.cuid}" value="${obj.sortf}"/>
 							</td>
 							</c:if>
-						
+						<!--
 							</c:otherwise>
-							</c:choose>
+							</c:choose>-->
 						<td align="left">${obj.maktx2}</td>
 							<td align="left"> <c:if test="${obj.matkl!='()'}">${obj.matkl}</c:if></td>
 									<td align="left"  ondblclick="matklSet('${obj.matkl}','${obj.idnrk}','${obj.posnr}')" title="双击设置物料组"> 
