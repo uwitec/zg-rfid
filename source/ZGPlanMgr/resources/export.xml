@@ -62,7 +62,7 @@
 	          <!-- SQL内容 -->
 	          <content>
 		          <![CDATA[ 
-		         	 update zg_t_bom t set t.matkl_self='#matkl_self#' where t.idnrk='#idnrk#'
+		         	 update zg_t_orderbom t set t.matkl_self='#matkl_self#' where t.idnrk='#idnrk#'
 		          ]]>
 	          </content>
 	          <!-- 动态sql条件 -->
