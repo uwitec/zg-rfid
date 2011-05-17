@@ -184,6 +184,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
     </style> 
 </head>
 <body>
+
 		
 		<div class="noprint">
      
@@ -336,6 +337,9 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 							仓库名称：${pageRequest.filters.lgortName }
 							<br /><br /> </font>
 						<c:forEach items="${bomList}" var="obj" varStatus="n">
+							<c:if test="${empty obj.STORAGE_USER_ID}">
+								
+							
 							<font style="font-size: 10px;"> 
 							<c:if test="${fn:indexOf(aufnrs,',')>0}">
 								订单编号:${obj.AUFNR}<br />
@@ -345,6 +349,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 								大小量纲:${obj.ZBZ} <br />
 								领取数量:<span id="carPlaNum${n.count-1 }">${obj.CAR_PLAN_NUM}</span>
 								 <br /> <br /> </font>
+						</c:if>
 						</c:forEach>
 					</td>
 				</tr>
