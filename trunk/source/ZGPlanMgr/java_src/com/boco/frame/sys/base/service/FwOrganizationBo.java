@@ -59,7 +59,7 @@ public class FwOrganizationBo extends BaseManager<FwOrganization,java.lang.Strin
 	 * @return
 	 */
 	public List<Map> getOrgList() {
-		List<Map> list=fwOrganizationDao.findDynQuery("select distinct t.org_id,t.orgname from t_plant_enumevalue t where t.state='0'");
+		List<Map> list=fwOrganizationDao.findDynQuery("select t.plantid, t.plantid||'('||t.orgname||')' name from t_plant_enumevalue t where t.state='0' order by t.plantid");
 		return list;
 	}
 }
