@@ -7,10 +7,10 @@
 <sql id="dynamicWhere">
 	    <dynamic prepend="">
        		<isNotEmpty prepend="AND" property="date_start">
-	       			 carplan.car_date>=to_date('$date_start$','yyyy-mm-dd hh24:mi:ss') 
+	       			 carbom.car_date>=to_date('$date_start$','yyyy-mm-dd hh24:mi:ss') 
        		</isNotEmpty>  
        		<isNotEmpty prepend="AND" property="date_end">
-	       			to_date('$date_end$','yyyy-mm-dd hh24:mi:ss') >= carplan.car_date
+	       			to_date('$date_end$','yyyy-mm-dd hh24:mi:ss') >= carbom.car_date
        		</isNotEmpty>  
        		<isNotEmpty prepend="AND" property="aufnr">
 	       		  zto.aufnr like '%'||'$aufnr$'||'%'
@@ -18,12 +18,9 @@
        		<isNotEmpty prepend="AND" property="matnr">
        			  zto.matnr like '%'||'$matnr$'||'%'
        		</isNotEmpty>   
-       		<isNotEmpty prepend="AND" property="plantWhere">
-       			  ($plantWhere$)
+       		<isNotEmpty prepend="AND" property="plant">
+       			plan.plant='$plant$'
        		</isNotEmpty>  
-       		<isEmpty prepend="AND" property="plantWhere">
-       			  1=2
-       		</isEmpty>  
        		
        		<isNotEmpty prepend="AND" property="arbpl">
 	       		  zto.arbpl like '%'||'$arbpl$'||'%'
@@ -45,38 +42,94 @@
 
 	<select id="pageSelect" resultClass="java.util.HashMap">
 <![CDATA[	select zto.aufnr,
-	       zto.matnr,
-	       zto.maktx1,
-	       emu.orgname plant,
-	       zto.arbpl,
-	       orderbom.idnrk,
-	       orderbom.maktx2,
-	       orderbom.sortf,
-	       orderbom.lgort,
-	       sup.lifnr,
-	       sum(nvl(sup.car_num,0)) complete_num,
-	       sum(planbom.car_num) car_num,
-	       sup.lifnr_name, zto.kdauf,zto.KDPOS
-	  from zg_t_carbom           carbom,
-	       zg_t_carplan          carplan,
-	       zg_t_order            zto,
-	       zg_t_orderbom         orderbom,
-	       zg_t_order_planbom    planbom,
-	       zg_t_carbom_suppliers sup,
-              ( select temp.order_id,max(temp.plant) plant from zg_t_order_aide temp group by temp.order_id) aide,
-              t_plant_enumevalue emu
-	 where  aide.order_id=zto.cuid
-         and aide.plant=emu.plantid
-         and carbom.car_plan_id = carplan.cuid
-	   and carbom.order_id = zto.cuid
-	   and carbom.order_bom_id = orderbom.cuid
-	   and orderbom.order_id = carbom.order_id
-	   and planbom.cuid = carbom.order_planbom_id
-	   and sup.car_bom_id = carbom.cuid
-	    and zto.order_state<>'-1' 
-	    and carbom.storage_user_id is not null
-	     and carplan.order_plan_type <>'3'  
-	       and sup.car_num>0    ]]>
+               zto.matnr,
+               zto.maktx1,
+               plan.plant||'('||emu.orgname||')' plant,
+               zto.arbpl,
+               orderbom.idnrk,
+               orderbom.maktx2,
+               orderbom.sortf,
+               orderbom.lgort,
+               sup.lifnr,
+               sum(nvl(sup.car_num, 0)) complete_num,
+               sum(planbom.car_num) car_num,
+               sup.lifnr_name,
+               zto.kdauf,
+               zto.KDPOS
+          from zg_t_carbom carbom,
+               zg_t_carplan carplan,
+               zg_t_order zto,
+               zg_t_orderbom orderbom,
+               zg_t_order_planbom planbom,
+               zg_t_carbom_suppliers sup,
+               t_plant_enumevalue emu,
+               zg_t_order_plan plan
+         where 
+         plan.cuid=planbom.order_plan_id
+         and plan.plant=emu.plantid
+           and carbom.car_plan_id = carplan.cuid
+           and carbom.order_id = zto.cuid
+           and carbom.order_bom_id = orderbom.cuid
+           and orderbom.order_id = carbom.order_id
+           and planbom.cuid = carbom.order_planbom_id
+           and sup.car_bom_id = carbom.cuid
+           and zto.order_state <> '-1'
+           and carbom.storage_user_id is not null
+           and carplan.order_plan_type <> '3'
+           and sup.car_num > 0   ]]>
+	    <include refid="dynamicWhere"/>
+	<![CDATA[ group by zto.aufnr,
+	          zto.matnr,
+	          zto.maktx1,
+	          zto.plant,
+	          zto.arbpl,
+	          orderbom.idnrk,
+	          orderbom.maktx2,
+	          orderbom.sortf,
+	          orderbom.lgort,
+	          plan.plant,
+	          sup.lifnr,
+	          sup.lifnr_name,orgname, zto.kdauf,zto.KDPOS ]]>
+
+	</select>   
+	
+	  <select id="count" resultClass="long">
+		  	<![CDATA[select count(1) from (	select zto.aufnr,
+               zto.matnr,
+               zto.maktx1,
+               emu.orgname plant,
+               zto.arbpl,
+               orderbom.idnrk,
+               orderbom.maktx2,
+               orderbom.sortf,
+               orderbom.lgort,
+               sup.lifnr,
+               sum(nvl(sup.car_num, 0)) complete_num,
+               sum(planbom.car_num) car_num,
+               sup.lifnr_name,
+               zto.kdauf,
+               zto.KDPOS
+          from zg_t_carbom carbom,
+               zg_t_carplan carplan,
+               zg_t_order zto,
+               zg_t_orderbom orderbom,
+               zg_t_order_planbom planbom,
+               zg_t_carbom_suppliers sup,
+               t_plant_enumevalue emu,
+               zg_t_order_plan plan
+         where 
+         plan.cuid=planbom.order_plan_id
+         and plan.plant=emu.plantid
+           and carbom.car_plan_id = carplan.cuid
+           and carbom.order_id = zto.cuid
+           and carbom.order_bom_id = orderbom.cuid
+           and orderbom.order_id = carbom.order_id
+           and planbom.cuid = carbom.order_planbom_id
+           and sup.car_bom_id = carbom.cuid
+           and zto.order_state <> '-1'
+           and carbom.storage_user_id is not null
+           and carplan.order_plan_type <> '3'
+           and sup.car_num > 0   ]]>
 	    <include refid="dynamicWhere"/>
 	<![CDATA[ group by zto.aufnr,
 	          zto.matnr,
@@ -88,45 +141,8 @@
 	          orderbom.sortf,
 	          orderbom.lgort,
 	          sup.lifnr,
-	          sup.lifnr_name,orgname, zto.kdauf,zto.KDPOS ]]>
-
-	</select>   
-	
-	  <select id="count" resultClass="long">
-		  	<![CDATA[	select count(1)
-	  from (select 1
-	          from zg_t_carbom           carbom,
-	               zg_t_carplan          carplan,
-	               zg_t_order            zto,
-	               zg_t_orderbom         orderbom,
-	               zg_t_order_planbom    planbom,
-	               zg_t_carbom_suppliers sup,
-              ( select temp.order_id,max(temp.plant) plant from zg_t_order_aide temp group by temp.order_id) aide,
-              t_plant_enumevalue emu
-	         where 
-	         	 aide.order_id=zto.cuid
-         		and aide.plant=emu.plantid
-         		and carbom.car_plan_id = carplan.cuid
-	           and carbom.order_id = zto.cuid
-	           and carbom.order_bom_id = orderbom.cuid
-	           and orderbom.order_id = carbom.order_id
-	           and planbom.cuid = carbom.order_planbom_id
-	           and sup.car_bom_id = carbom.cuid
-	          and carbom.storage_user_id is not null
-	          and carplan.order_plan_type <>'3'   
-	            and sup.car_num>0   ]]>
-	             <include refid="dynamicWhere"/>
-	      	<![CDATA[    group by zto.aufnr,
-	                  zto.matnr,
-	                  zto.maktx1,
-	                  zto.plant,
-	                  zto.arbpl,
-	                  orderbom.idnrk,
-	                  orderbom.maktx2,
-	                  orderbom.sortf,
-	                  orderbom.lgort,
-	                  sup.lifnr,
-	                  sup.lifnr_name,emu.orgname,zto.kdauf,zto.KDPOS) ]]>
+	          plan.plant,
+	          sup.lifnr_name,orgname, zto.kdauf,zto.KDPOS ) ]]>
 
 	  </select>
 </sqlMap>
