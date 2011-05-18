@@ -106,7 +106,7 @@
 					    	from ZG_T_BOM ztb,  ZG_CarInfo zc,ZG_MATERIEL zm
 					        	where 
 					        			 ztb.car_id=zc.cuid(+)
-						       			and zm.id(+)=ztb.matkl
+						       			and zm.id(+)=ztb.matkl_self
 	        ]]>
 	          	<isNotEmpty prepend="AND" property="orgId">
 	          		zm.id='$orgId$'
