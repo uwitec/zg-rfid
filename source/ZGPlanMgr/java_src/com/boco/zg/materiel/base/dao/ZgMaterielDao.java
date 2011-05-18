@@ -147,6 +147,9 @@ public class ZgMaterielDao extends BaseIbatisDao<ZgMateriel,java.lang.String>{
 	public Number findChildCount(String cuid) {
 		return (Number)getSqlMapClientTemplate().queryForObject("ZgMateriel.findChildCount",cuid);
 	}
+	public boolean hasBom(String cuid) {
+		return (getSqlMapClientTemplate().queryForList("ZgMateriel.hasBom",cuid)).size()>0;
+	}
 	/**
 	 * 新增物料组导航树验证时用到下面2个方法
 	 * @param parentId
@@ -209,12 +212,16 @@ public class ZgMaterielDao extends BaseIbatisDao<ZgMateriel,java.lang.String>{
 	 * @param lgort
 	 * @return
 	 */
-	public String getCuidByIdAndLgort(String id, String lgort) {
+	public Map getByIdAndLgort(String id, String lgort) {
 		Map params=new HashMap();
 		params.put("id", id);
 		params.put("lgort", lgort);
-		Object result=(getSqlMapClientTemplate().queryForObject("ZgMateriel.getCuidByIdAndLgort",params));
-		return result==null?"":result.toString();
+		List<Map> result=getSqlMapClientTemplate().queryForList("ZgMateriel.getByIdAndLgort",params);
+		if(result.size()>0){
+			return result.get(0);
+		}
+		return null;
+		
 	}
 
 	/**
