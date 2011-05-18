@@ -18,9 +18,9 @@
        		<isNotEmpty prepend="AND" property="matnr">
        			  zto.matnr like '%'||'$matnr$'||'%'
        		</isNotEmpty>   
-       		<isNotEmpty prepend="AND" property="plantWhere">
-       			  ($plantWhere$)
-       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="plant">
+       			plan.plant='$plant$'
+       		</isNotEmpty>   
        		<isNotEmpty prepend="AND" property="arbpl">
 	       		  zto.arbpl like '%'||'$arbpl$'||'%'
        		</isNotEmpty> 
@@ -44,7 +44,7 @@
 	    <![CDATA[	select zto.aufnr,
 	       zto.matnr,
 	       zto.maktx1,
-	       emu.orgname plant,
+	        plan.plant||'('||emu.orgname||')' plant,
 	       zto.arbpl,
 	       orderbom.idnrk,
 	       orderbom.maktx2,
@@ -70,10 +70,11 @@
 	       zg_t_carbom_suppliers sup,
 	       fw_operator op,
 	       fw_operator op1,
-              ( select temp.order_id,max(temp.plant) plant from zg_t_order_aide temp group by temp.order_id) aide,
-              t_plant_enumevalue emu
-	 where aide.order_id=zto.cuid
-         and aide.plant=emu.plantid
+            
+              t_plant_enumevalue emu,
+               zg_t_order_plan plan
+	 where  plan.cuid=planbom.order_plan_id
+         and plan.plant=emu.plantid
          and op.cuid = carplan.car_user
 	   and op1.cuid = carbom.storage_user_id
 	   and carbom.car_plan_id = carplan.cuid
@@ -102,10 +103,10 @@
 	       zg_t_carbom_suppliers sup,
 	       fw_operator op,
 	       fw_operator op1,
-              ( select temp.order_id,max(temp.plant) plant from zg_t_order_aide temp group by temp.order_id) aide,
-              t_plant_enumevalue emu
-	 where aide.order_id=zto.cuid
-         and aide.plant=emu.plantid
+              t_plant_enumevalue emu,
+               zg_t_order_plan plan
+	 where  plan.cuid=planbom.order_plan_id
+         and plan.plant=emu.plantid
          and op.cuid = carplan.car_user
 	   and op1.cuid = carbom.storage_user_id
 	   and carbom.car_plan_id = carplan.cuid
