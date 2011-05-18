@@ -138,9 +138,9 @@
 								<a href="javascript:document.forms[0].reset()"><span><img src="<%=iconPath%>/ico_007.gif" />重置</span></a>
 								<!--  <a href="javascript:targetFrame('${ctx}/frame/sys/FwEmployee/create.do?orgId=${orgId}')"><span><img src="<%=iconPath%>/addition.gif" />新增</span></a> -->
 								<a href="javascript:delBomCar('${ctx}/frame/sys/ZgBomCar/delete.do')"><span><img src="<%=iconPath%>/ico_005.gif" />删除</span></a>
-								<a href="javascript:exportData()"><span><img src="<%=iconPath%>/page_excel.png" />导出</span></a>
+							<!--	<a href="javascript:exportData()"><span><img src="<%=iconPath%>/page_excel.png" />导出</span></a>
 								
-								<a href="javascript:importData()"><span><img src="<%=iconPath%>/page_excel.png" />导入</span></a>
+								<a href="javascript:importData()"><span><img src="<%=iconPath%>/page_excel.png" />导入</span></a>-->
 								<!-- <a href="javascript:exportData(2)"><span><img src="<%=iconPath%>/page_excel.png" />导出全部</span></a> -->
 						</div>
 					</td>
