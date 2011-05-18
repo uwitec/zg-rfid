@@ -84,7 +84,7 @@ for(SortInfo si:list){
 					<tbody>
 					<c:forEach items="${page.result}" var="obj" varStatus="n">
 						<c:set var="trcss" value="${n.count%2==0?'odd':'even'}"/>
-						<tr class="${trcss}" title="双击查看" ondblclick="view('${obj.cuid}')">
+						<tr class="${trcss}" ondblclick="view('${obj.cuid}')">
 							<td align="center">${obj.DEPTNAME}</td>
 							<td>${obj.IDNRK}</td>
 							<td align="left">${obj.MAKTX}</td>

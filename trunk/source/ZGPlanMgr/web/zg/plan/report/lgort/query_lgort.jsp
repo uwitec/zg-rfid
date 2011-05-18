@@ -151,10 +151,10 @@
 					</td>
 					<td class="label">领料部门：</td>
 					<td>
-					<select name="s_orgId">
+					<select name="s_plant">
 					<option value="">全部</option>
 					<c:forEach items="${ orgList}" var="item">
-						<option value="${item.ORG_ID }">${item.ORGNAME }</option>
+						<option value="${item.PLANTID }">${item.NAME }</option>
 					</c:forEach>
 					</select>
 					</td>
