@@ -81,12 +81,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					},
 					{id:'close',
 						handler:function(){
+							if(level==1) {alert("不能删除一级物料组!");return;}
 							DWREngine.setAsync(false);
-							ZgMaterielDwrAction.isLeafNode(orgId,function(leafNode){
-								if(leafNode==true&&orgId!=null){
+						//	ZgMaterielDwrAction.hasBom(orgId,function(result){
+								//if(!result){
 									DWREngine.setAsync(false);
-									ZgMaterielDwrAction.findMaterielData(orgId,function(dataFlag){
-										if(dataFlag){//dataflag为true的时候不存在数据可以删除
+									ZgMaterielDwrAction.hasBom(orgId,function(dataFlag){
+										if(!dataFlag){//dataflag为true的时候不存在数据可以删除
 											if(confirm("确认删除此物料组?")){
 												ZgMaterielDwrAction.delMateriel(orgId);
 												orgId=null;
@@ -97,10 +98,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 											alert("该物料组下有相关数据，不能删除!");
 										}
 									});
-								}else{
-									alert("必须先删除上层物料组才能删除该物料组!");
-								}
-							});
+							//	}else{
+							//		alert("必须先删除上层物料组才能删除该物料组!");
+							//	}
+							//});
 						}
 					},
 					{id:'gear',
