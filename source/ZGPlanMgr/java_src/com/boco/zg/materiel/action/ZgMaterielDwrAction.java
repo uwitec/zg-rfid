@@ -1,7 +1,10 @@
 package com.boco.zg.materiel.action;
 
+import java.util.Map;
+
 import cn.org.rapid_framework.util.ApplicationContextHolder;
 
+import com.boco.frame.meta.dao.IbatisDAOHelper;
 import com.boco.frame.sys.base.model.ZgMateriel;
 import com.boco.zg.materiel.base.service.ZgMaterielBo;
 
@@ -25,10 +28,11 @@ public class ZgMaterielDwrAction extends BaseDwrAction{
 	public  String saveMateriel(String materielName,String parentId,String lgorts,String id){
 		String[] lgortArr=lgorts.split(",");
 		for(String lgort:lgortArr){
-			String praentCuid=getZgMaterielBo().getCuidByIdAndLgort(parentId,lgort);
+			Map parentMap=getZgMaterielBo().getByIdAndLgort(parentId,lgort);
 			ZgMateriel entity =new ZgMateriel();
 			entity.setMaterielName(materielName);
-			entity.setParentId(praentCuid);
+			entity.setParentId(IbatisDAOHelper.getStringValue(parentMap, "CUID", ""));
+			entity.setAdvance(IbatisDAOHelper.getStringValue(parentMap, "ADVANCE", ""));
 			entity.setId(id);
 			entity.setType(new Long(2));
 			entity.setLgort(lgort);
@@ -61,10 +65,11 @@ public class ZgMaterielDwrAction extends BaseDwrAction{
 		String[] lgortArr=lgorts.split(",");
 		getZgMaterielBo().delMateriel(id);
 		for(String lgort:lgortArr){
-			String praentCuid=getZgMaterielBo().getCuidByIdAndLgort(parentOrgId,lgort);
+			Map parentMap=getZgMaterielBo().getByIdAndLgort(parentOrgId,lgort);
 			ZgMateriel entity =new ZgMateriel();
 			entity.setMaterielName(materielName);
-			entity.setParentId(praentCuid);
+			entity.setParentId(IbatisDAOHelper.getStringValue(parentMap, "CUID", ""));
+			entity.setAdvance(IbatisDAOHelper.getStringValue(parentMap, "ADVANCE", ""));
 			entity.setId(id);
 			entity.setType(new Long(2));
 			entity.setLgort(lgort);
@@ -79,6 +84,15 @@ public class ZgMaterielDwrAction extends BaseDwrAction{
 	 */
 	public boolean isLeafNode(String cuid){
 		return getZgMaterielBo().isLeaf(cuid);
+	}
+	
+	/**
+	 * 后台判断物料组树节点是否是叶子节点
+	 * @param cuid
+	 * @return
+	 */
+	public boolean hasBom(String id){
+		return getZgMaterielBo().hasBom(id);
 	}
 	/**
 	 * 物料组新增节点时验证是否同名
