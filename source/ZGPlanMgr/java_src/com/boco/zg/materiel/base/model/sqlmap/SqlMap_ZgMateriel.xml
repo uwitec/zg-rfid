@@ -73,13 +73,15 @@
         	PARENT_ID ,
         	MATERIEL_NAME ,
         	TYPE ,
-        	ID 
+        	ID ,
+        	advance
         ) VALUES (
         	#cuid# ,
         	#parentId# ,
         	#materielName# ,
         	#type# ,
-        	#id# 
+        	#id# ,
+        	#advance#
         )
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
@@ -100,14 +102,16 @@
         	MATERIEL_NAME ,
         	TYPE ,
         	ID ,
-        	LGORT
+        	LGORT,
+        	advance
         ) VALUES (
         	#cuid# ,
         	#parentId# ,
         	#materielName# ,
         	#type# ,
         	#id# ,
-        	#lgort#
+        	#lgort#,
+        	#advance#
         )
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
@@ -276,6 +280,13 @@
     		select count(*) from zg_materiel t where t.parent_id=#cuid#
     	]]>
     </select>
+    
+     <!-- 统计子节点 -->
+    <select id="hasBom" resultClass="java.util.HashMap">
+    	<![CDATA[
+    		select * from zg_t_bom t where t.matkl_self=#cuid#
+    	]]>
+    </select>
     <select id="findIdForValid" resultClass="java.lang.String">
     	<![CDATA[
     	 select id from zg_materiel t where t.parent_id=#parentId#
@@ -306,8 +317,8 @@
   	  select t.* from  ZG_MATERIEL t where t.id='$cuid$'
   	</select>
   	
-  	 	<select id="getCuidByIdAndLgort" resultClass="java.lang.String">
-  			 select t.cuid from zg_materiel t where t.id='$id$' and t.lgort='$lgort$' and rownum=1
+  	 	<select id="getByIdAndLgort" resultClass="java.util.HashMap">
+  			 select t.cuid,t.advance from zg_materiel t where t.id='$id$' and t.lgort='$lgort$' and rownum=1
   		</select>
   		<select id="validId1" resultClass="java.lang.String">
   			 select * from zg_materiel t where t.parent_id in (select temp.cuid from zg_materiel temp where temp.id='$parentId$')
