@@ -558,7 +558,7 @@
     </select>
     
     <select id="findBomListByOrderPlanIdAdvance" resultMap="zgTorderPlanbomExResult">
-				select disctinct bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl,
+				select distinct bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl,
 		       bom.idnrk,
 		       bom.maktx2,
 		       bom.matnr,
