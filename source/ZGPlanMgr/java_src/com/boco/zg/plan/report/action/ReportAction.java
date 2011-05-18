@@ -118,7 +118,7 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 	public String lgortReportStatExport() {
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		getRequest().getSession().setAttribute("ex_template","lgortReportStatExport");
-		reportBo.addPlantWhere(pageRequest);
+//		reportBo.addPlantWhere(pageRequest);
 		getRequest().getSession().setAttribute("ex_in", pageRequest.getFilters());
 		
 		return EXPORT_STORECAR;
@@ -139,7 +139,7 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 	public String lgortReportExport() {
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		getRequest().getSession().setAttribute("ex_template","lgortReportExport");
-		reportBo.addPlantWhere(pageRequest);
+//		reportBo.addPlantWhere(pageRequest);
 		getRequest().getSession().setAttribute("ex_in", pageRequest.getFilters());
 		
 		return EXPORT_STORECAR;
