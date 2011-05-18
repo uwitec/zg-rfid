@@ -63,9 +63,7 @@ public class ReportDao extends BaseIbatisDao<Map,java.lang.String>{
 
 	public Page lgortReport(PageRequest<Map> pageRequest) {
 		cl=LgortReport.class;
-		addPlantWhere(pageRequest);
-		
-		
+		//addPlantWhere(pageRequest);
 		
 		return pageQuery("LgortReport.pageSelect",pageRequest);
 	}
@@ -102,7 +100,8 @@ public class ReportDao extends BaseIbatisDao<Map,java.lang.String>{
 	
 	public Page lgortReportStat(PageRequest<Map> pageRequest) {
 		cl=LgortReportStat.class;
-		addPlantWhere(pageRequest);
+	//	addPlantWhere(pageRequest);
+		
 		return pageQuery("LgortReportStat.pageSelect",pageRequest);
 	}
 
