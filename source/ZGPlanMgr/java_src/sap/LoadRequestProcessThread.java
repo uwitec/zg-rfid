@@ -102,11 +102,11 @@ public class LoadRequestProcessThread implements Runnable {
 			}
 			// 处理变更数据
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_04")) {
-				this.handlerChangeData();
-				this.handleSuppliersData();
+//				this.handlerChangeData();
+//				this.handleSuppliersData();
 				
 				//处理自有物料组数据
-				handlerMatklSelfData(batchNo,"bg");
+//				handlerMatklSelfData(batchNo,"bg");
 			}
 			
 			// 领料数据回传sap接口
@@ -537,7 +537,7 @@ public class LoadRequestProcessThread implements Runnable {
 					}else if (isAddOrder==0) {//该订单新增的，则直接插入订单辅表，订单表，订单bom表，再由后面统一生成领料计划
 						handlerSapDataService.pxOrderAdd(plant, posKey, pxDate,batchNo);
 					}else if(isAddOrder==3) {//折分生产线
-						handlerSapDataService.addOrderForChangeArbpl( aufnr, plant,posKey, pxDate,batchNo);
+//						handlerSapDataService.addOrderForChangeArbpl( aufnr, plant,posKey, pxDate,batchNo);
 					}else if (isAddOrder==1) {//之前的数据是排产数据  1 保存订单辅表　更新订单信息　　判断需求的排序数量是否发生变化，如果发生变化，则得去变更相应的　orderbom,orderplanBom表　
 						handlerSapDataService.handlePcToPxData(aufnr, plant,arbpl, posKey, psmng, pmenge, pxDate,batchNo);
 					}else if (isAddOrder==2) {//2新增（生产厂为新增，订单不是新增）

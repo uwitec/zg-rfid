@@ -164,9 +164,45 @@ public class SapBusiService {
 		for (int i = 0; i < meta.getFieldCount(); i++) {
 			String tableName = meta.getName(i);
 			JCoTable table = list.getTable(tableName);
-//			this.parseDataXls(table, function.getName(), input,batchNo);
+			this.parseDataXls(table, function.getName(), input,batchNo);
 			this.parseData(table, function.getName(), input,batchNo);
 		}
+	}
+	
+	public static void parseDataXls(JCoTable table, String functionName,
+			String input,int batchNo) throws Exception {
+			JCoMetaData meta = table.getMetaData();
+			System.out.println("正在解析" + table.getMetaData().getName() + "数据!");
+			HSSFWorkbook wb = new HSSFWorkbook();
+			HSSFSheet sheet = wb.createSheet("new sheet");
+			short rowNum = 0;
+			HSSFRow row = sheet.createRow(rowNum++);
+			for (int n = 0; n < meta.getFieldCount(); n++) {
+				HSSFCell cell = row.createCell((short) n);
+				cell.setEncoding(HSSFCell.ENCODING_UTF_16);
+				cell.setCellValue(meta.getDescription(n) + "(" + meta.getName(n)
+						+ ")");
+			}
+			
+			for (int i = 0; i < table.getNumRows(); i++) {
+				table.setRow(i);
+				row = sheet.createRow(rowNum++);
+				for (int n = 0; n < meta.getFieldCount(); n++) {
+					HSSFCell cell = row.createCell((short) n);
+					cell.setEncoding(HSSFCell.ENCODING_UTF_16);
+					cell.setCellValue(table.getString(meta.getName(n)));
+					System.out.print(meta.getDescription(n) + "(" + meta.getName(n)
+							+ "):" + table.getString(meta.getName(n)) + " $$ ");
+				}
+				System.out.println();
+			}
+			// 使用默认的构造方法创建workbook
+			FileOutputStream fileOut = new FileOutputStream(functionName + "_"
+					 + table.getMetaData().getName()+"_"+batchNo + ".xls");
+			// 指定文件名
+			wb.write(fileOut);
+			// 输出到文件
+			fileOut.close();
 	}
 	
 	public void parseData(JCoTable table, String functionName,
