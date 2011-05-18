@@ -174,6 +174,10 @@ public class ZgMaterielBo extends BaseManager<ZgMateriel,java.lang.String>{
 			return true;
 		}
 	}
+	
+	public boolean hasBom(String cuid) {
+		return zgMaterielDao.hasBom(cuid);
+	}
 	/**
 	 * 物料组树添加 编辑时 判断是否有重名的Id
 	 * @param parentId
@@ -294,8 +298,8 @@ public class ZgMaterielBo extends BaseManager<ZgMateriel,java.lang.String>{
 	 * @param lgort
 	 * @return
 	 */
-	public String getCuidByIdAndLgort(String id, String lgort) {
-		return zgMaterielDao.getCuidByIdAndLgort(id,lgort);
+	public Map getByIdAndLgort(String id, String lgort) {
+		return zgMaterielDao.getByIdAndLgort(id,lgort);
 	}
 	/**
 	 * @param parentId
