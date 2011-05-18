@@ -143,8 +143,13 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
 		   and morg.matkl = mat.id
-		   and mat.id = bom.matkl_self
-		   and mat.lgort = orderbom.lgort
+		    and mat.id in   
+           (  select tm.id
+               from zg_materiel tm
+                     start with tm.id = bom.matkl_self
+                     connect by prior tm.parent_id = tm.cuid)
+		 <!--and mat.id = bom.matkl_self   
+		  and mat.lgort = orderbom.lgort-->
 		   and bom.idnrk = orderbom.idnrk 
 		     and bom.car_id is not null
 		   and bom.carnum is not null
@@ -200,8 +205,14 @@ and t.state<>'9' and gop.group_id='$groupId$')
        			
 		 where 
 		  orderbom.idnrk=bom.idnrk
-		 and bom.matkl_self=ma.id
-		 and bom.lgort=ma.lgort
+		<!--   and bom.matkl_self=ma.id
+		 and bom.lgort=ma.lgort-->
+		 
+		  and ma.id in   
+           (  select tm.id
+               from zg_materiel tm
+                     start with tm.id = bom.matkl_self
+                     connect by prior tm.parent_id = tm.cuid)
 		 
 		 and bom.car_id is not null
 		 and bom.carnum is not null
