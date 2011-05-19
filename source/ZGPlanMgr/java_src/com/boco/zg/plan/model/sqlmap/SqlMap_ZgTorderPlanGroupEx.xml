@@ -127,7 +127,6 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		      	zg_t_virtualorg          vorg,
 		        ZG_MATERIEL_VIRTUALORG   morg,
 		        zg_materiel              mat,
-		        zg_t_bom                 bom,
 		      </isNotEqual>
 		       zg_t_orderbom            orderbom,
 		       zg_t_order_planbom       planbom,
@@ -135,25 +134,27 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		       zg_t_group_order_plan    gop,
 		       zg_t_order_plan_group    oup,
 		          zg_t_order zto,
-       zg_t_order_aide aide
+       zg_t_order_aide aide,
+        zg_t_bom                 bom
 		 where zto.cuid=aide.order_id
 		and aide.plant=plan.plant
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   and vorg.org_id=plan.plant 
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
-		   and morg.matkl = mat.id
+		<!--    and morg.matkl = mat.id
 		    and mat.id in   
-           (  select tm.id
-               from zg_materiel tm
-                     start with tm.id = bom.matkl_self
-                     connect by prior tm.parent_id = tm.cuid)
-		 <!--and mat.id = bom.matkl_self   
+		 and mat.id = bom.matkl_self   
 		  and mat.lgort = orderbom.lgort-->
-		   and bom.idnrk = orderbom.idnrk 
+		    and mat.id in (select tm.id
+                    from zg_materiel tm
+                   start with tm.id = morg.matkl
+                  connect by prior  tm.cuid=tm.parent_id)
+   			and mat.id=orderbom.matkl_self
+		   </isNotEqual>
+		    and bom.idnrk = orderbom.idnrk 
 		     and bom.car_id is not null
 		   and bom.carnum is not null
-		   </isNotEqual>
 		   and plan.order_id=zto.cuid
 		   and orderbom.cuid = planbom.order_bom_id
 		   and planbom.order_plan_id = plan.cuid
@@ -192,6 +193,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		    	zg_t_virtualorg_employee emp,
 		      	zg_t_virtualorg          vorg,
 		        ZG_MATERIEL_VIRTUALORG   morg,
+		         zg_materiel              mat,
 		      </isNotEqual>
 		       zg_t_orderbom            orderbom,
 		       zg_t_order_planbom       planbom,
@@ -205,16 +207,11 @@ and t.state<>'9' and gop.group_id='$groupId$')
        			
 		 where 
 		  orderbom.idnrk=bom.idnrk
+		  and ma.id=orderbom.matkl_self
+		   and ma.advance='1'
 		<!--   and bom.matkl_self=ma.id
 		 and bom.lgort=ma.lgort-->
-		 
-		  and ma.id in   
-           (  select tm.id
-               from zg_materiel tm
-                     start with tm.id = bom.matkl_self
-                     connect by prior tm.parent_id = tm.cuid)
-		 
-		 and bom.car_id is not null
+			 and bom.car_id is not null
 		 and bom.carnum is not null
 		 and 
 		 zto.cuid=aide.order_id
@@ -223,7 +220,12 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		   vorg.org_id=plan.plant
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
-		   and morg.matkl = ma.id
+			<!--    and morg.matkl = ma.id-->
+		      and mat.id in (select tm.id
+                    from zg_materiel tm
+                   start with tm.id = morg.matkl
+                  connect by prior  tm.cuid=tm.parent_id)
+   				and mat.id=orderbom.matkl_self
 		   and
 		   </isNotEqual>
 		   plan.order_id=zto.cuid
@@ -254,7 +256,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		   and  plan.state in ('0','4')
 		      and planbom.state in  ('0','4','8')
 		   and  aide.px_date>to_date('$pxDate$','yyyy-MM-dd')
-		    and ma.advance='1'
+		   
 	   group by oup.cuid,oup.percent,oup.plan_type,oup.state,oup.psbh,oup.label_cn,oup.indexno
 		
 		    ]]>

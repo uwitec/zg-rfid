@@ -469,14 +469,14 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
-		   and morg.matkl = mat.id
+		<!--    and morg.matkl = mat.id -->
 		<!--   and mat.id = bom.matkl_self
 		   and mat.lgort = orderbom.lgort --> 
-		    and mat.id in 
-           (  select tm.id
-               from zg_materiel tm
-                     start with tm.id = bom.matkl_self
-                     connect by prior tm.parent_id = tm.cuid)
+		    and mat.id in (select tm.id
+                    from zg_materiel tm
+                   start with tm.id = morg.matkl
+                  connect by prior  tm.cuid=tm.parent_id)
+   			and mat.id=orderbom.matkl_self
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
 		     and bom.idnrk = orderbom.idnrk 
@@ -554,14 +554,14 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
-		   and morg.matkl = mat.id
-		<!--    and mat.id = bom.matkl_self
+		<!--    and morg.matkl = mat.id
+		   and mat.id = bom.matkl_self
 		   and mat.lgort = orderbom.lgort -->
-		    and mat.id in 
-           (  select tm.id
-               from zg_materiel tm
-                     start with tm.id = bom.matkl_self
-                     connect by prior tm.parent_id = tm.cuid)
+		    and mat.id in (select tm.id
+                    from zg_materiel tm
+                   start with tm.id = morg.matkl
+                  connect by prior  tm.cuid=tm.parent_id)
+   			and mat.id=orderbom.matkl_self
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
 		     and bom.idnrk = orderbom.idnrk 
@@ -636,11 +636,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		       zg_t_order zto,     fw_organization fworg,zg_carinfo car
 		 where <!--  ma.id=bom.matkl_self
 			  and ma.lgort=orderbom.lgort -->
-			    ma.id in 
-           (  select tm.id
-               from zg_materiel tm
-                     start with tm.id = bom.matkl_self
-                     connect by prior tm.parent_id = tm.cuid)
+			 ma.id =orderbom.matkl_self
 			 and ma.advance='1'
 			 and fworg.cuid=orderbom.lgort
 		  and car.cuid=bom.car_id
@@ -648,15 +644,15 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
-		   and morg.matkl = mat.id
-		    and mat.id in 
-           (  select tm.id
-               from zg_materiel tm
-                     start with tm.id = bom.matkl_self
-                     connect by prior tm.parent_id = tm.cuid)
-		  <!--  
+		  <!--     and morg.matkl = mat.id
+		
 		  and mat.id = bom.matkl_self
 		  and mat.lgort = orderbom.lgort -->
+		    and mat.id in (select tm.id
+                    from zg_materiel tm
+                   start with tm.id = morg.matkl
+                  connect by prior  tm.cuid=tm.parent_id)
+  			 and mat.id=orderbom.matkl_self
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
 		     and bom.idnrk = orderbom.idnrk 
@@ -729,11 +725,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		       zg_t_order zto,     fw_organization fworg,zg_carinfo car
 		 where <!--   ma.id=bom.matkl_self
 			 and ma.lgort=bom.lgort--> 
-			    ma.id in 
-           (  select tm.id
-               from zg_materiel tm
-                     start with tm.id = bom.matkl_self
-                     connect by prior tm.parent_id = tm.cuid)
+			 ma.id=orderbom.matkl_self
 			 and ma.advance='1'
 			 and fworg.cuid=orderbom.lgort
 		  and car.cuid=bom.car_id
@@ -741,14 +733,14 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
-		   and morg.matkl = mat.id
-		     and mat.id in 
-           (  select tm.id
-               from zg_materiel tm
-                     start with tm.id = bom.matkl_self
-                     connect by prior tm.parent_id = tm.cuid)
-		   <!-- and mat.id = bom.matkl_self
+		 <!--  and morg.matkl = mat.id
+		    and mat.id = bom.matkl_self
 		   and mat.lgort = orderbom.lgort -->
+		     and mat.id in (select tm.id
+                    from zg_materiel tm
+                   start with tm.id = morg.matkl
+                  connect by prior  tm.cuid=tm.parent_id)
+   			and mat.id=orderbom.matkl_self
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
 		     and bom.idnrk = orderbom.idnrk 
