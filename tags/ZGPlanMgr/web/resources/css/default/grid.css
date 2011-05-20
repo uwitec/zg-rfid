@@ -1,0 +1,79 @@
+@CHARSET "UTF-8";
+body{
+	background-color : #FFFFFF;
+	font-family: '宋体',verdana, arial, helvetica, sans-serif;
+	font-size: 12px;
+	border: 0;
+}
+html{border:none;}
+*{vertical-align: middle;padding: 0;margin: 0}
+
+.ellipsis{word-break:keep-all;white-space:nowrap; text-overflow:ellipsis; -o-text-overflow:ellipsis; -moz-binding:url('ellipsis.xml#ellipsis'); overflow:hidden;}
+.grid-panel {top:12px;;width:100%;position: relative;z-index: 1;border:1px solid #A8CFEB;border-width: 1px 1px 1px 1px;}
+.grid-panel .title{position: absolute;top:-10px;left:16px;z-index: 2;height:20px;font-size:12px;float:left;color:#3a6683;background-color: #FFFFFF}
+.grid-panel .toolbar{position: absolute;top:-10px;right:16px;text-align:right;height:20px;background-color: white;}
+.grid-panel .toolbar a{background:url(images/frame/linkbtn_left.gif) no-repeat left top;height:20px;padding:0px 0px 0px 3px;text-decoration:none;  display:inline-block;}
+.grid-panel .toolbar a span {background:url(images/frame/linkbtn_right.gif) no-repeat right top;height:18px;  display:inline-block; color:#3F5687; padding:2px 5px 0px 2px;text-align:center; cursor:hand;white-space:nowrap; word-break: keep-all;}
+.grid-panel .toolbar a span img{border:none;}
+.grid-panel .toolbar a:hover {background-position:0% -20px;}
+.grid-panel .toolbar a:hover span {background-position:100% -20px;color:#333;}
+	
+.grid-data-panel {z-index: 2;width:100%;overflow: auto;}
+.grid-data-panel table {margin-top:12px;width:100%;border-top: 1px solid #A8CFEB;}
+.grid-data-panel table td{white-space:nowrap;}
+.grid-data-panel .tableHeader{height:30px; text-align:center;border:1px solid #FFFFFF;border-width:0 1px 0 0;background-color:#DFEAFB;color:#3a6683; font-weight:bold;padding-left:2px; padding-right:5px;cursor:pointer }
+.grid-data-panel .tableHeaderSort{height:30px; text-align:center;border:1px solid #FFFFFF;border-width:0 1px 0 0; background-color:#DBFFF2;color:#3a6683; font-weight:bold;padding-left:2px;cursor:pointer}
+.grid-data-panel .statusBar {background-color: #F1F6FF;padding-left:10px;width:300px;color:#3a6683}
+.grid-data-panel .compactToolbar {background-color: #F1F6FF;color:#3a6683}
+.grid-data-panel .odd {text-align:center; cursor:pointer; background-color: #FFFFFF;behavior:url(images/frame/list.htc);height:26px; background:url(images/frame/dg_itemstyle.gif) bottom repeat-x;}
+.grid-data-panel .even {text-align:center; cursor:pointer;background-color: #FFFFFF;behavior:url(images/frame/list.htc);height:26px; background:url(images/frame/dg_itemstyle.gif) bottom repeat-x;}
+/*分页标签的样式，以后需要改进*/
+.grid-data-panel .pagebar{width:100%;background-color: #F1F6FF;}
+.grid-data-panel .pagebar a{background:url(images/frame/linkbtn_left.gif) no-repeat left top;height:20px;padding:0px 0px 0px 3px;text-decoration:none;  display:inline-block;}
+.grid-data-panel .pagebar a span {background:url(images/frame/linkbtn_right.gif) no-repeat right top;height:18px;  display:inline-block; color:#3F5687; padding:2px 5px 0px 2px;text-align:center; cursor:hand;white-space:nowrap; word-break: keep-all;}
+.grid-data-panel .pagebar a span img{border:none;}
+.grid-data-panel .pagebar a:hover {background-position:0% -20px;}
+.grid-data-panel .pagebar a:hover span {background-position:100% -20px;color:#333;}
+
+.graph {
+	
+		width: 90%;
+		border: 1px solid #B1D632;
+		padding: 2px;
+		margin-bottom: .5em;
+		text-align: left;
+	}
+	
+	.graph .bar {
+		display: block;
+		background: #B1D632;
+		text-align: center;
+		color: #333;
+		height: 2em;
+		line-height: 2em;
+		
+	}
+	
+	.graph .bar1 {
+	display: block;
+	background: #ff0000;;
+	text-align: center;
+	color: #333;
+	height: 2em;
+	line-height: 2em;
+	
+}
+	
+	.graph .bar span {
+		left: 1em;
+	}
+
+   .carfont
+        {
+            font-size: 14px;
+            font-style: normal;
+            color: #FF0000;
+            text-decoration: underline;
+            font-family: 宋体, Arial, Helvetica, sans-serif;
+            font-weight: bold;
+        }

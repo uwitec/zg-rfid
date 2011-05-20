@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTorderPlanGroupEx">
+    <typeAlias alias="zgTorderPlanGroup" type="com.boco.zg.plan.base.model.ZgTorderPlanGroup"/>
+    	<resultMap id="zgTorderPlanGroupResult" class="zgTorderPlanGroup">
+		<result property="cuid" column="cuid"/>
+		<result property="labelCn" column="label_Cn"/>
+		<result property="state" column="state"/>
+		<result property="percent" column="percent"/>
+		<result property="planType" column="plan_Type"/>
+		<result property="psbh" column="psbh"/>
+		<result property="advance" column="advance"/>
+		<result property="indexNo" column="indexNo"/>
+    </resultMap>
+    
+    
+    
+     <select id="getPlanGroupListByCarPlanId" resultMap="zgTorderPlanGroupResult">
+		select distinct oup.*,null as advance
+		  from zg_t_carplan       carplan,
+		       zg_t_carbom        carbom,
+		       zg_t_order_planbom planbom,
+		       zg_t_order_plan    plan,
+		       zg_t_group_order_plan gop ,
+		       zg_t_order_plan_group oup
+		 where carplan.cuid = carbom.car_plan_id
+		   and carbom.order_planbom_id = planbom.cuid
+		   and planbom.order_plan_id = plan.cuid
+		   and plan.cuid=gop.order_plan_id
+		   and gop.group_id=oup.cuid
+		   and carplan.cuid = '$carPlanId$'
+    </select>
+    
+    <select id="getPlanGroupListByOrderPlanId" resultMap="zgTorderPlanGroupResult">
+				select t.*,null as advance from zg_t_order_plan_group t ,zg_t_group_order_plan gop,zg_t_order_plan plan
+		where plan.cuid='$orderPlanId$'
+		and plan.cuid=gop.order_plan_id
+		and gop.group_id=t.cuid
+    </select>
+    
+    <update id="updateZG_T_ORDER_PLAN_GROUP_state" parameterClass="zgTorderPlanGroup">
+    <![CDATA[
+        UPDATE ZG_T_ORDER_PLAN_GROUP SET
+	        STATE = #state# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+    <update id="updateGroupStateByOrderPlanId" parameterClass="java.util.HashMap">
+    <![CDATA[
+         update zg_t_order_plan_group p set p.state=#state# where exists (select 1 from zg_t_group_order_plan op where op.group_id=p.cuid and op.order_plan_id=#planId#)
+    ]]>
+    </update>
+    
+    
+        <update id="updateZgtorderPlanStateByGroupId" parameterClass="java.util.HashMap">
+    <![CDATA[
+        update zg_t_order_plan t set t.state='$state$' where exists (select 1 from zg_t_group_order_plan gop where gop.order_plan_id=t.cuid
+and t.state<>'9' and gop.group_id='$groupId$')
+    ]]>
+    </update>
+    
+    
+    <update id="changeIndexNoByGroupId" parameterClass="zgTorderPlanGroup">
+    <![CDATA[
+        UPDATE ZG_T_ORDER_PLAN_GROUP SET
+	        indexno = '$indexNo$'
+	    WHERE CUID = '$cuid$'
+    ]]>
+    </update>
+    
+    <update id="changeGroupPsbh" parameterClass="java.util.HashMap">
+	              update zg_t_order_plan_group t
+     set t.indexNo = t.indexNo + $moveNum$
+   where exists (select 1
+            from zg_t_group_order_plan oup,
+                 zg_t_order_plan       plan,
+                 zg_t_order            zto,
+                 zg_t_order_aide aide
+           where t.cuid = oup.group_id
+             and oup.order_plan_id = plan.cuid
+             and plan.order_id = zto.cuid
+             and zto.cuid=aide.order_id
+             and plan.plan_type = '$sorft$'
+           <!--  and trunc(aide.px_date) = to_date('$date$', 'yyyy-mm-dd')-->
+             and plan.plant='$plant$'
+               <![CDATA[ and plan.state<>'-1']]>
+            <!-- <isNotEmpty prepend="AND" property="arbpl">
+                and zto.arbpl = '$arbpl$'
+              </isNotEmpty> --> 
+             and t.indexNo > $indexNo$)
+	           
+    </update>
+    
+    
+    
+       <select id="findTheSamePsbh" resultMap="zgTorderPlanGroupResult">
+          select t.*,null as advance from  zg_t_order_plan_group t, zg_t_group_order_plan oup,
+                 zg_t_order_plan       plan,
+                 zg_t_order            zto
+           where t.cuid = oup.group_id
+             and oup.order_plan_id = plan.cuid
+             and plan.order_id = zto.cuid
+             and plan.plan_type = '$sorft$'
+             and trunc(zto.pcdat) = to_date('$date$', 'yyyy-mm-dd')
+             <isNotEmpty prepend="AND" property="arbpl">
+                and zto.arbpl = '$arbpl$'
+              </isNotEmpty>
+             and t.psbh = $psbh$
+       
+       </select>
+    
+    <update id="updateGroupName"  parameterClass="zgTorderPlanGroup">
+		update zg_t_order_plan_group t set t.label_cn='$labelCn$' where t.cuid='$cuid$'
+    </update>
+    
+    <!--今天之前没有领完的订单，今天的订单，今天之后特殊领料的订单 -->
+     <select id="getPlanGroupList" resultMap="zgTorderPlanGroupResult">
+     select    * from ((
+		     	select oup.*,min(zto.arbpl) arbpl,min(aide.px_date) px_date,'0' as advance
+		  from 
+		  
+		     <isNotEqual property="operatorId" compareValue="0"> 
+		    	zg_t_virtualorg_employee emp,
+		      	zg_t_virtualorg          vorg,
+		        ZG_MATERIEL_VIRTUALORG   morg,
+		        zg_materiel              mat,
+		      </isNotEqual>
+		       zg_t_orderbom            orderbom,
+		       zg_t_order_planbom       planbom,
+		       zg_t_order_plan          plan,
+		       zg_t_group_order_plan    gop,
+		       zg_t_order_plan_group    oup,
+		          zg_t_order zto,
+       zg_t_order_aide aide,
+        zg_t_bom                 bom
+		 where zto.cuid=aide.order_id
+		and aide.plant=plan.plant
+		  <isNotEqual property="operatorId" compareValue="0"> 
+		   and vorg.org_id=plan.plant 
+		   and emp.org_id = vorg.cuid
+		   and vorg.cuid = morg.org_id
+		<!--    and morg.matkl = mat.id
+		    and mat.id in   
+		 and mat.id = bom.matkl_self   
+		  and mat.lgort = orderbom.lgort-->
+		    and mat.id in (select tm.id
+                    from zg_materiel tm
+                   start with tm.id = morg.matkl
+                  connect by prior  tm.cuid=tm.parent_id)
+   			and mat.id=orderbom.matkl_self
+		   </isNotEqual>
+		    and bom.idnrk = orderbom.idnrk 
+		     and bom.car_id is not null
+		   and bom.carnum is not null
+		   and plan.order_id=zto.cuid
+		   and orderbom.cuid = planbom.order_bom_id
+		   and planbom.order_plan_id = plan.cuid
+		   and plan.cuid = gop.order_plan_id
+		   and gop.group_id = oup.cuid
+		    <![CDATA[    and zto.order_state<>'-1' 
+		    and zto.freeze<>'4']]>
+		     
+            and plan.plant='$plant$'
+		   
+		   <isNotEmpty prepend="AND" property="planType">
+       	     oup.plan_type = '$planType$'
+       		</isNotEmpty>
+       		 <isNotEmpty prepend="AND" property="arbpl">
+       	     zto.arbpl = '$arbpl$'
+       		</isNotEmpty>
+		   <isNotEqual property="operatorId" compareValue="0"> 
+		  	 and emp.user_id = '$operatorId$'
+		   </isNotEqual>
+		    <isEqual property="planType" compareValue="ABE"> 
+		  	 and zto.freeze='0'
+		   </isEqual>
+		  
+		   <![CDATA[  and oup.state in ('0','4')
+		   and   plan.state in ('0','4')
+		      and planbom.state in  ('0','4','8')
+		    and  to_date('$pxDate$','yyyy-MM-dd')>=aide.px_date
+	   group by oup.cuid,oup.percent,oup.plan_type,oup.state,oup.psbh,oup.label_cn,oup.indexno
+		
+		    ]]>) union 
+		    (
+		    	select oup.*,min(zto.arbpl) arbpl,min(aide.px_date) px_date,'1' as advance
+		  from 
+		  
+		     <isNotEqual property="operatorId" compareValue="0"> 
+		    	zg_t_virtualorg_employee emp,
+		      	zg_t_virtualorg          vorg,
+		        ZG_MATERIEL_VIRTUALORG   morg,
+		         zg_materiel              mat,
+		      </isNotEqual>
+		       zg_t_orderbom            orderbom,
+		       zg_t_order_planbom       planbom,
+		       zg_t_order_plan          plan,
+		       zg_t_group_order_plan    gop,
+		       zg_t_order_plan_group    oup,
+		         zg_t_order zto,
+       			zg_t_order_aide aide,
+       			   zg_t_bom                 bom,
+                zg_materiel              ma
+       			
+		 where 
+		  orderbom.idnrk=bom.idnrk
+		  and ma.id=orderbom.matkl_self
+		   and ma.advance='1'
+		<!--   and bom.matkl_self=ma.id
+		 and bom.lgort=ma.lgort-->
+			 and bom.car_id is not null
+		 and bom.carnum is not null
+		 and 
+		 zto.cuid=aide.order_id
+ 		and aide.plant=plan.plant and
+		  <isNotEqual property="operatorId" compareValue="0"> 
+		   vorg.org_id=plan.plant
+		   and emp.org_id = vorg.cuid
+		   and vorg.cuid = morg.org_id
+			<!--    and morg.matkl = ma.id-->
+		      and mat.id in (select tm.id
+                    from zg_materiel tm
+                   start with tm.id = morg.matkl
+                  connect by prior  tm.cuid=tm.parent_id)
+   				and mat.id=orderbom.matkl_self
+		   and
+		   </isNotEqual>
+		   plan.order_id=zto.cuid
+		   and orderbom.cuid = planbom.order_bom_id
+		   and planbom.order_plan_id = plan.cuid
+		   and plan.cuid = gop.order_plan_id
+		   and gop.group_id = oup.cuid
+		    <![CDATA[
+		       and zto.order_state<>'-1' 
+		     and planbom.state='0' 
+		     and zto.freeze<>'4' ]]>
+		
+		   and plan.plant='$plant$'
+		   
+		   <isNotEmpty prepend="AND" property="planType">
+       	     oup.plan_type = '$planType$'
+       		</isNotEmpty>
+       		 <isNotEmpty prepend="AND" property="arbpl">
+       	     zto.arbpl = '$arbpl$'
+       		</isNotEmpty>
+		   <isNotEqual property="operatorId" compareValue="0"> 
+		  	 and emp.user_id = '$operatorId$'
+		   </isNotEqual>
+		    <isEqual property="planType" compareValue="ABE"> 
+		  	 and zto.freeze='0'
+		   </isEqual>
+		   <![CDATA[   and oup.state in ('0','4')
+		   and  plan.state in ('0','4')
+		      and planbom.state in  ('0','4','8')
+		   and  aide.px_date>to_date('$pxDate$','yyyy-MM-dd')
+		   
+	   group by oup.cuid,oup.percent,oup.plan_type,oup.state,oup.psbh,oup.label_cn,oup.indexno
+		
+		    ]]>
+		    
+		    )
+		    
+		    )
+		     order by   INDEXNO ,px_date,arbpl, PSBH
+
+    </select>
+    
+    <select id="getPlanGroupListByOrderId" resultMap="zgTorderPlanGroupResult">
+	    select distinct oup.*, null as advance
+	  from zg_t_order_plan_group oup,zg_t_group_order_plan gop, zg_t_order_plan t
+	 where gop.order_plan_id = t.cuid
+	 and oup.cuid=gop.group_id
+	   and t.order_id = '$orderId$'
+    </select>
+    
+</sqlMap>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FwOperatorEx">
+    <typeAlias alias="fwOperator" type="com.boco.frame.sys.base.model.FwOperator"/>
+	<resultMap id="fwOperatorResult" class="fwOperator">
+		<result property="cuid" column="CUID"/>
+		<result property="labelCn" column="LABEL_CN"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="password" column="PASSWORD"/>
+		<result property="createTime" column="CREATE_TIME"/>
+		<result property="lastModifyTime" column="LAST_MODIFY_TIME"/>
+		<result property="effectTime" column="EFFECT_TIME"/>
+		<result property="status" column="STATUS"/>
+		<result property="relatedBmClassId" column="RELATED_BM_CLASS_ID"/>
+		<result property="rfidCode" column="RFIDCODE"/>
+    </resultMap>
+    
+    <!-- wjz -->
+    <resultMap id="fwOperatorResult2" class="fwOperator">
+		<result property="userId" column="user_id"/>
+		<result property="labelCn" column="label_cn"/>
+	</resultMap>
+
+	
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	       CUID,
+	       LABEL_CN,
+	       USER_ID,
+	       PASSWORD,
+	       CREATE_TIME,
+	       LAST_MODIFY_TIME,
+	       EFFECT_TIME,
+	       STATUS,
+	       RELATED_BM_CLASS_ID,
+	       rfidCode
+	    ]]>
+	</sql>
+	
+	<!-- 用于select查询公用抽取的列2 -->
+	<sql id="commonColumns2">
+		<![CDATA[
+		   user_id,
+		   label_cn
+		]]>
+	</sql>
+	
+	<select id="findUserByOrgId" resultMap="fwOperatorResult">
+	select <include refid="commonColumns"/> from(
+	    <![CDATA[select o.*
+				  from fw_operator o, fw_employee fe
+				 where o.cuid=fe.cuid
+				   and fe.org_id='$orgId$' )  ]]>
+    </select>
+    
+        <select id="getUserByRfidCode" resultMap="fwOperatorResult">
+		select <include refid="commonColumns"/> from(
+	    <![CDATA[select o.* from fw_operator o 
+         where trim(o.rfidcode)=trim( '$cuid$') and rownum=1)  ]]>
+    </select>
+    
+    <!-- 获取仓管员信息 -->
+    <select id="getStorageUserByRfidCode" resultClass="java.util.HashMap">
+		select t.user_id,
+			t.cuid,
+         t.label_cn,
+         to_char(t.EFFECT_TIME,'yyyy-mm-dd') EFFECT_TIME,
+         org.label_cn as deptName,
+         fe.telephone,
+         fe.email,
+         decode(fe.sex, '1', '男', '2', '女', '') sex
+    from FW_OPERATOR t, fw_employee fe, fw_operator_role fr,fw_organization org,FW_ORGANIZATION_MANAGER ma
+   where t.cuid = fe.cuid
+     and org.cuid=fe.org_id   
+     and fr.operator_id=t.cuid
+     and fr.role_id='storageUser'
+     and ma.org_id='$lgort$'
+     and ma.employee_id=fe.cuid
+     and trim(t.rfidcode)=trim( '$rfidCode$')
+     and rownum=1
+    </select>
+    
+    
+    <select id="select_by_userid" parameterClass="java.lang.String" resultMap="fwOperatorResult2">
+	select <include refid="commonColumns2"/><![CDATA[ from fw_operator t where cuid=#userId#]]>
+	</select>
+	
+    
+</sqlMap>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FwOrganizationEx">
+
+    <typeAlias alias="fwOrganizationEx" type="com.boco.frame.sys.model.FwOrganizationEX"/>
+
+    <resultMap id="fwOrganizationExResult" class="fwOrganizationEx">
+        <result property="cuid" column="CUID"/>
+        <result property="labelCn" column="LABEL_CN"/>
+        <result property="parentOrgId" column="PARENT_ORG_ID"/>
+        <result property="seq" column="SEQ"/>
+        <result property="levelNum" column="LEVEL_NUM"/>
+        <result property="childNum" column="CHILD_NUM"/>
+    </resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	    	T.CUID,
+	    	T.LABEL_CN,
+	    	T.PARENT_ORG_ID,
+	    	T.LEVEL_NUM,
+	    	T.SEQ 
+	    ]]>
+	</sql>
+	
+	<select id="findOrganizationTree" resultMap="fwOrganizationExResult">
+	    select <include refid="commonColumns"/> ,
+	    	(select count(1) from fw_organization O where O.Parent_Org_Id = T.CUID) as CHILD_NUM 
+	       <![CDATA[
+	    	from fw_organization T
+			start with T.Parent_Org_Id is null
+			connect by prior T.CUID = T.Parent_Org_Id
+	        ]]>
+    </select>
+    
+    <select id="getPlantListByOrgId" resultClass="java.util.HashMap">
+	    select * from t_plant_enumevalue t where t.org_id='$orgId$'
+    </select>
+    
+    <select id="getPxdateByOrgId" resultClass="java.util.Date">
+   	 select t.extend2 from fw_organization t where t.cuid='$cuid$'
+    </select>
+    
+    <update id="changePxDateNextDay">
+    	update fw_organization t set t.extend2=t.extend2+1 where t.cuid='$cuid$'
+    </update>
+    
+    <update id="revertIndexNoByPlant">
+    	update zg_t_order_plan_group oup
+   set oup.indexno = 10000
+ where exists (select 1
+          from zg_t_group_order_plan gop,
+               zg_t_order_plan       plan,
+               zg_t_order            zto,
+               zg_t_order_aide       aide,
+               fw_organization       org
+         where oup.cuid = gop.group_id
+           and gop.order_plan_id = plan.cuid
+           and plan.order_id = zto.cuid
+           and zto.cuid = aide.order_id
+           and org.cuid = '$cuid$'
+           and TRUNC(aide.px_date) >= TRUNC(org.extend2))
+    </update>
+    
+    
+</sqlMap>

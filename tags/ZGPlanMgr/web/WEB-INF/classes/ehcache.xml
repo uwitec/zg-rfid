@@ -1,0 +1,34 @@
+<ehcache>
+	<!-- 
+	<diskStore path="/export/home/mqadmin/irms300/cachetemp" />
+	 -->
+	<diskStore path="C:\\\temp" />
+	<!--
+		eternal 是否永久驻留，若为true，下面2个参数无效
+		timeToIdleSeconds 多久没访问就失效 
+		timeToLiveSeconds 失效时间
+		overflowToDisk 内存数量满了是否写到磁盘
+	-->
+	<cache name="com.company.cache.METHOD_CACHE" 
+		maxElementsInMemory="500000"
+		eternal="true" 
+		diskPersistent="true"
+		timeToIdleSeconds="500000" 
+		timeToLiveSeconds="50000000"
+		overflowToDisk="true" />
+		
+	<cache name="com.boco.cache.METHOD_CACHE" 
+		maxElementsInMemory="500000"
+		eternal="true" 
+		diskPersistent="true"
+		timeToIdleSeconds="500000" 
+		timeToLiveSeconds="50000000"
+		overflowToDisk="true" />
+
+	<!--如果cache的key找不到默认走此配置 -->
+	<defaultCache maxElementsInMemory="500000" eternal="false"
+		timeToIdleSeconds="1200" timeToLiveSeconds="1200" overflowToDisk="false"
+		diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="120" memoryStoreEvictionPolicy="LRU" />
+
+</ehcache>

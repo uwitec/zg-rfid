@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTbomEx">
+
+    <typeAlias alias="zgTbom" type="com.boco.zg.bom.base.model.ZgTbom"/>
+
+    <resultMap id="zgTbomResult" class="zgTbom">
+        <result property="cuid" column="CUID"/>
+        <result property="maktx" column="MAKTX"/>
+        <result property="matnr" column="MATNR"/>
+        <result property="msehl" column="MSEHL"/>
+        <result property="matkl" column="MATKL"/>
+        <result property="zbz" column="ZBZ"/>
+        <result property="zrzqd" column="ZRZQD"/>
+        <result property="lgort" column="LGORT"/>
+        <result property="lgortLabelCn" column="lgort_label_cn"/>
+        <result property="labelCn" column="label_cn"/>
+        <result property="plant" column="plant"/>
+    </resultMap>
+    
+         <typeAlias alias="zgTcarbomSuppliers" type="com.boco.zg.plan.base.model.ZgTcarbomSuppliers"/>
+	<resultMap id="zgTcarbomSuppliersResult" class="zgTcarbomSuppliers">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="carBomId" column="t0_CAR_BOM_ID"/>
+		<result property="lifnr" column="t0_LIFNR"/>
+		<result property="lifnrName" column="t0_LIFNR_NAME"/>
+		<result property="carNum" column="t0_CAR_NUM"/>
+		<result property="idnrk" column="t0_idnrk"/> 
+    </resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+        	t.CUID,
+        	t.MAKTX,
+        	t.MATNR,
+        	t.MSEHL,
+        	t.MATKL,
+        	t.ZBZ,
+        	t.ZRZQD,
+        	t.LGORT,
+        	t.label_cn,
+        	  t.plant
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+		    		$sqlQueryString$ 
+		    </isNotEmpty>
+       		<isNotEmpty prepend="AND" property="cuid">
+	       			t.CUID like #cuid#
+       		</isNotEmpty>
+       		
+       		<isNotEmpty prepend="AND" property="orderPlanId">
+	       			cuid not in (select p.bom_id from zg_t_order_planbom p where p.order_plan_id=#orderPlanId#)
+       		</isNotEmpty>
+       		
+       		<isNotEmpty prepend="AND" property="maktx">
+	       			t.MAKTX like  '%'||#maktx#||'%' 
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="matnr">
+	       			t.MATNR like #matnr#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="msehl">
+	       			t.MSEHL like #msehl#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="matkl">
+	       			t.MATKL like #matkl#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="zbz">
+	       			t.ZBZ like #zbz#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="zrzqd">
+	       			t.ZRZQD like #zrzqd#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="lgort">
+	       			t.LGORT like #lgort#
+       		</isNotEmpty>
+       		
+       		<isNotEmpty prepend="AND" property="label_cn">
+	       			t.label_cn like  '%'||#label_cn#||'%'
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    
+    <select id="pageSelect" resultMap="zgTbomResult">
+    	select <include refid="commonColumns"/>,t.lgort_label_cn from 
+	    <![CDATA[
+	        (select z.* ,fo.label_cn lgort_label_cn from ZG_T_BOM z,   fw_organization fo 
+	          where z.lgort = fo.cuid) t
+	    ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findNullCarInfoBom" resultClass="long">
+    <![CDATA[
+    	select count(*)  from ZG_T_BOM t where t.car_id is null or t.car_id=''
+    ]]>
+    </select>
+    
+    <select id="getSuppliersListByIdnrks" resultMap="zgTcarbomSuppliersResult">
+		
+		select distinct null as t0_CUID,
+                  null as t0_CAR_BOM_ID,
+                  t0.plantid as t0_LIFNR,
+                  t0.plant as t0_LIFNR_NAME,
+                  null as t0_CAR_NUM,T0.IDNRK T0_IDNRK
+                  from zg_t_bom t0 where t0.idnrk  in ('$idnrks$') 
+                   and t0.type='2'
+    </select>
+    
+</sqlMap>

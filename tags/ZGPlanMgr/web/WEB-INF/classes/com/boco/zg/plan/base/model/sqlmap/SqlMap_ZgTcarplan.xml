@@ -1,0 +1,866 @@
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTcarplan">
+    <typeAlias alias="zgTcarplan" type="com.boco.zg.plan.base.model.ZgTcarplan"/>
+	<resultMap id="zgTcarplanResult" class="zgTcarplan">
+		<result property="cuid" column="CUID"/>
+		<result property="labelCn" column="CAR_PLAN_NAME"/>
+		<result property="carState" column="CAR_STATE"/>
+		<result property="createUserId" column="CREATE_USER_ID"/>
+		<result property="createUserId_related.value" column="CREAT_USER_NAME"/>
+		<result property="createUserId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="carUser" column="CARUSER_ID"/>
+		<result property="carUser_related.value" column="CARUSER_LABELCN"/>
+		<result property="carUser_related.relatedBmClassId" column="t0_1_2_BD"/>
+		<result property="carDate" column="CAR_DATE"/>
+		<result property="storageUserId" column="STORAGE_USER_ID"/>
+		<result property="storageUserId_related.value" column="STORAGE_USER_NAME"/>
+		<result property="storageUserId_related.relatedBmClassId" column="t0_2_3_BD"/>
+		<result property="storageId" column="STORAGE_ID"/>
+		<result property="storageId_related.value" column="STORAGE_NAME"/>
+		<result property="storageId_related.relatedBmClassId" column="t0_3_1_BD"/>
+		<result property="remark" column="REMARK"/>
+		<result property="carUser_dept_Id" column="DEPARTMENT_ID"/>
+		<result property="carUser_dept_Id_related.value" column="DEPARTMENT_NAME"/>
+		<result property="carUser_dept_Id_related.relatedBmClassId" column="T0_3_1_BD"/>
+		<result property="sortf" column="SORTF"/>
+		<result property="type" column="TYPE"/>
+		<result property="orderPlanType" column="ORDER_PLAN_TYPE"/>
+		<result property="aufnr" column="AUFNR"/>
+    </resultMap>
+    
+    <sql id="commonColumns">
+	    <![CDATA[
+	        CUID,
+	        CAR_PLAN_NAME,
+	        CARUSER_LABELCN,
+	        CARUSER_ID,
+	        DEPARTMENT_ID,
+	        DEPARTMENT_NAME,
+	        STORAGE_ID,
+	        STORAGE_NAME,
+	        CAR_STATE,
+	        CREATE_USER_ID,
+	        CREAT_USER_NAME,
+	        'FW_EMPLOYEE' AS T0_0_1_BD,
+	        CREATE_DATE,
+	        'FW_EMPLOYEE' AS T0_1_2_BD,
+	        CAR_DATE,
+	        STORAGE_USER_ID,
+	        STORAGE_USER_NAME,
+	        'FW_EMPLOYEE' AS T0_2_3_BD,
+	        'FW_ORGANIZATION' AS T0_3_1_BD,
+	         REMARK,
+	         TYPE,
+	         ORDER_PLAN_TYPE,
+	         ORDER_PLAN_TYPE  SORTF,
+	         aufnr
+	    ]]>
+	</sql>
+    
+ 
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			CUID like '%$cuid$%'
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			CAR_PLAN_NAME like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="carState">
+	       			CAR_STATE like #carState#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="createUserId">
+	       			CREATE_USER_ID like #createUserId#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="createDate_start">
+       			<![CDATA[(CREATE_DATE >= to_date(#createDate_start#,'yyyy-mm-dd HH24:mi:ss') or  CREATE_DATE is null) ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="createDate_end">
+       			<![CDATA[(CREATE_DATE <= to_date(#createDate_end#,'yyyy-mm-dd HH24:mi:ss')+1  or CREATE_DATE is null)]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="carUser">
+	       			CARUSER_ID like #carUser#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="carDate_start">
+       			<![CDATA[(CAR_DATE>= to_date(#carDate_start#,'yyyy-mm-dd HH24:mi:ss') or CAR_DATE is null) ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="carDate_end">
+       			<![CDATA[(CAR_DATE <= to_date(#carDate_end#,'yyyy-mm-dd HH24:mi:ss') or CAR_DATE is null) ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="storageUserId">
+	       			STORAGE_USER_ID like #storageUserId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="storageId">
+	       			STORAGE_ID like #storageId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="remark">
+	       			REMARK like #remark#
+       		</isNotEmpty>    
+       		<isNotEmpty prepend="AND" property="type">
+	       			TYPE like #type#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="carUser_dept_Id">
+	       			DEPARTMENT_ID like #carUser_dept_Id#
+       		</isNotEmpty>    
+       		
+       		<isNotEmpty property="orderPlanType">
+	       		<isNotEqual prepend="AND" property="orderPlanType" compareValue = "ABC,ABD,ABE">
+							ORDER_PLAN_TYPE like #orderPlanType#
+	      		 </isNotEqual>
+	      		 
+	      		 <isEqual prepend="AND" property="orderPlanType" compareValue = "ABC,ABD,ABE">
+						ORDER_PLAN_TYPE in ('ABC','ABD','ABE')
+	      		 </isEqual>
+      		 </isNotEmpty>
+      		 <isNotEmpty prepend="AND" property="operatorId">
+       			<isNotEqual property="operatorId" compareValue="0">
+       			   CARUSER_ID= #operatorId# 
+       			</isNotEqual>
+       		</isNotEmpty>
+       		
+       		<isNotEmpty  prepend="AND" property="aufnr">
+       			aufnr like '%'||'$aufnr$'||'%'
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+	<sql id="dynamicWhere1">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			CUID like '%$cuid$%'
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			CAR_PLAN_NAME like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="carState">
+	       			CAR_STATE like #carState#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="createUserId">
+	       			CREATE_USER_ID like #createUserId#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="createDate_start">
+       			<![CDATA[(CREATE_DATE >= to_date(#createDate_start#,'yyyy-mm-dd HH24:mi:ss') or  CREATE_DATE is null) ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="createDate_end">
+       			<![CDATA[(CREATE_DATE <= to_date(#createDate_end#,'yyyy-mm-dd HH24:mi:ss')+1  or CREATE_DATE is null)]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="carUser">
+	       			CARUSER_ID like #carUser#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="carDate_start">
+       			<![CDATA[(CAR_DATE>= to_date(#carDate_start#,'yyyy-mm-dd HH24:mi:ss') or CAR_DATE is null) ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="carDate_end">
+       			<![CDATA[(CAR_DATE <= to_date(#carDate_end#,'yyyy-mm-dd HH24:mi:ss') or CAR_DATE is null) ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="storageUserId">
+	       			STORAGE_USER_ID like #storageUserId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="storageId">
+	       			STORAGE_ID like #storageId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="remark">
+	       			REMARK like #remark#
+       		</isNotEmpty>    
+       		<isNotEmpty prepend="AND" property="type">
+	       			TYPE like #type#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="carUser_dept_Id">
+	       			DEPARTMENT_ID like #carUser_dept_Id#
+       		</isNotEmpty>    
+       		
+       		<isNotEmpty property="orderPlanType">
+	       		<isNotEqual prepend="AND" property="orderPlanType" compareValue = "ABC,ABD,ABE">
+							ORDER_PLAN_TYPE like #orderPlanType#
+	      		 </isNotEqual>
+	      		 
+	      		 <isEqual prepend="AND" property="orderPlanType" compareValue = "ABC,ABD,ABE">
+						ORDER_PLAN_TYPE in ('ABC','ABD','ABE')
+	      		 </isEqual>
+      		 </isNotEmpty>
+       		
+       		<isNotEmpty  prepend="AND" property="aufnr">
+       			aufnr like '%'||'$aufnr$'||'%'
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertZG_T_CARPLAN" parameterClass="zgTcarplan">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_CARPLAN (
+        	CUID ,
+        	LABEL_CN ,
+        	CAR_STATE ,
+        	CREATE_USER_ID ,
+        	CREATE_DATE ,
+        	CAR_USER ,
+        	CAR_DATE ,
+        	STORAGE_USER_ID ,
+        	STORAGE_ID ,
+        	TYPE,
+        	ORDER_PLAN_TYPE,
+        	REMARK ,
+        	isManul,
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#carState# ,
+        	#createUserId# ,
+        	#createDate# ,
+        	#carUser# ,
+        	#carDate# ,
+        	#storageUserId# ,
+        	#storageId# ,
+        	#type#,
+        	#orderPlanType#,
+        	#remark#,
+        	#isManul# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+     <insert id="insertZG_T_CARPLAN1" parameterClass="zgTcarplan">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_CARPLAN (
+        	CUID ,
+        	LABEL_CN ,
+        	CAR_STATE ,
+        	CREATE_USER_ID ,
+        	CREATE_DATE ,
+        	CAR_USER ,
+        	CAR_DATE ,
+        	STORAGE_USER_ID ,
+        	STORAGE_ID ,
+        	TYPE,
+        	ORDER_PLAN_TYPE,
+        	REMARK ,
+        	CAR_ID
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#carState# ,
+        	#createUserId# ,
+        	#createDate# ,
+        	#carUser# ,
+        	#carDate# ,
+        	#storageUserId# ,
+        	#storageId# ,
+        	#type#,
+        	#orderPlanType#,
+        	#remark#,
+        	#carId#
+        )
+    ]]>
+    </insert>
+    
+     <insert id="insertZG_T_CARPLAN_Auto" parameterClass="zgTcarplan">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_CARPLAN (
+        	CUID ,
+        	LABEL_CN ,
+        	CAR_STATE ,
+        	CREATE_USER_ID ,
+        	CREATE_DATE ,
+        	CAR_USER ,
+        	CAR_DATE ,
+        	STORAGE_USER_ID ,
+        	STORAGE_ID ,
+        	REMARK ,
+        	TYPE,
+        	ORDER_PLAN_TYPE,
+        	DEPARTMENT_ID,isManul
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#carState# ,
+        	#createUserId# ,
+        	#createDate# ,
+        	#carUser# ,
+        	#carDate# ,
+        	#storageUserId# ,
+        	#storageId# ,
+        	#remark# ,
+        	#type#,
+        	#orderPlanType#,
+        	#departmentId#,
+        	#isManul#
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			SELECT 'A'||to_char(SYSTIMESTAMP,'yyyymmddhhmissff') FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <insert id="insertZG_T_CARPLAN_Auto1" parameterClass="zgTcarplan">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_CARPLAN (
+        	CUID ,
+        	LABEL_CN ,
+        	CAR_STATE ,
+        	CREATE_USER_ID ,
+        	CREATE_DATE ,
+        	CAR_USER ,
+        	CAR_DATE ,
+        	STORAGE_USER_ID ,
+        	STORAGE_ID ,
+        	REMARK ,
+        	TYPE,
+        	ORDER_PLAN_TYPE,
+        	DEPARTMENT_ID,isManul
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#carState# ,
+        	#createUserId# ,
+        	#createDate# ,
+        	#carUser# ,
+        	#carDate# ,
+        	#storageUserId# ,
+        	#storageId# ,
+        	#remark# ,
+        	#type#,
+        	#orderPlanType#,
+        	#departmentId#,
+        	#isManul#
+        )
+    ]]>
+    </insert>
+    
+    <insert id="insertZG_T_CARPLAN_Manual" parameterClass="zgTcarplan">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_CARPLAN (
+        	CUID ,
+        	LABEL_CN ,
+        	CAR_STATE ,
+        	CREATE_USER_ID ,
+        	CREATE_DATE ,
+        	CAR_USER ,
+        	CAR_DATE ,
+        	STORAGE_USER_ID ,
+        	STORAGE_ID ,
+        	REMARK ,
+        	TYPE,
+        	ORDER_PLAN_TYPE,
+        	DEPARTMENT_ID
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#carState# ,
+        	#createUserId# ,
+        	#createDate# ,
+        	#carUser# ,
+        	#carDate# ,
+        	#storageUserId# ,
+        	#storageId# ,
+        	#remark# ,
+        	#type#,
+        	#orderPlanType#,
+        	#departmentId#
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			SELECT 'M'||to_char(SYSTIMESTAMP,'yyyymmddhhmissff') FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <insert id="insertZG_T_CARPLAN_Manual1" parameterClass="zgTcarplan">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_CARPLAN (
+        	CUID ,
+        	LABEL_CN ,
+        	CAR_STATE ,
+        	CREATE_USER_ID ,
+        	CREATE_DATE ,
+        	CAR_USER ,
+        	CAR_DATE ,
+        	STORAGE_USER_ID ,
+        	STORAGE_ID ,
+        	REMARK ,
+        	TYPE,
+        	ORDER_PLAN_TYPE,
+        	DEPARTMENT_ID
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#carState# ,
+        	#createUserId# ,
+        	#createDate# ,
+        	#carUser# ,
+        	#carDate# ,
+        	#storageUserId# ,
+        	#storageId# ,
+        	#remark# ,
+        	#type#,
+        	#orderPlanType#,
+        	#departmentId#
+        )
+    ]]>
+    </insert>
+    
+    <update id="updateZG_T_CARPLAN" parameterClass="zgTcarplan">
+    <![CDATA[
+        UPDATE ZG_T_CARPLAN SET
+	        LABEL_CN = #labelCn# ,
+	        CAR_STATE = #carState# ,
+	        CREATE_USER_ID = #createUserId# ,
+	        CREATE_DATE = #createDate# ,
+	        CAR_USER = #carUser# ,
+	        CAR_DATE = #carDate# ,
+	        STORAGE_USER_ID = #storageUserId# ,
+	        STORAGE_ID = #storageId# ,
+	        TYPE = #type#,
+	        ORDER_PLAN_TYPE = #orderPlanType#,
+	        REMARK = #remark#
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+        <update id="updateState" parameterClass="zgTcarplan">
+    <![CDATA[
+        UPDATE ZG_T_CARPLAN SET
+	        CAR_STATE = #carState# ,
+	        CAR_DATE = #carDate# ,
+	        STORAGE_USER_ID = #storageUserId# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+    
+    
+	<delete id="deleteZG_T_CARPLAN" parameterClass="java.lang.String">
+		delete from ZG_T_CARPLAN 
+		 where CUID = #cuid#
+	</delete>
+	
+	<delete id="deleteCarByOperatorId" parameterClass="java.util.HashMap">
+	  <![CDATA[	delete    from zg_t_carplan    t where     t.car_user = '$operatorId$'   and t.car_state <> '8'   and t.ORDER_PLAN_TYPE = '$planType$']]>
+	</delete>
+	
+	
+	<delete id="deleteZG_T_CARBOM" parameterClass="java.lang.String">
+		delete from zg_t_carbom where car_plan_id=#cuid#
+	</delete>
+	
+	<select id="getById" resultMap="zgTcarplanResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	      from (
+			   select t.cuid,
+			   t.create_user_id,
+      		   (select temp.label_cn from fw_operator temp where t.create_user_id=temp.cuid(+)) as creat_user_name,
+		        t.storage_user_id,
+              (select temp.label_cn from fw_operator temp where t.storage_user_id=temp.cuid(+)) as storage_user_name,
+		       t.create_date,
+		       t.car_date,
+		       t.label_cn car_plan_name ,
+      		   fo.label_cn carUser_labelCn ,
+		       fo.cuid carUser_Id,
+		       null as department_id ,
+		       null as department_name,
+		       t.storage_id,
+		       foz.label_cn as storage_name,
+		       t.car_state,
+		           t.remark,t.type,t.ORDER_PLAN_TYPE,null as aufnr
+		  from zg_t_carplan t, fw_operator fo, fw_employee fe, fw_organization foz
+		 where t.car_user = fo.cuid(+)
+		   and fo.cuid = fe.cuid(+)
+		   and t.storage_id = foz.cuid(+) ) 
+        where cuid =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="zgTcarplanResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.CAR_STATE as t0_CAR_STATE,
+	        		t0.CREATE_USER_ID as t0_CREATE_USER_ID,
+	        		t0.CREATE_DATE as t0_CREATE_DATE,
+	        		t0.CAR_USER as t0_CAR_USER,
+	        		t0.CAR_DATE as t0_CAR_DATE,
+	        		t0.STORAGE_USER_ID as t0_STORAGE_USER_ID,
+	        		t0.STORAGE_ID as t0_STORAGE_ID,
+	        		t0.REMARK as t0_REMARK,
+	        		t0.TYPE as t0_TYPE,
+	        		t0.ORDER_PLAN_TYPE as t0_ORDER_PLAN_TYPE,
+	        		null as aufnr
+	        from 
+	        ZG_T_CARPLAN t0
+ ) m
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.E_LABEL_CN as t0_E_LABEL_CN,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_CREATE_USER_ID 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.E_LABEL_CN as t0_E_LABEL_CN,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_CAR_USER 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.E_LABEL_CN as t0_E_LABEL_CN,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_3 on t0_2_3.t0_CUID = m.t0_STORAGE_USER_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_3_1 on t0_3_1.t0_CUID = m.t0_STORAGE_ID 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        <![CDATA[
+        
+			   select t.cuid,
+			   t.create_user_id,
+      		   (select temp.label_cn from fw_organization temp where t.create_user_id=temp.cuid(+)) as creat_user_name,
+		        t.storage_user_id,
+              (select temp.label_cn from fw_operator temp where t.storage_user_id=temp.cuid(+)) as storage_user_name,
+		       t.create_date,
+		       t.car_date,
+		       t.label_cn car_plan_name ,
+      		   fo.label_cn carUser_labelCn ,
+		       fo.cuid carUser_Id,
+		       null as  department_id ,
+		       null as department_name,
+		       t.storage_id,
+		       foz.label_cn as storage_name,
+		       t.car_state,
+		           t.remark,t.type,t.ORDER_PLAN_TYPE
+		  from zg_t_carplan t, fw_operator fo, fw_employee fe, fw_organization foz
+		 where t.car_user = fo.cuid(+)
+		   and fo.cuid = fe.cuid(+)
+		   and t.storage_id = foz.cuid(+) )
+    	]]>
+		<include refid="dynamicWhere"/> 
+		
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    
+    
+	
+    <select id="pageSelect" resultMap="zgTcarplanResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	    from (
+			   select t.cuid,
+			   t.create_user_id,
+      		   (select temp.label_cn from fw_organization temp where t.create_user_id=temp.cuid(+)) as creat_user_name,
+		        t.storage_user_id,
+              (select temp.label_cn from fw_operator temp where t.storage_user_id=temp.cuid(+)) as storage_user_name,
+		       t.create_date,
+		       t.car_date,
+		       t.label_cn car_plan_name ,
+      		   fo.label_cn carUser_labelCn ,
+		       fo.cuid carUser_Id,
+		       null as 	department_id ,
+		       null  as department_name,
+		       t.storage_id,
+		       foz.label_cn as storage_name,
+		       t.car_state,
+		           t.remark,t.type,t.ORDER_PLAN_TYPE,null as aufnr
+		  from zg_t_carplan t, fw_operator fo, fw_employee fe, fw_organization foz
+		 where t.car_user = fo.cuid(+)
+		   and fo.cuid = fe.cuid(+)
+		   and t.storage_id = foz.cuid(+) )
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+      <select id="count2" resultClass="long">
+        select count(*) from (
+     
+        select distinct  plan.cuid,
+		       plan.create_date,
+		       plan.create_user_id,
+		       (select op.label_cn
+		          from fw_operator op
+		         where op.cuid = plan.create_user_id) creat_user_name,
+		       plan.storage_id,
+		       org.label_cn storage_name,
+		       plan.car_state,
+		       plan.storage_user_id,
+		       (select temp.label_cn
+		          from fw_operator temp
+		         where plan.storage_user_id = temp.cuid(+)) as storage_user_name,
+		       plan.car_date,
+		       plan.label_cn car_plan_name,
+		       null as carUser_labelCn,
+		       null as carUser_Id,
+		       null as department_id,
+		       null as department_name,
+		       plan.remark,
+		       plan.type,
+		       plan.ORDER_PLAN_TYPE,zto.aufnr
+		  from zg_t_carplan    plan,
+		       zg_t_carbom     bom,
+		       zg_t_order      zto,
+		       fw_organization org
+		        <isNotEqual property="operatorId" compareValue="0">
+			          ,fw_organization_manager ma
+			    </isNotEqual>
+			 where plan.cuid = bom.car_plan_id
+			   and bom.order_id = zto.cuid
+			   and plan.storage_id = org.cuid
+			   and plan.ismanul = '0'
+			    <isNotEqual property="operatorId" compareValue="0">
+			            and ma.org_id=plan.storage_id
+         			and ma.employee_id='$operatorId$'
+			     </isNotEqual> )
+    	
+    	
+		<include refid="dynamicWhere1"/> 
+		
+    </select>
+    <select id="pageSelect2" resultMap="zgTcarplanResult">
+    	select <include refid="commonColumns"/> 
+	    from (
+		     select distinct plan.cuid,
+			       plan.create_date,
+			       plan.create_user_id,
+			       (select op.label_cn
+			          from fw_operator op
+			         where op.cuid = plan.create_user_id) creat_user_name,
+			       plan.storage_id,
+			       org.label_cn storage_name,
+			       plan.car_state,
+			       plan.storage_user_id,
+			       (select temp.label_cn
+			          from fw_operator temp
+			         where plan.storage_user_id = temp.cuid(+)) as storage_user_name,
+			       plan.car_date,
+			       plan.label_cn car_plan_name,
+			       null as carUser_labelCn,
+			       null as carUser_Id,
+			       null as department_id,
+			       null as department_name,
+			       plan.remark,
+			       plan.type,
+			       plan.ORDER_PLAN_TYPE,
+			       zto.aufnr
+			  from zg_t_carplan    plan,
+			       zg_t_carbom     bom,
+			       zg_t_order      zto,
+			       fw_organization org
+			        <isNotEqual property="operatorId" compareValue="0">
+			          ,fw_organization_manager ma
+			       </isNotEqual>
+			 where plan.cuid = bom.car_plan_id
+			   and bom.order_id = zto.cuid
+			   and plan.storage_id = org.cuid
+			   and plan.ismanul = '0'
+			    <isNotEqual property="operatorId" compareValue="0">
+			            and ma.org_id=plan.storage_id
+         			and ma.employee_id='$operatorId$'
+			     </isNotEqual>
+			  )
+		<include refid="dynamicWhere1"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="getCuid"  resultClass="java.lang.String">
+    		SELECT 'A'||to_char(SYSTIMESTAMP,'yyyymmddhhmissff')||'$num$' as cuid FROM DUAL
+    </select>
+    
+    <select id="findAll" resultMap="zgTcarplanResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.CAR_STATE as t0_CAR_STATE,
+	        		t0.CREATE_USER_ID as t0_CREATE_USER_ID,
+	        		t0.CREATE_DATE as t0_CREATE_DATE,
+	        		t0.CAR_USER as t0_CAR_USER,
+	        		t0.CAR_DATE as t0_CAR_DATE,
+	        		t0.STORAGE_USER_ID as t0_STORAGE_USER_ID,
+	        		t0.STORAGE_ID as t0_STORAGE_ID,
+	        		t0.REMARK as t0_REMARK,
+	        		t0.TYPE as t0_TYPE,
+	        		t0.ORDER_PLAN_TYPE as t0_ORDER_PLAN_TYPE,null as aufnr
+	        from 
+	        ZG_T_CARPLAN t0
+ ) m
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.E_LABEL_CN as t0_E_LABEL_CN,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_CREATE_USER_ID 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.E_LABEL_CN as t0_E_LABEL_CN,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_CAR_USER 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.E_LABEL_CN as t0_E_LABEL_CN,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_3 on t0_2_3.t0_CUID = m.t0_STORAGE_USER_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_3_1 on t0_3_1.t0_CUID = m.t0_STORAGE_ID 
+	        
+	        
+	        
+        ]]>
+    </select>
+    
+</sqlMap>

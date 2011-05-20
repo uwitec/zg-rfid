@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FwRoleEx">
+
+    <typeAlias alias="fwOperator" type="com.boco.frame.sys.base.model.FwOperator"/>
+
+    <resultMap id="fwOperatorResult" class="fwOperator">
+		<result property="cuid" column="CUID"/>
+		<result property="labelCn" column="LABEL_CN"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="password" column="PASSWORD"/>
+		<result property="createTime" column="CREATE_TIME"/>
+		<result property="lastModifyTime" column="LAST_MODIFY_TIME"/>
+		<result property="effectTime" column="EFFECT_TIME"/>
+		<result property="status" column="STATUS"/>
+		<result property="relatedBmClassId" column="RELATED_BM_CLASS_ID"/>
+    </resultMap>
+
+	<select id="findUserByRoleId" resultMap="fwOperatorResult">
+		select o.*
+			from fw_operator o,fw_operator_role r
+			where o.cuid = r.operator_id
+			  and r.role_id = $roleId$
+    </select>
+    
+</sqlMap>

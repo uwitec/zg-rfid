@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="ZGPlanMgr"
+  id="myeclipse.1270268933504"
+  context-root="/RFID"
+  j2ee-spec="5.0"
+  archive="ZGPlanMgr.war">
+  <attributes>
+    <attribute name="webrootdir" value="/web" />
+  </attributes>
+</project-module>
+

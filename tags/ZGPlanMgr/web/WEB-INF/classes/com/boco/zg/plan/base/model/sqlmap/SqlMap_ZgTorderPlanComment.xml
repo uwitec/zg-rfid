@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ZgTorderPlanComment">
+<typeAlias alias="zgTorderPlanComment" type="com.boco.zg.plan.base.model.ZgTorderPlanComment"/>
+<typeAlias alias="zgTorderPlanEx" type="com.boco.zg.plan.model.ZgTorderPlanEx"/>
+
+<resultMap id="zgTorderPlanCommentResult" class="zgTorderPlanComment">
+	<result property="cuid" column="cuid"/>
+	<result property="createtime" column="create_time"/>
+	<result property="userid" column="user_id"/>
+	<result property="content" column="content"/>
+	<result property="orderplanid" column="order_plan_id"/>
+</resultMap>
+
+	<!-- 审核页面显示数据的 -->
+	<resultMap id="zgTorderPlanExResult" class="zgTorderPlanEx">
+		<result property="cuid" column="CUID"/>
+		<result property="pxdat" column="PXDAT"/>
+		<result property="aufnr" column="AUFNR"/>
+		<result property="pcdat" column="PCDAT"/>
+		<result property="kdauf" column="KDAUF"/>
+		<result property="planType" column="PLAN_TYPE"/>
+		<result property="matnr" column="MATNR"/>
+		<result property="maktx1" column="MAKTX1"/>
+		<result property="psmng" column="PSMNG"/>
+		<result property="plant" column="PLANT"/>
+		<result property="arbpl" column="ARBPL"/>
+		<result property="departmentId" column="DEPARTMENT_ID"/>
+		<result property="departmentName" column="DEPARTMENT_NAME"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="planDate" column="PLAN_DATE"/>
+		<result property="planStartTime" column="PLAN_START_TIME"/>
+		<result property="planEndTime" column="PLAN_END_TIME"/>
+		<result property="state" column="STATE"/>
+		<result property="auditingName" column="auditingName"/>
+    </resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+		<![CDATA[
+		   cuid,
+		   create_time,
+		   user_id,
+		   content,
+		   order_plan_id
+		]]>
+	</sql>
+	
+	<!-- 审核页面的where语句 -->
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend="AND" property="cuid">
+	       			cuid  like '%'||'$cuid$'||'%'
+       		</isNotEmpty>
+	    	<isNotEmpty prepend="AND" property="pxdat_start">
+       			<![CDATA[PXDAT >= to_date(#pxdat_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="pxdat_end">
+       			<![CDATA[PXDAT <= to_date(#pxdat_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="sufnr">
+	       			AUFNR = '$sufnr$'
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="pcdat_start">
+       			<![CDATA[PCDAT >= to_date(#pcdat_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="pcdat_end">
+       			<![CDATA[PCDAT <= to_date(#pcdat_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="kdauf">
+	       			KDAUF = '$kdauf$'
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="matnr">
+	       			MATNR = '$matnr$'
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="maktx1">
+	       			MAKTX1 = '$maktx1$'
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="psmng">
+	       			PSMNG = '$psmng$'
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="plant">
+	       			PLANT = '$plant$'
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="arbpl">
+	       			ARBPL = '$arbpl$'
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="departmentId">
+	       			DEPARTMENT_ID = '$departmentId$'
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="departmentName">
+	       			DEPARTMENT_NAME = $departmentName$
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="userId">
+	       			USER_ID = '$userId$'
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="userName">
+	       			USER_NAME like '%'||'$userName$'||'%'
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="planDate_start">
+       			<![CDATA[(PLAN_DATE >= to_date(#planDate_start#,'yyyy-mm-dd HH24:mi:ss') or PLAN_DATE is null) ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="planDate_end">
+       			<![CDATA[(PLAN_DATE <= to_date(#planDate_end#,'yyyy-mm-dd HH24:mi:ss') or PLAN_DATE is null) ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="planStartTime">
+	       			PLAN_START_TIME = $planStartTime$
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="planEndTime">
+	       			PLAN_END_TIME = $planEndTime$
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="planType">
+	       			PLAN_TYPE = '$planType$'
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="state">
+	       			STATE = '$state$'
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+	<update id="update_ZgTorderPlanComment" parameterClass="zgTorderPlanComment">
+		<![CDATA[update zg_t_order_plan_comment set create_time=sysdate,content=#content# where create_time is null and order_plan_id=#orderplanid#]]>
+	</update>
+	
+	<select id="select_by_orderid" parameterClass="java.lang.String" resultMap="zgTorderPlanCommentResult">
+		select <include refid="commonColumns"/><![CDATA[ from zg_t_order_plan_comment where order_plan_id=#orderplanid# and create_time is not null order by create_time desc]]>
+	</select>
+	
+	<insert id="insert_ZgTorderPlanComment_orderId_userId">
+		<![CDATA[insert into zg_t_order_plan_comment(cuid,user_id,order_plan_id) values(#cuid#,#userid#,#orderplanid#)]]>
+		<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+	</insert>
+
+	<select id="count" resultClass="long">
+        select count(1) from (
+        	select op.CUID,
+    	     	  null as PXDAt,
+		         null as AUFNR,
+		         null as PCDAT,
+		         null as KDAUF,
+		         null as MATNR,
+		         null as MAKTX1,
+		         null as PSMNG,
+		         null as PLANT,
+		         null as ARBPL,
+		         op.DEPARTMENU_ID as DEPARTMENT_ID,
+		         org.label_cn as DEPARTMENT_NAME,
+		         op.USER_ID,
+		         opr.label_cn as USER_NAME,
+		         op.PLAN_DATE,
+		         op.PLAN_START_TIME,
+		         op.PLAN_END_TIME,
+		         op.PLAN_TYPE,
+		         op.STATE from  zg_t_order_plan op,fw_organization org,fw_operator opr 
+	       <isNotEqual property="operatorId" compareValue="0">
+       			   <![CDATA[,zg_t_order_plan_comment ztopc ]]>
+       		</isNotEqual>
+	       <![CDATA[
+	       where 
+			  org.cuid(+) = op.departmenu_id 
+			 and opr.cuid(+) = op.user_id]]>
+			<isNotEqual property="operatorId" compareValue="0">
+       			   <![CDATA[and ztopc.order_plan_id=op.cuid(+) ]]> 
+       			   <isEqual property="state" compareValue="1">
+       			    <![CDATA[and ztopc.create_time is null ]]>
+       			   </isEqual>
+       			   <isNotEqual property="state" compareValue="1">
+       			   	<![CDATA[and ztopc.create_time is not null ]]>
+       			   </isNotEqual>
+       			   <![CDATA[and ztopc.user_id=#operatorId# ]]>
+       		</isNotEqual>
+		)
+		<include refid="dynamicWhere"/>
+	</select>
+
+
+	<!-- wjz，审核查询的 -->
+    <select id="pageSelectAuditing" resultMap="zgTorderPlanExResult">
+		<![CDATA[
+		  select CUID,PXDAT,AUFNR,PCDAT,KDAUF,MATNR,MAKTX1,
+		  		PSMNG,PLANT,ARBPL,DEPARTMENT_ID,DEPARTMENT_NAME,
+		  		USER_ID,USER_NAME,PLAN_DATE,PLAN_START_TIME,PLAN_END_TIME,PLAN_TYPE,STATE,auditingName,rownum from (
+    	  select op.CUID,
+    	     	  null as PXDAt,
+		         null as AUFNR,
+		         null as PCDAT,
+		         null as KDAUF,
+		         null as MATNR,
+		         null as MAKTX1,
+		         null as PSMNG,
+		         null as PLANT,
+		         null as ARBPL,
+		         op.DEPARTMENU_ID as DEPARTMENT_ID,
+		         org.label_cn as DEPARTMENT_NAME,
+		         op.USER_ID,
+		         opr.label_cn as USER_NAME,
+		         op.PLAN_DATE,
+		         op.PLAN_START_TIME,
+		         op.PLAN_END_TIME,
+		         op.PLAN_TYPE,
+		         op.STATE,
+		         null as auditingName
+	        from  zg_t_order_plan op,fw_organization org,fw_operator opr]]>
+	        <isNotEqual property="operatorId" compareValue="0">
+       			   <![CDATA[,zg_t_order_plan_comment ztopc ]]>
+       		</isNotEqual>
+	       <![CDATA[
+	       where 
+			  org.cuid(+) = op.departmenu_id 
+			 and opr.cuid(+) = op.user_id]]>
+			<isNotEqual property="operatorId" compareValue="0">
+       			   <![CDATA[and ztopc.order_plan_id=op.cuid(+) ]]> 
+       			   <isEqual property="state" compareValue="1">
+       			    <![CDATA[and ztopc.create_time is null ]]>
+       			   </isEqual>
+       			   <isNotEqual property="state" compareValue="1">
+       			   	<![CDATA[and ztopc.create_time is not null ]]>
+       			   </isNotEqual>
+       			   <![CDATA[and ztopc.user_id=#operatorId# ]]>
+       		</isNotEqual>
+			<![CDATA[)
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+
+</sqlMap>

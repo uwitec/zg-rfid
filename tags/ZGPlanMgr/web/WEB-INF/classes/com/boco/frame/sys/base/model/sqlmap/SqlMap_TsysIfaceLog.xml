@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TsysIfaceLog">
+    <typeAlias alias="tsysIfaceLog" type="com.boco.frame.sys.base.model.TsysIfaceLog"/>
+	<resultMap id="tsysIfaceLogResult" class="tsysIfaceLog">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="serCaller" column="t0_SER_CALLER"/>
+		<result property="serSupplier" column="t0_SER_SUPPLIER"/>
+		<result property="interfaceName" column="t0_INTERFACE_NAME"/>
+		<result property="methodName" column="t0_METHOD_NAME"/>
+		<result property="dataStauts" column="t0_DATA_STAUTS"/>
+		<result property="parameters" column="t0_PARAMETERS"/>
+		<result property="result" column="t0_RESULT"/>
+		<result property="callTime" column="t0_CALL_TIME"/>
+		<result property="remark" column="t0_REMARK"/>
+		<result property="batchNo" column="t0_batch_no"/>
+		
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_SER_CALLER,
+	        m.t0_SER_SUPPLIER,
+	        m.t0_INTERFACE_NAME,
+	        m.t0_METHOD_NAME,
+	        m.t0_DATA_STAUTS,
+	        m.t0_PARAMETERS,
+	        m.t0_RESULT,
+	        m.t0_CALL_TIME,
+	        m.t0_REMARK,
+	        t0_batch_no
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="serCaller">
+	       			m.t0_SER_CALLER like #serCaller#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="serSupplier">
+	       			m.t0_SER_SUPPLIER like #serSupplier#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="interfaceName">
+	       			m.t0_INTERFACE_NAME like #interfaceName#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="methodName">
+	       			m.t0_METHOD_NAME like #methodName#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="dataStauts">
+	       			m.t0_DATA_STAUTS like #dataStauts#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="parameters">
+	       			m.t0_PARAMETERS like #parameters#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="result">
+	       			m.t0_RESULT like #result#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="callTime_start">
+       			<![CDATA[m.t0_CALL_TIME >= to_date(#callTime_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="callTime_end">
+       			<![CDATA[m.t0_CALL_TIME <= to_date(#callTime_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="remark">
+	       			m.t0_REMARK like #remark#
+       		</isNotEmpty>    
+       		   <isNotEmpty prepend="AND" property="batch_no">
+	       			m.t0_batch_no like '%'||'$batch_no$'||'%'
+       		</isNotEmpty>   
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertT_SYS_IFACE_LOG" parameterClass="tsysIfaceLog">
+    <![CDATA[
+        INSERT INTO
+        T_SYS_IFACE_LOG (
+        	CUID ,
+        	SER_CALLER ,
+        	SER_SUPPLIER ,
+        	INTERFACE_NAME ,
+        	METHOD_NAME ,
+        	DATA_STAUTS ,
+        	PARAMETERS ,
+        	RESULT ,
+        	CALL_TIME ,
+        	REMARK ,
+        	BATCH_NO
+        ) VALUES (
+        	#cuid# ,
+        	#serCaller# ,
+        	#serSupplier# ,
+        	#interfaceName# ,
+        	#methodName# ,
+        	#dataStauts# ,
+        	#parameters# ,
+        	#result# ,
+        	#callTime# ,
+        	#remark# ,
+        	#batchNo#
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateT_SYS_IFACE_LOG" parameterClass="tsysIfaceLog">
+    <![CDATA[
+        UPDATE T_SYS_IFACE_LOG SET
+	        SER_CALLER = #serCaller# ,
+	        SER_SUPPLIER = #serSupplier# ,
+	        INTERFACE_NAME = #interfaceName# ,
+	        METHOD_NAME = #methodName# ,
+	        DATA_STAUTS = #dataStauts# ,
+	        PARAMETERS = #parameters# ,
+	        RESULT = #result# ,
+	        CALL_TIME = #callTime# ,
+	        REMARK = #remark# ,
+	        BATCH_NO=#batchNo#,
+	        FINISHED_TIME=sysdate
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteT_SYS_IFACE_LOG" parameterClass="java.lang.String">
+		delete from T_SYS_IFACE_LOG 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="tsysIfaceLogResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.SER_CALLER as t0_SER_CALLER,
+	        		t0.SER_SUPPLIER as t0_SER_SUPPLIER,
+	        		t0.INTERFACE_NAME as t0_INTERFACE_NAME,
+	        		t0.METHOD_NAME as t0_METHOD_NAME,
+	        		t0.DATA_STAUTS as t0_DATA_STAUTS,
+	        		t0.PARAMETERS as t0_PARAMETERS,
+	        		t0.RESULT as t0_RESULT,
+	        		t0.CALL_TIME as t0_CALL_TIME,
+	        		t0.REMARK as t0_REMARK,
+	        			t0.batch_no as t0_batch_no
+	        from 
+	        T_SYS_IFACE_LOG t0
+ ) m
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="tsysIfaceLogResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.SER_CALLER as t0_SER_CALLER,
+	        		t0.SER_SUPPLIER as t0_SER_SUPPLIER,
+	        		t0.INTERFACE_NAME as t0_INTERFACE_NAME,
+	        		t0.METHOD_NAME as t0_METHOD_NAME,
+	        		t0.DATA_STAUTS as t0_DATA_STAUTS,
+	        		t0.PARAMETERS as t0_PARAMETERS,
+	        		t0.RESULT as t0_RESULT,
+	        		t0.CALL_TIME as t0_CALL_TIME,
+	        		t0.REMARK as t0_REMARK,
+	        			t0.batch_no as t0_batch_no
+	        from 
+	        T_SYS_IFACE_LOG t0
+ ) m
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.SER_CALLER as t0_SER_CALLER,
+	        		t0.SER_SUPPLIER as t0_SER_SUPPLIER,
+	        		t0.INTERFACE_NAME as t0_INTERFACE_NAME,
+	        		t0.METHOD_NAME as t0_METHOD_NAME,
+	        		t0.DATA_STAUTS as t0_DATA_STAUTS,
+	        		t0.PARAMETERS as t0_PARAMETERS,
+	        		t0.RESULT as t0_RESULT,
+	        		t0.CALL_TIME as t0_CALL_TIME,
+	        		t0.REMARK as t0_REMARK,
+	        			t0.batch_no as t0_batch_no
+	        from 
+	        T_SYS_IFACE_LOG t0
+ ) m
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="tsysIfaceLogResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.SER_CALLER as t0_SER_CALLER,
+	        		t0.SER_SUPPLIER as t0_SER_SUPPLIER,
+	        		t0.INTERFACE_NAME as t0_INTERFACE_NAME,
+	        		t0.METHOD_NAME as t0_METHOD_NAME,
+	        		t0.DATA_STAUTS as t0_DATA_STAUTS,
+	        		t0.PARAMETERS as t0_PARAMETERS,
+	        		t0.RESULT as t0_RESULT,
+	        		t0.CALL_TIME as t0_CALL_TIME,
+	        		t0.REMARK as t0_REMARK,
+	        		t0.batch_no as t0_batch_no
+	        from 
+	        T_SYS_IFACE_LOG t0
+ ) m
+        ]]>
+		<include refid="dynamicWhere"/>
+		order by t0_CALL_TIME desc
+    </select>
+    
+    <select id="findAll" resultMap="tsysIfaceLogResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.SER_CALLER as t0_SER_CALLER,
+	        		t0.SER_SUPPLIER as t0_SER_SUPPLIER,
+	        		t0.INTERFACE_NAME as t0_INTERFACE_NAME,
+	        		t0.METHOD_NAME as t0_METHOD_NAME,
+	        		t0.DATA_STAUTS as t0_DATA_STAUTS,
+	        		t0.PARAMETERS as t0_PARAMETERS,
+	        		t0.RESULT as t0_RESULT,
+	        		t0.CALL_TIME as t0_CALL_TIME,
+	        		t0.REMARK as t0_REMARK,
+	        			t0.batch_no as t0_batch_no
+	        from 
+	        T_SYS_IFACE_LOG t0
+ ) m
+        ]]>
+    </select>
+    
+</sqlMap>

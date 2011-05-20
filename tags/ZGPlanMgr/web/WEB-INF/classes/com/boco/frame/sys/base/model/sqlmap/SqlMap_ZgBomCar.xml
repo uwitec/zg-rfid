@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgBomCar">
+    <typeAlias alias="zgBomCar" type="com.boco.frame.sys.base.model.ZgBomCar"/>
+    <typeAlias alias="zgMateriel" type="com.boco.frame.sys.base.model.ZgMateriel"/>
+	
+	<resultMap id="zgBomCarResult" class="zgBomCar">
+		<result property="bomId" column="bomId"/>
+		<result property="idnrk" column="idnrk"/>
+		<result property="maktx" column="maktx"/>
+		<result property="matnr" column="matnr"/>
+		<result property="msehl" column="msehl"/>
+		<result property="matkl" column="matkl"/>
+		<result property="zbz" column="zbz"/>
+		<result property="zrzqd" column="zrzqd"/>
+		<result property="lgort" column="lgort"/>
+		<result property="bom_label_cn" column="bom_label_cn"/>
+		<result property="plant" column="plant"/>
+		<result property="plantid" column="plantid"/>
+		<result property="bom_type" column="type"/>
+		<result property="carinfoId" column="carId"/>
+		<result property="code" column="code"/>
+		<result property="carLabelCn" column="car_label_cn"/>
+		<result property="carNum" column="carnum"/>
+		<result property="matkl_labelCn" column="materiel_name"/>
+    </resultMap>
+    
+    <resultMap id="zgMaterielResult1" class="zgMateriel">
+		<result property="materielName" column="materiel_name"/>
+    </resultMap>
+    
+    <resultMap id="zgMaterielResult2" class="zgMateriel">
+		<result property="type" column="type"/>
+    </resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.bomId,
+		    m.idnrk,
+		    m.maktx,
+		    m.matnr,
+		    m.msehl,
+		    m.matkl,
+		    m.zbz,
+		    m.zrzqd,
+		    m.lgort,
+		    m.bom_label_cn,
+		    m.plant,
+		    m.plantid,
+		    m.type,
+		    m.carId,
+		    m.code,
+		    m.car_label_cn,
+		    m.car_description,
+		    m.carnum,
+		    m.materiel_name
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="idnrk">
+	    		m.idnrk like '%$idnrk$%'
+	    	</isNotEmpty> 
+	    	<isNotEmpty prepend="AND" property="carId">
+	    		m.code like '%$carId$%'
+	    	</isNotEmpty> 
+	    	<isNotEmpty prepend="AND" property="carName">
+	    		m.car_label_cn like '%$carName$%'
+	    	</isNotEmpty> 
+	    	 <isEqual prepend="AND" property="bomCarState" compareValue = "0">
+					m.carId is  null
+      		 </isEqual>
+      		 <isEqual prepend="AND" property="bomCarState" compareValue = "4">
+					m.carId is not null
+      		 </isEqual>
+	    </dynamic>	
+	</sql>
+	
+	<select id="pageSelect" resultMap="zgBomCarResult">
+    	select  distinct <include refid="commonColumns"/>  from
+		    <![CDATA[
+		      (  select 
+		      			ztb.cuid bomId,
+					    ztb.idnrk,
+					    ztb.maktx,
+					    ztb.matnr,
+					    ztb.msehl,
+					    ztb.matkl,
+					    ztb.zbz,
+					    ztb.zrzqd,
+					    ztb.lgort,
+					    ztb.label_cn bom_label_cn,
+					    ztb.plant,
+					    ztb.plantid,
+					    ztb.type,
+					    ztb.car_id carId,
+					    zc.code,
+					    zc.label_cn car_label_cn,
+					    zc.description car_description,
+					    ztb.carnum,
+					    zm.materiel_name
+					    	from ZG_T_BOM ztb,  ZG_CarInfo zc,ZG_MATERIEL zm
+					        	where 
+					        			 ztb.car_id=zc.cuid(+)
+						       			and zm.id(+)=ztb.matkl
+	        ]]>
+		    	<isEqual property="zgBomCarType" compareValue="1">
+	    		<![CDATA[
+	    			and ztb.lgort=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid=#orgId#)
+	    		]]>
+		    	</isEqual>
+		    	<isEqual property="zgBomCarType" compareValue="2">
+		    		<![CDATA[
+		    			and ztb.lgort=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid=#parentOrgId#)
+		    			and ztb.matkl=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid=#orgId#)
+		    		]]>
+		    	</isEqual>
+		    <![CDATA[ )m ]]>
+    	<include refid="dynamicWhere"/>
+    	<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    
+     <select id="count" resultClass="long">
+        select count(*) from (
+        select  distinct <include refid="commonColumns"/> from
+		    <![CDATA[
+		      (  select ztb.cuid bomId,
+					    ztb.idnrk,
+					    ztb.maktx,
+					    ztb.matnr,
+					    ztb.msehl,
+					    ztb.matkl,
+					    ztb.zbz,
+					    ztb.zrzqd,
+					    ztb.lgort,
+					    ztb.label_cn bom_label_cn,
+					    ztb.plant,
+					    ztb.plantid,
+					    ztb.type,
+					    ztb.car_id carId,
+					    zc.code,
+					    zc.label_cn car_label_cn,
+					    zc.description car_description,
+					    ztb.carnum,
+					    zm.materiel_name
+					    	from ZG_T_BOM ztb,  ZG_CarInfo zc,ZG_MATERIEL zm
+					        	where 
+					        			 ztb.car_id=zc.cuid(+)
+						       			and zm.id(+)=ztb.matkl
+			]]>
+		    	<isEqual property="zgBomCarType" compareValue="1">
+	    		<![CDATA[
+	    			and ztb.lgort=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid=#orgId#)
+	    		]]>
+		    	</isEqual>
+		    	<isEqual property="zgBomCarType" compareValue="2">
+		    		<![CDATA[
+		    			and ztb.lgort=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid=#parentOrgId#)
+		    			and ztb.matkl=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid=#orgId#)
+		    		]]>
+		    	</isEqual>
+		    <![CDATA[ )m ]]>
+    	<include refid="dynamicWhere"/>
+		<![CDATA[)]]>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findTheZgMaterielType" parameterClass="zgMateriel" resultMap="zgMaterielResult2">
+    	<![CDATA[
+    		select distinct type from ZG_MATERIEL where cuid=#cuid#
+    	]]>
+    </select>
+    
+    <select id="findParentOrgIdNameByCuid" parameterClass="zgMateriel" resultMap="zgMaterielResult1">
+    	<![CDATA[
+    		select zm.materiel_name from ZG_MATERIEL zm where zm.cuid=#parentId#
+    	]]>
+    </select>
+    
+    <select id="findmaterielGroupNameById" parameterClass="zgMateriel" resultMap="zgMaterielResult1">
+    	<![CDATA[
+    		select zm.materiel_name from ZG_MATERIEL zm where zm.id=#id#
+    	]]>
+    </select>
+    
+    <select id="getById" parameterClass="java.lang.String" resultMap="zgBomCarResult">
+    	select <include refid="commonColumns"/> from
+		    <![CDATA[
+		      (  select ztb.cuid bomId,
+					    ztb.idnrk,
+					    ztb.maktx,
+					    ztb.matnr,
+					    ztb.msehl,
+					    ztb.matkl,
+					    ztb.zbz,
+					    ztb.zrzqd,
+					    ztb.lgort,
+					    ztb.label_cn bom_label_cn,
+					    ztb.plant,
+					    ztb.plantid,
+					    ztb.type,
+					    ztb.car_id carId,
+					    zc.code,
+					    zc.label_cn car_label_cn,
+					    zc.description car_description,
+					    ztb.carnum,
+					    zm.materiel_name
+					    	from ZG_T_BOM ztb,  ZG_CarInfo zc,ZG_MATERIEL zm
+					        	where 
+					        			 ztb.car_id=zc.cuid(+)
+						       			and zm.id(+)=ztb.matkl
+						       			and ztb.cuid=#bomId#
+			)m]]>
+    </select>
+    <update id="update" parameterClass="zgBomCar" >
+    	  UPDATE zg_t_bom SET
+	        car_id = #carinfoId# 
+	      where cuid = #bomId#
+    </update>
+    <update id="updateCarNum" parameterClass="zgBomCar">
+    	update zg_t_bom set
+    		carnum=#carNum#
+    	where cuid =#bomId#
+    </update>
+    <delete id="delete" parameterClass="java.lang.String">
+		delete from zg_t_bom 
+		 where CUID = #bomId#
+	</delete>
+    <!-- 此处不知道有没有弄错 -->
+    <update id="updateCarBomNum" parameterClass="zgBomCar">
+    	update ZG_T_BOM set
+    		car_id=#carinfoId# ,carNum=#carNum#
+    	where IDNRK=#idnrk# and MATKL=#matkl#
+    </update>
+</sqlMap>

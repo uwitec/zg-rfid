@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://www.getahead.ltd.uk/dwr/dwr20.dtd">
+<dwr>
+	<allow>
+		<convert converter="bean" match="java.util.*" />
+		<convert converter="bean" match="com.boco.frame.sys.model.*" />
+		<convert converter="bean" match="com.boco.frame.sys.base.model.*" />
+		
+		<convert match="java.lang.Exception" converter="exception">
+			<param name='include' value='message'/>
+		</convert>
+    
+		<!--用户管理-->
+		<create creator="new" javascript="ExplorerTreeAction" scope="application">
+			<param name="class"
+				value="com.boco.frame.sys.action.ExplorerTreeAction" />
+		</create>
+		<create creator="new" javascript="ContextMenuAction" scope="application">
+			<param name="class"
+				value="com.boco.frame.sys.action.ContextMenuAction" />
+		</create>
+		<create creator="new" javascript="FwRoleAction" scope="application">
+			<param name="class"
+				value="com.boco.frame.sys.base.action.FwRoleAction" />
+		</create>
+		<create creator="new" javascript="FwEmployeeAction" scope="application">
+			<param name="class"
+				value="com.boco.frame.sys.base.action.FwEmployeeAction" />
+		</create>
+	</allow>
+	<signatures>
+	  <![CDATA[
+	    import java.util.Map;
+	    import com.boco.frame.sys.model.ExplorerTreeNode;
+	    ExplorerTreeNode.setExtMap(Map param);
+	    ExplorerTreeNode.setNodeValue(Map param);
+	    ]]>
+	</signatures>
+</dwr>

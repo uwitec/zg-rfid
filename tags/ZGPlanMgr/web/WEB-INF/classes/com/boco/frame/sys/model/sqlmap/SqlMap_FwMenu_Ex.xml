@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FwMenuEx">
+
+    <typeAlias alias="fwMenuEx" type="com.boco.frame.sys.model.FwMenuEx"/>
+
+    <resultMap id="fwMenuExResult" class="fwMenuEx">
+        <result property="cuid" column="CUID"/>
+        <result property="labelCn" column="LABEL_CN"/>
+        <result property="parentMenuId" column="PARENT_MENU_ID"/>
+        <result property="url" column="URL"/>
+        <result property="displayOrder" column="DISPLAY_ORDER"/>
+        <result property="seq" column="SEQ"/>
+        <result property="levelNum" column="LEVEL_NUM"/>
+        <result property="childNum" column="CHILD_NUM"/>
+    </resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+        	T.CUID ,
+        	T.LABEL_CN ,
+        	T.PARENT_MENU_ID ,
+        	T.URL ,
+        	T.DISPLAY_ORDER ,
+        	T.SEQ ,
+        	T.LEVEL_NUM
+	    ]]>
+	</sql>
+	
+	<select id="findMenuTree" resultMap="fwMenuExResult">
+		select <include refid="commonColumns"/> ,
+		(select count(1) from FW_MENU M where M.parent_menu_id = T.CUID) as CHILD_NUM
+	    <![CDATA[
+	        from FW_MENU T
+	        start with T.PARENT_MENU_ID is null
+			connect by prior T.CUID = T.PARENT_MENU_ID
+	    ]]>
+    </select>
+    
+    <select id="findMenuTreeByOperatorId" resultMap="fwMenuExResult">
+		select <include refid="commonColumns"/> ,
+		(select count(1) from FW_MENU M where M.parent_menu_id = T.CUID) as CHILD_NUM
+	    <![CDATA[
+	        from FW_MENU T where T.CUID in (
+	        select MENU_ID from FW_ROLE_MENU
+	        where ROLE_ID in (select ROLE_ID from FW_OPERATOR_ROLE
+			where OPERATOR_ID = '$operatorId$'))
+	        start with T.PARENT_MENU_ID is null
+			connect by prior T.CUID = T.PARENT_MENU_ID
+	    ]]>
+    </select>
+    
+    <select id="getSeqById" resultClass="java.lang.String">
+	    <![CDATA[
+	       select t.seq from fw_menu t  where t.cuid='$cuid$'
+	    ]]>
+    </select>
+</sqlMap>

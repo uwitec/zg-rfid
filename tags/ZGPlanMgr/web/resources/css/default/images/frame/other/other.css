@@ -1,0 +1,77 @@
+/*  openwin  */
+.---openwin---{}
+.ow_hdr_k{height:87px;width:650px;background-image:url(ow_hdr_k.jpg);padding-left:45px;padding-top:3px;font-weight:bold;color:#0F62A4;font-size:10pt;}
+.ow_mm{ background-image:url(ow_mm.jpg);padding-left:10px;padding-right:10px;}
+.ow_bm{height:25px;background-image:url(ow_bm.jpg)}
+.ow_b_k{text-align:right;padding-right:10px;}
+
+body{margin:0px;font-size:9pt;color:#333;}
+table{font-size:9pt;color:#333;}
+
+.ow_hdr_mg{ width:100%;}
+.ow_hdr_i{width:20px;}
+.ow_hdr_f{font-size:14px;font-weight:bold; white-space:nowrap;color:#000; padding-left:10px; padding-top:5px;}
+
+
+
+.ow_btm_mg{ text-align:right; padding-right:10px; padding-top:8px; width:100%}
+.ow_btm_msg{}
+.ow_btm_btn{padding-top:10px;padding-right:20px;}
+.ow_btm_btn a {}
+.ow_btm_btn a img { margin-bottom:1px;}
+
+.ow_btm_btn2{padding-top:10px;}
+
+.frame1_bd_01{background-image:url(ow_top_l.gif);width:0px;}
+.frame1_bd_02{background-image:url(ow_top_m.gif); border-bottom:1px solid #36A1DF; height:58px;padding-left:20; vertical-align:top; padding-top:2px;}
+.frame1_bd_03{background-image:url(ow_top_r.gif); border-bottom:1px solid #36A1DF; width:341px; text-align:right; }
+
+.frame1_bd_04{background-image:url(ow_main_l.gif);width:0px;}
+.frame1_bd_05{background-image:url(ow_main_m.gif);vertical-align:top; padding:10px; background-repeat:repeat-x;}
+.frame1_bd_06{background-image:url(ow_main_r.gif);width:0px;}
+
+.frame1_bd_07{background-image:url(ow_btm_l.gif); width:0px;}
+.frame1_bd_08{background-image:url(ow_btm_m.gif); padding-bottom:10px;height:40px;}
+.frame1_bd_09{background-image:url(ow_btm_r.gif); width:0px;}
+
+.ow_titlebg { background:url(ow_titlebg.gif) #dee9fd repeat left top; height:24px; width:100%; padding-left:10px; padding-top:8px; line-height:14px; font-weight:bold; color:Black;}
+.ow_mainbodyfm{ border:1px solid #aaceee; width:100%;}
+.ow_mbodyContainer { margin:8px; width:100%;}
+.owtop_bar { height:24px; padding:2px; text-align:left; margin-bottom:2px;}
+.owtable_fm { width:100%; height:300px;}
+ul.owleft_list { list-style-type:none; margin:0px; padding:0px; margin-bottom:10px;}
+ul.owleft_list h2 { background:#dfeafb; width:100%; height:22px; font-size:12px; padding-left:10px; margin-bottom:5px; padding-top:5px; border-bottom:1px solid #a8cfeb;}
+ul.owleft_list h2 span { font-weight:bold; color:Black;}
+ul.owleft_list li { line-height:24px; margin-left:10px;}
+ul.owleft_list li a:link,ul.owleft_list li a:visited { color:Black; text-decoration:none;}
+ul.owleft_list li a:hover { color:#4574a2;}
+
+.owSelect_title { background:#dfeafb; width:100%; height:22px; font-size:12px; padding-left:10px; padding-top:5px; border-bottom:1px solid #a8cfeb;}
+
+
+.mfrwebpart{ margin:3px 3px 4px 0;}
+.mfrwebpart .mfrtitle{ background:url(mfrtitlebg.gif) repeat-x; height:22px; line-height:22px; padding-left:8px; border:solid 1px #bed8f0; border-bottom-width:0; color:#3a6683; font-weight:bold;}
+.mfrwebpart .mfrmain{ border:solid 1px #bed8f0; background:#FFF; padding:3px; text-align:center;}
+
+
+.bottomform{ border:solid 1px #a8cfeb; text-align:center;}
+.bottomform h2{ font-size:12px; font-weight:bold; height:25px; line-height:25px; text-indent:6px; background:#dfeafb; color:#1c568a;}
+.bottomform .selectuserform{ margin:4px auto 4px auto;}
+.bottomform .selectuserform th{ height:24px; line-height:24px; font-weight:bold; background:#f1f6ff;}
+.bottomform .selectuserform input{ margin:5px auto;}
+
+
+.dg_tool_img{ position:relative;}
+.dg_tools_menu{ position:absolute; left:15px; top:10px;}
+
+.dg_tools_menu{ border-left:solid 1px #f0f0f0; border-top:soild 1px #f0f0f0; border-bottom:solid 1px #696969; border-right:solid 1px #696969; padding:4px; width:84px; background:url(bg.gif) repeat-y left;}
+.dg_tools_menu ul li{ height:24px; line-height:24px;}
+.dg_tools_menu ul li img{ margin-right:15px; margin-left:2px; width:12px; margin-bottom:-2px;}
+.dg_tools_menu ul li a:link,.dg_tools_menu ul li a:visited{ text-decoration:none; color:#000000; display:inline-block; width:84px; height:24px;}
+.dg_tools_menu ul li a:hover{ background:#fee1a5; display:inline-block; width:84px; height:24px;}
+
+
+.liucheng td{ text-align:center; color:#32587f; width:106px; line-height:22px;}
+
+.loading{ width:100%; height:300px;  padding-top:60px; text-align:center;}
+.color_hs{ color:#ccc;}

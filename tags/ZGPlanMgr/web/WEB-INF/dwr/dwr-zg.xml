@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://www.getahead.ltd.uk/dwr/dwr20.dtd">
+<dwr>
+	<allow>
+		<convert converter="bean" match="java.util.*" />
+		<convert converter="bean" match="com.boco.zg.plan.base.model.*" />
+		
+		<create creator="new" javascript="CommonDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.zg.plan.action.CommonDwrAction" />
+		</create>
+		<create creator="new" javascript="ZgTorderPlanbomDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.zg.plan.action.ZgTorderPlanbomDwrAction" />
+		</create>
+		<create creator="new" javascript="FwEmployeeDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.frame.sys.base.action.FwEmployeeDwrAction" />
+		</create>
+		<create creator="new" javascript="ZgTcarplanDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.zg.plan.action.ZgTcarplanDwrAction" />
+		</create>
+		<create creator="new" javascript="ZgTorderbomDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.zg.plan.action.ZgTorderbomDwrAction" />
+		</create>
+		<create creator="new" javascript="ZgTorderDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.zg.plan.action.ZgTorderDwrAction" />
+		</create>
+			<create creator="new" javascript="LoginDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.frame.login.action.LoginDwrAction" />
+		</create>
+		<create creator="new" javascript="ZgTbackbomDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.zg.plan.action.ZgTbackbomDwrAction" />
+		</create>
+		<create creator="new" javascript="ZgTbomCancelDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.zg.plan.action.ZgTbomCancelDwrAction" />
+		</create>
+		<create creator="new" javascript="SapDwrAction" scope="application">
+			<param name="class"
+				value="sap.action.SapDwrAction" />
+		</create>
+		<create creator="new" javascript="ZgCarInfoDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.zg.bom.base.action.ZgCarInfoDwrAction" />
+		</create>
+		<!-- 用户个性设置 -->
+		<create creator="new" javascript="OperatorFeatureSetDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.frame.login.action.OperatorFeatureSetDwrAction" />
+		</create>
+		<!-- 用于更新BOM组件的车型信息 -->
+		<create javascript="ZgBomCarDwrAction" creator="new" scope="application">
+			<param name="class"
+				value="com.boco.frame.sys.action.ZgBomCarDwrAction" />
+		</create>
+		<!-- 领料计划组相关操作 -->
+		<create javascript="ZgTorderPlanGroupDwrAction" creator="new" scope="application">
+			<param name="class"
+				value="com.boco.zg.plan.action.ZgTorderPlanGroupDwrAction" />
+		</create>
+		<!-- 查看领料组名字是否有相同的 -->
+		<create javascript="CheckMaterielNameDwrAction" creator="new" scope="application">
+			<param name="class"
+				value="com.boco.zg.materiel.action.CheckMaterielNameDwrAction" />
+		</create>
+		<!-- 更新物料组表和物料组虚拟领料组关系表 -->
+		<create javascript="SubmitMaterielAndMvirtualorgDwrAction" creator="new" scope="application">
+			<param name="class"
+				value="com.boco.zg.materiel.action.SubmitMaterielAndMvirtualorgDwrAction" />
+		</create>
+		<!-- 虚拟领料组树形管理 -->
+		<create javascript="ZgTvirtualorgDwrAction" creator="new" scope="application">
+			<param name="class"
+				value="com.boco.zg.virtualorg.base.action.ZgTvirtualorgDwrAction" />
+		</create>
+		<!-- 维护物料组的DWR -->
+		<create javascript="MaterielMaintenanceDwrAction" creator="new" scope="application">
+			<param name="class"
+				value="com.boco.zg.materiel.action.MaterielMaintenanceDwrAction" />
+		</create>
+		<!-- 用虚拟组ID来查询它所有的物料组 -->
+		<create javascript="ZgMaterielVirtualorgDwrAction" creator="new" scope="application">
+			<param name="class"
+				value="com.boco.zg.virtualorg.action.ZgMaterielVirtualorgDwrAction" />
+		</create>
+		<!-- 物料组导航树维护 -->
+		<create javascript="ZgMaterielDwrAction" creator="new" scope="application">
+			<param name="class"
+				value="com.boco.zg.materiel.action.ZgMaterielDwrAction" />
+		</create>
+		
+		<!-- 部门管理　 -->
+		<create javascript="FwOrganizationDwrAction" creator="new" scope="application">
+			<param name="class"
+				value="com.boco.frame.sys.base.action.FwOrganizationDwrAction" />
+		</create>
+		<!-- ZG_T_BOM表 维护　 -->
+		<create javascript="ZgTbomDwrAction" creator="new" scope="application">
+			<param name="class"
+				value="com.boco.zg.bom.base.action.ZgTbomDwrAction" />
+		</create>
+		
+		<create creator="new" javascript="ZgTBomManagerDwrAction" scope="application">
+			<param name="class"
+				value="com.boco.zg.plan.action.ZgTBomManagerDwrAction" />
+		</create>
+		
+	</allow>
+</dwr>

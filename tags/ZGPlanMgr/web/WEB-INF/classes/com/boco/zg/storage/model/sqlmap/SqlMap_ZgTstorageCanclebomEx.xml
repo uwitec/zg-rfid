@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTstorageCanclebomEx">
+    <typeAlias alias="zgTstorageCanclebomEx" type="com.boco.zg.storage.model.ZgTstorageCanclebomEx"/>
+	<resultMap id="zgTstorageCanclebomExResult" class="zgTstorageCanclebomEx">
+		<result property="cuid" column="CUID"/>
+		<result property="aufnr" column="AUFNR"/>
+		<result property="arbpl" column="ARBPL"/>
+		<result property="storageId" column="STORAGE_ID"/>
+		<result property="matnr" column="MATNR1"/>
+		<result property="idnrk" column="IDNRK"/>
+		<result property="msehl1" column="MSEHL1"/>
+		<result property="allNum" column="ALLNUM"/>
+		<result property="num" column="NUM"/>
+		<result property="zbz" column="ZBZ"/>
+		<result property="orderBomId" column="ORDER_BOMID"/>
+		<result property="lgort" column="lgort"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	  		CUID,
+	       	AUFNR,
+			ARBPL,
+			STORAGE_ID,
+			MATNR1,
+			IDNRK,
+			MSEHL1,
+			ALLNUM,
+			NUM,
+			ZBZ,
+			cancleID,
+			product_type,
+			order_bomid,lgort
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			cancleID = #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="productType">
+	       			product_type = #productType#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+	<sql id="dynamicWhere1">
+	  <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cancleId">
+				cancleID||order_bomid not in(select temp1.cuid||temp2.order_bomid from zg_t_storage temp1,zg_t_storagebom temp2 where temp1.cuid='$cancleId$' and temp1.cuid=temp2.zg_t_storage_id )
+			</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="productType">
+	       		product_type = '$productType$'
+       		</isNotEmpty>    
+       		  <isNotEmpty prepend="AND" property="aufnr">
+	       		aufnr like '%'||'$aufnr$'||'%'
+       		</isNotEmpty>   
+       		  <isNotEmpty prepend="AND" property="storageId">
+	       			storage_id like '%'||'$storageId$'||'%'
+       		</isNotEmpty>   
+	    </dynamic>	
+	</sql>
+	
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTstorageCanclebomExResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( 
+	        	select ob.aufnr,
+               fo.label_cn arbpl,
+               tcb.storage_id,
+               ob.matnr1,
+               ob.idnrk,
+               ob.msehl1,
+               tcb.num,
+               tcb.zbz,
+               tcb.cuid,
+               ob.cuid order_bomId,
+               t.cuid cancleID,
+               t.product_type,
+                  case
+                 when st.num-nvl(st.outnum,0) > sb.num then
+                  sb.num
+                 else
+                  st.num-nvl(st.outnum,0)
+               end ALLNUM,
+                s.lgort
+          from zg_t_storage_cancle    t,
+               zg_t_storage_canclebom tcb,
+               zg_t_orderbom          ob,
+               zg_t_storagebom        sb,
+               zg_t_storage           s,
+               fw_organization        fo,
+               zg_t_storage_stat st
+         where t.cuid = tcb.storage_cancle_id
+           and tcb.order_bomid = ob.cuid
+           and tcb.Storage_Id = s.cuid
+           and ob.arbpl = fo.cuid
+           and tcb.order_bomid=st.order_bomid
+           and s.lgort=st.lgort
+           and st.order_id=s.order_id
+          and s.cuid = sb.zg_t_storage_id
+           and tcb.order_bomid = sb.order_bomid
+			
+	        )
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+      <select id="findByProperty" resultMap="zgTstorageCanclebomExResult">
+      	select <include refid="commonColumns"/> from
+        <![CDATA[
+		(select ob.aufnr,
+		       fo.label_cn arbpl,
+		       t.zg_t_storage_id storage_id,
+		       ob.matnr1,
+		       ob.idnrk,
+		       ob.msehl1,
+		       case when  st.num-nvl(st.outnum,0)>t.num then t.num else st.num-nvl(st.outnum,0) end   allNum,null as num,s.product_type,ob.zbz,t.order_bomid,s.cuid as cancleID,null as cuid,s.lgort
+		  from zg_t_storagebom t,
+		       zg_t_storage    s,
+           zg_t_orderbom   ob,
+           fw_organization fo,
+           zg_t_storage_stat st
+     where
+      (ob.storage_state is null or ob.storage_state=1 or ob.storage_state=0)     
+       and s.type='1' 
+       and st.num-nvl(st.outnum,0)>0
+       and t.zg_t_storage_id = s.cuid
+       and t.order_bomid = ob.cuid
+       and fo.cuid = ob.arbpl 
+       and t.order_bomid=st.order_bomid
+       and s.lgort=st.lgort  )     ]]>
+		   	<include refid="dynamicWhere1"/>
+    </select>
+</sqlMap>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="LgortReportBatchStat">
+
+<sql id="dynamicWhere">
+	    <dynamic prepend="">
+       		<isNotEmpty prepend="AND" property="date_start">
+	       			 carplan.car_date>=to_date('$date_start$','yyyy-mm-dd') 
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="date_end">
+	       			to_date('$date_end$','yyyy-mm-dd')+1 >= carplan.car_date
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="aufnr">
+	       		  zto.aufnr like '%'||'$aufnr$'||'%'
+       		</isNotEmpty> 
+       		<isNotEmpty prepend="AND" property="matnr">
+       			  zto.matnr like '%'||'$matnr$'||'%'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="orgId">
+						 em.org_id='$orgId$'       		
+ 			</isNotEmpty>
+       		
+       		<isNotEmpty prepend="AND" property="arbpl">
+	       		  zto.arbpl like '%'||'$arbpl$'||'%'
+       		</isNotEmpty> 
+       			<isNotEmpty prepend="AND" property="idnrk">
+	       		  bom.idnrk like '%'||'$idnrk$'||'%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty prepend="AND" property="suppliers">
+	       		  sup.lifnr_name like '%'||'$suppliers$'||'%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty prepend="AND" property="lgort">
+	       		  bom.lgort like '%'||'$lgort$'||'%'
+       		</isNotEmpty> 
+       		
+	    </dynamic>	
+	</sql>
+
+	<select id="pageSelect" resultClass="java.util.HashMap">
+		select   
+         bom.idnrk,
+         bom.maktx,
+         bom.lgort,
+         org1.label_cn logName,
+         sup.lifnr,
+           sum(nvl(sup.car_num,0)) complete_num,
+         sum(planbom.car_num) car_num,
+         sup.lifnr_name,
+         org.label_cn deptName
+    from zg_t_carbom           carbom,
+         zg_t_carplan          carplan,
+         zg_t_order_planbom    planbom,
+         zg_t_carbom_suppliers sup,
+         zg_t_bom bom,
+         fw_employee em,
+         fw_organization org,
+         fw_organization org1
+   where
+     org1.cuid=bom.lgort
+    and carbom.car_plan_id = carplan.cuid
+   	 and em.cuid=carplan.car_user
+   	and em.org_id=org.cuid
+    and planbom.bom_id=bom.cuid
+
+     and planbom.cuid = carbom.order_planbom_id
+     and sup.car_bom_id = carbom.cuid
+     and sup.car_num>0
+     and carplan.car_state='8'
+     and carplan.order_plan_type ='3'
+     <include refid="dynamicWhere"/>
+  group by  bom.idnrk,
+         bom.maktx,
+         bom.lgort,
+         sup.lifnr,
+         sup.lifnr_name,org.label_cn,
+         org1.label_cn
+
+	</select>   
+	
+	  <select id="count" resultClass="long">
+		  select count(1) from (		select   1
+		    from zg_t_carbom           carbom,
+		         zg_t_carplan          carplan,
+		         zg_t_order_planbom    planbom,
+		         zg_t_carbom_suppliers sup,
+		         zg_t_bom bom,
+		         fw_employee em,
+		         fw_organization org,
+		         fw_organization org1
+		   where
+		     org1.cuid=bom.lgort
+		    and carbom.car_plan_id = carplan.cuid
+		   	 and em.cuid=carplan.car_user
+		   	and em.org_id=org.cuid
+		    and planbom.bom_id=bom.cuid
+		
+		     and planbom.cuid = carbom.order_planbom_id
+		     and sup.car_bom_id = carbom.cuid
+		      and sup.car_num>0
+		     and carplan.car_state='8'
+		     and carplan.order_plan_type ='3'
+		     <include refid="dynamicWhere"/>
+		  group by  bom.idnrk,
+		         bom.maktx,
+		         bom.lgort,
+		         sup.lifnr,
+		         sup.lifnr_name,org.label_cn,
+		         org1.label_cn)
+
+	  </select>
+</sqlMap>

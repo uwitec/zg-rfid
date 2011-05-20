@@ -1,0 +1,66 @@
+.formTable .toolbar {
+	background-image: url(images/ui-bg_glass_75_d0e5f5_1x400.png);
+	background-position:50% 50%;
+	background-repeat:repeat-x;
+	background-color: #d0e5f5;
+	border: 1px solid #79b7e7;
+	border-width:1px 1px 1px 1px;
+	color: #1d5987;
+}
+
+.formTable td {
+	border: 1px solid #79b7e7;
+	border-width:1px 1px 1px 1px;
+	vertical-align: middle;
+	height: 25px;
+}
+
+.formTable .tdLabel {
+	background-color: #d0e5f5;
+	border: 1px solid #79b7e7;
+	border-width:1px 1px 1px 1px;
+	color: #1d5987;
+	vertical-align: middle;
+}
+
+.eXtremeTable .tableRegion {
+	border: 1px solid #79b7e7;
+	border-width:1px 1px 1px 1px;
+}
+
+.eXtremeTable .tableHeader {
+	background-image: url(images/ui-bg_glass_75_d0e5f5_1x400.png);
+	background-position:50% 50%;
+	background-repeat:repeat-x;
+	background-color: #d0e5f5;
+	border: 1px solid #79b7e7;
+	border-width:1px 0 1px 1px;
+	color: #1d5987;
+	height: 15px;
+}
+
+.eXtremeTable .tableHeaderSort {
+	background-image: url(images/ui-bg_glass_85_dfeffc_1x400.png);
+	background-position:50% 50%;
+	background-repeat:repeat-x;
+	background-color: #dfeffc;
+	border: 1px solid #c5dbec;
+	border-width:1px 0 1px 1px;
+	color: #2e6e9e;
+}
+
+.nav_tree_node{
+	cursor: pointer;
+	font-size: 120%;
+	background-image: url(../../images/frame/nav_menu_tree_node_lvx.png);
+	background-repeat: no-repeat;
+	background-position: center left;
+	padding-left:12px;
+}
+
+.nav_tree_node a{text-decoration: none;color:black;}
+.nav_tree_node a:hover{color:red;font-weight: bold;}
+
+.nav_tree_node.lv1{
+	background-image: url(../../images/frame/nav_menu_tree_node_lv1.png);
+}

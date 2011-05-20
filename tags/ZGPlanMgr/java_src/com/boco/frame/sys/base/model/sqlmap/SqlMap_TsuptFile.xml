@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TsuptFile">
+    <typeAlias alias="tsuptFile" type="com.boco.frame.sys.base.model.TsuptFile"/>
+	<resultMap id="tsuptFileResult" class="tsuptFile">
+		<result property="relatedTypeCuid" column="t0_RELATED_TYPE_CUID"/>
+		<result property="pics" column="t0_PICS"/>
+		<result property="cuid" column="t0_CUID"/>
+		<result property="createTime" column="t0_CREATE_TIME"/>
+		<result property="lastModifyTime" column="t0_LAST_MODIFY_TIME"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_RELATED_TYPE_CUID,
+	        m.t0_PICS,
+	        m.t0_CUID,
+	        m.t0_CREATE_TIME,
+	        m.t0_LAST_MODIFY_TIME
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="relatedTypeCuid">
+	       			m.t0_RELATED_TYPE_CUID like #relatedTypeCuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="pics">
+	       			m.t0_PICS = #pics#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="createTime_start">
+       			<![CDATA[m.t0_CREATE_TIME >= to_date(#createTime_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="createTime_end">
+       			<![CDATA[m.t0_CREATE_TIME <= to_date(#createTime_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="lastModifyTime_start">
+       			<![CDATA[m.t0_LAST_MODIFY_TIME >= to_date(#lastModifyTime_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="lastModifyTime_end">
+       			<![CDATA[m.t0_LAST_MODIFY_TIME <= to_date(#lastModifyTime_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertT_SUPT_FILE" parameterClass="tsuptFile">
+    <![CDATA[
+        INSERT INTO
+        T_SUPT_FILE (
+        	RELATED_TYPE_CUID ,
+        	PICS ,
+        	CUID ,
+        	CREATE_TIME ,
+        	LAST_MODIFY_TIME 
+        ) VALUES (
+        	#relatedTypeCuid# ,
+        	#pics# ,
+        	#cuid# ,
+        	#createTime# ,
+        	#lastModifyTime# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateT_SUPT_FILE" parameterClass="tsuptFile">
+    <![CDATA[
+        UPDATE T_SUPT_FILE SET
+	        RELATED_TYPE_CUID = #relatedTypeCuid# ,
+	        PICS = #pics# ,
+	        CREATE_TIME = #createTime# ,
+	        LAST_MODIFY_TIME = #lastModifyTime# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteT_SUPT_FILE" parameterClass="java.lang.String">
+		delete from T_SUPT_FILE 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="tsuptFileResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.RELATED_TYPE_CUID as t0_RELATED_TYPE_CUID,
+	        		t0.PICS as t0_PICS,
+	        		t0.CUID as t0_CUID,
+	        		t0.CREATE_TIME as t0_CREATE_TIME,
+	        		t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME
+	        from 
+	        T_SUPT_FILE t0
+ ) m
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="tsuptFileResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.RELATED_TYPE_CUID as t0_RELATED_TYPE_CUID,
+	        		t0.PICS as t0_PICS,
+	        		t0.CUID as t0_CUID,
+	        		t0.CREATE_TIME as t0_CREATE_TIME,
+	        		t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME
+	        from 
+	        T_SUPT_FILE t0
+ ) m
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.RELATED_TYPE_CUID as t0_RELATED_TYPE_CUID,
+	        		t0.PICS as t0_PICS,
+	        		t0.CUID as t0_CUID,
+	        		t0.CREATE_TIME as t0_CREATE_TIME,
+	        		t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME
+	        from 
+	        T_SUPT_FILE t0
+ ) m
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="tsuptFileResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.RELATED_TYPE_CUID as t0_RELATED_TYPE_CUID,
+	        		t0.PICS as t0_PICS,
+	        		t0.CUID as t0_CUID,
+	        		t0.CREATE_TIME as t0_CREATE_TIME,
+	        		t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME
+	        from 
+	        T_SUPT_FILE t0
+ ) m
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="tsuptFileResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.RELATED_TYPE_CUID as t0_RELATED_TYPE_CUID,
+	        		t0.PICS as t0_PICS,
+	        		t0.CUID as t0_CUID,
+	        		t0.CREATE_TIME as t0_CREATE_TIME,
+	        		t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME
+	        from 
+	        T_SUPT_FILE t0
+ ) m
+        ]]>
+    </select>
+    
+</sqlMap>

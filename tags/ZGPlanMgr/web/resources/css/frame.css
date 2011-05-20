@@ -1,0 +1,74 @@
+.eXtremeTable .tableHeader {
+	background-image: url(images/ui-bg_glass_75_d0e5f5_1x400.png);
+	background-position:50% 50%;
+	background-repeat:repeat-x;
+	background-color: #d0e5f5;
+	border: 1px solid #79b7e7;
+	border-width:1px 0 1px 1px;
+	color: #1d5987;
+}
+
+.eXtremeTable .tableHeaderSort {
+	background-image: url(images/ui-bg_glass_85_dfeffc_1x400.png);
+	background-position:50% 50%;
+	background-repeat:repeat-x;
+	background-color: #dfeffc;
+	border: 1px solid #c5dbec;
+	color: #2e6e9e;
+}
+
+.nav_tree_node{
+	cursor: pointer;
+	font-size: 120%;
+	background-image: url(../../images/frame/nav_menu_tree_node_lvx.png);
+	background-repeat: no-repeat;
+	background-position: center left;
+	padding-left:12px;
+}
+
+.nav_tree_node a{text-decoration: none;color:black;}
+.nav_tree_node a:hover{color:red;font-weight: bold;}
+
+.nav_tree_node.lv1{
+	background-image: url(../../images/frame/nav_menu_tree_node_lv1.png);
+}
+
+.delButton {
+	background-color:transparent;
+	background-image: url('../../images/frame/del_button.png');
+	background-repeat: no-repeat;
+	background-position:center left;
+	padding:1px 0 0 12px;
+	border: 0;
+	cursor: pointer;
+	height:15px;
+	color:blue;
+}
+
+.addButton {
+	background-color:transparent;
+	background-image: url('../../images/frame/add_button.png');
+	background-repeat: no-repeat;
+	background-position:center left;
+	padding:1px 0 0 12px;
+	border: 0;
+	cursor: pointer;
+	height:15px;
+	color:blue;
+}
+
+.expButton {
+	background-color:transparent;
+	background-image: url('../../images/frame/exp_button.png');
+	background-repeat: no-repeat;
+	background-position:center left;
+	padding:1px 0 0 12px;
+	border: 0;
+	cursor: pointer;
+	height:15px;
+	color:blue;
+}
+
+.addButton.btnOver, .delButton.btnOver, .expButton.btnOver {
+	color:red
+}

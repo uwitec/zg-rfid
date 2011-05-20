@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FwEmployee">
+    <typeAlias alias="fwEmployee" type="com.boco.frame.sys.base.model.FwEmployee"/>
+	<resultMap id="fwEmployeeResult" class="fwEmployee">
+		<result property="cuid" column="t1_CUID"/>
+		<result property="labelCn" column="t1_LABEL_CN"/>
+		<result property="userId" column="t1_USER_ID"/>
+		<result property="password" column="t1_PASSWORD"/>
+		<result property="createTime" column="t1_CREATE_TIME"/>
+		<result property="lastModifyTime" column="t1_LAST_MODIFY_TIME"/>
+		<result property="effectTime" column="t1_EFFECT_TIME"/>
+		<result property="status" column="t1_STATUS"/>
+		<result property="relatedBmClassId" column="t1_RELATED_BM_CLASS_ID"/>
+		<result property="cuid" column="t0_CUID"/>
+		<result property="orgId" column="t0_ORG_ID"/>
+		<result property="orgId_related.value" column="t0_0_1_t0_LABEL_CN"/>
+		<result property="orgId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="sex" column="t0_SEX"/>
+		<result property="mobile" column="t0_MOBILE"/>
+		<result property="telephone" column="t0_TELEPHONE"/>
+		<result property="address" column="t0_ADDRESS"/>
+		<result property="email" column="t0_EMAIL"/>
+		<result property="rfidCode" column="rfidcode"/>
+    </resultMap>
+    
+    <!-- wjz加上的 -->
+    <resultMap id="fwEmployeeResult2" class="fwEmployee">
+		<result property="cuid" column="user_id"/>
+		<result property="auditingName" column="AUDITING_NAME"/>
+		<result property="sex" column="sex"/>
+		<result property="departmentName" column="DEPARTMENT_NAME"/>
+		<result property="mobile" column="mobile"/>
+		<result property="telephone" column="telephone"/>
+		<result property="email" column="email"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t1_CUID,
+	        m.t1_LABEL_CN,
+	        m.t1_USER_ID,
+	        m.t1_PASSWORD,
+	        m.t1_CREATE_TIME,
+	        m.t1_LAST_MODIFY_TIME,
+	        m.t1_EFFECT_TIME,
+	        m.t1_STATUS,
+	        m.t1_RELATED_BM_CLASS_ID,
+	        m.t0_CUID,
+		    t0_0_1.t0_LABEL_CN as t0_0_1_t0_LABEL_CN,
+	        'FW_ORGANIZATION' as t0_0_1_BD,
+	        m.t0_ORG_ID,
+	        m.t0_SEX,
+	        m.t0_MOBILE,
+	        m.t0_TELEPHONE,
+	        m.t0_ADDRESS,
+	        m.t0_EMAIL,
+	        m.rfidcode
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="equalBmClassIdQuery">
+	    		m.t1_RELATED_BM_CLASS_ID  = #BM_CLASS_ID# 
+	    	</isNotEmpty> 
+	    	<isNotEmpty prepend="AND" property="inSubBmClassIdQuery">
+	    		m.t1_RELATED_BM_CLASS_ID in (select p.bm_classid from t_md_abstract_type p start with p.bm_classid=#BM_CLASS_ID# connect by prior  p.cuid =p.parent_type_cuid )
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t1_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t1_LABEL_CN like '%'||'$labelCn$'||'%'
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="userId">
+	       			m.t1_USER_ID like '$userId$'
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="password">
+	       			m.t1_PASSWORD like #password#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="createTime_start">
+       			<![CDATA[m.t1_CREATE_TIME >= to_date(#createTime_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="createTime_end">
+       			<![CDATA[m.t1_CREATE_TIME <= to_date(#createTime_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="lastModifyTime_start">
+       			<![CDATA[m.t1_LAST_MODIFY_TIME >= to_date(#lastModifyTime_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="lastModifyTime_end">
+       			<![CDATA[m.t1_LAST_MODIFY_TIME <= to_date(#lastModifyTime_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="effectTime_start">
+       			<![CDATA[(m.t1_EFFECT_TIME >= to_date(#effectTime_start#,'yyyy-mm-dd HH24:mi:ss') or m.t1_EFFECT_TIME is null ) ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="effectTime_end">
+       			<![CDATA[(m.t1_EFFECT_TIME <= to_date(#effectTime_end#,'yyyy-mm-dd HH24:mi:ss') or m.t1_EFFECT_TIME is null) ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="status">
+	       			m.t1_STATUS = #status#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="relatedBmClassId">
+	       			m.t1_RELATED_BM_CLASS_ID like #relatedBmClassId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+       		  <isNotEmpty prepend="AND" property="orgId">
+	       		 	m.t0_ORG_ID=#orgId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="sex">
+	       			m.t0_SEX = #sex#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="mobile">
+	       			m.t0_MOBILE like #mobile#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="telephone">
+	       			m.t0_TELEPHONE like #telephone#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="address">
+	       			m.t0_ADDRESS like #address#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="email">
+	       			m.t0_EMAIL like #email#
+       		</isNotEmpty>    
+       		 <isNotEmpty prepend="AND" property="rfidCode">
+	       			m.rfidcode like #rfidCode#
+       		</isNotEmpty>  
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertFW_OPERATOR" parameterClass="fwEmployee">
+    <![CDATA[
+        INSERT INTO
+        FW_OPERATOR (
+        	CUID ,
+        	LABEL_CN ,
+        	USER_ID ,
+        	PASSWORD ,
+        	CREATE_TIME ,
+        	LAST_MODIFY_TIME ,
+        	EFFECT_TIME ,
+        	STATUS ,
+        	RELATED_BM_CLASS_ID ,
+        	rfidcode
+        ) VALUES (
+        	#userId# ,
+        	#labelCn# ,
+        	#userId# ,
+        	#password# ,
+        	#createTime# ,
+        	#lastModifyTime# ,
+        	#effectTime# ,
+        	#status# ,
+        	#relatedBmClassId# ,
+        	#rfidCode#
+        )
+    ]]>
+    </insert>
+    <insert id="insertFW_EMPLOYEE" parameterClass="fwEmployee">
+    <![CDATA[
+        INSERT INTO
+        FW_EMPLOYEE (
+        	CUID ,
+        	SEX ,
+        	MOBILE ,
+        	TELEPHONE ,
+        	ADDRESS ,
+        	EMAIL ,
+        	ORG_ID
+        ) VALUES (
+        	#userId# ,
+        	#sex# ,
+        	#mobile# ,
+        	#telephone# ,
+        	#address# ,
+        	#email# ,
+        	#orgId#
+        )
+    ]]>
+    </insert>
+    
+    <insert id="insertFW_EMPLOYEE2" parameterClass="fwEmployee">
+    <![CDATA[
+        update
+        FW_EMPLOYEE 
+        set ORG_ID=#orgId# 
+        where cuid=#cuid#
+    ]]>
+    </insert>
+    
+    <update id="updateFW_EMPLOYEE_For_Orgid_byEMPLOYEEID" parameterClass="java.lang.String">
+    	update FW_EMPLOYEE set ORG_ID=''
+		 where cuid = #cuid#
+    </update>
+    
+    <update id="updateFW_OPERATOR" parameterClass="fwEmployee">
+    <![CDATA[
+        UPDATE FW_OPERATOR SET
+	        LABEL_CN = #labelCn# ,
+	        USER_ID = #userId# ,
+	        PASSWORD = #password# ,
+	        CREATE_TIME = #createTime# ,
+	        LAST_MODIFY_TIME = #lastModifyTime# ,
+	        EFFECT_TIME = #effectTime# ,
+	        STATUS = #status# ,
+	        RELATED_BM_CLASS_ID = #relatedBmClassId# ,
+	        rfidcode=#rfidCode#
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+        <update id="updateFW_OPERATOR_self" parameterClass="fwEmployee">
+    <![CDATA[
+        UPDATE FW_OPERATOR SET
+	        LABEL_CN = #labelCn# ,
+	        PASSWORD = #password# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+    <update id="updateFW_EMPLOYEE_self" parameterClass="fwEmployee">
+    <![CDATA[
+        UPDATE FW_EMPLOYEE SET
+	        SEX = #sex# ,
+	        MOBILE = #mobile# ,
+	        TELEPHONE = #telephone# ,
+	        ADDRESS = #address# ,
+	        EMAIL = #email# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+    <update id="updateFW_EMPLOYEE" parameterClass="fwEmployee">
+    <![CDATA[
+        UPDATE FW_EMPLOYEE SET
+	        SEX = #sex# ,
+	        MOBILE = #mobile# ,
+	        TELEPHONE = #telephone# ,
+	        ADDRESS = #address# ,
+	        EMAIL = #email# ,
+	        org_id=#orgId#
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteFW_OPERATOR" parameterClass="java.lang.String">
+		delete from FW_OPERATOR 
+		 where CUID = #cuid#
+	</delete>
+	<delete id="deleteFW_EMPLOYEE" parameterClass="java.lang.String">
+		delete from FW_EMPLOYEE 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="fwEmployeeResult">
+	    select distinct <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t1.CUID as t1_CUID,
+	        		t1.LABEL_CN as t1_LABEL_CN,
+	        		t1.USER_ID as t1_USER_ID,
+	        		t1.PASSWORD as t1_PASSWORD,
+	        		t1.CREATE_TIME as t1_CREATE_TIME,
+	        		t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        		t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        		t1.STATUS as t1_STATUS,
+	        		t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		t0.CUID as t0_CUID,
+	        		t0.SEX as t0_SEX,
+	        		t0.MOBILE as t0_MOBILE,
+	        		t0.TELEPHONE as t0_TELEPHONE,
+	        		t0.ADDRESS as t0_ADDRESS,
+	        		t0.EMAIL as t0_EMAIL,
+	        		t1.rfidcode,
+	        		t0.org_id as  t0_ORG_ID
+	        from 
+	        FW_OPERATOR t1,
+	        FW_EMPLOYEE t0
+	        where
+		        		t1.CUID = t0.CUID (+)
+	         ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	          	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORG_ID 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="fwEmployeeResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t1.CUID as t1_CUID,
+	        		t1.LABEL_CN as t1_LABEL_CN,
+	        		t1.USER_ID as t1_USER_ID,
+	        		t1.PASSWORD as t1_PASSWORD,
+	        		t1.CREATE_TIME as t1_CREATE_TIME,
+	        		t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        		t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        		t1.STATUS as t1_STATUS,
+	        		t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		t0.CUID as t0_CUID,
+	        		t0.SEX as t0_SEX,
+	        		t0.MOBILE as t0_MOBILE,
+	        		t0.TELEPHONE as t0_TELEPHONE,
+	        		t0.ADDRESS as t0_ADDRESS,
+	        		t0.EMAIL as t0_EMAIL,
+	        		t1.rfidcode,
+	        		t0.ORG_ID as  t0_ORG_ID
+	        			
+	        from 
+	        FW_OPERATOR t1,
+	        FW_EMPLOYEE t0
+	        where
+		        		t1.CUID = t0.CUID 
+	         ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORG_ID 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t1.CUID as t1_CUID,
+	        		t1.LABEL_CN as t1_LABEL_CN,
+	        		t1.USER_ID as t1_USER_ID,
+	        		t1.PASSWORD as t1_PASSWORD,
+	        		t1.CREATE_TIME as t1_CREATE_TIME,
+	        		t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        		t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        		t1.STATUS as t1_STATUS,
+	        		t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		t0.CUID as t0_CUID,
+	        		t0.SEX as t0_SEX,
+	        		t0.MOBILE as t0_MOBILE,
+	        		t0.TELEPHONE as t0_TELEPHONE,
+	        		t0.ADDRESS as t0_ADDRESS,
+	        		t0.EMAIL as t0_EMAIL,
+	        			t1.rfidcode,
+	        		t0.org_id as t0_ORG_ID
+	        			
+	        from 
+	        FW_OPERATOR t1,
+	        FW_EMPLOYEE t0
+	        where
+		        		t1.CUID = t0.CUID 
+	         ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORG_ID 
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="fwEmployeeResult">
+    	select distinct <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t1.CUID as t1_CUID,
+	        		t1.LABEL_CN as t1_LABEL_CN,
+	        		t1.USER_ID as t1_USER_ID,
+	        		t1.PASSWORD as t1_PASSWORD,
+	        		t1.CREATE_TIME as t1_CREATE_TIME,
+	        		t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        		t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        		t1.STATUS as t1_STATUS,
+	        		t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		t0.CUID as t0_CUID,
+	        		t0.SEX as t0_SEX,
+	        		t0.MOBILE as t0_MOBILE,
+	        		t0.TELEPHONE as t0_TELEPHONE,
+	        		t0.ADDRESS as t0_ADDRESS,
+	        		t0.EMAIL as t0_EMAIL,
+	        		t1.rfidcode,
+	        	 	t0.org_id as  t0_ORG_ID
+	        			
+	        from 
+	        FW_OPERATOR t1,
+	        FW_EMPLOYEE t0
+	        where
+		        		t1.CUID = t0.CUID 
+	         ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORG_ID 
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="fwEmployeeResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t1.CUID as t1_CUID,
+	        		t1.LABEL_CN as t1_LABEL_CN,
+	        		t1.USER_ID as t1_USER_ID,
+	        		t1.PASSWORD as t1_PASSWORD,
+	        		t1.CREATE_TIME as t1_CREATE_TIME,
+	        		t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        		t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        		t1.STATUS as t1_STATUS,
+	        		t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		t0.CUID as t0_CUID,
+	        		t0.SEX as t0_SEX,
+	        		t0.MOBILE as t0_MOBILE,
+	        		t0.TELEPHONE as t0_TELEPHONE,
+	        		t0.ADDRESS as t0_ADDRESS,
+	        		t0.EMAIL as t0_EMAIL,
+	        			t1.rfidcode,
+	        		(select max(eorg.org_id) from fw_employee_org eorg where eorg.employee_id=t0.cuid ) as  t0_ORG_ID
+	        			
+	        from 
+	        FW_OPERATOR t1,
+	        FW_EMPLOYEE t0
+	        where
+		        		t1.CUID = t0.CUID 
+	         ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORG_ID 
+        ]]>
+    </select>
+    
+    <!-- wjz,查询审核人的 -->
+    <select id="findTheAuitingPeople" resultMap="fwEmployeeResult2">
+    	select t0.label_cn as AUDITING_NAME,
+    	       t1.sex,
+    	       (select max(fo.label_cn)
+          from fw_employee fe, fw_organization fo
+         where fe.cuid = t0.cuid
+           and fe.org_id = fo.cuid) as DEPARTMENT_NAME,
+             t1.mobile,
+             t1.telephone,
+             t1.email,
+              t0.cuid user_id
+          from FW_OPERATOR t0,
+                            FW_EMPLOYEE t1
+                     
+                            where t0.cuid in (select operator_id from FW_OPERATOR_ROLE where role_id='auditor') 
+                            and t1.cuid(+)=t0.cuid
+    	     	
+    	      <isNotEmpty prepend="AND" property="auditingName">
+	    			t0.label_cn like '%$auditingName$%' 
+		    	</isNotEmpty>
+		    	
+    </select>
+    
+</sqlMap>

@@ -1,0 +1,1032 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTorderbomEx">
+    <typeAlias alias="zgTorderbomEx" type="com.boco.zg.plan.model.ZgTorderbomEx"/>
+    <typeAlias alias="zgTorderbom" type="com.boco.zg.plan.base.model.ZgTorderbom"/>
+    
+	<resultMap id="zgTorderbomExResult" class="zgTorderbomEx">
+		<result property="pxdat" column="PXDAT" />
+		<result property="orderAufnr" column="ORDERAUFNR" />
+		<result property="plant" column="PLANT" />
+		<result property="arbpl" column="ARBPL"/>
+		<result property="matnr" column="MATNR"/>
+		<result property="maktx1" column="MAKTX1"/>
+		<result property="planType" column="plan_type"/>
+		<result property="lgort" column="LGORT"/>
+		<result property="orderPlanId" column="ORDERPLANID"/>
+		<result property="orderBomId" column="ORDERBOMID"/>
+		<result property="orderId" column="ORDERID"/>
+		<result property="carNum" column="CAR_NUM"/>
+		<result property="planNum" column="PLAN_NUM"/>
+		<result property="orderPlanbomId" column="ORDER_PLANBOM_ID"/>
+		
+		<result property="matkl" column="MATKL"/>
+		<result property="maktx2" column="maktx2"/>
+		<result property="zrzqd" column="ZRZQD"/>
+		<result property="msehl1" column="MSEHL1"/>
+		<result property="zbz" column="ZBZ"/>
+		<result property="departmentId" column="DEPARTMENT_ID"/>
+		<result property="idnrk" column="IDNRK"/>
+		<result property="planDate" column="PLAN_DATE"/>
+		<result property="planEndTime" column="PLAN_END_TIME"/>
+		<result property="planStartTime" column="PLAN_START_TIME"/>
+	</resultMap>
+	
+	
+	<resultMap id="zgTorderbomExResult2" class="zgTorderbomEx">
+		<result property="orderAufnr" column="ORDERAUFNR" />
+		<result property="matnr" column="MATNR"/>
+		<result property="maktx1" column="MAKTX1"/>
+		<result property="idnrk" column="IDNRK"/>
+		<result property="msehl1" column="MSEHL1"/>
+		<result property="menge" column="MENGE"/>
+		<result property="arbpl" column="ARBPLName"/>
+		<result property="zdtyl" column="ZDTYL"/>
+		<result property="orderBomId" column="CUID"/>
+		<result property="cuid" column="CUID"/>
+	</resultMap>
+	
+	<sql id="dynamicWhere3">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+       	  
+       		<isNotEmpty prepend="AND" property="productType">
+	       			 t.product_type='$productType$'
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="lgort">
+	       			t.order_bomid = ob.cuid
+   					and ob.arbpl = o.cuid
+					and  t.lgort ='$lgort$'
+       		</isNotEmpty> 
+       		<isNotEmpty prepend="AND" property="aufnr">
+       			aufnr like '%'||'$aufnr$'||'%'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="arbpl">
+       		    o.label_cn like '%'||'$arbpl$'||'%'
+       		</isNotEmpty>  
+       		
+	    </dynamic>	
+	</sql>
+	
+	<resultMap id="zgTorderbomExResult3" class="zgTorderbomEx">
+		<result property="aufnr" column="aufnr" />
+		<result property="orderId" column="order_id"/>
+		<result property="arbpl" column="arbpl"/>
+		<result property="labelCn" column="label_cn"/>
+		<result property="maktx1" column="maktx1"/>
+	</resultMap>
+	
+	<select id="findOrderArbplList" resultMap="zgTorderbomExResult3">
+    	select distinct t.aufnr,t.order_id,t.arbpl,o.label_cn,t.maktx1 from zg_t_orderbom t,fw_organization o where t.arbpl=o.cuid 
+       		<isNotEmpty prepend="AND" property="aufnr">
+       			aufnr like '%'||'$aufnr$'||'%'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="arbpl">
+       		    o.label_cn like '%'||'$arbpl$'||'%'
+       		</isNotEmpty>  
+    </select>
+    <!-- 使用分页 查找订单号和生产线 ，findOrderArbplList未使用分页 -->
+    <select id="findOrderArbplByPageRequest" resultMap="zgTorderbomExResult3">
+    		 select t.aufnr, t.cuid order_id, t.arbpl, o.label_cn, t.maktx1
+			   from zg_t_order t, fw_organization o
+			  where t.arbpl = o.cuid
+			    and exists (select 1
+			           from zg_t_order_planbom p
+			          where p.order_id = t.cuid
+			            and p.storage_num > 0)
+    		<isNotEmpty prepend="AND" property="sqlQueryString">
+		    		$sqlQueryString$ 
+		    </isNotEmpty>
+       		<isNotEmpty prepend="AND" property="aufnr">
+       			aufnr like '%'||'$aufnr$'||'%'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="arbpl">
+       		    t.arbpl like '%'||'$arbpl$'||'%'
+       		</isNotEmpty>  
+       		<dynamic prepend="ORDER BY">
+				<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+			</dynamic>
+    </select>
+    
+     <!-- 统计已提交的订单 -->
+    <select id="countByOrder" resultClass="java.lang.Long">
+    		select count(1) from (select  t.aufnr,t.cuid order_id,t.arbpl,o.label_cn,t.maktx1 from zg_t_order t,fw_organization o where t.arbpl=o.cuid 
+    		<isNotEmpty prepend="AND" property="sqlQueryString">
+		    		$sqlQueryString$ 
+		    </isNotEmpty>
+       		<isNotEmpty prepend="AND" property="aufnr">
+       			aufnr like '%'||'$aufnr$'||'%'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="arbpl">
+       		    o.label_cn like '%'||'$arbpl$'||'%'
+       		</isNotEmpty>  
+       		<dynamic prepend="ORDER BY">
+				<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+			</dynamic>)
+    </select>
+    
+        
+    <select id="findOrderArbplByPageRequest1" resultMap="zgTorderbomExResult3">
+		    select distinct ob.aufnr, ob.order_id, ob.arbpl, o.label_cn, ob.maktx1
+		  from zg_t_storage_stat t, zg_t_orderbom ob, fw_organization o
+	   <include refid="dynamicWhere3"/>
+    </select>
+    
+      <!-- 统计已提交的订单 -->
+    <select id="countByOrder1" resultClass="java.lang.Long">
+    	select count(1) from (	    select distinct ob.aufnr, ob.order_id, ob.arbpl, o.label_cn, ob.maktx1
+		  from zg_t_storage_stat t, zg_t_orderbom ob, fw_organization o
+	   <include refid="dynamicWhere3"/>)
+	  
+    </select>
+    
+   
+    
+    
+    <select id="findOrderArbplList1" resultMap="zgTorderbomExResult3">
+		    select distinct ob.aufnr, ob.order_id, ob.arbpl, o.label_cn, ob.maktx1
+		  from zg_t_storage_stat t, zg_t_orderbom ob, fw_organization o
+	   <include refid="dynamicWhere3"/>
+    </select>
+    
+    
+    
+	
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	   PXDAT  ,
+       ORDERAUFNR ,
+       PLANT ,
+       ARBPL  ,
+       MATNR ,
+       MAKTX1 ,
+       PLAN_TYPE,
+       LGORT,
+       ORDERPLANID,
+       ORDERBOMID,
+       ORDERID,
+       CAR_NUM,
+       PLAN_NUM,
+       ORDER_PLANBOM_ID,
+       MATKL,
+       ZRZQD,
+       MSEHL1,
+       ZBZ,
+       USER_ID,
+       DEPARTMENT_ID,
+       IDNRK
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+       		 <isNotEmpty prepend="AND" property="planType">
+	       			plan_type = #planType#
+       		</isNotEmpty>   
+       			 <isNotEmpty prepend="AND" property="orderAufnr">
+	       			ORDERAUFNR = #orderAufnr#
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="lgort">
+	       			lgort = #lgort#
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="idnrk">
+	       			idnrk = #idnrk#
+       		</isNotEmpty> 
+       			<isNotEqual  property="overTime" compareValue="0">
+       		 <isNotEmpty prepend="AND" property="pxdat_Start">
+	       			<![CDATA[(PLAN_DATE >= to_date(#pxdat_Start#,'yyyy-mm-dd HH24:mi:ss')  or  PLAN_DATE is null)]]>
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="pxdat_End">
+	       			<![CDATA[(PLAN_DATE <= to_date(#pxdat_End#,'yyyy-mm-dd HH24:mi:ss')  or  PLAN_DATE is null) ]]>
+       		</isNotEmpty>  
+       		</isNotEqual>
+       		<isNotEmpty prepend="AND" property="operatorId">
+       			<isNotEqual property="operatorId" compareValue="0">
+       			   (user_id= #operatorId# or (user_id is null and department_id in (
+select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
+       			</isNotEqual>
+       		</isNotEmpty>
+       		<isEqual prepend="AND" property="overTime" compareValue="0">
+       			<![CDATA[ to_date(to_char(PLAN_DATE, 'yyyy-mm-dd') || ' ' || PLAN_END_TIME,'yyyy-mm-dd hh24:mi')>=sysdate	]]>
+       		</isEqual>
+	    </dynamic>	
+	</sql>
+	
+	
+	<sql id="dynamicWhere1">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+       		 <isNotEmpty prepend="AND" property="orderId">
+	       			order_id='$orderId$'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="lgort">
+	       			 lgort='$lgort$' 
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="arbpl">
+	       			 arbpl='$arbpl$'
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="productType">
+	       			 sortf='$productType$'
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="storageId">
+	       			 cuid not in (select z1.order_bomid from zg_t_storage z ,zg_t_storagebom z1 where z.cuid='$storageId$' and z.cuid=z1.zg_t_storage_id)
+       		</isNotEmpty>  
+	    </dynamic>	
+	</sql>
+	
+	
+	<sql id="dynamicWhere2">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+       		 <isNotEmpty prepend="AND" property="orderId">
+	       			order_id='$orderId$'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="arbpl">
+	       			 arbpl='$arbpl$'
+       		</isNotEmpty>  
+       		 <isNotEmpty prepend="AND" property="idnrk">
+       			 IDNRK like '%'||'$idnrk$'||'%'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="productType">
+	       			 sortf='$productType$'
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="storageId">
+	       			   cuid not in (select z1.order_bomid from zg_t_storage z ,zg_t_storagebom z1 where z.cuid='$storageId$' and z.cuid=z1.zg_t_storage_id)
+       		</isNotEmpty>  
+	    </dynamic>	
+	</sql>
+	
+	
+    
+    
+    <select id="findByProperty" resultMap="zgTorderbomExResult">
+    	select <include refid="commonColumns"/> ,
+       PLAN_DATE,
+       PLAN_END_TIME,
+       maktx2,
+       plan_start_time
+       
+	    <![CDATA[
+		from (select o.PXDAT,
+               O.AUFNR AS ORDERAUFNR,
+               O.PLANT,
+               O.ARBPL,
+               OB.MATNR,
+               OB.MAKTX1,
+               ob.idnrk,
+               ob.maktx2,
+               PN.PLAN_TYPE,
+               OB.LGORT,
+               OB.CUID ORDERBOMID,
+               PN.CUID AS ORDERPLANID,
+               OB.ORDER_ID ORDERID,
+               PB.CUID AS ORDER_PLANBOM_ID,
+               PB.PLAN_DATE,
+               PB.PLAN_END_TIME,
+               pb.plan_start_time,
+               nvl(pb.car_num, 0) car_num,
+               nvl(pb.plan_num, 0) plan_num,
+               ob.MATKL,
+               ob.ZRZQD,
+               ob.MSEHL1,
+               ob.ZBZ,
+               pb.user_id,
+               pb.department_id
+		  from zg_t_order_planbom pb, zg_t_order o, zg_t_orderbom ob,zg_t_order_plan pn
+		 where pb.order_id = o.cuid(+)
+		   and pb.order_bom_id = ob.cuid
+		   and pb.order_plan_id=pn.cuid(+)
+		   and pb.state='8'
+		   and pn.state='8' and nvl(pb.car_num,0)-  nvl(pb.plan_num,0)!=0)
+        ]]>
+        <include refid="dynamicWhere"/>
+		 order by LGORT
+    </select>
+    
+    
+    <select id="findByProperty2" resultMap="zgTorderbomExResult2">
+    	select ORDERAUFNR,
+		       MATNR,
+		       MAKTX1,
+		       IDNRK,
+		       MSEHL1,
+		       ZDTYL,
+		       MENGE,
+		       ARBPL,
+       		ARBPLName,
+		       sortf,
+		       order_id,
+		       cuid
+	    <![CDATA[
+		from (
+			select OB.AUFNR ORDERAUFNR,
+	               OB.MATNR1 MATNR,
+	               OB.MAKTX1,
+	               OB.IDNRK,
+	               OB.MSEHL1,
+	               OB.ZDTYL,
+	               OB.MENGE-nvl(ob.storage_num,0) menge,
+	               ob.arbpl,
+               		FO.LABEL_CN ARBPLName,
+	               ob.sortf,
+	               ob.order_id,ob.cuid
+			  from zg_t_orderbom ob, fw_organization fo
+			 where ob.arbpl = fo.cuid and ( ob.storage_state='0' or ob.storage_state is null))
+		   
+        ]]>
+        <include refid="dynamicWhere2"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findByProperty1" resultMap="zgTorderbomExResult2">
+    	select ORDERAUFNR,
+		       MATNR,
+		       MAKTX1,
+		       IDNRK,
+		       MSEHL1,
+		       ZDTYL,
+		       MENGE,
+		       ARBPL,
+       		ARBPLName,
+		       sortf,
+		       order_id,
+		       cuid
+	    <![CDATA[
+		from (
+			select OB.AUFNR ORDERAUFNR,
+               OB.MATNR1 MATNR,
+               OB.MAKTX1,
+               OB.IDNRK,
+               OB.MSEHL1,
+               OB.ZDTYL,
+              nvl(st.num,0) - nvl(st.outnum, 0) menge,
+               ob.arbpl,
+               FO.LABEL_CN ARBPLName,
+               ob.sortf,
+               ob.order_id,
+               ob.cuid,st.lgort
+          from zg_t_orderbom ob, fw_organization fo,zg_t_storage_stat st
+         where ob.arbpl = fo.cuid
+         and ob.cuid=st.order_bomid and ( ob.storage_state='0' or ob.storage_state='1'  or ob.storage_state is null)
+          and  nvl(st.num,0) - nvl(st.outnum, 0) >0)
+		   
+        ]]>
+        <include refid="dynamicWhere1"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+      <update id="updateZG_T_ORDERBOM_State" parameterClass="zgTorderbom">
+    <![CDATA[
+        UPDATE ZG_T_ORDERBOM SET
+	        storage_state=#storageState#
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+        <update id="updateOrderbomSelfMatkl" parameterClass="java.util.HashMap">
+    <![CDATA[
+        UPDATE ZG_T_ORDERBOM  t SET
+	       t.matkl_self='$matkl$'
+	    WHERE t.idnrk='$idnrk$'
+    ]]>
+    </update>
+    
+        <update id="updateBomSelfMatkl" parameterClass="java.util.HashMap">
+    <![CDATA[
+        UPDATE ZG_T_BOM  t SET
+	       t.matkl_self='$matkl$'
+	    WHERE t.idnrk='$idnrk$'
+    ]]>
+    </update>
+    
+    
+    
+    <resultMap id="zgTorderbomExResult4" class="zgTorderbomEx">
+    	<result property="cuid" column="cuid"/>
+		<result property="idnrk" column="IDNRK"/>
+		<result property="maktx2" column="maktx2"/>
+		<result property="maktx1" column="maktx1"/>
+		<result property="aufnr" column="AUFNR" />
+		<result property="zdtyl" column="ZDTYL" />
+		<result property="menge" column="MENGE" />
+		<result property="completeNum" column="complete_num" />
+		<result property="planNum" column="PLAN_NUM"/>
+		<result property="lgort" column="lgort"/>
+		<result property="lgortName" column="lgortName"/>
+		<result property="zbz" column="ZBZ"/>
+		<result property="carNum" column="CAR_NUM"/>
+		<result property="carCount" column="carCount"/>
+		<result property="percent" column="percent" />
+		<result property="carName" column="carName" />
+		<result property="carId" column="car_id" />
+		<result property="carCode" column="code" />
+		<result property="validNum" column="valid_Num" />
+		<result property="waitBackNum" column="wait_back_num" />
+		
+		
+	</resultMap>
+    
+    <select id="getBomListByProperty" resultMap="zgTorderbomExResult4">
+		    select distinct orderbom.*,planbom.car_num,      planbom.wait_back_num,nvl(planbom.complete_num,0) complete_num,nvl(planbom.plan_num,0) plan_num,
+			ceil((planbom.car_num-nvl(planbom.plan_num,0))/decode(bom.carnum,0,1,nvl(bom.carnum,1))) carCount,
+			    decode(planbom.car_num,0 ,1 ,trunc(nvl(planbom.complete_num, 0) /
+                      nvl(planbom.car_num, 1),
+                      2)) percent,
+		fworg.label_cn lgortName ,car.label_cn carName,bom.car_id,car.code,planbom.car_num-nvl(planbom.plan_num,0) valid_Num
+		  from 
+		    <isNotEqual property="operatorId" compareValue="0"> 
+		  zg_t_virtualorg_employee emp,
+		       zg_t_virtualorg          vorg,
+		       ZG_MATERIEL_VIRTUALORG   morg,
+		       zg_materiel              mat,
+		       </isNotEqual>
+		        zg_t_bom                 bom,
+		       zg_t_orderbom            orderbom,
+		       zg_t_order_planbom       planbom,
+		       zg_t_order_plan          plan,
+		       zg_t_group_order_plan    gop,
+		       zg_t_order_plan_group    oup,
+		       zg_t_order zto,     fw_organization fworg,zg_carinfo car
+		 where  fworg.cuid=orderbom.lgort
+		  and car.cuid=bom.car_id
+		  <isNotEqual property="operatorId" compareValue="0"> 
+		   and emp.org_id = vorg.cuid
+		   and vorg.cuid = morg.org_id
+		<!--    and morg.matkl = mat.id -->
+		<!--   and mat.id = bom.matkl_self
+		   and mat.lgort = orderbom.lgort --> 
+		    and mat.id in (select tm.id
+                    from zg_materiel tm
+                   start with tm.id = morg.matkl
+                  connect by prior  tm.cuid=tm.parent_id)
+   			and mat.id=orderbom.matkl_self
+		    and vorg.org_id=plan.plant 
+		   </isNotEqual>
+		     and bom.idnrk = orderbom.idnrk 
+		   and orderbom.cuid = planbom.order_bom_id
+		    and planbom.order_plan_id = plan.cuid
+		   and plan.cuid = gop.order_plan_id
+		   and plan.order_id=zto.cuid
+		   and gop.group_id = oup.cuid
+		   
+		   
+		   <isNotEmpty prepend="AND" property="planType">
+		    oup.plan_type = '$planType$'
+		   </isNotEmpty>
+		   <isNotEqual property="operatorId" compareValue="0"> 
+		   	and emp.user_id = '$operatorId$'
+		   </isNotEqual>
+		    and bom.car_id is not null
+		   and bom.carnum is not null
+		   <!-- 总装领料　只有 freeze是0时才能领料-->
+		   	 <isEqual prepend="AND" property="planType" compareValue = "ABE">
+				 zto.freeze='0'
+      		 </isEqual>
+		   <![CDATA[  
+		     and zto.freeze<>'4'
+		       and zto.order_state<>'-1'
+		    and (planbom.car_num > 0 or planbom.wait_back_num>0)
+		   and (oup.state <> '9' and oup.state <> '-1' and oup.state <> '-2')
+		   and plan.state <> '-1'
+		   and plan.state <> '-2'
+		    and plan.state <> '9'
+		  
+		   and plan.plant is not null
+		 
+		   ]]>
+		   <isNotEmpty prepend="AND" property="groupId">
+		    oup.cuid='$groupId$'
+		   </isNotEmpty>
+    
+    
+    </select>
+    
+    <select id="getBomListByGroupId" resultClass="java.util.HashMap">
+		    select distinct null as cuid,
+               ORDERBOM.ZDTYL,
+               orderbom.ORDER_ID,
+               orderbom.cuid order_bom_id,
+               orderbom.idnrk,
+               orderbom.maktx2,
+               planbom.cuid as order_planbom_id,
+               null as car_plan_id,
+               orderbom.aufnr,
+               planbom.car_num,
+               nvl(planbom.plan_num, 0) plan_num,
+               nvl(planbom.complete_num, 0) complete_num,
+               0 as car_plan_num,
+               planbom.car_num - nvl(planbom.plan_num, 0) max_value,
+               bom.carnum carCount,
+               orderbom.zbz
+		  from 
+		    <isNotEqual property="operatorId" compareValue="0"> 
+		  zg_t_virtualorg_employee emp,
+		       zg_t_virtualorg          vorg,
+		       ZG_MATERIEL_VIRTUALORG   morg,
+		       zg_materiel              mat,
+		       </isNotEqual>
+		        zg_t_bom                 bom,
+		       zg_t_orderbom            orderbom,
+		       zg_t_order_planbom       planbom,
+		       zg_t_order_plan          plan,
+		       zg_t_group_order_plan    gop,
+		       zg_t_order_plan_group    oup,
+		       zg_t_order zto,     fw_organization fworg,zg_carinfo car
+		 where  fworg.cuid=orderbom.lgort
+		  and car.cuid=bom.car_id
+		  <isNotEqual property="operatorId" compareValue="0"> 
+		   and emp.org_id = vorg.cuid
+		   and vorg.cuid = morg.org_id
+		<!--    and morg.matkl = mat.id
+		   and mat.id = bom.matkl_self
+		   and mat.lgort = orderbom.lgort -->
+		    and mat.id in (select tm.id
+                    from zg_materiel tm
+                   start with tm.id = morg.matkl
+                  connect by prior  tm.cuid=tm.parent_id)
+   			and mat.id=orderbom.matkl_self
+		    and vorg.org_id=plan.plant 
+		   </isNotEqual>
+		     and bom.idnrk = orderbom.idnrk 
+		   and orderbom.cuid = planbom.order_bom_id
+		    and planbom.order_plan_id = plan.cuid
+		   and plan.cuid = gop.order_plan_id
+		   and plan.order_id=zto.cuid
+		   and gop.group_id = oup.cuid
+		   and orderbom.cuid not in
+       (select carbom.order_bom_id
+          from zg_t_carplan plan, zg_t_carbom carbom
+         where 
+         carbom.order_bom_id is not null
+       	 and  plan.car_user = '$operatorId$'
+           and plan.car_state = '0'
+           and plan.cuid = carbom.car_plan_id
+           and carbom.storage_user_id is  null)
+		   <isNotEmpty prepend="AND" property="planType">
+		    oup.plan_type = '$planType$'
+		   </isNotEmpty>
+		   <isNotEqual property="operatorId" compareValue="0"> 
+		   	and emp.user_id = '$operatorId$'
+		   </isNotEqual>
+		    and bom.car_id is not null
+		   and bom.carnum is not null
+		   <!-- 总装领料　只有 freeze是0时才能领料-->
+		   	 <isEqual prepend="AND" property="planType" compareValue = "ABE">
+				 zto.freeze='0'
+      		 </isEqual>
+		   <![CDATA[  
+		    and  planbom.car_num - nvl(planbom.plan_num, 0) >0
+		     and zto.freeze<>'4'
+		       and zto.order_state<>'-1'
+		      and planbom.car_num>0
+		   and (oup.state <> '9' and oup.state <> '-1' and oup.state <> '-2')
+		   and plan.state <> '-1'
+		   and plan.state <> '-2'
+		    and plan.state <> '9'
+		   and plan.plant is not null
+		   
+		   ]]>
+		    <isNotEmpty prepend="AND" property="lgort">
+		     orderbom.lgort='$lgort$'
+		   </isNotEmpty>
+		   <isNotEmpty prepend="AND" property="groupId">
+		    oup.cuid='$groupId$'
+		   </isNotEmpty>
+		    order by orderbom.idnrk
+    </select>
+    
+    <select id="getBomListByPropertyAdvance" resultMap="zgTorderbomExResult4">
+		    select distinct orderbom.*,planbom.car_num,      planbom.wait_back_num,nvl(planbom.complete_num,0) complete_num,nvl(planbom.plan_num,0) plan_num,
+			ceil((planbom.car_num-nvl(planbom.plan_num,0))/decode(bom.carnum,0,1,nvl(bom.carnum,1))) carCount,
+			    decode(planbom.car_num,0 ,1 ,trunc(nvl(planbom.complete_num, 0) /
+                      nvl(planbom.car_num, 1),
+                      2)) percent,
+		fworg.label_cn lgortName ,car.label_cn carName,bom.car_id,car.code,planbom.car_num-nvl(planbom.plan_num,0) valid_Num
+		  from 
+		    <isNotEqual property="operatorId" compareValue="0"> 
+		  zg_t_virtualorg_employee emp,
+		       zg_t_virtualorg          vorg,
+		       ZG_MATERIEL_VIRTUALORG   morg,
+		       zg_materiel              mat,
+		       </isNotEqual>
+		        zg_t_bom                 bom,
+		       zg_t_orderbom            orderbom,
+		       zg_t_order_planbom       planbom,
+		       zg_t_order_plan          plan,
+		       zg_t_group_order_plan    gop,
+		       zg_materiel ma,
+		       zg_t_order_plan_group    oup,
+		       zg_t_order zto,     fw_organization fworg,zg_carinfo car
+		 where <!--  ma.id=bom.matkl_self
+			  and ma.lgort=orderbom.lgort -->
+			 ma.id =orderbom.matkl_self
+			 and ma.advance='1'
+			 and fworg.cuid=orderbom.lgort
+		  and car.cuid=bom.car_id
+		  and planbom.car_num-nvl(planbom.plan_num,0)>0
+		  <isNotEqual property="operatorId" compareValue="0"> 
+		   and emp.org_id = vorg.cuid
+		   and vorg.cuid = morg.org_id
+		  <!--     and morg.matkl = mat.id
+		
+		  and mat.id = bom.matkl_self
+		  and mat.lgort = orderbom.lgort -->
+		    and mat.id in (select tm.id
+                    from zg_materiel tm
+                   start with tm.id = morg.matkl
+                  connect by prior  tm.cuid=tm.parent_id)
+  			 and mat.id=orderbom.matkl_self
+		    and vorg.org_id=plan.plant 
+		   </isNotEqual>
+		     and bom.idnrk = orderbom.idnrk 
+		    <!--  and bom.lgort=orderbom.lgort
+ 			and bom.matkl=orderbom.matkl-->
+		   and orderbom.cuid = planbom.order_bom_id
+		    and planbom.order_plan_id = plan.cuid
+		   and plan.cuid = gop.order_plan_id
+		   and plan.order_id=zto.cuid
+		   and gop.group_id = oup.cuid
+		   <isNotEmpty prepend="AND" property="planType">
+		    oup.plan_type = '$planType$'
+		   </isNotEmpty>
+		   <isNotEqual property="operatorId" compareValue="0"> 
+		   	and emp.user_id = '$operatorId$'
+		   </isNotEqual>
+		    and bom.car_id is not null
+		   and bom.carnum is not null	   <!-- 总装领料　只有 freeze是0时才能领料-->
+		   	 <isEqual prepend="AND" property="planType" compareValue = "ABE">
+				 zto.freeze='0'
+      		 </isEqual>
+		   <![CDATA[  
+		     and zto.freeze<>'4'
+		       and zto.order_state<>'-1'
+		   
+		      and (planbom.car_num > 0 or planbom.wait_back_num>0)
+		   and (oup.state <> '9' and oup.state <> '-1' and oup.state <> '-2')
+		   and plan.state <> '-1'
+		   and plan.state <> '-2'
+		    and plan.state <> '9'
+		      and planbom.state<>'9'
+		   and plan.plant is not null
+		   ]]>
+		   <isNotEmpty prepend="AND" property="groupId">
+		    oup.cuid='$groupId$'
+		   </isNotEmpty>
+    </select>
+    
+ 
+    <select id="getBomListByGroupIdAdvance" resultClass="java.util.HashMap">
+		    select distinct null as cuid,
+               ORDERBOM.ZDTYL,
+               orderbom.ORDER_ID,
+               orderbom.cuid order_bom_id,
+               orderbom.idnrk,
+               orderbom.maktx2,
+               planbom.cuid as order_planbom_id,
+               null as car_plan_id,
+               orderbom.aufnr,
+               planbom.car_num,
+               nvl(planbom.plan_num, 0) plan_num,
+               nvl(planbom.complete_num, 0) complete_num,
+               0 as car_plan_num,
+               planbom.car_num - nvl(planbom.plan_num, 0) max_value,
+               bom.carnum carCount,
+                 orderbom.zbz
+		  from 
+		    <isNotEqual property="operatorId" compareValue="0"> 
+		  zg_t_virtualorg_employee emp,
+		       zg_t_virtualorg          vorg,
+		       ZG_MATERIEL_VIRTUALORG   morg,
+		       zg_materiel              mat,
+		       </isNotEqual>
+		        zg_t_bom                 bom,
+		       zg_t_orderbom            orderbom,
+		       zg_t_order_planbom       planbom,
+		       zg_t_order_plan          plan,
+		       zg_t_group_order_plan    gop, zg_materiel ma,
+		       zg_t_order_plan_group    oup,
+		       zg_t_order zto,     fw_organization fworg,zg_carinfo car
+		 where <!--   ma.id=bom.matkl_self
+			 and ma.lgort=bom.lgort--> 
+			 ma.id=orderbom.matkl_self
+			 and ma.advance='1'
+			 and fworg.cuid=orderbom.lgort
+		  and car.cuid=bom.car_id
+		  and planbom.car_num-nvl(planbom.plan_num,0)>0
+		  <isNotEqual property="operatorId" compareValue="0"> 
+		   and emp.org_id = vorg.cuid
+		   and vorg.cuid = morg.org_id
+		 <!--  and morg.matkl = mat.id
+		    and mat.id = bom.matkl_self
+		   and mat.lgort = orderbom.lgort -->
+		     and mat.id in (select tm.id
+                    from zg_materiel tm
+                   start with tm.id = morg.matkl
+                  connect by prior  tm.cuid=tm.parent_id)
+   			and mat.id=orderbom.matkl_self
+		    and vorg.org_id=plan.plant 
+		   </isNotEqual>
+		     and bom.idnrk = orderbom.idnrk 
+		   and orderbom.cuid = planbom.order_bom_id
+		    and planbom.order_plan_id = plan.cuid
+		   and plan.cuid = gop.order_plan_id
+		   and plan.order_id=zto.cuid
+		   and gop.group_id = oup.cuid
+		   and orderbom.cuid not in
+       (select carbom.order_bom_id
+          from zg_t_carplan plan, zg_t_carbom carbom
+         where
+          carbom.order_bom_id is not null
+       	 and  plan.car_user = '$operatorId$'
+           and plan.car_state = '0'
+           and plan.cuid = carbom.car_plan_id
+           and carbom.storage_user_id is  null)
+           
+		   <isNotEmpty prepend="AND" property="planType">
+		    oup.plan_type = '$planType$'
+		   </isNotEmpty>
+		   <isNotEqual property="operatorId" compareValue="0"> 
+		   	and emp.user_id = '$operatorId$'
+		   </isNotEqual>
+		    and bom.car_id is not null
+		   and bom.carnum is not null	   <!-- 总装领料　只有 freeze是0时才能领料-->
+		   	 <isEqual prepend="AND" property="planType" compareValue = "ABE">
+				 zto.freeze='0'
+      		 </isEqual>
+		   <![CDATA[  
+		    and  planbom.car_num - nvl(planbom.plan_num, 0) >0
+		     and zto.freeze<>'4'
+		      and zto.order_state<>'-1'
+		      and planbom.car_num>0
+		   and (oup.state <> '9' and oup.state <> '-1' and oup.state <> '-2')
+		   and plan.state <> '-1'
+		   and plan.state <> '-2'
+		    and plan.state <> '9'
+		      and planbom.state<>'9'
+		   and plan.plant is not null
+		   ]]>
+		   <isNotEmpty prepend="AND" property="lgort">
+		     orderbom.lgort='$lgort$'
+		   </isNotEmpty>
+		   <isNotEmpty prepend="AND" property="groupId">
+		    oup.cuid='$groupId$'
+		   </isNotEmpty>
+		   order by orderbom.idnrk
+    </select>
+    
+    
+  	<select id="getBomListByOrderId" resultClass="java.util.HashMap">
+		select count(1) bomNum,orderbom.order_id,orderbom.idnrk,orderbom.maktx2,orderbom.sortf,orderbom.lgort, max(orderbom.cuid) cuid,sum(planbom.car_num) car_num, sum(nvl(planbom.complete_num, 0)) complete_num,
+		sum(nvl(planbom.move_num,0)) move_num,sum(nvl(planbom.back_num,0)) back_num,sum(nvl(planbom.out_num,0)) out_num
+		  from zg_t_orderbom orderbom, zg_t_order_planbom planbom
+		 where orderbom.cuid = planbom.order_bom_id
+		   and orderbom.lgort is not null
+		   and orderbom.order_id = '$orderId1$'
+		   <isNotEqual prepend="AND" property="isDel" compareValue="-1">
+		   <!-- 不是删除状态的订单 只有领数量大于需求数量才能迁移
+		     	planbom.complete_num>planbom.car_num -->
+		   </isNotEqual>
+		   
+		   <isNotEmpty prepend="AND" property="both">
+		    exists
+		 (
+		        select 1
+		          from (
+		                 (select orderbom.idnrk
+		                    from zg_t_orderbom orderbom, zg_t_order_planbom planbom
+		                   where orderbom.cuid = planbom.order_bom_id
+		                     and orderbom.order_id = '$orderId1$'
+		                      <isNotEqual prepend="AND" property="isDel" compareValue="-1">
+							   <!-- 不是删除状态的订单 只有领数量大于需求数量才能迁移 
+							     	planbom.complete_num>planbom.car_num-->
+							   </isNotEqual>)
+		                 intersect
+		                 (select orderbom.idnrk
+		                    from zg_t_orderbom orderbom, zg_t_order_planbom planbom
+		                   where orderbom.cuid = planbom.order_bom_id
+		                     and orderbom.order_id = '$orderId2$')
+		               ) w
+		         where orderbom.idnrk = w.idnrk)
+		          </isNotEmpty>
+		         group by orderbom.idnrk,orderbom.maktx2,orderbom.sortf,orderbom.lgort,orderbom.order_id
+    order by  orderbom.idnrk,orderbom.maktx2,orderbom.sortf,orderbom.lgort
+    </select>
+    
+    <select id="getBomListByOrderId1" resultClass="java.util.HashMap">
+		select count(1) bomNum,orderbom.order_id,orderbom.idnrk,orderbom.maktx2,orderbom.sortf,orderbom.lgort, max(orderbom.cuid) cuid,sum(planbom.car_num) car_num, sum(nvl(planbom.complete_num, 0)) complete_num,
+		sum(nvl(planbom.move_num,0)) move_num,sum(nvl(planbom.back_num,0)) back_num,sum(nvl(planbom.out_num,0)) out_num
+		  from zg_t_orderbom orderbom, zg_t_order_planbom planbom
+		 where orderbom.cuid = planbom.order_bom_id
+		   and orderbom.lgort is not null
+		   and orderbom.order_id = '$orderId1$'
+		   <isNotEmpty prepend="AND" property="both">
+		    exists
+		 (
+		        select 1
+		          from (
+		                 (select orderbom.idnrk
+		                    from zg_t_orderbom orderbom, zg_t_order_planbom planbom
+		                   where orderbom.cuid = planbom.order_bom_id
+		                     and orderbom.order_id = '$orderId1$')
+		                 intersect
+		                 (select orderbom.idnrk
+		                    from zg_t_orderbom orderbom, zg_t_order_planbom planbom
+		                   where orderbom.cuid = planbom.order_bom_id
+		                     and orderbom.order_id = '$orderId2$'
+		                      <isNotEqual prepend="AND" property="isDel" compareValue="-1">
+							   <!-- 不是删除状态的订单 只有领数量大于需求数量才能迁移 
+							     	planbom.complete_num>planbom.car_num-->
+							   </isNotEqual>)
+		               ) w
+		         where orderbom.idnrk = w.idnrk)
+		          </isNotEmpty>
+		      group by orderbom.idnrk,orderbom.maktx2,orderbom.sortf,orderbom.lgort,orderbom.order_id
+    order by  orderbom.idnrk,orderbom.maktx2,orderbom.sortf,orderbom.lgort
+    </select>
+    
+    <select id="checkStorageNum" resultClass="java.util.HashMap">
+		 select 1
+		  from (select sum(nvl(planbom.complete_num, 0) -nvl(planbom.out_num,0)) storageNum
+		          from zg_t_order_planbom planbom, zg_t_orderbom orderbom
+		         where orderbom.order_id = '$orderId$'
+		           and orderbom.idnrk = '$idnrk$'
+		           and planbom.order_bom_id = orderbom.cuid)
+		 where storageNum - $moveNum$ >= 0
+    </select>
+    
+     <select id="checkStorageNum1" resultClass="java.util.HashMap">
+    	select 1
+		  from (select sum(nvl(planbom.complete_num, 0) - nvl(planbom.back_num, 0) -
+		                   nvl(planbom.move_num, 0) - nvl(planbom.car_num, 0)) storageNum
+		          from zg_t_order_planbom planbom, zg_t_orderbom orderbom
+		         where orderbom.order_id = '$orderId$'
+		           and orderbom.idnrk = '$idnrk$'
+		           and planbom.order_bom_id = orderbom.cuid)
+		 where storageNum - $moveNum$ >= 0
+    </select>
+    
+    
+    
+     <select id="checktargetCarNum" resultClass="java.util.HashMap">
+			 select 1 from (select sum(nvl(planbom.complete_num, 0)) storageNum,
+                  sum(planbom.car_num) car_num
+             from zg_t_order_planbom planbom, zg_t_orderbom orderbom
+           	 where orderbom.order_id = '$targerOrderId$'
+              and orderbom.idnrk = '$idnrk$'
+              and planbom.order_bom_id = orderbom.cuid)
+ 			 where car_num - (storageNum + $moveNum$) >= 0
+    </select>
+    
+    <update id="updateSourceBomNum" parameterClass="zgTorderbom">
+    <![CDATA[
+	       update zg_t_order_planbom t
+	   set 	       t.move_num     = nvl(t.move_num, 0) + $moveNum$,
+	   	t.complete_num=t.complete_num-$moveNum$,
+        t.plan_num=t.plan_num-$moveNum$,
+        t.wait_back_num=decode(sign(t.wait_back_num),0,0,1,decode(sign(t.wait_back_num-$moveNum$),-1,0,1,t.wait_back_num-$moveNum$),0),
+	   storage_num= nvl(t.storage_num, 0)-$moveNum$
+	 	where  t.order_bom_id = '$cuid$'
+    ]]>
+    </update>
+    
+        <update id="updateTargetBomNum" parameterClass="java.util.HashMap">
+    <![CDATA[
+	  update zg_t_order_planbom t set t.complete_num=nvl(t.complete_num,0)+$moveNum$,
+	  t.PLAN_NUM=nvl(t.PLAN_NUM,0)+$moveNum$,
+	    t.move_num_in     = nvl(t.move_num_in, 0) + $moveNum$,
+	      storage_num= nvl(t.storage_num, 0)+$moveNum$
+			where exists (select 1 from zg_t_orderbom orderbom where  orderbom.order_id='$targerOrderId$'
+				and orderbom.idnrk='$idnrk$'
+			and orderbom.cuid=t.order_bom_id)
+    ]]>
+    </update>
+    
+    <select id="getBomLIstCarPlanId"  resultClass="java.util.HashMap">
+		    select car.cuid car_Plan_Id,
+		       carbom.cuid,
+		       orderbom.idnrk,
+		       ORDERBOM.ZDTYL,
+		       orderbom.ORDER_ID,
+		       orderbom.maktx2,
+		       orderbom.cuid as order_bom_id,
+		       carbom.car_plan_id, 
+		       orderbom.aufnr,
+		       orderbom.zdtyl,
+		       carbom.plan_num car_plan_num,
+		       orderbom.zbz,
+		       orderbom.menge
+		  from zg_t_carplan car, zg_t_carbom carbom, zg_t_orderbom orderbom
+		 where car.cuid = carbom.car_plan_id
+		   and carbom.order_bom_id = orderbom.cuid
+		    and car.cuid = '$carPlanId$'
+    </select>
+     <select id="findRoleCuid"  resultClass="java.lang.String">
+   select r.cuid
+   from fw_operator o, fw_role r, fw_operator_role rr
+   where o.cuid = rr.operator_id
+   and r.cuid = rr.role_id
+   and o.cuid ='$userId$'
+   order by r.cuid
+    </select>
+    
+     <select id="getBomListByOrderIdAndIdnrk"  resultClass="java.util.HashMap">
+		   select planbom.cuid,nvl(planbom.complete_num,0)-nvl(planbom.out_num,0) maxMoveNum from zg_t_orderbom t ,zg_t_order_planbom planbom
+			where t.cuid=planbom.order_bom_id
+			and  nvl(planbom.complete_num,0)-nvl(planbom.out_num,0)-nvl(planbom.move_num,0)-nvl(planbom.back_num,0)>0
+			and t.order_id='$orderId$'
+			and t.idnrk='$idnrk$'
+    </select>
+    
+      <select id="getBomListByOrderIdAndIdnrk1"  resultClass="java.util.HashMap">
+		   select planbom.cuid,nvl(planbom.complete_num,0)-nvl(planbom.car_num,0)-nvl(planbom.move_num,0)-nvl(planbom.back_num,0) maxMoveNum from zg_t_orderbom t ,zg_t_order_planbom planbom
+			where t.cuid=planbom.order_bom_id
+			and  nvl(planbom.complete_num,0)-nvl(planbom.car_num,0)-nvl(planbom.move_num,0)-nvl(planbom.back_num,0)>0
+			and t.order_id='$orderId$'
+			and t.idnrk='$idnrk$'
+     </select>
+     
+      <select id="getTargetBomListByOrderIdAndIdnrk"  resultClass="java.util.HashMap">
+		       select planbom.cuid,nvl(planbom.car_num,0) - nvl(planbom.complete_num, 0) maxMoveNum
+             from zg_t_order_planbom planbom, zg_t_orderbom orderbom
+           	 where orderbom.order_id = '$orderId$'
+              and orderbom.idnrk = '$idnrk$'
+              and planbom.order_bom_id = orderbom.cuid
+     </select>
+     
+     	<select id="findBomListByPlanID" resultClass="java.util.HashMap">
+     		select od.aufnr,
+			       od.arbpl,
+			       bom.idnrk,
+			       bom.maktx2,
+			       t.cuid planId,
+			      
+			        pb.wait_back_num,
+			       (select sum(temp.storage_num)
+			          from zg_t_order_planbom temp
+			         where temp.order_bom_id = bom.cuid) STORAGE_NUM,       
+			       pb.cuid pbID ,
+              bom.cuid ,
+              bom.msehl2,
+			       pb.car_num
+			  from zg_t_order_plan    t,
+			       zg_t_order_planbom pb,
+			       zg_t_order         od,
+			       zg_t_orderbom      bom
+			 where pb.order_plan_id = t.cuid
+			   and pb.order_id = od.cuid
+			   and pb.order_bom_id = bom.cuid
+			   and t.cuid = '$cuid$'   	
+			   
+			   </select>
+			   	<select id="findqueryHistoryByPlanID" resultClass="java.util.HashMap">
+     		 	select to_char(m.create_time,'yyyy-mm-dd hh24:mm:ss') create_time, m.content, o.label_cn,m.user_id,p.back_reason,p.back_zbz
+            from zg_t_order_plan_comment m,
+           zg_t_order_plan         p,
+      
+            fw_operator             o
+            where p.cuid = m.order_plan_id
+   
+          and  m.user_id = o.user_id
+           and p.cuid = '$cuid$'
+           order by m.create_time desc
+			   
+			   </select>
+     	
+     	
+     	<select id="findBomlListByOrderId" resultClass="java.util.HashMap">
+     		select w.* from (select 
+			       t.*,
+			       (select sum(pb.storage_num)
+			          from zg_t_order_planbom pb
+			         where pb.order_bom_id = t.cuid) all_storage_num
+			  from zg_t_orderbom t, zg_t_order od,fw_organization org
+			 where t.order_id = od.cuid
+			  and t.sortf = org.extend1
+			   and t.order_id = '$orderId$'
+			   and org.cuid='$sortf$'
+			   <isNotEmpty prepend="AND" property="changeBomIds">
+			    t.cuid not in ('$changeBomIds$')
+			   </isNotEmpty>
+			   and t.matkl in
+			       (select m.id from zg_materiel m where m.materiel_level = '$extend1$')) w where all_storage_num>0
+     	</select>
+     
+     
+</sqlMap>

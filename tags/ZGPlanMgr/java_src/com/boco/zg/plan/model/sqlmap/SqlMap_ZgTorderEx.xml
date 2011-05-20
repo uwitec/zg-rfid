@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTorderEx">
+    <typeAlias alias="zgTorder" type="com.boco.zg.plan.base.model.ZgTorder"/>
+	<resultMap id="zgTorderResult" class="zgTorder">
+		<result property="cuid" column="CUID"/>
+		<result property="pcdat" column="PCDAT"/>
+		<result property="kdauf" column="KDAUF"/>
+		<result property="kdpos" column="KDPOS"/>
+		<result property="aufnr" column="AUFNR"/>
+		<result property="arbpl" column="ARBPL"/>
+		<result property="maktx2" column="MAKTX2"/>
+		<result property="kdauf" column="KDAUF"/>
+		<result property="plant" column="PLANT"/>
+		<result property="maktx1" column="MAKTX1"/>
+		<result property="psmng" column="PSMNG"/>
+		<result property="pmenge" column="PMENGE"/>
+		<result property="matnr" column="MATNR"/>
+		<result property="labelCn" column="LABEL_CN"/>
+		<result property="orderState" column="ORDER_STATE"/>
+		<result property="pxdat" column="px_date"/>
+		
+    </resultMap>
+    
+    <resultMap id="zgTorderResult1" class="zgTorder">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="aufnr" column="t0_AUFNR"/>
+		<result property="orderState" column="t0_ORDER_STATE"/>
+		<result property="mandt" column="t0_MANDT"/>
+		<result property="pxdat" column="t0_PXDAT"/>
+		<result property="plant" column="t0_PLANT"/>
+		<result property="mipos" column="t0_MIPOS"/>
+		<result property="pcdat" column="t0_PCDAT"/>
+		<result property="arbpl" column="t0_ARBPL"/>
+		<result property="arbpl1" column="t0_ARBPL1"/>
+		<result property="matnr" column="t0_MATNR"/>
+		<result property="kdauf" column="t0_KDAUF"/>
+		<result property="kdpos" column="t0_KDPOS"/>
+		<result property="kdtxt" column="t0_KDTXT"/>
+		<result property="zckpp" column="t0_ZCKPP"/>
+		<result property="maktx2" column="t0_MAKTX2"/>
+		<result property="maktx1" column="t0_MAKTX1"/>
+		<result property="zzcks" column="t0_ZZCKS"/>
+		<result property="atwrt2" column="t0_ATWRT2"/>
+		<result property="psmng" column="t0_PSMNG"/>
+		<result property="pmenge" column="t0_PMENGE"/>
+		<result property="ztxt02" column="t0_ZTXT02"/>
+		<result property="zdblc" column="t0_ZDBLC"/>
+		<result property="brgew2" column="t0_BRGEW2"/>
+		<result property="crdat" column="t0_CRDAT"/>
+		<result property="cputm" column="t0_CPUTM"/>
+		<result property="crnam" column="t0_CRNAM"/>
+		<result property="mrnam" column="t0_MRNAM"/>
+		<result property="zmuze" column="t0_ZMUZE"/>
+		<result property="mname" column="t0_MNAME"/>
+		<result property="fbdat" column="t0_FBDAT"/>
+		<result property="fbuze" column="t0_FBUZE"/>
+		<result property="fname" column="t0_FNAME"/>
+		<result property="pflag" column="t0_PFLAG"/> 
+		<result property="to_Org_lableCN" column="to_Org_lableCN"/> 
+		<result property="psbh" column="t0_psbh"/> 
+		<result property="freeZe" column="t0_freeze"/> 
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_LABEL_CN,
+	        m.t0_AUFNR,
+	        m.t0_ORDER_STATE,
+	        m.t0_SUBMIT_USER,
+	        m.t0_SUBMIT_DATE,
+	        m.t0_MANDT,
+	        m.t0_PXDAT,
+	        m.t0_PLANT,
+	        m.t0_MIPOS,
+	        m.t0_PCDAT,
+	        m.t0_ARBPL,
+	        m.t0_MATNR,
+	        m.t0_KDAUF,
+	        m.t0_KDPOS,
+	        m.t0_KDTXT,
+	        m.t0_ZCKPP,
+	        m.t0_MAKTX2,
+	        m.t0_MAKTX1,
+	        m.t0_ZZCKS,
+	        m.t0_ATWRT2,
+	        m.t0_PSMNG,
+	        m.t0_PMENGE,
+	        m.t0_ZTXT02,
+	        m.t0_ZDBLC,
+	        m.t0_BRGEW2,
+	        m.t0_CRDAT,
+	        m.t0_CPUTM,
+	        m.t0_CRNAM,
+	        m.t0_MRNAM,
+	        m.t0_ZMUZE,
+	        m.t0_MNAME,
+	        m.t0_FBDAT,
+	        m.t0_FBUZE,
+	        m.t0_FNAME,
+	        t0_PFLAG,
+	        to_Org_lableCN,
+	        t0_psbh,
+	        t0_freeze,
+	        t0_ARBPL1
+	    ]]>
+	</sql>
+	
+    
+	
+	<select id="getOrderInfoListByGroupId" resultMap="zgTorderResult">
+			select t.*,aide.px_date from zg_t_order t ,zg_t_group_order_plan oup ,zg_t_order_plan plan,zg_t_order_aide aide
+		where oup.group_id='$groupId$'
+		and oup.order_plan_id=plan.cuid
+		and plan.order_id=t.cuid
+    and aide.order_id=t.cuid
+    and aide.plant=plan.plant
+		
+	</select>
+	
+	<select id="getOrderInfoListByorderPlanId" resultMap="zgTorderResult">
+			select t.*,aide.px_date from zg_t_order t ,zg_t_order_plan plan,zg_t_order_aide aide
+		where 
+		 plan.order_id=t.cuid and plan.cuid='$orderPlanId$'
+		  and aide.order_id=t.cuid
+    	  and aide.plant=plan.plant
+		
+	</select>
+	
+	
+	<select id="getPlantListByOrderId" resultClass="java.lang.String">
+			select distinct aide.plant from zg_t_order_aide aide where aide.order_id='$cuid$'
+	</select>
+	
+	<select id="listForSelectByOrderId" resultClass="java.util.HashMap">
+		  <![CDATA[	select * from zg_t_order t where t.aufnr=
+			(select t.aufnr from zg_t_order t where t.cuid='$sourceOrderId$')
+			and t.cuid<>'$sourceOrderId$'   ]]>
+	</select>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_aufnr like '%'||'$labelCn$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="aufnr">
+	       			m.t0_AUFNR like #aufnr#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="orderState">
+	       			m.t0_ORDER_STATE = #orderState#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="submitUser">
+	       			m.t0_SUBMIT_USER like #submitUser#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="submitDate_start">
+       			<![CDATA[m.t0_SUBMIT_DATE >= to_date(#submitDate_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="submitDate_end">
+       			<![CDATA[m.t0_SUBMIT_DATE <= to_date(#submitDate_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="mandt">
+	       			m.t0_MANDT like #mandt#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="pxdat_start">
+       			<![CDATA[(m.t0_PXDAT >= to_date(#pxdat_start#,'yyyy-mm-dd HH24:mi:ss') or m.t0_PXDAT is null) ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="pxdat_end">
+       			<![CDATA[(m.t0_PXDAT <= to_date(#pxdat_end#,'yyyy-mm-dd HH24:mi:ss') or m.t0_PXDAT is null) ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="plant">
+	       			m.t0_PLANT like '%'||'$plant$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="mipos">
+	       			m.t0_MIPOS like #mipos#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="pcdat_start">
+       			<![CDATA[m.t0_PCDAT >= to_date(#pcdat_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="pcdat_end">
+       			<![CDATA[m.t0_PCDAT <= to_date(#pcdat_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="arbpl">
+	       			m.t0_ARBPL like '%'||'$arbpl$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="matnr">
+	       			m.t0_MATNR like '%'||'$matnr$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="kdauf">
+	       			m.t0_KDAUF like '%'||'$kdauf$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="kdpos">
+	       			m.t0_KDPOS = #kdpos#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="kdtxt">
+	       			m.t0_KDTXT like #kdtxt#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zckpp">
+	       			m.t0_ZCKPP like #zckpp#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="maktx2">
+	       			m.t0_MAKTX2 like '%'||'$maktx2$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="maktx1">
+	       			m.t0_MAKTX1 like '%'||'$maktx1$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zzcks">
+	       			m.t0_ZZCKS like #zzcks#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="atwrt2">
+	       			m.t0_ATWRT2 like #atwrt2#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="psmng">
+	       			m.t0_PSMNG = #psmng#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="pmenge">
+	       			m.t0_PMENGE = #pmenge#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="ztxt02">
+	       			m.t0_ZTXT02 like #ztxt02#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zdblc">
+	       			m.t0_ZDBLC like #zdblc#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="brgew2">
+	       			m.t0_BRGEW2 like #brgew2#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="crdat_start">
+       			<![CDATA[m.t0_CRDAT >= to_date(#crdat_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="crdat_end">
+       			<![CDATA[m.t0_CRDAT <= to_date(#crdat_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="cputm_start">
+       			<![CDATA[m.t0_CPUTM >= to_date(#cputm_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="cputm_end">
+       			<![CDATA[m.t0_CPUTM <= to_date(#cputm_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="crnam">
+	       			m.t0_CRNAM like #crnam#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="mrnam_start">
+       			<![CDATA[m.t0_MRNAM >= to_date(#mrnam_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="mrnam_end">
+       			<![CDATA[m.t0_MRNAM <= to_date(#mrnam_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="zmuze_start">
+       			<![CDATA[m.t0_ZMUZE >= to_date(#zmuze_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="zmuze_end">
+       			<![CDATA[m.t0_ZMUZE <= to_date(#zmuze_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="mname">
+	       			m.t0_MNAME like #mname#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="fbdat_start">
+       			<![CDATA[m.t0_FBDAT >= to_date(#fbdat_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="fbdat_end">
+       			<![CDATA[m.t0_FBDAT <= to_date(#fbdat_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="fbuze_start">
+       			<![CDATA[m.t0_FBUZE >= to_date(#fbuze_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="fbuze_end">
+       			<![CDATA[m.t0_FBUZE <= to_date(#fbuze_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="fname">
+	       			m.t0_FNAME like #fname#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="pflag">
+	       			decode(m.t0_PFLAG,'X','X','C') like #pflag#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+	<select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select  distinct
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ORDER_STATE as t0_ORDER_STATE,
+	        		t0.SUBMIT_USER as t0_SUBMIT_USER,
+	        		t0.SUBMIT_DATE as t0_SUBMIT_DATE,
+	        		t0.MANDT as t0_MANDT,
+	        		t0.PXDAT as t0_PXDAT,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.MIPOS as t0_MIPOS,
+	        		t0.PCDAT as t0_PCDAT,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.KDAUF as t0_KDAUF,
+	        		t0.KDPOS as t0_KDPOS,
+	        		t0.KDTXT as t0_KDTXT,
+	        		t0.ZCKPP as t0_ZCKPP,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.ZZCKS as t0_ZZCKS,
+	        		t0.ATWRT2 as t0_ATWRT2,
+	        		t0.PSMNG as t0_PSMNG,
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.ZTXT02 as t0_ZTXT02,
+	        		t0.ZDBLC as t0_ZDBLC,
+	        		t0.BRGEW2 as t0_BRGEW2,
+	        		t0.CRDAT as t0_CRDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.CRNAM as t0_CRNAM,
+	        		t0.MRNAM as t0_MRNAM,
+	        		t0.ZMUZE as t0_ZMUZE,
+	        		t0.MNAME as t0_MNAME,
+	        		t0.FBDAT as t0_FBDAT,
+	        		t0.FBUZE as t0_FBUZE,
+	        		t0.FNAME as t0_FNAME,
+	        		t0.PFLAG as t0_PFLAG,
+	        		null as to_Org_lableCN,
+	        		t0.psbh as t0_psbh,
+	        		t0.freeze as t0_freeze,
+	        		t0.ARBPL1 as t0_ARBPL1
+          from 
+          ZG_T_ORDER t0 ,fw_organization fw,zg_t_order_planbom planbom ]]> 
+          <isNotEqual property="operatorId" compareValue="0">
+          	<![CDATA[ ,FW_ORGANIZATION_MANAGER fom ]]>
+          </isNotEqual>
+         <![CDATA[ where t0.arbpl=fw.cuid(+) and t0.cuid= planbom.order_id(+)]]>
+ 			 <isEqual property="flag" compareValue="target">
+ 			   <![CDATA[ 	and t0.order_state<>'-1'  ]]>
+ 			</isEqual>
+ 			<isNotEqual property="flag" compareValue="target">
+ 			 	and (t0.order_state='-1' or planbom.complete_num>planbom.car_num) 
+ 			</isNotEqual>
+         		<isNotEqual property="operatorId" compareValue="0">
+	          		<![CDATA[ and fom.org_id(+) = t0.ARBPL
+	          		and fom.EMPLOYEE_ID=#operatorId# ]]>
+          		</isNotEqual>
+ <![CDATA[ ) m
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTorderResult1">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select distinct
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ORDER_STATE as t0_ORDER_STATE,
+	        		t0.SUBMIT_USER as t0_SUBMIT_USER,
+	        		t0.SUBMIT_DATE as t0_SUBMIT_DATE,
+	        		t0.MANDT as t0_MANDT,
+	        		t0.PXDAT as t0_PXDAT,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.MIPOS as t0_MIPOS,
+	        		t0.PCDAT as t0_PCDAT,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.KDAUF as t0_KDAUF,
+	        		t0.KDPOS as t0_KDPOS,
+	        		t0.KDTXT as t0_KDTXT,
+	        		t0.ZCKPP as t0_ZCKPP,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.ZZCKS as t0_ZZCKS,
+	        		t0.ATWRT2 as t0_ATWRT2,
+	        		t0.PSMNG as t0_PSMNG,
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.ZTXT02 as t0_ZTXT02,
+	        		t0.ZDBLC as t0_ZDBLC,
+	        		t0.BRGEW2 as t0_BRGEW2,
+	        		t0.CRDAT as t0_CRDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.CRNAM as t0_CRNAM,
+	        		t0.MRNAM as t0_MRNAM,
+	        		t0.ZMUZE as t0_ZMUZE,
+	        		t0.MNAME as t0_MNAME,
+	        		t0.FBDAT as t0_FBDAT,
+	        		t0.FBUZE as t0_FBUZE,
+	        		t0.FNAME as t0_FNAME,
+	        		t0.PFLAG as t0_PFLAG,
+	        		t0.ARBPL1 as t0_ARBPL1,
+	       fw.label_cn as to_Org_lableCN,
+	       t0.psbh as t0_psbh,
+	       t0.freeze as t0_freeze
+          from 
+          ZG_T_ORDER t0,fw_organization fw,zg_t_order_planbom planbom,
+          zg_t_order_plan plan ]]> 
+          <isNotEqual property="operatorId" compareValue="0">
+          	<![CDATA[ ,FW_ORGANIZATION_MANAGER fom ]]>
+          </isNotEqual>
+         <![CDATA[ where t0.arbpl=fw.cuid(+)
+           and t0.cuid= planbom.order_id(+)
+           and planbom.order_plan_id=plan.cuid
+           and plan.state <>'-1'
+ 			]]>
+ 			<isEqual property="flag" compareValue="target">
+ 			   <![CDATA[ 	and t0.order_state<>'-1'  ]]>
+ 			</isEqual>
+ 			<isNotEqual property="flag" compareValue="target">
+ 			 	and  planbom.complete_num>0
+ 			</isNotEqual>
+         		<isNotEqual property="operatorId" compareValue="0">
+	          		<![CDATA[ and fom.org_id(+) = t0.ARBPL
+	          		and fom.EMPLOYEE_ID=#operatorId# ]]>
+          		</isNotEqual>
+          		
+          		<isNotEmpty property="sourceOrderId">
+	          		<![CDATA[ and t0.cuid<>#sourceOrderId# ]]>
+          		</isNotEmpty>
+          		
+ <![CDATA[ ) m
+	        
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <update id="updateOrderPlanToManul" parameterClass="java.util.HashMap">
+    	<![CDATA[	update zg_t_order_plan t set t.ismanul='0' where t.order_id='$orderId$' and t.state<>'9' ]]>
+    </update>
+	
+	
+	<!-- 根据订单表id查询到约束条件一：本次下线数量<=已排序数量-已下线数量 -->
+	<select id="getMaxFinishNumFromOrder" resultClass="Long">
+		<![CDATA[    select  nvl(nvl(PMENGE,0) -nvl( publish_num,0), 0) from ZG_T_ORDER t where  t.cuid=#cuid#   ]]>
+	</select>
+	<!-- 约束条件二：初步判断订单BOM表和领料计划BOM中的BOM数量是不是一样 -->
+	<select id="getFromOrderBom" resultClass="java.util.HashMap">
+		<![CDATA[    select * from ZG_T_ORDERBOM t where t.ORDER_ID=#orderId#  and (SORTF='ABD' OR SORTF='ABC' OR SORTF='ABE')	]]>
+	</select>
+	<select id="getFromOrderPlanBom" resultClass="java.util.HashMap" >
+		<![CDATA[	 select * from zg_t_order_planbom t where t.order_id=#orderId# ]]>
+	</select>
+	
+	<select id="isCountInOrderBomAndOrderPlanBomEqual" resultClass="java.util.HashMap" >
+		<![CDATA[	 select * from ZG_T_ORDERBOM t where t.ORDER_ID=#orderId#  and (SORTF='ABD' OR SORTF='ABC' OR SORTF='ABE')
+and not exists (select * from zg_t_order_planbom planbom where planbom.order_id=#orderId# and planbom.order_bom_id=t.cuid ) ]]>
+	</select>
+	<!-- 约束条件二：查看所有bom够不够下线 -->
+	<select id="getAllBomFromOrderBomAndOrderPlanBom" resultClass="java.util.HashMap" >
+		<![CDATA[
+		select y.cuid,x.idnrk, x.order_id,x.ZDTYL,nvl(y.COMPLETE_NUM,0) COMPLETE_NUM,nvl(y.move_num,0) move_num,nvl(y.back_num,0) back_num,nvl(y.out_num ,0) out_num
+		from zg_t_orderbom  x, zg_t_order_planbom  y 
+		where x.order_id=y.order_id 
+			and y.order_bom_id=x.cuid
+			and (x.SORTF='ABD' OR x.SORTF='ABC' OR x.SORTF='ABE') 
+			and  x.order_id=#orderId#
+		]]>
+	</select>
+	<!-- 查看订单bom表中，改订单的半成品记录数 -->
+	<select id="getProdCountFromOrderBom" resultClass="java.util.HashMap">
+		<![CDATA[
+			select * from zg_t_orderbom t where t.order_id=#orderId# and t.SORTF  in ('CE','DE','C','D','E')
+		]]>
+	</select>
+	<!-- 半成品库存数量 满足成品下线 -->
+	<select id="getAllProduct" resultClass="java.util.HashMap">
+		<![CDATA[
+			select orderbom.ZDTYL,orderbom.IDNRK ,NVL(storages.used_num,0) as used_num,storages.outnum,storages.cuid as STORAGES_CUID
+ 			 from zg_t_orderbom orderbom, zg_t_order orders, ZG_T_STORAGE_STAT storages
+ 				where orders.cuid = orderbom.order_id
+ 					and orders.cuid = storages.order_id 
+  					and orderbom.cuid = storages.order_bomid
+   					and orderbom.SORTF  in ('CE','DE','C','D','E')
+   					and orders.cuid=#orderId#
+		]]>
+	</select>
+	
+	<!-- 获取生产厂 -->
+	<select id="getPlantByOrderId" resultClass="java.util.HashMap">
+		
+	<isNotEqual property="userId" compareValue="0">
+          	select *
+	  from zg_t_order_aide a	  , fw_organization_manager t
+	 where a.plant = t.org_id
+	   and t.employee_id ='$userId$'
+	   and a.order_id = '$orderId$'
+   </isNotEqual>
+   <isEqual property="userId" compareValue="0">
+          select *	  from zg_t_order_aide a	where  a.order_id = '$orderId$'
+   </isEqual>
+   
+		
+	
+	</select>
+	<!-- 成品下线更新数据 -->
+	<update id="updateOrderPublishNum" parameterClass="java.util.HashMap">
+		<![CDATA[
+			update ZG_T_ORDER t 
+			set t.publish_num=nvl(t.publish_num,0)+#finishNum#
+			where t.cuid=#orderId#
+		]]>
+	</update>
+	<update id="updatePlanBomPublishNum" parameterClass="java.util.HashMap">
+		<![CDATA[
+			update ZG_T_ORDER_PLANBOM t
+			set t.out_num=nvl(t.out_num,0)+#finishNum#,
+			t.storage_num=t.storage_num-#finishNum#
+			where t.cuid=#planBomId#
+		]]>
+	</update>
+	
+	<!-- 成品下线更新半成品已投入使用数量 -->
+	<update id="updateProductNum" parameterClass="java.util.HashMap">
+		<![CDATA[
+			update ZG_T_STORAGE_STAT t 
+			set t.used_num=#newUsedNum#
+			where t.cuid=#storageCuid#
+		]]>
+	</update>
+    
+</sqlMap>
