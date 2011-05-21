@@ -472,10 +472,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		<!--    and morg.matkl = mat.id -->
 		<!--   and mat.id = bom.matkl_self
 		   and mat.lgort = orderbom.lgort --> 
-		    and mat.id in (select tm.id
-                    from zg_materiel tm
-                   start with tm.id = morg.matkl
-                  connect by prior  tm.cuid=tm.parent_id)
+		    and mat.id in ('$carMatkls$')
    			and mat.id=orderbom.matkl_self
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
@@ -557,10 +554,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		<!--    and morg.matkl = mat.id
 		   and mat.id = bom.matkl_self
 		   and mat.lgort = orderbom.lgort -->
-		    and mat.id in (select tm.id
-                    from zg_materiel tm
-                   start with tm.id = morg.matkl
-                  connect by prior  tm.cuid=tm.parent_id)
+		     and mat.id in ('$carMatkls$')
    			and mat.id=orderbom.matkl_self
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
@@ -648,10 +642,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		
 		  and mat.id = bom.matkl_self
 		  and mat.lgort = orderbom.lgort -->
-		    and mat.id in (select tm.id
-                    from zg_materiel tm
-                   start with tm.id = morg.matkl
-                  connect by prior  tm.cuid=tm.parent_id)
+		    and mat.id in ('$carMatkls$')
   			 and mat.id=orderbom.matkl_self
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
@@ -736,10 +727,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		 <!--  and morg.matkl = mat.id
 		    and mat.id = bom.matkl_self
 		   and mat.lgort = orderbom.lgort -->
-		     and mat.id in (select tm.id
-                    from zg_materiel tm
-                   start with tm.id = morg.matkl
-                  connect by prior  tm.cuid=tm.parent_id)
+		       and mat.id in ('$carMatkls$')
    			and mat.id=orderbom.matkl_self
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
