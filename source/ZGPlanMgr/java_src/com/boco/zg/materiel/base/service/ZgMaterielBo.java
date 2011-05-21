@@ -315,5 +315,20 @@ public class ZgMaterielBo extends BaseManager<ZgMateriel,java.lang.String>{
 	public boolean validId1(String parentId,String id) {
 		return zgMaterielDao.validId1(parentId,id);
 	}
+	/**
+	 * @param operatorId
+	 */
+	public String getMatklByOpertatorId(String operatorId) {
+		List<String> list= zgMaterielDao.getMatklByOpertatorId(operatorId);
+		String matkls="";
+		for(String str:list){
+			matkls=matkls+str+"','";
+		}
+		if(matkls.length()>0){
+			matkls=matkls.substring(0,matkls.length()-3);
+		}
+		return matkls;
+	}
+	
 	
 }
