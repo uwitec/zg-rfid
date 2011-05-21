@@ -13,6 +13,7 @@ import com.boco.frame.login.service.LoginBo;
 import com.boco.frame.sys.base.model.FwSystemNotice;
 import com.boco.frame.sys.base.service.FwSystemNoticeBo;
 import com.boco.zg.bom.base.service.ZgTbomManager;
+import com.boco.zg.materiel.base.service.ZgMaterielBo;
 
 @SuppressWarnings("unchecked")
 public class LoginAction extends BaseStruts2Action {
@@ -34,6 +35,8 @@ public class LoginAction extends BaseStruts2Action {
 	private ZgTbomManager zgTbomManager;
 	
 	private FwSystemNoticeBo fwSystemNoticeBo;
+	
+	private ZgMaterielBo zgMaterielBo;
 	
 	public String login() {
 		
@@ -59,6 +62,9 @@ public class LoginAction extends BaseStruts2Action {
 			String url="/frame/default/mainframe/body.jsp";
 			if(!StringHelper.isEmpty(defaultUrl)){
 				url=defaultUrl;
+				//获取领料的物料组
+				String matkls=zgMaterielBo.getMatklByOpertatorId(operatorInfo.getOperatorId());
+				getSession().setAttribute(operatorInfo.getOperatorId()+"_matkl", matkls);
 			}
 			
 			this.getRequest().getSession().setAttribute("defaultUrl", url);
@@ -72,6 +78,8 @@ public class LoginAction extends BaseStruts2Action {
 			
 			List<FwSystemNotice> sysNoticeList=fwSystemNoticeBo.findAll();
 			getRequest().getSession().setAttribute("sysNoticeList", sysNoticeList);
+			
+			
 			
 			return LOGIN_SUCCESS;
 		}else {
@@ -149,5 +157,13 @@ public class LoginAction extends BaseStruts2Action {
 
 	public void setFwSystemNoticeBo(FwSystemNoticeBo fwSystemNoticeBo) {
 		this.fwSystemNoticeBo = fwSystemNoticeBo;
+	}
+
+	public ZgMaterielBo getZgMaterielBo() {
+		return zgMaterielBo;
+	}
+
+	public void setZgMaterielBo(ZgMaterielBo zgMaterielBo) {
+		this.zgMaterielBo = zgMaterielBo;
 	}
 }
