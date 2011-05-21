@@ -225,7 +225,7 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 	 * @param plant 生产厂
 	 * @return
 	 */
-	public List<ZgTorderPlanGroup> getPlanGroupList(String operatorId, String orderPlanType,String arbpl,Date pxDate,String plant) {
+	public List<ZgTorderPlanGroup> getPlanGroupList(String operatorId, String orderPlanType,String arbpl,Date pxDate,String plant,String matkls) {
 		Map paramsMap=new HashMap();
 		paramsMap.put("operatorId", operatorId);
 		paramsMap.put("planType", orderPlanType);
@@ -235,6 +235,7 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 		paramsMap.put("arbpl", arbpl);
 		paramsMap.put("pxDate",  TimeFormatHelper.getFormatDate(pxDate, TimeFormatHelper.DATE_FORMAT));
 		paramsMap.put("plant", plant);
+		paramsMap.put("carMatkls", matkls);
 		return zgTorderPlanGroupExDao.getPlanGroupList(paramsMap);
 	}
 
