@@ -308,7 +308,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	public List<Map> getCarPlanByUserId(String operatorId,String planType,String lgort) {
 		StringBuffer sql=new StringBuffer();
 		
-		sql.append("select distinct t.*,zto.arbpl,car.cuid carId,car.code,car.label_cn,t.storage_id lgort,org.label_cn lgortName from zg_t_carplan t,zg_carinfo car,fw_organization org,zg_t_carbom bom ,zg_t_order zto where  t.storage_id=org.cuid and t.cuid=bom.car_plan_id(+)   and bom.order_id=zto.cuid(+) and t.car_id=car.cuid and t.car_user='"+operatorId+"' and t.car_state<>'8' and t.ORDER_PLAN_TYPE='"+planType+"'");
+		sql.append("select distinct t.*,car.cuid carId,car.code,car.label_cn,t.storage_id lgort,org.label_cn lgortName from zg_t_carplan t,zg_carinfo car,fw_organization org,zg_t_carbom bom ,zg_t_order zto where  t.storage_id=org.cuid and t.cuid=bom.car_plan_id(+)   and bom.order_id=zto.cuid(+) and t.car_id=car.cuid and t.car_user='"+operatorId+"' and t.car_state<>'8' and t.ORDER_PLAN_TYPE='"+planType+"'");
 		if(!StringHelper.isEmpty(lgort)){
 			sql.append(" and t.storage_id='"+lgort+"'");
 		}
@@ -778,7 +778,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 */
 	public List<Map> getCarPlanByCarPlanId(String carPlanId) {
 		StringBuffer sql=new StringBuffer();
-		sql.append("select distinct t.*,zto.arbpl,car.cuid carId,car.code,car.label_cn,t.storage_id lgort,org.label_cn lgortName from zg_t_carplan t,zg_carinfo car,fw_organization org,zg_t_carbom bom ,zg_t_order zto where  t.storage_id=org.cuid and t.cuid=bom.car_plan_id(+)   and bom.order_id=zto.cuid(+) and t.car_id=car.cuid and t.cuid='"+carPlanId+"'");
+		sql.append("select distinct t.*,car.cuid carId,car.code,car.label_cn,t.storage_id lgort,org.label_cn lgortName from zg_t_carplan t,zg_carinfo car,fw_organization org,zg_t_carbom bom ,zg_t_order zto where  t.storage_id=org.cuid and t.cuid=bom.car_plan_id(+)   and bom.order_id=zto.cuid(+) and t.car_id=car.cuid and t.cuid='"+carPlanId+"'");
 		return ((ZgTcarplanDao)this.getEntityDao()).findDynQuery(sql.toString());
 	}
 }
