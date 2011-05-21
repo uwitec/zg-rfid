@@ -304,9 +304,11 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		getSession().setAttribute("plantList"+orderPlanType,plantList);
 		getSession().setAttribute("defaultPlant",defaultPlant);
 		
+		Object object=getSession().getAttribute(getSessionOperatorId()+"_matkl");
+		String matkls=object==null?"null":object.toString();
 		
 		//获取领料计划组列表
-		List<ZgTorderPlanGroup> planGroupList =zgTorderPlanGroupExBo.getPlanGroupList(getSessionOperatorId(),orderPlanType,arbpl,curDate,defaultPlant);
+		List<ZgTorderPlanGroup> planGroupList =zgTorderPlanGroupExBo.getPlanGroupList(getSessionOperatorId(),orderPlanType,arbpl,curDate,defaultPlant,matkls);
 		
 		getRequest().setAttribute("planGroupList", planGroupList);
 		
@@ -334,6 +336,11 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		getRequest().setAttribute("onload", onload);
 		//pageRequest.getFilters().put("key",value);     //add custom filter
 		//getRequest().setAttribute("attrMap",vmModelBo.getAttrsByUser(zgTcarplan.BM_CLASS_ID,super.getSessionUserId()));
+		
+		Object object=getSession().getAttribute(getSessionOperatorId()+"_matkl");
+		String carMatkls=object==null?"null":object.toString();
+		pageRequest.getFilters().put("carMatkls", carMatkls);
+		
 		List<ZgTorderbomEx> list = zgTorderbomExBo.getBomListByProperty(pageRequest);
 		
 		Map<ZgTorderbomEx,List<ZgTorderbomEx>> mapList = new HashMap<ZgTorderbomEx,List<ZgTorderbomEx>>();
@@ -1044,6 +1051,11 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		//获取本次追加的bom列表 
 		List<Map> newBomList= new ArrayList<Map>();
 		if(!StringHelper.isEmpty(bomCuids)){
+			
+			Object object=getSession().getAttribute(getSessionOperatorId()+"_matkl");
+			String carMatkls=object==null?"null":object.toString();
+			pageRequest.getFilters().put("carMatkls", carMatkls);
+			
 			newBomList=zgTorderbomExBo.getBomListByGroupId(pageRequest);
 			
 		}
