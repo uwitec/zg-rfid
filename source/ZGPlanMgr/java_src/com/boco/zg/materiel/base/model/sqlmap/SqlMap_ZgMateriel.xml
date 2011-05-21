@@ -325,6 +325,20 @@
 and t.id='$id$'
 
   		</select>	
+  		
+  		<select id="getMatklByOpertatorId" resultClass="java.lang.String">
+  			select  distinct mat.id from zg_t_virtualorg_employee emp ,zg_t_virtualorg org,
+				zg_materiel_virtualorg morg,zg_materiel mat 
+				where emp.user_id='$operatorId$'
+				and emp.org_id=org.cuid
+				and morg.org_id=org.cuid
+				 and mat.id in (select tm.id
+				                    from zg_materiel tm
+				                   start with tm.id = morg.matkl
+				                  connect by prior  tm.cuid=tm.parent_id)
+  		</select>	
+  		
+  		
   	
   	
 </sqlMap>
