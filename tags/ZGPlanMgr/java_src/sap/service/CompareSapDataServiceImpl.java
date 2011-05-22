@@ -153,7 +153,7 @@ public class CompareSapDataServiceImpl implements CompareSapDataService {
 			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM_TEMP_ALL t where t.batch_no=").append(batchNo).append(" and t.operate_type is null ");
 			updateBufferSql.append(" and t.aufnr = '"+aufnr+"'");
 			updateBufferSql.append(" minus ");
-			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM S WHERE S.aufnr='"+aufnr+"' and s.arbpl='"+arbpl+"') m where  s.idnrk=m.idnrk and  s.aufnr=m.aufnr and  s.matnr=m.matnr");
+			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM S WHERE S.aufnr='"+aufnr+"' and s.arbpl='"+arbpl+"') m where  s.idnrk=m.idnrk and  s.aufnr=m.aufnr and  and s.posnr = m.posnr");
 			updateBufferSql.append(")");
 		}else {
 			updateBufferSql.append("update ZG_T_ORDERBOM_TEMP_ALL s set s.operate_type= ").append(CompareSapDataService.EDIT);
@@ -163,7 +163,7 @@ public class CompareSapDataServiceImpl implements CompareSapDataService {
 			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,ARBPL,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM_TEMP_ALL t where t.batch_no=").append(batchNo).append(" and t.operate_type is null ");
 			updateBufferSql.append(" and t.aufnr = '"+aufnr+"'  and t.arbpl='"+arbpl+"'");
 			updateBufferSql.append(" minus ");
-			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,ARBPL,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM S WHERE S.aufnr='"+aufnr+"' and s.arbpl='"+arbpl+"') m where  s.idnrk=m.idnrk and  s.aufnr=m.aufnr and  s.matnr=m.matnr");
+			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,ARBPL,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM S WHERE S.aufnr='"+aufnr+"' and s.arbpl='"+arbpl+"') m where  s.idnrk=m.idnrk and  s.aufnr=m.aufnr and  and s.posnr = m.posnr");
 			updateBufferSql.append(")");
 		}
 		
@@ -171,6 +171,7 @@ public class CompareSapDataServiceImpl implements CompareSapDataService {
 		this.baseDao.executeSql(updateBufferSql.toString());
 	}
 
+	
 	private void compareAddOrderBoms(int batchNo,String aufnr,String arbpl,String pxType) {
 		StringBuffer addBufferSql = new StringBuffer();
 		addBufferSql.append("update ZG_T_ORDERBOM_TEMP_ALL temp set operate_type = ").append(CompareSapDataService.ADD).append(" ");
@@ -187,7 +188,16 @@ public class CompareSapDataServiceImpl implements CompareSapDataService {
 	}
 	
 	public static void main(String[] args) {
-		new CompareSapDataServiceImpl().compareEditOrderBoms(30542,"6000075621","J1-N01","");
+		StringBuffer deleteBufferSql = new StringBuffer();
+		deleteBufferSql.append("insert into  zg_t_orderbom_temp_all (ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,CUID ,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_STATE ,STORAGE_NUM,posnr,operate_type,batch_no)");
+		deleteBufferSql.append("select ZDTYL,0 as MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,CUID ,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_STATE ,STORAGE_NUM,posnr,").append(CompareSapDataService.DELETE).append(",").append(123);
+		deleteBufferSql.append(" from zg_t_orderbom m where m.aufnr='123' and m.arbpl='123' and not exists(select 1 from zg_t_orderbom_temp_all t");
+		deleteBufferSql.append(" where t.batch_no = ").append("123");
+		
+		
+			deleteBufferSql.append(" and t.aufnr = m.aufnr  and t.arbpl=m.arbpl and t.idnrk=m.idnrk and m.posnr=t.posnr)");
+
+		System.out.println(deleteBufferSql.toString());
 	}
 
 	/* (non-Javadoc)
