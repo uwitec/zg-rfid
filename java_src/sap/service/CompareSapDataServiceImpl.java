@@ -153,7 +153,7 @@ public class CompareSapDataServiceImpl implements CompareSapDataService {
 			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM_TEMP_ALL t where t.batch_no=").append(batchNo).append(" and t.operate_type is null ");
 			updateBufferSql.append(" and t.aufnr = '"+aufnr+"'");
 			updateBufferSql.append(" minus ");
-			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM S WHERE S.aufnr='"+aufnr+"' and s.arbpl='"+arbpl+"') m where  s.idnrk=m.idnrk and  s.aufnr=m.aufnr and  and s.posnr = m.posnr");
+			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM S WHERE S.aufnr='"+aufnr+"' and s.arbpl='"+arbpl+"') m where  s.idnrk=m.idnrk and  s.aufnr=m.aufnr and   s.posnr = m.posnr");
 			updateBufferSql.append(")");
 		}else {
 			updateBufferSql.append("update ZG_T_ORDERBOM_TEMP_ALL s set s.operate_type= ").append(CompareSapDataService.EDIT);
@@ -163,7 +163,7 @@ public class CompareSapDataServiceImpl implements CompareSapDataService {
 			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,ARBPL,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM_TEMP_ALL t where t.batch_no=").append(batchNo).append(" and t.operate_type is null ");
 			updateBufferSql.append(" and t.aufnr = '"+aufnr+"'  and t.arbpl='"+arbpl+"'");
 			updateBufferSql.append(" minus ");
-			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,ARBPL,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM S WHERE S.aufnr='"+aufnr+"' and s.arbpl='"+arbpl+"') m where  s.idnrk=m.idnrk and  s.aufnr=m.aufnr and  and s.posnr = m.posnr");
+			updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,ARBPL,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM S WHERE S.aufnr='"+aufnr+"' and s.arbpl='"+arbpl+"') m where  s.idnrk=m.idnrk and  s.aufnr=m.aufnr and   s.posnr = m.posnr");
 			updateBufferSql.append(")");
 		}
 		
@@ -188,16 +188,19 @@ public class CompareSapDataServiceImpl implements CompareSapDataService {
 	}
 	
 	public static void main(String[] args) {
-		StringBuffer deleteBufferSql = new StringBuffer();
-		deleteBufferSql.append("insert into  zg_t_orderbom_temp_all (ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,CUID ,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_STATE ,STORAGE_NUM,posnr,operate_type,batch_no)");
-		deleteBufferSql.append("select ZDTYL,0 as MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,CUID ,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_STATE ,STORAGE_NUM,posnr,").append(CompareSapDataService.DELETE).append(",").append(123);
-		deleteBufferSql.append(" from zg_t_orderbom m where m.aufnr='123' and m.arbpl='123' and not exists(select 1 from zg_t_orderbom_temp_all t");
-		deleteBufferSql.append(" where t.batch_no = ").append("123");
+		StringBuffer updateBufferSql = new StringBuffer();
+		updateBufferSql.append("update ZG_T_ORDERBOM_TEMP_ALL s set s.operate_type= ").append(CompareSapDataService.EDIT);
+		updateBufferSql.append(" where batch_no="+123);
+		updateBufferSql.append(" and exists (");
+		updateBufferSql.append("select 1 from (");
 		
-		
-			deleteBufferSql.append(" and t.aufnr = m.aufnr  and t.arbpl=m.arbpl and t.idnrk=m.idnrk and m.posnr=t.posnr)");
+		updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM_TEMP_ALL t where t.batch_no=").append(123).append(" and t.operate_type is null ");
+		updateBufferSql.append(" and t.aufnr = '123'");
+		updateBufferSql.append(" minus ");
+		updateBufferSql.append("select ZDTYL,MENGE,MATKL,LGORT,ZRZQD,IDNRK,AUFNR,MATNR,MSEHL1,MSEHL2,MATNR1,posnr from ZG_T_ORDERBOM S WHERE S.aufnr='123' and s.arbpl='123') m where  s.idnrk=m.idnrk and  s.aufnr=m.aufnr and   s.posnr = m.posnr");
+		updateBufferSql.append(")");
 
-		System.out.println(deleteBufferSql.toString());
+		System.out.println(updateBufferSql.toString());
 	}
 
 	/* (non-Javadoc)
