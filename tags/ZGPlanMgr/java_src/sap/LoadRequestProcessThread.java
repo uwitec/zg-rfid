@@ -495,7 +495,9 @@ public class LoadRequestProcessThread implements Runnable {
 			handlerSapDataService.updateRelation(batchNo);
 			
 			//删除本次对比：如果RFID中当天订单中的poskey从接口过来的排序数据中找不到　则删除　
-			handlerSapDataService.deleteNotExistOrder(batchNo);
+//			handlerSapDataService.deleteNotExistOrder(batchNo);
+			
+			
 			
 			
 			//读取本次要处理的订单
