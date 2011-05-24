@@ -524,7 +524,12 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	}
 	
 	public static void main(String[] args) {
-		new HandlerSapDataServiceImpl().addSapBomsData(12, 1,"aufnr","arbpl","");
+		StringBuffer insertBuffer = new StringBuffer();
+		insertBuffer.append("   INSERT INTO zg_t_orderbom(CUID,ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_NUM,STORAGE_STATE,posnr) ");
+		insertBuffer.append("		select sys_guid(),ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,IDNRK,'123',AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_NUM,STORAGE_STATE,posnr from      ");
+		insertBuffer.append("    (SELECT distinct ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,IDNRK,ORDER_ID,a.AUFNR,a.ARBPL,a.MATNR,a.MAKTX1,a.MAKTX2,MSEHL1,MSEHL2,a.LABEL_CN,SORTF_H,MATNR1,STORAGE_NUM,STORAGE_STATE,posnr   ");
+		insertBuffer.append("    FROM Zg_t_Orderbom_Temp_All a,zg_t_order_temp temp WHERE temp.poskey='123' and a.batch_no='123' and  temp.aufnr=a.aufnr and temp.arbpl=a.arbpl    and temp.batch_no ='123')");
+		System.out.println(insertBuffer.toString());
 	}
 	
 	/**
@@ -695,6 +700,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		StringBuffer sql=new StringBuffer();
 		sql.append("  update zg_t_order_aide t set t.px_date=to_date('"+pxDate+"','yyyy-MM-dd') where t.order_id='"+orderId+"' and t.plant='"+plant+"'");
 		this.baseDao.executeSql(sql.toString());
+		
 	}
 
 	/**
@@ -702,7 +708,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 * @param batchNo
 	 */
 	public void deleteNotExistOrder(int batchNo) {
-		StringBuffer sql=new StringBuffer();
+		/*StringBuffer sql=new StringBuffer();
 		sql.append("select temp.pxdat from zg_t_order_temp temp where  temp.batch_no='"+batchNo+"' and rownum=1");
 		List<Map> list=this.baseDao.queryBySql(sql.toString());
 		
@@ -723,7 +729,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			deleteNotExistOrder(notExistOrderList);
 			
 			
-		}
+		}*/
 			
 		
 	}
@@ -734,10 +740,11 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 */
 	//TODO WENGQ(目前没有备料库表，所以直接物料删除，以后这一部分改成如果领了料的订单删除的话得存备料库表)
 	private void deleteNotExistOrder(List<Map> notExistOrderList) {
-		for(Map orderMap:notExistOrderList){
+		/*for(Map orderMap:notExistOrderList){
 			String orderId=orderMap.get("ORDER_ID").toString();
 			String plant=orderMap.get("DELPLANT").toString();
 			String aufnr=orderMap.get("AUFNR").toString();
+			
 			
 //			deleteOrderPlanGroupByOrderId(orderId,plant);
 //			deleteOrderPlanBomByOrderId(orderId,plant);
@@ -746,7 +753,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 //			deleteOrderBomByOrderId(orderId,plant);
 			deleteOrderAideByOrderId(orderId,plant);
 			deleteOrderByOrderIdPlant(orderId,plant);
-		}
+		}*/
 	}
 	
 
