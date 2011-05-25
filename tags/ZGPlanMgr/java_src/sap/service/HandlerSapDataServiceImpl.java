@@ -515,8 +515,8 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	public void doUpdateOrder(String aufnr,String arbpl, int batchNo,String px,String plant) {
 		StringBuffer updateOrderSql = new StringBuffer();
 		updateOrderSql.append("update zg_t_order t");
-		updateOrderSql.append(" set (ARBPL1,PFLAG,psbh) =");
-		updateOrderSql.append("(Select ARBPL1,'"+px +"' as PFLAG,psbh  from zg_t_order_temp temp ");
+		updateOrderSql.append(" set (ARBPL1,PFLAG,psbh,pcdat,psmng) =");
+		updateOrderSql.append("(Select ARBPL,'"+px +"' as PFLAG,psbh,temp.pcdat,temp.psmng  from zg_t_order_temp temp ");
 		updateOrderSql.append(" where temp.aufnr='"+aufnr+"' and temp.batch_no="+batchNo+" and     rownum=1)");
 		updateOrderSql.append(" where t.aufnr='"+aufnr+"'");
 		this.baseDao.executeSql(updateOrderSql.toString());
@@ -524,12 +524,13 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	}
 	
 	public static void main(String[] args) {
-		StringBuffer insertBuffer = new StringBuffer();
-		insertBuffer.append("   INSERT INTO zg_t_orderbom(CUID,ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,IDNRK,ORDER_ID,AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_NUM,STORAGE_STATE,posnr) ");
-		insertBuffer.append("		select sys_guid(),ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,IDNRK,'123',AUFNR,ARBPL,MATNR,MAKTX1,MAKTX2,MSEHL1,MSEHL2,LABEL_CN,SORTF_H,MATNR1,STORAGE_NUM,STORAGE_STATE,posnr from      ");
-		insertBuffer.append("    (SELECT distinct ZDTYL,MENGE,MATKL,SORTF,LGORT,ZBZ,ZRZQD,IDNRK,ORDER_ID,a.AUFNR,a.ARBPL,a.MATNR,a.MAKTX1,a.MAKTX2,MSEHL1,MSEHL2,a.LABEL_CN,SORTF_H,MATNR1,STORAGE_NUM,STORAGE_STATE,posnr   ");
-		insertBuffer.append("    FROM Zg_t_Orderbom_Temp_All a,zg_t_order_temp temp WHERE temp.poskey='123' and a.batch_no='123' and  temp.aufnr=a.aufnr and temp.arbpl=a.arbpl    and temp.batch_no ='123')");
-		System.out.println(insertBuffer.toString());
+		StringBuffer updateOrderSql = new StringBuffer();
+		updateOrderSql.append("update zg_t_order t");
+		updateOrderSql.append(" set (ARBPL1,PFLAG,psbh,pcdat,psmng) =");
+		updateOrderSql.append("(Select ARBPL,'x' as PFLAG,psbh,temp.pcdat,temp.psmng  from zg_t_order_temp temp ");
+		updateOrderSql.append(" where temp.aufnr='1000020172' and temp.batch_no=185613 and     rownum=1)");
+		updateOrderSql.append(" where t.aufnr='1000020172'");
+		System.out.println(updateOrderSql.toString());
 	}
 	
 	/**
