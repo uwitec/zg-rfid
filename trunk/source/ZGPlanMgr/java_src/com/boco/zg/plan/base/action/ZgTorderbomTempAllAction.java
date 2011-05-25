@@ -17,8 +17,8 @@ import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 
 import com.boco.frame.meta.base.model.TmdEnumevalue;
-import com.boco.zg.plan.base.model.ZgTorderTask;
-import com.boco.zg.plan.base.service.ZgTorderTaskBo;
+import com.boco.zg.plan.base.model.ZgTorderbomTempAll;
+import com.boco.zg.plan.base.service.ZgTorderbomTempAllBo;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
@@ -30,20 +30,20 @@ import com.opensymphony.xwork2.Preparable;
  */
 
 
-public class ZgTorderTaskAction extends BaseStruts2Action implements Preparable,ModelDriven{
+public class ZgTorderbomTempAllAction extends BaseStruts2Action implements Preparable,ModelDriven{
 	//默认多列排序,example: username desc,createTime asc
 	protected static final String DEFAULT_SORT_COLUMNS = null; 
 	
 	//forward paths
-	protected static final String QUERY_JSP = "/modules/base/ZgTorderTask/query_ZgTorderTask.jsp";
-	protected static final String LIST_JSP= "/modules/base/ZgTorderTask/list_ZgTorderTask.jsp";
-	protected static final String CREATE_JSP = "/modules/base/ZgTorderTask/create_ZgTorderTask.jsp";
-	protected static final String EDIT_JSP = "/modules/base/ZgTorderTask/edit_ZgTorderTask.jsp";
-	protected static final String SHOW_JSP = "/modules/base/ZgTorderTask/show_ZgTorderTask.jsp";
+	protected static final String QUERY_JSP = "/modules/base/ZgTorderbomTempAll/query_ZgTorderbomTempAll.jsp";
+	protected static final String LIST_JSP= "/modules/base/ZgTorderbomTempAll/list_ZgTorderbomTempAll.jsp";
+	protected static final String CREATE_JSP = "/modules/base/ZgTorderbomTempAll/create_ZgTorderbomTempAll.jsp";
+	protected static final String EDIT_JSP = "/modules/base/ZgTorderbomTempAll/edit_ZgTorderbomTempAll.jsp";
+	protected static final String SHOW_JSP = "/modules/base/ZgTorderbomTempAll/show_ZgTorderbomTempAll.jsp";
 	//redirect paths,startWith: !
-	protected static final String LIST_ACTION = "!/frame/sys/ZgTorderTask/list.do";
+	protected static final String LIST_ACTION = "!/frame/sys/ZgTorderbomTempAll/list.do";
 	
-	private ZgTorderTaskBo zgTorderTaskBo;
+	private ZgTorderbomTempAllBo zgTorderbomTempAllBo;
 	
 	private Map<String,List<TmdEnumevalue>> enumMap = new HashMap<String, List<TmdEnumevalue>>();
 	
@@ -61,25 +61,25 @@ public class ZgTorderTaskAction extends BaseStruts2Action implements Preparable,
 		this.vmModelBo = vmModelBo;
 	}
 	
-	private ZgTorderTask zgTorderTask;
+	private ZgTorderbomTempAll zgTorderbomTempAll;
 	java.lang.String id = null;
 	private String items;
 
 	public void prepare() throws Exception {
 		if (isNullOrEmptyString(id)) {
-			zgTorderTask = new ZgTorderTask();
+			zgTorderbomTempAll = new ZgTorderbomTempAll();
 		} else {
-			zgTorderTask = (ZgTorderTask)zgTorderTaskBo.getById(id);
+			zgTorderbomTempAll = (ZgTorderbomTempAll)zgTorderbomTempAllBo.getById(id);
 		}
 	}
 	
 	/** 增加setXXXX()方法,spring就可以通过autowire自动设置对象属性 */
-	public void setZgTorderTaskBo(ZgTorderTaskBo bo) {
-		this.zgTorderTaskBo = bo;
+	public void setZgTorderbomTempAllBo(ZgTorderbomTempAllBo bo) {
+		this.zgTorderbomTempAllBo = bo;
 	}	
 	
 	public Object getModel() {
-		return zgTorderTask;
+		return zgTorderbomTempAll;
 	}
 	
 	public void setId(java.lang.String val) {
@@ -101,8 +101,8 @@ public class ZgTorderTaskAction extends BaseStruts2Action implements Preparable,
 	public String list() {
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		//pageRequest.getFilters().put("key",value);     //add custom filter
-//		getRequest().setAttribute("attrMap",vmModelBo.getAttrsByUser(zgTorderTask.BM_CLASS_ID,super.getSessionUserId()));
-		Page page = zgTorderTaskBo.findByPageRequest(pageRequest);
+//		getRequest().setAttribute("attrMap",vmModelBo.getAttrsByUser(zgTorderbomTempAll.BM_CLASS_ID,super.getSessionUserId()));
+		Page page = zgTorderbomTempAllBo.findByPageRequest(pageRequest);
 		savePage(page,pageRequest);
 		return LIST_JSP;
 	}
@@ -119,7 +119,7 @@ public class ZgTorderTaskAction extends BaseStruts2Action implements Preparable,
 	
 	/** 保存新增对象 */
 	public void save() throws IOException {
-		zgTorderTaskBo.save(zgTorderTask);
+		zgTorderbomTempAllBo.save(zgTorderbomTempAll);
 		promtAndCloseWindow("操作成功!");
 	}
 	
@@ -130,7 +130,7 @@ public class ZgTorderTaskAction extends BaseStruts2Action implements Preparable,
 	
 	/**保存更新对象*/
 	public void update() throws IOException  {
-		zgTorderTaskBo.update(this.zgTorderTask);
+		zgTorderbomTempAllBo.update(this.zgTorderbomTempAll);
 		promtAndCloseWindow("操作成功!");
 	}
 	
@@ -139,7 +139,7 @@ public class ZgTorderTaskAction extends BaseStruts2Action implements Preparable,
 	public void delete() throws IOException {
 		String params[]=items.split(",");
 		for(int i = 0; i < params.length; i++) {
-			zgTorderTaskBo.removeById(params[i]);
+			zgTorderbomTempAllBo.removeById(params[i]);
 		}
 		rendHtml("parent.query();");
 	}

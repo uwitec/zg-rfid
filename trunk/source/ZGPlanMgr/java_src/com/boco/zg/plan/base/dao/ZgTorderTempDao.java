@@ -6,41 +6,21 @@
 
 package com.boco.zg.plan.base.dao;
 
-import java.util.*;
-
-import javacommon.base.*;
-import javacommon.util.*;
-import javacommon.base.model.*;
-
-import cn.org.rapid_framework.util.*;
-import cn.org.rapid_framework.web.util.*;
-import cn.org.rapid_framework.page.*;
-import cn.org.rapid_framework.page.impl.*;
-import cn.org.rapid_framework.beanutils.BeanUtils;
-
-import com.boco.zg.plan.base.model.*;
-import com.boco.zg.plan.base.dao.*;
-import com.boco.zg.plan.base.service.*;
-
-/**
- * @author 李智伟 email:v_lizhiwei@boco.com.cn
- * @version 1.0
- * @since 1.0
- */
-
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javacommon.base.BaseIbatisDao;
+
 import org.springframework.stereotype.Component;
 
+import cn.org.rapid_framework.beanutils.BeanUtils;
+import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 import cn.org.rapid_framework.util.MapAndObject;
 
 import com.boco.zg.plan.base.model.ZgTorderTemp;
-import com.boco.frame.sys.base.model.FwOrganization;
-import com.boco.frame.sys.base.model.Province;
+
 
 
 @Component
@@ -85,6 +65,30 @@ public class ZgTorderTempDao extends BaseIbatisDao<ZgTorderTemp,java.lang.String
 		otherFilters.put("sortColumns", pageRequest.getSortColumns());
 		Map parameterObject = new MapAndObject(otherFilters,pageRequest.getFilters());
 		return getSqlMapClientTemplate().queryForList("ZgTorderTemp.pageSelect", parameterObject);
+	}
+
+	/**
+	 * @param zgTorderTemp
+	 * @return
+	 */
+	public String saveZgTOrder(ZgTorderTemp zgTorderTemp) {
+		return super.getSqlMapClientTemplate().insert("ZgTorderTemp.insertZG_T_ORDER",zgTorderTemp).toString();
+	}
+
+	/**
+	 * @param zgTorderTemp
+	 * @return
+	 */
+	public int updateZgTOrder(ZgTorderTemp zgTorderTemp) {
+		return super.getSqlMapClientTemplate().update("ZgTorderTemp.updateZG_T_ORDER",zgTorderTemp);
+	}
+
+	/**
+	 * @param sapOrder
+	 * @return
+	 */
+	public int updateZgTOrderForChange(ZgTorderTemp sapOrder) {
+		return super.getSqlMapClientTemplate().update("ZgTorderTemp.updateZgTOrderForChange",sapOrder);
 	}
 
 }

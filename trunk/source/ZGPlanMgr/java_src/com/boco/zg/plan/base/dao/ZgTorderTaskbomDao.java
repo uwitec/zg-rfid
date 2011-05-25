@@ -67,4 +67,37 @@ public class ZgTorderTaskbomDao extends BaseIbatisDao<ZgTorderTaskbom,java.lang.
 		return getSqlMapClientTemplate().queryForList("ZgTorderTaskbom.pageSelect", parameterObject);
 	}
 
+	/**
+	 * @param paramsMap
+	 * @return
+	 */
+	public ZgTorderTaskbom getTaskbomByTaskIdAufnrIdnrkPosnr(Map paramsMap) {
+		List<ZgTorderTaskbom> list=getSqlMapClientTemplate().queryForList("ZgTorderTaskbom.getTaskbomByTaskIdAufnrIdnrkPosnr",paramsMap);
+		return list.size()>0?list.get(0):null;
+	}
+
+	/**
+	 * 根据taskID将他的物料全部设置需求数量为0
+	 * @param paramsMap
+	 */
+	public void updateTaskBomMengeTO0ByTaskId(Map paramsMap) {
+		getSqlMapClientTemplate().update("ZgTorderTask.updateTaskBomMengeTO0ByTaskId",paramsMap);
+	}
+	
+	/**
+	 * 根据taskID将他的删除物料
+	 * @param paramsMap
+	 */
+	public void delTaskBomTaskId(Map paramsMap) {
+		getSqlMapClientTemplate().update("ZgTorderTask.delTaskBomTaskId",paramsMap);
+	}
+
+	/**
+	 * @param paramsMap
+	 * @return
+	 */
+	public List<ZgTorderTaskbom> getTaskbomAufnrIdnrkPosnr(Map paramsMap) {
+		return getSqlMapClientTemplate().queryForList("ZgTorderTaskbom.getTaskbomByTaskIdAufnrIdnrkPosnr",paramsMap);
+	}
+
 }
