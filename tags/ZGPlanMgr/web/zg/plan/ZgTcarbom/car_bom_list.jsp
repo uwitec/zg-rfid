@@ -185,7 +185,6 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 </head>
 <body>
 
-		
 		<div class="noprint">
      
 	<form id="carList" name="carList" action="<c:url value="/zg/plan/ZgTcarplan/loadCarList.do"/>" method="post" style="display: inline;" >
@@ -195,10 +194,12 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 	<input type="hidden" name="s_planType" value="${pageRequest.filters.planType }"/>
 	<input type="hidden" name="s_carId" value="${pageRequest.filters.carId }"/>
 	<input type="hidden" name="s_lgort" value="${pageRequest.filters.lgort }"/>
+	<input type="hidden" name="s_lgortName" value="${pageRequest.filters.lgortName }"/>
 	<input type="hidden"  name="storageUserId" id="storageUserId"/>
 	<input type="hidden"  name="s_aufnr" id="s_aufnr" value="${pageRequest.filters.aufnr }"/>
 	
 		<div>
+		订单号:${aufnrs}
 		</div>
 		<div id="grid-panel" class="grid-panel">
 			<div class="title" >装车计划</div>
