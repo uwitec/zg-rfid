@@ -723,6 +723,12 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		}
 		
 		getRequest().setAttribute("bomList", bomList);
+		String[]  aufnrArbpls =zgTcarplanExBo.getAufnrsByorderBomIds(bomList);
+		getRequest().setAttribute("aufnrs", aufnrArbpls[0]);
+		getRequest().setAttribute("arbpls", aufnrArbpls[1]);
+		//根据领料计划分组ID
+		List<ZgTorder> orderList=zgTorderExBo.getOrderInfoListByGroupId(groupId);
+		getRequest().setAttribute("orderList", orderList);
 		getRequest().setAttribute("pageRequest", pageRequest);
 		return CAR_BOM_LIST;
 	}
