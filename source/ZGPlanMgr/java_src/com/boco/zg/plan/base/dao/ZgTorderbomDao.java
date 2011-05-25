@@ -108,4 +108,43 @@ public class ZgTorderbomDao extends BaseIbatisDao<ZgTorderbom,java.lang.String>{
 		findDynQuery(sql);
 	}
 
+	/**
+	 * @param aufnr
+	 * @param idnrk
+	 * @param posnr
+	 * @return
+	 */
+	public List<ZgTorderbom> getOrderBomByAufnrIdnrkPosnr(String aufnr,String idnrk, String posnr) {
+		Map<String,Object> params=new HashMap<String , Object>();
+		params.put("aufnr", aufnr);
+		params.put("idnrk", idnrk);
+		params.put("posnr", posnr);
+		return getSqlMapClientTemplate().queryForList("ZgTorderbom.getOrderBomByAufnrIdnrkPosnr", params);
+	}
+
+	/**
+	 * 根据aufnr arbpl plant 对比BOM，获取在rfid中应该删除的BOM
+	 * @param paramsMap
+	 * @return
+	 */
+	public List<ZgTorderbom> getBomListByBatchNoAufnrArbplPlant(Map paramsMap) {
+		return getSqlMapClientTemplate().queryForList("ZgTorderbom.getBomListByBatchNoAufnrArbplPlant", paramsMap);
+	}
+
+	
+	/**
+	 * @param paramsMap
+	 * @return
+	 */
+	public List<ZgTorderbom> getorderBomByTaskidSortfs(Map paramsMap) {
+		return getSqlMapClientTemplate().queryForList("ZgTorderbom.getorderBomByTaskidSortfs",paramsMap);
+	}
+
+	/**
+	 * @param paramsMap
+	 */
+	public void saveZgtorderTaskBomByOrderIdTaskId(Map paramsMap) {
+		 getSqlMapClientTemplate().insert("ZgTorderbom.saveZgtorderTaskBomByOrderIdTaskId",paramsMap);
+	}
+
 }

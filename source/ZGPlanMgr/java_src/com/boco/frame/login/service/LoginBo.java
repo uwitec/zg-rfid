@@ -41,7 +41,7 @@ public class LoginBo {
 		fwEmployee.setUserId(loginForm.getUserId());
 		fwEmployee = fwEmployeeBo.findByPropertyUnique(fwEmployee);
 		if(fwEmployee != null) {
-			if(!fwEmployee.getPassword().equals(loginForm.getPassword())) {
+			if(!loginForm.getPassword().equals(fwEmployee.getPassword())) {
 				resultMap.put("success", "false"); 
 				resultMap.put("reason", "1"); 
 			}else {

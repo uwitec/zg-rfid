@@ -96,4 +96,14 @@ public class ZgTorderDao extends BaseIbatisDao<ZgTorder,java.lang.String>{
 		return pageQuery("ZgTorder.pageSelect","ZgTorder.count1",pr);
 	}
 
+	/**
+	 * 根据订单号和生产厂查找订单排序数据
+	 * @param zgTorder
+	 * @return
+	 */
+	public List<ZgTorder> getOrderListByAufnrPlant(ZgTorder zgTorder) {
+		return getSqlMapClientTemplate().queryForList("ZgTorder.getOrderListByAufnrPlant",zgTorder);
+	}
+
+
 }

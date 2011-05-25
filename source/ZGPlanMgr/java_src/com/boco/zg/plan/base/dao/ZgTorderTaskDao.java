@@ -67,4 +67,17 @@ public class ZgTorderTaskDao extends BaseIbatisDao<ZgTorderTask,java.lang.String
 		return getSqlMapClientTemplate().queryForList("ZgTorderTask.pageSelect", parameterObject);
 	}
 
+	
+	/**
+	 * @param paramsMap
+	 * @return
+	 */
+	public ZgTorderTask findTaskByAufnrArbplPlant(Map paramsMap) {
+		List<ZgTorderTask> list=getSqlMapClientTemplate().queryForList("ZgTorderTask.findTaskByAufnrArbplPlant",paramsMap);
+		return list.size()==0?null:list.get(0);
+	}
+
+
+	
+
 }

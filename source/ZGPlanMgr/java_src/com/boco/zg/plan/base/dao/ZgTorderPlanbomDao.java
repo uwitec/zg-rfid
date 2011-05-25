@@ -105,4 +105,51 @@ public class ZgTorderPlanbomDao extends BaseIbatisDao<ZgTorderPlanbom,java.lang.
 		return super.getSqlMapClientTemplate().insert("ZgTorderPlanbom.insertZG_T_ORDER_PLANBOM1",zgTorderPlanbom);
 	}
 
+
+	/**
+	 * @param paramsMap
+	 * @return
+	 */
+	public ZgTorderPlanbom getPlanBomByTaskIdPlanTypeTaskBomId(Map paramsMap) {
+		List<ZgTorderPlanbom> list =getSqlMapClientTemplate().queryForList("ZgTorderPlanbom.getPlanBomByTaskIdPlanTypeTaskBomId",paramsMap);
+		return list.size()>0?list.get(0):null;
+	}
+	
+	/**
+	 * @param paramsMap
+	 * @return
+	 */
+	public List<ZgTorderPlanbom> getPlanBomTaskBomId(Map paramsMap) {
+		return getSqlMapClientTemplate().queryForList("ZgTorderPlanbom.getPlanBomByTaskIdPlanTypeTaskBomId",paramsMap);
+	}
+
+
+	/**
+	 * @param planId
+	 * @param taskBomId
+	 * @return
+	 */
+	public ZgTorderPlanbom getPlanBomByPlanIdTaskBomId(Map paramsMap) {
+		List<ZgTorderPlanbom> list =getSqlMapClientTemplate().queryForList("ZgTorderPlanbom.getPlanBomByPlanIdTaskBomId",paramsMap);
+		return list.size()>0?list.get(0):null;
+	}
+
+	/**
+	 * 根据taskid，plantype设置其他领料计划BOM的需求数量为0 并设置退料数据
+	 * @param paramsMap
+	 */
+	public void updatePlanBomCarNumTo0ByPlanId(Map paramsMap) {
+		getSqlMapClientTemplate().update("ZgTorderPlanbom.updatePlanBomCarNumTo0ByPlanId",paramsMap);
+	}
+	
+	/**
+	 * 根据taskid，plantype设置其他领料计划BOM的需求数量为0 并设置退料数据
+	 * @param paramsMap
+	 */
+	public void delPlanBomPlanId(Map paramsMap) {
+		getSqlMapClientTemplate().delete("ZgTorderPlanbom.delPlanBomPlanId",paramsMap);
+	}
+	
+	
+
 }
