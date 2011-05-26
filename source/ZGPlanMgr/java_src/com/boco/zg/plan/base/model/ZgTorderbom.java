@@ -127,6 +127,7 @@ public class ZgTorderbom extends BaseEntity {
 	private Long semifinStoreNum;//半成品库存数量
 	
 	private Long bomNum;
+	private String taskBomId;
 	//columns END
 	public java.lang.String getCuid() {
 		return this.cuid;
@@ -506,6 +507,14 @@ public class ZgTorderbom extends BaseEntity {
 
 	public void setMatklSelf(String matklSelf) {
 		this.matklSelf = matklSelf;
+	}
+
+	public String getTaskBomId() {
+		return taskBomId;
+	}
+
+	public void setTaskBomId(String taskBomId) {
+		this.taskBomId = taskBomId;
 	}
 
 	

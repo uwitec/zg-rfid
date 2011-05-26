@@ -115,6 +115,8 @@ public class ZgTorderPlanbom extends BaseEntity {
 	private Long moveNumIn;
 	private Long waitBackNum;
 	private Long storageNum;
+	private String taskBomId;
+	private String orderTaskId;
 	
 	//columns END
 	public java.lang.String getCuid() {
@@ -295,14 +297,14 @@ public class ZgTorderPlanbom extends BaseEntity {
 		this.state = value;
 	}
 	public java.lang.Long getCompleteNum() {
-		return this.completeNum;
+		return this.completeNum==null?0l:this.completeNum;
 	}
 	
 	public void setCompleteNum(java.lang.Long value) {
 		this.completeNum = value;
 	}
 	public java.lang.Long getCarNum() {
-		return this.carNum;
+		return this.carNum==null?0l:this.carNum;
 	}
 	
 	public void setCarNum(java.lang.Long value) {
@@ -310,7 +312,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 	}
 
 	public java.lang.Long getPlanNum() {
-		return planNum;
+		return planNum==null?0l:this.planNum;
 	}
 
 	public void setPlanNum(java.lang.Long planNum) {
@@ -447,6 +449,22 @@ public class ZgTorderPlanbom extends BaseEntity {
 
 	public void setStorageNum(Long storageNum) {
 		this.storageNum = storageNum;
+	}
+
+	public String getTaskBomId() {
+		return taskBomId;
+	}
+
+	public void setTaskBomId(String taskBomId) {
+		this.taskBomId = taskBomId;
+	}
+
+	public String getOrderTaskId() {
+		return orderTaskId;
+	}
+
+	public void setOrderTaskId(String orderTaskId) {
+		this.orderTaskId = orderTaskId;
 	}
 
 }
