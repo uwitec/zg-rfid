@@ -690,14 +690,17 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	}
 
 
-	public boolean checkPlanHasPause(String carPlanId) {
+	public String checkPlanHasPause(String carPlanId) {
 		StringBuffer sql=new StringBuffer();
-		sql.append("select plan.state ");
-		sql.append(" from zg_t_carplan  cplan,   zg_t_carbom  cbom,  zg_t_order_planbom pbom,   zg_t_order_plan    plan ");
+		sql.append("select od.aufnr ");
+		sql.append(" from zg_t_carplan  cplan,     zg_t_order od, zg_t_carbom  cbom,  zg_t_order_planbom pbom,   zg_t_order_plan    plan ");
 		sql.append(" where cplan.cuid = '"+carPlanId+"'   and cplan.cuid = cbom.car_plan_id   and cbom.order_planbom_id = pbom.cuid ");
-		sql.append("  and pbom.order_plan_id = plan.cuid   and plan.state = '-2'");
+		sql.append("  and pbom.order_plan_id = plan.cuid   and plan.state = '-2'  and od.cuid=plan.order_id and cbom.storage_user_id is  null and rownum=1");
 		List<Map> list= ((ZgTcarplanDao)this.getEntityDao()).findDynQuery(sql.toString());
-		return list.size()>0;
+		if(list.size()>0){
+			return IbatisDAOHelper.getStringValue(list.get(0),"AUFNR");
+		}
+		return "";
 	}
 
 
