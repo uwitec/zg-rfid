@@ -319,14 +319,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             <table cellpadding="0" cellspacing="0" class="ow_btm_mg" id="Table6">
                                 <tr>
                                     <td class="ow_btm_msg">
-                                    <c:if test="${pause}">
-                                     <span style="font-size:14px;font-weight:bold; white-space:nowrap;color:red; ">该订单已经被暂停，请确认!</span>
+                                    <c:if test="${not empty pause}">
+                                     <span style="font-size:14px;font-weight:bold; white-space:nowrap;color:red; ">${pause}订单已经被暂停，请移除相关物料!</span>
                                     </c:if>
                                    
                                     </td>
                                     <td class="ow_btm_btn">
                                         <!------------------ 按钮 ------------------>
-                                          <c:if test="${!pause}">
+                                          <c:if test="${empty pause}">
                                                <a href="javascript:" class="combtn"  name="submitBtn" onclick="confirmCarPlan(this)" ><span name="submitBtn" >确认领料</span></a>
                                           </c:if>
                                         <c:if test="${hasCar=='1'}">
