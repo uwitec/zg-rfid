@@ -6,36 +6,15 @@
 
 package com.boco.zg.plan.base.model;
 
-import java.util.List;
-
-import javacommon.base.service.IVmModelBo;
+import javacommon.base.BaseEntity;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import cn.org.rapid_framework.util.ApplicationContextHolder;
-
-import com.boco.frame.meta.base.model.TmdEnumevalue;
-
-import java.util.*;
-
-import javacommon.base.*;
-import javacommon.util.*;
-import javacommon.base.model.*;
-
-import cn.org.rapid_framework.util.*;
-import cn.org.rapid_framework.web.util.*;
-import cn.org.rapid_framework.page.*;
-import cn.org.rapid_framework.page.impl.*;
-import cn.org.rapid_framework.beanutils.BeanUtils;
-
-import com.boco.zg.plan.base.model.*;
-import com.boco.zg.plan.base.dao.*;
-import com.boco.zg.plan.base.service.*;
 
 /**
- * @author 李智伟 email:v_lizhiwei@boco.com.cn
+ * @author system email:mysunshines@163.com
  * @version 1.0
  * @since 1.0
  */
@@ -49,49 +28,48 @@ public class ZgTorderTemp extends BaseEntity {
 	public String getBM_CLASS_ID(){
 		return BM_CLASS_ID;
 	}
-	public static final String ALIAS_CUID = "订单ID";
-	public static final String ALIAS_LABEL_CN = "名称属性";
-	public static final String ALIAS_AUFNR = "订单编号";
-	public static final String ALIAS_ORDER_STATE = "订单状态";
-	public static final String ALIAS_SUBMIT_USER = "提交人";
-	public static final String ALIAS_SUBMIT_DATE = "提交日期";
-	public static final String ALIAS_MANDT = "集团";
-	public static final String ALIAS_PXDAT = "排序日期";
-	public static final String ALIAS_PLANT = "生成厂";
-	public static final String ALIAS_PCDAT = "排产日期";
-	public static final String ALIAS_MATNR = "物料号";
-	public static final String ALIAS_KDAUF = "销售订单号";
-	public static final String ALIAS_KDPOS = "销售订单行项";
-	public static final String ALIAS_KDTXT = "销售订单";
-	public static final String ALIAS_ZCKPP = "出口品牌";
-	public static final String ALIAS_MAKTX2 = "客户机型";
-	public static final String ALIAS_MAKTX1 = "公司机型";
-	public static final String ALIAS_ZZCKS = "款式";
-	public static final String ALIAS_ATWRT2 = "压机型号";
-	public static final String ALIAS_PMENGE = "排序数量";
-	public static final String ALIAS_ZTXT02 = "合同页码";
-	public static final String ALIAS_ZDBLC = "打包类型";
-	public static final String ALIAS_BRGEW2 = "备注";
-	public static final String ALIAS_CRDAT = "创建日期";
-	public static final String ALIAS_CPUTM = "创建时间";
-	public static final String ALIAS_CRNAM = "创建人";
-	public static final String ALIAS_MRNAM = "更改日期";
-	public static final String ALIAS_ZMUZE = "更改时间";
-	public static final String ALIAS_MNAME = "更改人";
-	public static final String ALIAS_FBDAT = "发布日期";
-	public static final String ALIAS_FBUZE = "发布时间";
-	public static final String ALIAS_FNAME = "发布人";
-	public static final String ALIAS_PFLAG = "排序状态";
-	public static final String ALIAS_BATCH_NO = "批次";
-	public static final String ALIAS_OPERATE_TYPE = "操作类型";
+	public static final String ALIAS_PXDAT = "PXDAT";
+	public static final String ALIAS_PLANT = "PLANT";
+	public static final String ALIAS_MIPOS = "MIPOS";
+	public static final String ALIAS_PCDAT = "PCDAT";
+	public static final String ALIAS_ARBPL = "ARBPL";
+	public static final String ALIAS_MATNR = "MATNR";
+	public static final String ALIAS_KDAUF = "KDAUF";
+	public static final String ALIAS_KDPOS = "KDPOS";
+	public static final String ALIAS_KDTXT = "KDTXT";
+	public static final String ALIAS_ZCKPP = "ZCKPP";
+	public static final String ALIAS_MAKTX2 = "MAKTX2";
+	public static final String ALIAS_MAKTX1 = "MAKTX1";
+	public static final String ALIAS_ZZCKS = "ZZCKS";
+	public static final String ALIAS_ATWRT2 = "ATWRT2";
+	public static final String ALIAS_PSMNG = "PSMNG";
+	public static final String ALIAS_PMENGE = "PMENGE";
+	public static final String ALIAS_ZTXT02 = "ZTXT02";
+	public static final String ALIAS_ZDBLC = "ZDBLC";
+	public static final String ALIAS_BRGEW2 = "BRGEW2";
+	public static final String ALIAS_CRDAT = "CRDAT";
+	public static final String ALIAS_CPUTM = "CPUTM";
+	public static final String ALIAS_CRNAM = "CRNAM";
+	public static final String ALIAS_MRNAM = "MRNAM";
+	public static final String ALIAS_ZMUZE = "ZMUZE";
+	public static final String ALIAS_MNAME = "MNAME";
+	public static final String ALIAS_FBDAT = "FBDAT";
+	public static final String ALIAS_FNAME = "FNAME";
+	public static final String ALIAS_FBUZE = "FBUZE";
+	public static final String ALIAS_PFLAG = "PFLAG";
+	public static final String ALIAS_AUFNR = "AUFNR";
+	public static final String ALIAS_ORDER_STATE = "ORDER_STATE";
+	public static final String ALIAS_SUBMIT_USER = "SUBMIT_USER";
+	public static final String ALIAS_SUBMIT_DATE = "SUBMIT_DATE";
+	public static final String ALIAS_MANDT = "MANDT";
+	public static final String ALIAS_BATCH_NO = "BATCH_NO";
+	public static final String ALIAS_CUID = "CUID";
+	public static final String ALIAS_LABEL_CN = "LABEL_CN";
+	public static final String ALIAS_OPERATE_TYPE = "OPERATE_TYPE";
 	public static final String ALIAS_PSBH = "PSBH";
-	public static final String ALIAS_ARBPL = "生成线";
-	public static final String SUBMIT_USER_FW_EMPLOYEE_FW_OPERATOR = "t0_0_1.t0_";
-	public static final String CRNAM_FW_EMPLOYEE_FW_OPERATOR = "t0_1_2.t0_";
-	public static final String MNAME_FW_EMPLOYEE_FW_OPERATOR = "t0_2_3.t0_";
-	public static final String FNAME_FW_EMPLOYEE_FW_OPERATOR = "t0_3_4.t0_";
+	public static final String ALIAS_POSKEY = "POSKEY";
+	public static final String ALIAS_ARBPL1 = "ARBPL1";
 	//date formats
-	public static final String FORMAT_SUBMIT_DATE = DATE_FORMAT;
 	public static final String FORMAT_PXDAT = DATE_FORMAT;
 	public static final String FORMAT_PCDAT = DATE_FORMAT;
 	public static final String FORMAT_CRDAT = DATE_FORMAT;
@@ -100,6 +78,7 @@ public class ZgTorderTemp extends BaseEntity {
 	public static final String FORMAT_ZMUZE = DATE_FORMAT;
 	public static final String FORMAT_FBDAT = DATE_FORMAT;
 	public static final String FORMAT_FBUZE = DATE_FORMAT;
+	public static final String FORMAT_SUBMIT_DATE = DATE_FORMAT;
 	
 	/**
 	 * get meta labelValue with , split
@@ -112,24 +91,15 @@ public class ZgTorderTemp extends BaseEntity {
 	}
 	
 	//columns START
-	private java.lang.String cuid;
-	private java.lang.String labelCn;
-	private java.lang.String aufnr;
-	private java.lang.String orderState;
-	private java.lang.String submitUser_labelCn;
-	private RelatedModel submitUser_related = new RelatedModel("FW_EMPLOYEE","CUID","LABEL_CN");
-	private java.lang.String submitUser;
-	private java.util.Date submitDate_start;
-	private java.util.Date submitDate_end;
-	private java.util.Date submitDate;
-	private java.lang.String mandt;
 	private java.util.Date pxdat_start;
 	private java.util.Date pxdat_end;
 	private java.util.Date pxdat;
 	private java.lang.String plant;
+	private java.lang.String mipos;
 	private java.util.Date pcdat_start;
 	private java.util.Date pcdat_end;
 	private java.util.Date pcdat;
+	private java.lang.String arbpl;
 	private java.lang.String matnr;
 	private java.lang.String kdauf;
 	private java.lang.Long kdpos;
@@ -139,6 +109,7 @@ public class ZgTorderTemp extends BaseEntity {
 	private java.lang.String maktx1;
 	private java.lang.String zzcks;
 	private java.lang.String atwrt2;
+	private java.lang.Long psmng;
 	private java.lang.Long pmenge;
 	private java.lang.String ztxt02;
 	private java.lang.String zdblc;
@@ -149,8 +120,6 @@ public class ZgTorderTemp extends BaseEntity {
 	private java.util.Date cputm_start;
 	private java.util.Date cputm_end;
 	private java.util.Date cputm;
-	private java.lang.String crnam_labelCn;
-	private RelatedModel crnam_related = new RelatedModel("FW_EMPLOYEE","CUID","LABEL_CN");
 	private java.lang.String crnam;
 	private java.util.Date mrnam_start;
 	private java.util.Date mrnam_end;
@@ -158,109 +127,30 @@ public class ZgTorderTemp extends BaseEntity {
 	private java.util.Date zmuze_start;
 	private java.util.Date zmuze_end;
 	private java.util.Date zmuze;
-	private java.lang.String mname_labelCn;
-	private RelatedModel mname_related = new RelatedModel("FW_EMPLOYEE","CUID","LABEL_CN");
 	private java.lang.String mname;
 	private java.util.Date fbdat_start;
 	private java.util.Date fbdat_end;
 	private java.util.Date fbdat;
+	private java.lang.String fname;
 	private java.util.Date fbuze_start;
 	private java.util.Date fbuze_end;
 	private java.util.Date fbuze;
-	private java.lang.String fname_labelCn;
-	private RelatedModel fname_related = new RelatedModel("FW_EMPLOYEE","CUID","LABEL_CN");
-	private java.lang.String fname;
 	private java.lang.String pflag;
-	private java.lang.Long batchNo;
+	private java.lang.String aufnr;
+	private java.lang.String orderState;
+	private java.lang.String submitUser;
+	private java.util.Date submitDate_start;
+	private java.util.Date submitDate_end;
+	private java.util.Date submitDate;
+	private java.lang.String mandt;
+	private java.lang.String batchNo;
+	private java.lang.String cuid;
+	private java.lang.String labelCn;
 	private java.lang.Long operateType;
-	private java.lang.String psbh;
-	private java.lang.String arbpl;
+	private java.lang.Long psbh;
+	private java.lang.String poskey;
+	private java.lang.String arbpl1;
 	//columns END
-	public java.lang.String getCuid() {
-		return this.cuid;
-	}
-	
-	public void setCuid(java.lang.String value) {
-		this.cuid = value;
-	}
-	public java.lang.String getLabelCn() {
-		return this.labelCn;
-	}
-	
-	public void setLabelCn(java.lang.String value) {
-		this.labelCn = value;
-	}
-	public java.lang.String getAufnr() {
-		return this.aufnr;
-	}
-	
-	public void setAufnr(java.lang.String value) {
-		this.aufnr = value;
-	}
-	public java.lang.String getOrderState() {
-		return this.orderState;
-	}
-	
-	public void setOrderState(java.lang.String value) {
-		this.orderState = value;
-	}
-	public java.lang.String getSubmitUser_labelCn() {
-		return this.submitUser_labelCn;
-	}
-	
-	public void setSubmitUser_labelCn(java.lang.String value) {
-		this.submitUser_labelCn = value;
-	}
-	
-	public RelatedModel getSubmitUser_related() {
-		return this.submitUser_related;
-	}
-	
-	public void setSubmitUser_related(RelatedModel value) {
-		this.submitUser_related = value;
-	}
-	public java.lang.String getSubmitUser() {
-		return this.submitUser;
-	}
-	
-	public void setSubmitUser(java.lang.String value) {
-		this.submitUser = value;
-	}
-	public String getSubmitDateString() {
-		return date2String(getSubmitDate(), FORMAT_SUBMIT_DATE);
-	}
-	public void setSubmitDateString(String value) {
-		setSubmitDate(string2Date(value, FORMAT_SUBMIT_DATE,java.util.Date.class));
-	}
-	public java.util.Date getSubmitDate_start() {
-		return this.submitDate_start;
-	}
-	
-	public void setSubmitDate_start(java.util.Date value) {
-		this.submitDate_start = value;
-	}
-	
-	public java.util.Date getSubmitDate_end() {
-		return this.submitDate_end;
-	}
-	
-	public void setSubmitDate_end(java.util.Date value) {
-		this.submitDate_end = value;
-	}
-	public java.util.Date getSubmitDate() {
-		return this.submitDate;
-	}
-	
-	public void setSubmitDate(java.util.Date value) {
-		this.submitDate = value;
-	}
-	public java.lang.String getMandt() {
-		return this.mandt;
-	}
-	
-	public void setMandt(java.lang.String value) {
-		this.mandt = value;
-	}
 	public String getPxdatString() {
 		return date2String(getPxdat(), FORMAT_PXDAT);
 	}
@@ -296,6 +186,13 @@ public class ZgTorderTemp extends BaseEntity {
 	public void setPlant(java.lang.String value) {
 		this.plant = value;
 	}
+	public java.lang.String getMipos() {
+		return this.mipos;
+	}
+	
+	public void setMipos(java.lang.String value) {
+		this.mipos = value;
+	}
 	public String getPcdatString() {
 		return date2String(getPcdat(), FORMAT_PCDAT);
 	}
@@ -323,6 +220,13 @@ public class ZgTorderTemp extends BaseEntity {
 	
 	public void setPcdat(java.util.Date value) {
 		this.pcdat = value;
+	}
+	public java.lang.String getArbpl() {
+		return this.arbpl;
+	}
+	
+	public void setArbpl(java.lang.String value) {
+		this.arbpl = value;
 	}
 	public java.lang.String getMatnr() {
 		return this.matnr;
@@ -386,6 +290,13 @@ public class ZgTorderTemp extends BaseEntity {
 	
 	public void setAtwrt2(java.lang.String value) {
 		this.atwrt2 = value;
+	}
+	public java.lang.Long getPsmng() {
+		return this.psmng;
+	}
+	
+	public void setPsmng(java.lang.Long value) {
+		this.psmng = value;
 	}
 	public java.lang.Long getPmenge() {
 		return this.pmenge;
@@ -471,21 +382,6 @@ public class ZgTorderTemp extends BaseEntity {
 	public void setCputm(java.util.Date value) {
 		this.cputm = value;
 	}
-	public java.lang.String getCrnam_labelCn() {
-		return this.crnam_labelCn;
-	}
-	
-	public void setCrnam_labelCn(java.lang.String value) {
-		this.crnam_labelCn = value;
-	}
-	
-	public RelatedModel getCrnam_related() {
-		return this.crnam_related;
-	}
-	
-	public void setCrnam_related(RelatedModel value) {
-		this.crnam_related = value;
-	}
 	public java.lang.String getCrnam() {
 		return this.crnam;
 	}
@@ -549,21 +445,6 @@ public class ZgTorderTemp extends BaseEntity {
 	public void setZmuze(java.util.Date value) {
 		this.zmuze = value;
 	}
-	public java.lang.String getMname_labelCn() {
-		return this.mname_labelCn;
-	}
-	
-	public void setMname_labelCn(java.lang.String value) {
-		this.mname_labelCn = value;
-	}
-	
-	public RelatedModel getMname_related() {
-		return this.mname_related;
-	}
-	
-	public void setMname_related(RelatedModel value) {
-		this.mname_related = value;
-	}
 	public java.lang.String getMname() {
 		return this.mname;
 	}
@@ -599,6 +480,13 @@ public class ZgTorderTemp extends BaseEntity {
 	public void setFbdat(java.util.Date value) {
 		this.fbdat = value;
 	}
+	public java.lang.String getFname() {
+		return this.fname;
+	}
+	
+	public void setFname(java.lang.String value) {
+		this.fname = value;
+	}
 	public String getFbuzeString() {
 		return date2String(getFbuze(), FORMAT_FBUZE);
 	}
@@ -627,28 +515,6 @@ public class ZgTorderTemp extends BaseEntity {
 	public void setFbuze(java.util.Date value) {
 		this.fbuze = value;
 	}
-	public java.lang.String getFname_labelCn() {
-		return this.fname_labelCn;
-	}
-	
-	public void setFname_labelCn(java.lang.String value) {
-		this.fname_labelCn = value;
-	}
-	
-	public RelatedModel getFname_related() {
-		return this.fname_related;
-	}
-	
-	public void setFname_related(RelatedModel value) {
-		this.fname_related = value;
-	}
-	public java.lang.String getFname() {
-		return this.fname;
-	}
-	
-	public void setFname(java.lang.String value) {
-		this.fname = value;
-	}
 	public java.lang.String getPflag() {
 		return this.pflag;
 	}
@@ -656,12 +522,82 @@ public class ZgTorderTemp extends BaseEntity {
 	public void setPflag(java.lang.String value) {
 		this.pflag = value;
 	}
-	public java.lang.Long getBatchNo() {
+	public java.lang.String getAufnr() {
+		return this.aufnr;
+	}
+	
+	public void setAufnr(java.lang.String value) {
+		this.aufnr = value;
+	}
+	public java.lang.String getOrderState() {
+		return this.orderState;
+	}
+	
+	public void setOrderState(java.lang.String value) {
+		this.orderState = value;
+	}
+	public java.lang.String getSubmitUser() {
+		return this.submitUser;
+	}
+	
+	public void setSubmitUser(java.lang.String value) {
+		this.submitUser = value;
+	}
+	public String getSubmitDateString() {
+		return date2String(getSubmitDate(), FORMAT_SUBMIT_DATE);
+	}
+	public void setSubmitDateString(String value) {
+		setSubmitDate(string2Date(value, FORMAT_SUBMIT_DATE,java.util.Date.class));
+	}
+	public java.util.Date getSubmitDate_start() {
+		return this.submitDate_start;
+	}
+	
+	public void setSubmitDate_start(java.util.Date value) {
+		this.submitDate_start = value;
+	}
+	
+	public java.util.Date getSubmitDate_end() {
+		return this.submitDate_end;
+	}
+	
+	public void setSubmitDate_end(java.util.Date value) {
+		this.submitDate_end = value;
+	}
+	public java.util.Date getSubmitDate() {
+		return this.submitDate;
+	}
+	
+	public void setSubmitDate(java.util.Date value) {
+		this.submitDate = value;
+	}
+	public java.lang.String getMandt() {
+		return this.mandt;
+	}
+	
+	public void setMandt(java.lang.String value) {
+		this.mandt = value;
+	}
+	public java.lang.String getBatchNo() {
 		return this.batchNo;
 	}
 	
-	public void setBatchNo(java.lang.Long value) {
+	public void setBatchNo(java.lang.String value) {
 		this.batchNo = value;
+	}
+	public java.lang.String getCuid() {
+		return this.cuid;
+	}
+	
+	public void setCuid(java.lang.String value) {
+		this.cuid = value;
+	}
+	public java.lang.String getLabelCn() {
+		return this.labelCn;
+	}
+	
+	public void setLabelCn(java.lang.String value) {
+		this.labelCn = value;
 	}
 	public java.lang.Long getOperateType() {
 		return this.operateType;
@@ -670,33 +606,35 @@ public class ZgTorderTemp extends BaseEntity {
 	public void setOperateType(java.lang.Long value) {
 		this.operateType = value;
 	}
-	public java.lang.String getPsbh() {
+	public java.lang.Long getPsbh() {
 		return this.psbh;
 	}
 	
-	public void setPsbh(java.lang.String value) {
+	public void setPsbh(java.lang.Long value) {
 		this.psbh = value;
 	}
-	public java.lang.String getArbpl() {
-		return this.arbpl;
+	public java.lang.String getPoskey() {
+		return this.poskey;
 	}
 	
-	public void setArbpl(java.lang.String value) {
-		this.arbpl = value;
+	public void setPoskey(java.lang.String value) {
+		this.poskey = value;
+	}
+	public java.lang.String getArbpl1() {
+		return this.arbpl1;
+	}
+	
+	public void setArbpl1(java.lang.String value) {
+		this.arbpl1 = value;
 	}
 
 	public String toString() {
 		return new ToStringBuilder(this)
-			.append("Cuid",getCuid())
-			.append("LabelCn",getLabelCn())
-			.append("Aufnr",getAufnr())
-			.append("OrderState",getOrderState())
-			.append("SubmitUser",getSubmitUser())
-			.append("SubmitDate",getSubmitDate())
-			.append("Mandt",getMandt())
 			.append("Pxdat",getPxdat())
 			.append("Plant",getPlant())
+			.append("Mipos",getMipos())
 			.append("Pcdat",getPcdat())
+			.append("Arbpl",getArbpl())
 			.append("Matnr",getMatnr())
 			.append("Kdauf",getKdauf())
 			.append("Kdpos",getKdpos())
@@ -706,6 +644,7 @@ public class ZgTorderTemp extends BaseEntity {
 			.append("Maktx1",getMaktx1())
 			.append("Zzcks",getZzcks())
 			.append("Atwrt2",getAtwrt2())
+			.append("Psmng",getPsmng())
 			.append("Pmenge",getPmenge())
 			.append("Ztxt02",getZtxt02())
 			.append("Zdblc",getZdblc())
@@ -717,28 +656,31 @@ public class ZgTorderTemp extends BaseEntity {
 			.append("Zmuze",getZmuze())
 			.append("Mname",getMname())
 			.append("Fbdat",getFbdat())
-			.append("Fbuze",getFbuze())
 			.append("Fname",getFname())
+			.append("Fbuze",getFbuze())
 			.append("Pflag",getPflag())
+			.append("Aufnr",getAufnr())
+			.append("OrderState",getOrderState())
+			.append("SubmitUser",getSubmitUser())
+			.append("SubmitDate",getSubmitDate())
+			.append("Mandt",getMandt())
 			.append("BatchNo",getBatchNo())
+			.append("Cuid",getCuid())
+			.append("LabelCn",getLabelCn())
 			.append("OperateType",getOperateType())
 			.append("Psbh",getPsbh())
-			.append("Arbpl",getArbpl())
+			.append("Poskey",getPoskey())
+			.append("Arbpl1",getArbpl1())
 			.toString();
 	}
 	
 	public int hashCode() {
 		return new HashCodeBuilder()
-			.append(getCuid())
-			.append(getLabelCn())
-			.append(getAufnr())
-			.append(getOrderState())
-			.append(getSubmitUser())
-			.append(getSubmitDate())
-			.append(getMandt())
 			.append(getPxdat())
 			.append(getPlant())
+			.append(getMipos())
 			.append(getPcdat())
+			.append(getArbpl())
 			.append(getMatnr())
 			.append(getKdauf())
 			.append(getKdpos())
@@ -748,6 +690,7 @@ public class ZgTorderTemp extends BaseEntity {
 			.append(getMaktx1())
 			.append(getZzcks())
 			.append(getAtwrt2())
+			.append(getPsmng())
 			.append(getPmenge())
 			.append(getZtxt02())
 			.append(getZdblc())
@@ -759,13 +702,21 @@ public class ZgTorderTemp extends BaseEntity {
 			.append(getZmuze())
 			.append(getMname())
 			.append(getFbdat())
-			.append(getFbuze())
 			.append(getFname())
+			.append(getFbuze())
 			.append(getPflag())
+			.append(getAufnr())
+			.append(getOrderState())
+			.append(getSubmitUser())
+			.append(getSubmitDate())
+			.append(getMandt())
 			.append(getBatchNo())
+			.append(getCuid())
+			.append(getLabelCn())
 			.append(getOperateType())
 			.append(getPsbh())
-			.append(getArbpl())
+			.append(getPoskey())
+			.append(getArbpl1())
 			.toHashCode();
 	}
 	
@@ -774,16 +725,11 @@ public class ZgTorderTemp extends BaseEntity {
 		if(this == obj) return true;
 		ZgTorderTemp other = (ZgTorderTemp)obj;
 		return new EqualsBuilder()
-			.append(getCuid(),other.getCuid())
-			.append(getLabelCn(),other.getLabelCn())
-			.append(getAufnr(),other.getAufnr())
-			.append(getOrderState(),other.getOrderState())
-			.append(getSubmitUser(),other.getSubmitUser())
-			.append(getSubmitDate(),other.getSubmitDate())
-			.append(getMandt(),other.getMandt())
 			.append(getPxdat(),other.getPxdat())
 			.append(getPlant(),other.getPlant())
+			.append(getMipos(),other.getMipos())
 			.append(getPcdat(),other.getPcdat())
+			.append(getArbpl(),other.getArbpl())
 			.append(getMatnr(),other.getMatnr())
 			.append(getKdauf(),other.getKdauf())
 			.append(getKdpos(),other.getKdpos())
@@ -793,6 +739,7 @@ public class ZgTorderTemp extends BaseEntity {
 			.append(getMaktx1(),other.getMaktx1())
 			.append(getZzcks(),other.getZzcks())
 			.append(getAtwrt2(),other.getAtwrt2())
+			.append(getPsmng(),other.getPsmng())
 			.append(getPmenge(),other.getPmenge())
 			.append(getZtxt02(),other.getZtxt02())
 			.append(getZdblc(),other.getZdblc())
@@ -804,13 +751,21 @@ public class ZgTorderTemp extends BaseEntity {
 			.append(getZmuze(),other.getZmuze())
 			.append(getMname(),other.getMname())
 			.append(getFbdat(),other.getFbdat())
-			.append(getFbuze(),other.getFbuze())
 			.append(getFname(),other.getFname())
+			.append(getFbuze(),other.getFbuze())
 			.append(getPflag(),other.getPflag())
+			.append(getAufnr(),other.getAufnr())
+			.append(getOrderState(),other.getOrderState())
+			.append(getSubmitUser(),other.getSubmitUser())
+			.append(getSubmitDate(),other.getSubmitDate())
+			.append(getMandt(),other.getMandt())
 			.append(getBatchNo(),other.getBatchNo())
+			.append(getCuid(),other.getCuid())
+			.append(getLabelCn(),other.getLabelCn())
 			.append(getOperateType(),other.getOperateType())
 			.append(getPsbh(),other.getPsbh())
-			.append(getArbpl(),other.getArbpl())
+			.append(getPoskey(),other.getPoskey())
+			.append(getArbpl1(),other.getArbpl1())
 			.isEquals();
 	}
 }

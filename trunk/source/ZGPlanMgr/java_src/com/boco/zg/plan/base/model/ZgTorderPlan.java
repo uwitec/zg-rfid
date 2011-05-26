@@ -6,7 +6,10 @@
 
 package com.boco.zg.plan.base.model;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Locale;
 
 import javacommon.base.service.IVmModelBo;
 
@@ -108,6 +111,8 @@ public class ZgTorderPlan extends BaseEntity {
 	private String extend1;
 	private java.lang.String backReason;
 	private String backZbz;
+	private String zbz;
+	private String orderTaskId;
 	public String getExtend1() {
 		return extend1;
 	}
@@ -391,5 +396,23 @@ public class ZgTorderPlan extends BaseEntity {
 	public void setBackZbz(String backZbz) {
 		this.backZbz = backZbz;
 	}
+
+	public String getZbz() {
+		return zbz;
+	}
+
+	public void setZbz(String zbz) {
+		this.zbz = zbz;
+	}
+
+	public String getOrderTaskId() {
+		return orderTaskId;
+	}
+
+	public void setOrderTaskId(String orderTaskId) {
+		this.orderTaskId = orderTaskId;
+	}
+
+
 
 }

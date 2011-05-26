@@ -13,8 +13,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import com.sun.corba.se.spi.orbutil.fsm.State;
-
 
 /**
  * @author system email:mysunshines@163.com
@@ -24,12 +22,13 @@ import com.sun.corba.se.spi.orbutil.fsm.State;
 
 
 public class ZgTorderTask extends BaseEntity {
-	public static String deletState="-1";//删除状态
-	public static String numalState="0";
+	public static String DELSTATE="-1";
+	public static String NUMULSTATE="0";
 	
 	//alias
 	public static final String TABLE_ALIAS = "ZG_T_ORDER_TASK";
 	public static final String BM_CLASS_ID = "ZG_T_ORDER_TASK";
+	
 	public String getBM_CLASS_ID(){
 		return BM_CLASS_ID;
 	}
@@ -39,6 +38,9 @@ public class ZgTorderTask extends BaseEntity {
 	public static final String ALIAS_PX_DATE = "排序日期";
 	public static final String ALIAS_POSKEY = "POSKEY";
 	public static final String ALIAS_PLANT = "生产厂";
+	public static final String ALIAS_TASK_STATE = "TASK_STATE";
+	public static final String ALIAS_PMENGE = "排序数量";
+	public static final String ALIAS_AUFNR = "生产订单号";
 	public static final String ORDER_ID_ZG_T_ORDER_ZG_T_ORDER = "t0_0_1.t0_";
 	//date formats
 	public static final String FORMAT_PX_DATE = DATE_FORMAT;
@@ -64,7 +66,9 @@ public class ZgTorderTask extends BaseEntity {
 	private java.util.Date pxDate;
 	private java.lang.String poskey;
 	private java.lang.String plant;
-	private String taskState;
+	private java.lang.Long pmenge;
+	private java.lang.String aufnr;
+	private String flag;
 	//columns END
 	public java.lang.String getCuid() {
 		return this.cuid;
@@ -144,6 +148,20 @@ public class ZgTorderTask extends BaseEntity {
 	public void setPlant(java.lang.String value) {
 		this.plant = value;
 	}
+	public java.lang.Long getPmenge() {
+		return this.pmenge;
+	}
+	
+	public void setPmenge(java.lang.Long value) {
+		this.pmenge = value;
+	}
+	public java.lang.String getAufnr() {
+		return this.aufnr;
+	}
+	
+	public void setAufnr(java.lang.String value) {
+		this.aufnr = value;
+	}
 
 	public String toString() {
 		return new ToStringBuilder(this)
@@ -153,6 +171,8 @@ public class ZgTorderTask extends BaseEntity {
 			.append("PxDate",getPxDate())
 			.append("Poskey",getPoskey())
 			.append("Plant",getPlant())
+			.append("Pmenge",getPmenge())
+			.append("Aufnr",getAufnr())
 			.toString();
 	}
 	
@@ -164,6 +184,8 @@ public class ZgTorderTask extends BaseEntity {
 			.append(getPxDate())
 			.append(getPoskey())
 			.append(getPlant())
+			.append(getPmenge())
+			.append(getAufnr())
 			.toHashCode();
 	}
 	
@@ -178,14 +200,16 @@ public class ZgTorderTask extends BaseEntity {
 			.append(getPxDate(),other.getPxDate())
 			.append(getPoskey(),other.getPoskey())
 			.append(getPlant(),other.getPlant())
+			.append(getPmenge(),other.getPmenge())
+			.append(getAufnr(),other.getAufnr())
 			.isEquals();
 	}
 
-	public String getTaskState() {
-		return taskState;
+	public String getFlag() {
+		return flag;
 	}
 
-	public void setTaskState(String taskState) {
-		this.taskState = taskState;
+	public void setFlag(String flag) {
+		this.flag = flag;
 	}
 }
