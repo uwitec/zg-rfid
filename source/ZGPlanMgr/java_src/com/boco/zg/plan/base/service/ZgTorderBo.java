@@ -6,6 +6,7 @@
 
 package com.boco.zg.plan.base.service;
 
+import org.apache.commons.net.io.FromNetASCIIInputStream;
 import org.springframework.stereotype.Component;
 
 import cn.org.rapid_framework.page.Page;
@@ -23,6 +24,7 @@ import cn.org.rapid_framework.page.*;
 import cn.org.rapid_framework.page.impl.*;
 import cn.org.rapid_framework.beanutils.BeanUtils;
 
+import com.boco.frame.meta.dao.IbatisDAOHelper;
 import com.boco.zg.plan.base.model.*;
 import com.boco.zg.plan.base.dao.*;
 import com.boco.zg.plan.base.service.*;
@@ -61,4 +63,28 @@ public class ZgTorderBo extends BaseManager<ZgTorder,java.lang.String>{
 	public Page findByPageRequest1(PageRequest<Map> pr) {
 		return zgTorderDao.findByPageRequest1(pr);
 	}
+	
+	/**
+	 * 根据订单号和生产厂查找订单排序数据
+	 * @param aufnr
+	 * @param plant
+	 * @return
+	 */
+	public List<ZgTorder> getOrderListByAufnrPlant(ZgTorder zgTorder) {
+		return zgTorderDao.getOrderListByAufnrPlant(zgTorder);
+	}
+	/**
+	 * @return
+	 */
+	public Map<String, String> getPlantSortfMap() {
+		String sql="select t.* from t_plant_enumevalue t where  t.state='0'";
+		List<Map> list=zgTorderDao.findDynQuery(sql);
+		Map<String,String> plantSortfMap=new HashMap<String, String>();
+		for(Map temp:list){
+			plantSortfMap.put(IbatisDAOHelper.getStringValue(temp, "PLANTID"), IbatisDAOHelper.getStringValue(temp, "TYPE"));
+		}
+		return plantSortfMap;
+		
+	}
+
 }

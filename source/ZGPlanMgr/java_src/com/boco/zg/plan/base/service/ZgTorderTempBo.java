@@ -6,28 +6,22 @@
 
 package com.boco.zg.plan.base.service;
 
+import java.util.List;
+
+import javacommon.base.BaseManager;
+import javacommon.base.EntityDao;
+
 import org.springframework.stereotype.Component;
 
+import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 
-import java.util.*;
+import com.boco.zg.plan.base.dao.ZgTorderTempDao;
+import com.boco.zg.plan.base.model.ZgTorderTemp;
 
-import javacommon.base.*;
-import javacommon.util.*;
-import javacommon.base.model.*;
-
-import cn.org.rapid_framework.util.*;
-import cn.org.rapid_framework.web.util.*;
-import cn.org.rapid_framework.page.*;
-import cn.org.rapid_framework.page.impl.*;
-import cn.org.rapid_framework.beanutils.BeanUtils;
-
-import com.boco.zg.plan.base.model.*;
-import com.boco.zg.plan.base.dao.*;
-import com.boco.zg.plan.base.service.*;
 
 /**
- * @author 李智伟 email:v_lizhiwei@boco.com.cn
+ * @author system email:mysunshines@163.com
  * @version 1.0
  * @since 1.0
  */
@@ -52,5 +46,26 @@ public class ZgTorderTempBo extends BaseManager<ZgTorderTemp,java.lang.String>{
 	
 	public List<ZgTorderTemp> findByRequest(PageRequest pageRequest) {
 		return zgTorderTempDao.findByRequest(pageRequest);
+	}
+	
+	/**
+	 * @param zgTorderTemp
+	 */
+	public String saveZgTOrder(ZgTorderTemp zgTorderTemp) {
+		return zgTorderTempDao.saveZgTOrder(zgTorderTemp);
+	}
+	/**
+	 * @param zgTorderTemp
+	 * @return
+	 */
+	public int updateZgTOrder(ZgTorderTemp zgTorderTemp) {
+		return zgTorderTempDao.updateZgTOrder(zgTorderTemp);
+	}
+	/**
+	 * @param sapOrder
+	 */
+	public int updateZgTOrderForChange(ZgTorderTemp sapOrder) {
+		return zgTorderTempDao.updateZgTOrderForChange(sapOrder);
+		
 	}
 }

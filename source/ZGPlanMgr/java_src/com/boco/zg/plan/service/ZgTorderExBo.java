@@ -28,6 +28,7 @@ import com.boco.zg.plan.base.model.ZgTorder;
 import com.boco.zg.plan.base.model.ZgTorderPlan;
 import com.boco.zg.plan.base.model.ZgTorderPlanGroup;
 import com.boco.zg.plan.base.model.ZgTorderPlanbom;
+import com.boco.zg.plan.base.model.ZgTorderTask;
 import com.boco.zg.plan.base.model.ZgTorderbom;
 import com.boco.zg.plan.base.service.ZgTcarbomBo;
 import com.boco.zg.plan.base.service.ZgTcarplanBo;
@@ -35,6 +36,7 @@ import com.boco.zg.plan.base.service.ZgTgroupOrderPlanBo;
 import com.boco.zg.plan.base.service.ZgTorderBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanGroupBo;
+import com.boco.zg.plan.base.service.ZgTorderTaskBo;
 import com.boco.zg.plan.dao.ZgTorderExDao;
 import com.boco.zg.plan.model.ZgTorderPlanbomEx;
 import com.boco.zg.util.Constants;
@@ -77,6 +79,16 @@ public class ZgTorderExBo extends ZgTorderBo {
 	private ZgTcarplanBo zgTcarplanBo;
 	
 	private ZgTcarbomBo zgTcarbomBo;
+	
+	private ZgTorderTaskBo zgTorderTaskBo;
+	
+	public static Map<String, String> plantSortfMap=null;
+	public  Map<String, String>  getSortfMap(){
+		if(plantSortfMap==null){
+			plantSortfMap=getPlantSortfMap();
+		}
+		return plantSortfMap;
+	}
 	
 	
 	public void setZgTorderPlanExBo(ZgTorderPlanExBo zgTorderPlanExBo) {
@@ -175,7 +187,7 @@ public class ZgTorderExBo extends ZgTorderBo {
 		//查看该订单的工厂，C01,C04,:ABE  C02,C05:ABD   C03,C06:ABC
 		List<String> softList=getOrderSoftByOrderId(orderId);
 		
-		createPlan(orderId,softList,operatorInfo,"0","",Constants.isNotManulFinished);
+//		createPlan(orderId,softList,operatorInfo,"0","",Constants.isNotManulFinished);
 		updateOrderState(orderId,PLAN_STATE_SUBMIT);
 	}
 	
@@ -239,86 +251,92 @@ public class ZgTorderExBo extends ZgTorderBo {
 	
 	/**
 	 * 生成领料计划
-	 * @param orderId　订单单cuid
+	 * @param taskId　订单任务cuid
 	 * @param types  生成类型
 	 * @param operatorInfo
 	 * @param state　订半状态
 	 * @param isManul 是否手工结单
 	 * @param 工厂
 	 */
-	public void createPlan(String orderId,List<String> sortrList, OperatorInfo operatorInfo,String state,String plant,String isManul) {
-		ZgTorderbom param = new ZgTorderbom();
-		if(sortrList.size()==0){
-			return;
+	public void createPlan(String orderId,String taskId, String plant,String state,String isManul) {
+		
+			
+			
+		List<ZgTorderTask> taskList=new ArrayList<ZgTorderTask>();
+		if(StringHelper.isEmpty(taskId)){//taskID为空时为整单提交
+			ZgTorderTask task=new ZgTorderTask();
+			task.setOrderId(orderId);
+			taskList=zgTorderTaskBo.findByProperty(task);
 		}else {
-			param.setOrderId(orderId);
-			String sortfs = "";
-			for(String sortf : sortrList) {
-				sortfs+= "'"+sortf+"',";
-			}
-			sortfs = sortfs.substring(0,sortfs.length()-1);
-			param.setSqlQueryString("t0_SORTF in ("+sortfs+")");
+			ZgTorderTask task=new ZgTorderTask();
+			task.setCuid(taskId);
+			task.setPlant(plant);
+			taskList.add(task);
 		}
 		Map<String,ZgTorderPlan> planMap = new HashMap<String,ZgTorderPlan>();
-		List<ZgTorderbom> list = zgTorderbomDao.findByProperty(param);
+		ZgTorder order=getById(orderId);
 		
-		ZgTorder zgTorder=getById(orderId);
-	     List<String> planList=zgTorderExDao.getPlantListByOrderId(orderId);
 		
-		Long count=0l;
-		for(ZgTorderbom bom:list) {
-			ZgTorderPlan plan = planMap.get(bom.getAufnr()+"_"+bom.getSortf());
-			if(plan == null) {
+		for(ZgTorderTask task:taskList){
+			String sortf=getSortfMap().get(task.getPlant());
+			Map paramsMap=new HashMap<String, Object>();
+			paramsMap.put("taskId", taskId);
+			paramsMap.put("sortf", sortf);
+			List<ZgTorderbom> list = zgTorderbomDao.getorderBomByTaskidSortfs(paramsMap);
+			
+			Long count=0l;
+			String orderPlanId="";
+			for(ZgTorderbom bom:list){
+				if(count==0l){
+					//生成领料计划
+					ZgTorderPlan  plan= new ZgTorderPlan();
+					plan.setCuid(count+"");
+					plan.setOrderTaskId(task.getCuid());
+					plan.setPlanType(bom.getSortf());
+					plan.setPlant(task.getPlant());
+					plan.setIsManul(isManul);//手工结单
+					plan.setState(state);
+					
+					
+					try {
+						orderPlanId=(String) zgTorderPlanDao.save(plan);
+					} catch (Exception e) {//并发的时候插入偶尔会不成功,主鍵重复
+						orderPlanId=(String) zgTorderPlanDao.save(plan);
+					}
+					
+					//插入计划分组表
+					ZgTorderPlanGroup group=new ZgTorderPlanGroup();
+					group.setLabelCn(task.getAufnr());
+					group.setState(state);
+					group.setPercent(0d);
+					group.setPlanType(bom.getSortf());
+					group.setPsbh(order.getPsbh());
+					group.setIndexNo(10000l);
+					String groupId=(String) zgTorderPlanGroupBo.save(group);
+					
+					ZgTgroupOrderPlan gop=new ZgTgroupOrderPlan();
+					gop.setOrderPlanId(orderPlanId);
+					gop.setGroupId(groupId);
+					zgTgroupOrderPlanBo.save(gop);
+				}
+				
+				ZgTorderPlanbom planbom = new ZgTorderPlanbom();
+				planbom.setOrderPlanId(orderPlanId);
+				planbom.setOrderTaskId(task.getCuid());
+				planbom.setTaskBomId(bom.getTaskBomId());
+				planbom.setState(PLAN_STATE_CREATE);
+				planbom.setCarNum(bom.getMenge());
+				planbom.setCompleteNum(0l);
+				planbom.setPlanNum(0l);
+				zgTorderPlanbomDao.save(planbom);
 				count++;
-				plan = new ZgTorderPlan();
-				plan.setCuid(count+"");
-				plan.setOrderId(orderId);
-				plan.setPlanType(bom.getSortf());
-				if(StringHelper.isEmpty(plant)){
-					plan.setPlant(getPlant(bom.getSortf(), planList));
-				}else {
-					plan.setPlant(plant);
-				}
-				plan.setIsManul(isManul);//手工结单
-				plan.setState(state);
 				
-				String orderPlanId="";
-				try {
-					orderPlanId=(String) zgTorderPlanDao.save(plan);
-				} catch (Exception e) {//并发的时候插入偶尔会不成功,主鍵重复
-					orderPlanId=(String) zgTorderPlanDao.save(plan);
-				}
-				
-				planMap.put(bom.getAufnr()+"_"+bom.getSortf(), plan);
-				
-				//插入计划分组表
-				ZgTorderPlanGroup group=new ZgTorderPlanGroup();
-				group.setLabelCn(zgTorder.getAufnr());
-				group.setState(state);
-				group.setPercent(0d);
-				group.setPlanType(bom.getSortf());
-				group.setPsbh(zgTorder.getPsbh());
-				group.setIndexNo(10000l);
-				String groupId=(String) zgTorderPlanGroupBo.save(group);
-				
-				ZgTgroupOrderPlan gop=new ZgTgroupOrderPlan();
-				gop.setOrderPlanId(orderPlanId);
-				gop.setGroupId(groupId);
-				zgTgroupOrderPlanBo.save(gop);
-		
 			}
-			ZgTorderPlanbom planbom = new ZgTorderPlanbom();
-			planbom.setCuid(plan.getCuid());
-			planbom.setOrderPlanId(plan.getCuid());
-			planbom.setOrderId(orderId);
-			planbom.setOrderBomId(bom.getCuid());
-			planbom.setState(PLAN_STATE_CREATE);
-			planbom.setCarNum(bom.getMenge());
-			planbom.setCompleteNum(0l);
-			planbom.setPlanNum(0l);
-			//planbom.setUserId(operatorInfo.getUserId());
-			zgTorderPlanbomDao.save(planbom);
+			
+		
+			
 		}
+		
 	}
 
 	/**
@@ -414,7 +432,7 @@ public class ZgTorderExBo extends ZgTorderBo {
 	 */
 	public void manulFinishOrderByOrderId(String orderId,String operatorId) {
 		List<String> softList=getSoftByOrderId(orderId);
-		createPlan(orderId,softList,null,"0","",Constants.isManulFinished);
+//		createPlan(orderId,softList,null,"0","",Constants.isManulFinished);
 		
 		// 更新领料计划标记为手工完结单
 		zgTorderExDao.updateOrderPlanToManul(orderId);
@@ -697,5 +715,17 @@ public class ZgTorderExBo extends ZgTorderBo {
 	 */
 	public List<Map> getPlantByOrderId(String orderId, String userId) {
 		return zgTorderExDao.getPlantByOrderId(orderId,userId);
+	}
+
+
+
+	public ZgTorderTaskBo getZgTorderTaskBo() {
+		return zgTorderTaskBo;
+	}
+
+
+
+	public void setZgTorderTaskBo(ZgTorderTaskBo zgTorderTaskBo) {
+		this.zgTorderTaskBo = zgTorderTaskBo;
 	}
 }

@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTorderbomTempAll">
+    <typeAlias alias="zgTorderbomTempAll" type="com.boco.zg.plan.base.model.ZgTorderbomTempAll"/>
+	<resultMap id="zgTorderbomTempAllResult" class="zgTorderbomTempAll">
+		<result property="menge" column="t0_MENGE"/>
+		<result property="matkl" column="t0_MATKL"/>
+		<result property="sortf" column="t0_SORTF"/>
+		<result property="lgort" column="t0_LGORT"/>
+		<result property="zbz" column="t0_ZBZ"/>
+		<result property="zrzqd" column="t0_ZRZQD"/>
+		<result property="cuid" column="t0_CUID"/>
+		<result property="idnrk" column="t0_IDNRK"/>
+		<result property="orderId" column="t0_ORDER_ID"/>
+		<result property="aufnr" column="t0_AUFNR"/>
+		<result property="arbpl" column="t0_ARBPL"/>
+		<result property="matnr" column="t0_MATNR"/>
+		<result property="maktx1" column="t0_MAKTX1"/>
+		<result property="maktx2" column="t0_MAKTX2"/>
+		<result property="msehl1" column="t0_MSEHL1"/>
+		<result property="msehl2" column="t0_MSEHL2"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="sortfH" column="t0_SORTF_H"/>
+		<result property="matnr1" column="t0_MATNR1"/>
+		<result property="storageState" column="t0_STORAGE_STATE"/>
+		<result property="storageNum" column="t0_STORAGE_NUM"/>
+		<result property="zdtyl" column="t0_ZDTYL"/>
+		<result property="plant" column="t0_PLANT"/>
+		<result property="batchNo" column="t0_BATCH_NO"/>
+		<result property="operateType" column="t0_OPERATE_TYPE"/>
+		<result property="posnr" column="t0_POSNR"/>
+		<result property="matklSelf" column="t0_MATKL_SELF"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_MENGE,
+	        m.t0_MATKL,
+	        m.t0_SORTF,
+	        m.t0_LGORT,
+	        m.t0_ZBZ,
+	        m.t0_ZRZQD,
+	        m.t0_CUID,
+	        m.t0_IDNRK,
+	        m.t0_ORDER_ID,
+	        m.t0_AUFNR,
+	        m.t0_ARBPL,
+	        m.t0_MATNR,
+	        m.t0_MAKTX1,
+	        m.t0_MAKTX2,
+	        m.t0_MSEHL1,
+	        m.t0_MSEHL2,
+	        m.t0_LABEL_CN,
+	        m.t0_SORTF_H,
+	        m.t0_MATNR1,
+	        m.t0_STORAGE_STATE,
+	        m.t0_STORAGE_NUM,
+	        m.t0_ZDTYL,
+	        m.t0_PLANT,
+	        m.t0_BATCH_NO,
+	        m.t0_OPERATE_TYPE,
+	        m.t0_POSNR,
+	        m.t0_MATKL_SELF
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="menge">
+	       			m.t0_MENGE = #menge#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="matkl">
+	       			m.t0_MATKL like #matkl#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="sortf">
+	       			m.t0_SORTF like #sortf#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="lgort">
+	       			m.t0_LGORT like #lgort#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zbz">
+	       			m.t0_ZBZ like #zbz#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zrzqd">
+	       			m.t0_ZRZQD like #zrzqd#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="idnrk">
+	       			m.t0_IDNRK like #idnrk#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="orderId">
+	       			m.t0_ORDER_ID like #orderId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="aufnr">
+	       			m.t0_AUFNR like #aufnr#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="arbpl">
+	       			m.t0_ARBPL like #arbpl#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="matnr">
+	       			m.t0_MATNR like #matnr#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="maktx1">
+	       			m.t0_MAKTX1 like #maktx1#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="maktx2">
+	       			m.t0_MAKTX2 like #maktx2#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="msehl1">
+	       			m.t0_MSEHL1 like #msehl1#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="msehl2">
+	       			m.t0_MSEHL2 like #msehl2#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="sortfH">
+	       			m.t0_SORTF_H like #sortfH#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="matnr1">
+	       			m.t0_MATNR1 like #matnr1#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="storageState">
+	       			m.t0_STORAGE_STATE like #storageState#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="storageNum">
+	       			m.t0_STORAGE_NUM = #storageNum#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zdtyl">
+	       			m.t0_ZDTYL = #zdtyl#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="plant">
+	       			m.t0_PLANT like #plant#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="batchNo">
+	       			m.t0_BATCH_NO = #batchNo#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="operateType">
+	       			m.t0_OPERATE_TYPE = #operateType#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="posnr">
+	       			m.t0_POSNR like #posnr#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="matklSelf">
+	       			m.t0_MATKL_SELF like #matklSelf#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertZG_T_ORDERBOM_TEMP_ALL" parameterClass="zgTorderbomTempAll">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_ORDERBOM_TEMP_ALL (
+        	MENGE ,
+        	MATKL ,
+        	SORTF ,
+        	LGORT ,
+        	ZBZ ,
+        	ZRZQD ,
+        	CUID ,
+        	IDNRK ,
+        	ORDER_ID ,
+        	AUFNR ,
+        	ARBPL ,
+        	MATNR ,
+        	MAKTX1 ,
+        	MAKTX2 ,
+        	MSEHL1 ,
+        	MSEHL2 ,
+        	LABEL_CN ,
+        	SORTF_H ,
+        	MATNR1 ,
+        	STORAGE_STATE ,
+        	STORAGE_NUM ,
+        	ZDTYL ,
+        	PLANT ,
+        	BATCH_NO ,
+        	OPERATE_TYPE ,
+        	POSNR ,
+        	MATKL_SELF 
+        ) VALUES (
+        	#menge# ,
+        	#matkl# ,
+        	#sortf# ,
+        	#lgort# ,
+        	#zbz# ,
+        	#zrzqd# ,
+        	#cuid# ,
+        	#idnrk# ,
+        	#orderId# ,
+        	#aufnr# ,
+        	#arbpl# ,
+        	#matnr# ,
+        	#maktx1# ,
+        	#maktx2# ,
+        	#msehl1# ,
+        	#msehl2# ,
+        	#labelCn# ,
+        	#sortfH# ,
+        	#matnr1# ,
+        	#storageState# ,
+        	#storageNum# ,
+        	#zdtyl# ,
+        	#plant# ,
+        	#batchNo# ,
+        	#operateType# ,
+        	#posnr# ,
+        	#matklSelf# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <insert id="insertZG_T_ORDERBOM" parameterClass="zgTorderbomTempAll">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_ORDERBOM (
+        	MENGE ,
+        	MATKL ,
+        	SORTF ,
+        	LGORT ,
+        	ZBZ ,
+        	ZRZQD ,
+        	CUID ,
+        	IDNRK ,
+        	ORDER_ID ,
+        	AUFNR ,
+        	ARBPL ,
+        	MATNR ,
+        	MAKTX1 ,
+        	MAKTX2 ,
+        	MSEHL1 ,
+        	MSEHL2 ,
+        	LABEL_CN ,
+        	SORTF_H ,
+        	MATNR1 ,
+        	STORAGE_STATE ,
+        	STORAGE_NUM ,
+        	ZDTYL ,
+        	POSNR ,
+        	MATKL_SELF 
+        ) VALUES (
+        	#menge# ,
+        	#matkl# ,
+        	#sortf# ,
+        	#lgort# ,
+        	#zbz# ,
+        	#zrzqd# ,
+        	#cuid# ,
+        	#idnrk# ,
+        	#orderId# ,
+        	#aufnr# ,
+        	#arbpl# ,
+        	#matnr# ,
+        	#maktx1# ,
+        	#maktx2# ,
+        	#msehl1# ,
+        	#msehl2# ,
+        	#labelCn# ,
+        	#sortfH# ,
+        	#matnr1# ,
+        	#storageState# ,
+        	#storageNum# ,
+        	#zdtyl# ,
+        	#posnr# ,
+        	#matklSelf# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateZG_T_ORDERBOM_TEMP_ALL" parameterClass="zgTorderbomTempAll">
+    <![CDATA[
+        UPDATE ZG_T_ORDERBOM_TEMP_ALL SET
+	        MENGE = #menge# ,
+	        MATKL = #matkl# ,
+	        SORTF = #sortf# ,
+	        LGORT = #lgort# ,
+	        ZBZ = #zbz# ,
+	        ZRZQD = #zrzqd# ,
+	        IDNRK = #idnrk# ,
+	        ORDER_ID = #orderId# ,
+	        AUFNR = #aufnr# ,
+	        ARBPL = #arbpl# ,
+	        MATNR = #matnr# ,
+	        MAKTX1 = #maktx1# ,
+	        MAKTX2 = #maktx2# ,
+	        MSEHL1 = #msehl1# ,
+	        MSEHL2 = #msehl2# ,
+	        LABEL_CN = #labelCn# ,
+	        SORTF_H = #sortfH# ,
+	        MATNR1 = #matnr1# ,
+	        STORAGE_STATE = #storageState# ,
+	        STORAGE_NUM = #storageNum# ,
+	        ZDTYL = #zdtyl# ,
+	        PLANT = #plant# ,
+	        BATCH_NO = #batchNo# ,
+	        OPERATE_TYPE = #operateType# ,
+	        POSNR = #posnr# ,
+	        MATKL_SELF = #matklSelf# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteZG_T_ORDERBOM_TEMP_ALL" parameterClass="java.lang.String">
+		delete from ZG_T_ORDERBOM_TEMP_ALL 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="zgTorderbomTempAllResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.MENGE as t0_MENGE,
+	        		t0.MATKL as t0_MATKL,
+	        		t0.SORTF as t0_SORTF,
+	        		t0.LGORT as t0_LGORT,
+	        		t0.ZBZ as t0_ZBZ,
+	        		t0.ZRZQD as t0_ZRZQD,
+	        		t0.CUID as t0_CUID,
+	        		t0.IDNRK as t0_IDNRK,
+	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MSEHL1 as t0_MSEHL1,
+	        		t0.MSEHL2 as t0_MSEHL2,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.SORTF_H as t0_SORTF_H,
+	        		t0.MATNR1 as t0_MATNR1,
+	        		t0.STORAGE_STATE as t0_STORAGE_STATE,
+	        		t0.STORAGE_NUM as t0_STORAGE_NUM,
+	        		t0.ZDTYL as t0_ZDTYL,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.BATCH_NO as t0_BATCH_NO,
+	        		t0.OPERATE_TYPE as t0_OPERATE_TYPE,
+	        		t0.POSNR as t0_POSNR,
+	        		t0.MATKL_SELF as t0_MATKL_SELF
+	        from 
+	        ZG_T_ORDERBOM_TEMP_ALL t0
+ ) m
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="zgTorderbomTempAllResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.MENGE as t0_MENGE,
+	        		t0.MATKL as t0_MATKL,
+	        		t0.SORTF as t0_SORTF,
+	        		t0.LGORT as t0_LGORT,
+	        		t0.ZBZ as t0_ZBZ,
+	        		t0.ZRZQD as t0_ZRZQD,
+	        		t0.CUID as t0_CUID,
+	        		t0.IDNRK as t0_IDNRK,
+	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MSEHL1 as t0_MSEHL1,
+	        		t0.MSEHL2 as t0_MSEHL2,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.SORTF_H as t0_SORTF_H,
+	        		t0.MATNR1 as t0_MATNR1,
+	        		t0.STORAGE_STATE as t0_STORAGE_STATE,
+	        		t0.STORAGE_NUM as t0_STORAGE_NUM,
+	        		t0.ZDTYL as t0_ZDTYL,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.BATCH_NO as t0_BATCH_NO,
+	        		t0.OPERATE_TYPE as t0_OPERATE_TYPE,
+	        		t0.POSNR as t0_POSNR,
+	        		t0.MATKL_SELF as t0_MATKL_SELF
+	        from 
+	        ZG_T_ORDERBOM_TEMP_ALL t0
+ ) m
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="pageSelect_count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.MENGE as t0_MENGE,
+	        		t0.MATKL as t0_MATKL,
+	        		t0.SORTF as t0_SORTF,
+	        		t0.LGORT as t0_LGORT,
+	        		t0.ZBZ as t0_ZBZ,
+	        		t0.ZRZQD as t0_ZRZQD,
+	        		t0.CUID as t0_CUID,
+	        		t0.IDNRK as t0_IDNRK,
+	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MSEHL1 as t0_MSEHL1,
+	        		t0.MSEHL2 as t0_MSEHL2,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.SORTF_H as t0_SORTF_H,
+	        		t0.MATNR1 as t0_MATNR1,
+	        		t0.STORAGE_STATE as t0_STORAGE_STATE,
+	        		t0.STORAGE_NUM as t0_STORAGE_NUM,
+	        		t0.ZDTYL as t0_ZDTYL,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.BATCH_NO as t0_BATCH_NO,
+	        		t0.OPERATE_TYPE as t0_OPERATE_TYPE,
+	        		t0.POSNR as t0_POSNR,
+	        		t0.MATKL_SELF as t0_MATKL_SELF
+	        from 
+	        ZG_T_ORDERBOM_TEMP_ALL t0
+ ) m
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultClass="java.util.HashMap">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.MENGE as t0_MENGE,
+	        		t0.MATKL as t0_MATKL,
+	        		t0.SORTF as t0_SORTF,
+	        		t0.LGORT as t0_LGORT,
+	        		t0.ZBZ as t0_ZBZ,
+	        		t0.ZRZQD as t0_ZRZQD,
+	        		t0.CUID as t0_CUID,
+	        		t0.IDNRK as t0_IDNRK,
+	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MSEHL1 as t0_MSEHL1,
+	        		t0.MSEHL2 as t0_MSEHL2,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.SORTF_H as t0_SORTF_H,
+	        		t0.MATNR1 as t0_MATNR1,
+	        		t0.STORAGE_STATE as t0_STORAGE_STATE,
+	        		t0.STORAGE_NUM as t0_STORAGE_NUM,
+	        		t0.ZDTYL as t0_ZDTYL,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.BATCH_NO as t0_BATCH_NO,
+	        		t0.OPERATE_TYPE as t0_OPERATE_TYPE,
+	        		t0.POSNR as t0_POSNR,
+	        		t0.MATKL_SELF as t0_MATKL_SELF
+	        from 
+	        ZG_T_ORDERBOM_TEMP_ALL t0
+ ) m
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="zgTorderbomTempAllResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.MENGE as t0_MENGE,
+	        		t0.MATKL as t0_MATKL,
+	        		t0.SORTF as t0_SORTF,
+	        		t0.LGORT as t0_LGORT,
+	        		t0.ZBZ as t0_ZBZ,
+	        		t0.ZRZQD as t0_ZRZQD,
+	        		t0.CUID as t0_CUID,
+	        		t0.IDNRK as t0_IDNRK,
+	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MSEHL1 as t0_MSEHL1,
+	        		t0.MSEHL2 as t0_MSEHL2,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.SORTF_H as t0_SORTF_H,
+	        		t0.MATNR1 as t0_MATNR1,
+	        		t0.STORAGE_STATE as t0_STORAGE_STATE,
+	        		t0.STORAGE_NUM as t0_STORAGE_NUM,
+	        		t0.ZDTYL as t0_ZDTYL,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.BATCH_NO as t0_BATCH_NO,
+	        		t0.OPERATE_TYPE as t0_OPERATE_TYPE,
+	        		t0.POSNR as t0_POSNR,
+	        		t0.MATKL_SELF as t0_MATKL_SELF
+	        from 
+	        ZG_T_ORDERBOM_TEMP_ALL t0
+ ) m
+        ]]>
+    </select>
+    
+     <select id="getBomListByBatchNoAufnrArbplPlantFlag" resultMap="zgTorderbomTempAllResult">
+		select <include refid="commonColumns"/> 
+	 
+	        from ( select 
+	        		t0.MENGE as t0_MENGE,
+	        		t0.MATKL as t0_MATKL,
+	        	 <isEqual property="flag" compareValue="2"> 
+	        	 	bom.SORTF as t0_SORTF,
+	        	 </isEqual>  
+	        	  <isEqual property="flag" compareValue="1"> 
+	        	  	t0.SORTF as t0_SORTF,
+	        	 </isEqual>  
+	        		
+	        		t0.LGORT as t0_LGORT,
+	        		t0.ZBZ as t0_ZBZ,
+	        		t0.ZRZQD as t0_ZRZQD,
+	        		t0.CUID as t0_CUID,
+	        		t0.IDNRK as t0_IDNRK,
+	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MSEHL1 as t0_MSEHL1,
+	        		t0.MSEHL2 as t0_MSEHL2,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.SORTF_H as t0_SORTF_H,
+	        		t0.MATNR1 as t0_MATNR1,
+	        		t0.STORAGE_STATE as t0_STORAGE_STATE,
+	        		t0.STORAGE_NUM as t0_STORAGE_NUM,
+	        		t0.ZDTYL as t0_ZDTYL,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.BATCH_NO as t0_BATCH_NO,
+	        		t0.OPERATE_TYPE as t0_OPERATE_TYPE,
+	        		t0.POSNR as t0_POSNR,
+	        		t0.MATKL_SELF as t0_MATKL_SELF
+	        from 
+	        ZG_T_ORDERBOM_TEMP_ALL t0,zg_t_orderbom bom
+	         where
+           		t0.idnrk=bom.idnrk(+)
+          		and nvl(t0.posnr,'null')=nvl(bom.posnr,'null')
+           		and t0.aufnr=bom.aufnr(+)
+			   and t0.aufnr = '$aufnr$'
+			   and t0.arbpl = '$arbpl$'
+			   and t0.plant = '$plant$'
+			   and t0.batch_no = '$batchNo$'
+			   and  t0.operate_type ='$flag$'
+ ) m
+    </select>
+    
+      <select id="getForAddBomList" resultMap="zgTorderbomTempAllResult">
+        		select 
+	        		t0.MENGE as t0_MENGE,
+	        		t0.MATKL as t0_MATKL,
+	        	  	t0.SORTF as t0_SORTF,
+	        		t0.LGORT as t0_LGORT,
+	        		t0.ZBZ as t0_ZBZ,
+	        		t0.ZRZQD as t0_ZRZQD,
+	        		t0.CUID as t0_CUID,
+	        		t0.IDNRK as t0_IDNRK,
+	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MSEHL1 as t0_MSEHL1,
+	        		t0.MSEHL2 as t0_MSEHL2,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.SORTF_H as t0_SORTF_H,
+	        		t0.MATNR1 as t0_MATNR1,
+	        		t0.STORAGE_STATE as t0_STORAGE_STATE,
+	        		t0.STORAGE_NUM as t0_STORAGE_NUM,
+	        		t0.ZDTYL as t0_ZDTYL,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.BATCH_NO as t0_BATCH_NO,
+	        		t0.OPERATE_TYPE as t0_OPERATE_TYPE,
+	        		t0.POSNR as t0_POSNR,
+	        		t0.MATKL_SELF as t0_MATKL_SELF
+ 		from  ZG_T_ORDERBOM_TEMP_ALL t0
+	  		 where  not exists (select 1
+			          from zg_t_orderbom t
+			         where t.aufnr = '$aufnr$'
+			           and t.idnrk = t0.idnrk
+			           and nvl(t.posnr,'null') = nvl(t0.posnr,'null'))
+	   		and t0.batch_no =  '$batchNo$'
+	    	and t0.aufnr = '$aufnr$'
+	    	 <isNotEmpty prepend="AND" property="arbpl">
+	    	 	t0.arbpl = '$arbpl$'
+	    	 </isNotEmpty>
+	    	 <isNotEmpty prepend="AND" property="plant">
+	    	  	t0.plant = '$plant$'
+	    	 </isNotEmpty>
+			and t0.operate_type is null 
+    </select>
+    
+     <select id="getForEditBomList" resultMap="zgTorderbomTempAllResult">
+       select 
+	        		ta.MENGE as t0_MENGE,
+	        		ta.MATKL as t0_MATKL,
+	        	  	ta.SORTF as t0_SORTF,
+	        		ta.LGORT as t0_LGORT,
+	        		ta.ZBZ as t0_ZBZ,
+	        		ta.ZRZQD as t0_ZRZQD,
+	        		ta.CUID as t0_CUID,
+	        		ta.IDNRK as t0_IDNRK,
+	        		ta.ORDER_ID as t0_ORDER_ID,
+	        		ta.AUFNR as t0_AUFNR,
+	        		ta.ARBPL as t0_ARBPL,
+	        		ta.MATNR as t0_MATNR,
+	        		ta.MAKTX1 as t0_MAKTX1,
+	        		ta.MAKTX2 as t0_MAKTX2,
+	        		ta.MSEHL1 as t0_MSEHL1,
+	        		ta.MSEHL2 as t0_MSEHL2,
+	        		ta.LABEL_CN as t0_LABEL_CN,
+	        		ta.SORTF_H as t0_SORTF_H,
+	        		ta.MATNR1 as t0_MATNR1,
+	        		ta.STORAGE_STATE as t0_STORAGE_STATE,
+	        		ta.STORAGE_NUM as t0_STORAGE_NUM,
+	        		ta.ZDTYL as t0_ZDTYL,
+	        		ta.PLANT as t0_PLANT,
+	        		ta.BATCH_NO as t0_BATCH_NO,
+	        		ta.OPERATE_TYPE as t0_OPERATE_TYPE,
+	        		ta.POSNR as t0_POSNR,
+	        		ta.MATKL_SELF as t0_MATKL_SELF
+  from zg_t_orderbom_temp_all ta, zg_t_orderbom bom
+ where ta.idnrk = bom.idnrk(+)
+   and nvl(ta.posnr, 'null') = nvl(bom.posnr, 'null')
+   and ta.aufnr = bom.aufnr(+)
+   and ta.batch_no = '$batchNo$'
+   and exists (select 1
+          from (select ZDTYL,
+                       taskbom.menge,
+                       MATKL,
+                       LGORT,
+                       ZRZQD,
+                       IDNRK,
+                       task.aufnr,
+                       task.ARBPL,
+                       MATNR,
+                       MSEHL1,
+                       MSEHL2,
+                       MATNR1,
+                       posnr
+                  from ZG_T_ORDERBOM      orderbom,
+                       zg_t_order_task    task,
+                       zg_t_order_taskbom taskBom
+                 WHERE task.cuid = taskbom.order_task_id
+                   and taskbom.order_bom_id = orderbom.cuid
+                   and task.aufnr = '$aufnr$'
+                   and task.arbpl = '$arbpl$'
+                   and task.plant = '$plant$'
+                minus
+                select ZDTYL,
+                       MENGE,
+                       MATKL,
+                       LGORT,
+                       ZRZQD,
+                       IDNRK,
+                       aufnr,
+                       ARBPL,
+                       MATNR,
+                       MSEHL1,
+                       MSEHL2,
+                       MATNR1,
+                       posnr
+                  from ZG_T_ORDERBOM_TEMP_ALL t
+                 where t.batch_no = '$batchNo$'
+                   and t.operate_type is null
+                   and t.aufnr = '$aufnr$'
+                   and t.arbpl = '$arbpl$'
+                   and t.plant = '$plant$') m
+        
+         where ta.idnrk = m.idnrk
+           and ta.aufnr = m.aufnr
+           and nvl(ta.posnr, 'null') = nvl(m.posnr, 'null')
+           and ta.plant = '$plant$'
+           and ta.arbpl = m.arbpl)
+    </select>
+    
+     <update id="updateZG_T_ORDERBOMBYIDNRKPOSNR" parameterClass="zgTorderbomTempAll">
+    <![CDATA[
+        UPDATE ZG_T_ORDERBOM SET
+	        MATKL = #matkl# ,
+	        SORTF = #sortf# ,
+	        LGORT = #lgort# ,
+	        ZBZ = #zbz# ,
+	        ZRZQD = #zrzqd# ,
+	        IDNRK = #idnrk# ,
+	        ORDER_ID = #orderId# ,
+	        AUFNR = #aufnr# ,
+	        ARBPL = #arbpl# ,
+	        MATNR = #matnr# ,
+	        MAKTX1 = #maktx1# ,
+	        MAKTX2 = #maktx2# ,
+	        MSEHL1 = #msehl1# ,
+	        MSEHL2 = #msehl2# ,
+	        LABEL_CN = #labelCn# ,
+	        SORTF_H = #sortfH# ,
+	        MATNR1 = #matnr1# ,
+	        STORAGE_STATE = #storageState# ,
+	        STORAGE_NUM = #storageNum# ,
+	        ZDTYL = #zdtyl# ,
+	        POSNR = #posnr# 
+	    WHERE aufnr=#aufnr#
+	    and idnrk=#idnrk#
+	     ]]>
+	       <isNotEmpty prepend="AND" property="posnr">
+	       		posnr=#posnr#
+       		</isNotEmpty>   
+       		<isEmpty prepend="AND" property="posnr">
+	       		posnr is null
+       		</isEmpty>   
+				
+   
+    </update>
+    
+    
+</sqlMap>

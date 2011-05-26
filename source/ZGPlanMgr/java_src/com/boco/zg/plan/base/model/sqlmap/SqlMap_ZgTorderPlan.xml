@@ -109,7 +109,7 @@
         ZG_T_ORDER_PLAN (
         	CUID ,
         	LABEL_CN ,
-        	ORDER_ID ,
+        	ORDER_TASK_ID ,
         	DEPARTMENU_ID ,
         	USER_ID ,
         	PLAN_DATE ,
@@ -123,7 +123,7 @@
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
-        	#orderId# ,
+        	#orderTaskId# ,
         	#departmenuId# ,
         	#userId# ,
         	#planDate# ,
@@ -784,5 +784,34 @@
 		<dynamic prepend="ORDER BY">
 			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
 		</dynamic>
+    </select>
+    
+    
+    <resultMap id="zgTorderPlanResultBase" class="zgTorderPlan">
+		<result property="cuid" column="cuid"/>
+		<result property="departmenuId" column="DEPARTMENU_ID"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="planDate" column="PLAN_DATE"/>
+		<result property="planDate_start" column="PLAN_START_TIME"/>
+		<result property="planDate_end" column="PLAN_END_TIME"/>
+		<result property="labelCn" column="LABEL_CN"/>
+		<result property="state" column="STATE"/>
+		<result property="plant" column="PLANT"/>
+		<result property="planType" column="PLAN_TYPE"/>
+		<result property="backReason" column="BACK_REASON"/>
+		<result property="backZbz" column="BACK_ZBZ"/>
+		<result property="percent" column="PERCENT"/>
+		<result property="isManul" column="ISMANUL"/>
+			<result property="zbz" column="ZBZ"/>
+		<result property="extend1" column="EXTEND1"/>
+		<result property="orderTaskId" column="ORDER_TASK_ID"/>
+    </resultMap>
+    
+   
+    
+    <select id="getPlanByTaskId" resultMap="zgTorderPlanResultBase">
+	    select * from zg_t_order_plan t  
+        where t.order_task_id ='$taskId$'
+        and t.PLAN_TYPE ='$planType$'
     </select>
 </sqlMap>

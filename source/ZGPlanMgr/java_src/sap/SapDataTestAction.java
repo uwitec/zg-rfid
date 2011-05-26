@@ -122,7 +122,7 @@ public class SapDataTestAction extends BaseStruts2Action
 			LoadRequestProcessThread thread = new LoadRequestProcessThread();
 			thread.setBatchNo(batchNo);
 			thread.setFunctionName("ZSTFC_CONNECTION_RFID_02");
-			//thread.setTsysIfaceLog(tsysIfaceLog);
+//			thread.setTsysIfaceLog(tsysIfaceLog);
 			Thread t = new Thread(thread);
 			t.start();
 		} catch (Exception e) {
@@ -239,7 +239,7 @@ public class SapDataTestAction extends BaseStruts2Action
 		
 		//写入关系数据ZSTFC_CONNECTION_RFID_02_ZLLXM_22358
 		String[] bomFields = {"ARBPL","AUFNR","MATNR","MAKTX1","IDNRK","MAKTX2","MSEHL2","ZDTYL","MENGE","MATKL","SORTF","LGORT","POSNR"};
-		List<Map> list = excelService.parseExcelFile("E:\\sap\\ZSTFC_CONNECTION_RFID_02_ZLLXM2_22358.xls",bomFields,"ZG_T_ORDERBOM_TEMP");
+		List<Map> list = excelService.parseExcelFile("E:\\sap\\ZSTFC_CONNECTION_RFID_01_ZLLXM2_22070.xls",bomFields,"ZG_T_ORDERBOM_TEMP");
 		int i = 0;
 		for(Map map : list){
 			i++;
@@ -249,7 +249,7 @@ public class SapDataTestAction extends BaseStruts2Action
 		}
 		//模拟写入BOM数据
 		String[] bomFieldsAll = {"ARBPL","AUFNR","MATNR","MAKTX1","MSEHL1","IDNRK","MAKTX2","MSEHL2","ZDTYL","MENGE","MATKL","SORTF","LGORT","ZBZ","ZRZQD","PLANT","POSNR"};
-		List<Map> listAll = excelService.parseExcelFile("E:\\sap\\ZSTFC_CONNECTION_RFID_02_ZLLXM_22358.xls",bomFieldsAll,"ZG_T_ORDERBOM_TEMP_ALL");
+		List<Map> listAll = excelService.parseExcelFile("E:\\sap\\ZSTFC_CONNECTION_RFID_01_ZLLXM_22070.xls",bomFieldsAll,"ZG_T_ORDERBOM_TEMP_ALL");
 		int j = 0;
 		for(Map map : listAll){
 			j++;
@@ -262,7 +262,7 @@ public class SapDataTestAction extends BaseStruts2Action
 		String[] orderFields = {"MANDT","PXDAT","PLANT","MIPOS","PCDAT","ARBPL","AUFNR","MATNR","KDAUF","KDPOS","KDTXT","ZCKPP","MAKTX2",
 		"MAKTX1","ZZCKS","ATWRT2","PSMNG","PMENGE","ZTXT02","ZDBLC","BRGEW2","CRDAT","CPUTM","CRNAM","MRNAM",
 		"ZMUZE","MNAME","FBDAT","FBUZE","FNAME","PFLAG","PSBH"};
-		List<Map> listOrderAll = excelService.parseExcelFile("E:\\sap\\ZSTFC_CONNECTION_RFID_02_ZLLTT_22358.xls",orderFields,"ZG_T_ORDER_TEMP");
+		List<Map> listOrderAll = excelService.parseExcelFile("E:\\sap\\ZSTFC_CONNECTION_RFID_01_ZLLTT_22070.xls",orderFields,"ZG_T_ORDER_TEMP");
 		int m = 0;
 		for(Map map : listOrderAll){
 			m++;
@@ -274,7 +274,7 @@ public class SapDataTestAction extends BaseStruts2Action
 		
 		//写入订单数据
 		String[] orderSuppliersFields = {"AUFNR","IDNRK","LIFNR","LIFNR_NAME","PLANT"};
-		List<Map> listOrderSuppliersAll = excelService.parseExcelFile("E:\\sap\\ZSTFC_CONNECTION_RFID_02_ZGYS_22358.xls",orderSuppliersFields,"ZG_T_ORDER_SUPPLIERS_TEMP");
+		List<Map> listOrderSuppliersAll = excelService.parseExcelFile("E:\\sap\\ZSTFC_CONNECTION_RFID_01_ZGYS_22070.xls",orderSuppliersFields,"ZG_T_ORDER_SUPPLIERS_TEMP");
 //		List<Map> listOrderAll = excelService.parseExcelFile("E:\\sap\\ZLLTT.xls",orderFields,"ZG_T_ORDER_TEMP");
 
 		m = 0;
@@ -337,6 +337,16 @@ public class SapDataTestAction extends BaseStruts2Action
 		for(Map map : listOrderSuppliersAll){
 			map.put("BATCH_NO", batchNo);
 			getHandlerSapDataService().insertDynamicTable("ZG_T_ORDER_SUPPLIERS_TEMP", map);
+		}
+		
+		String[] orderPlant = {"PLANT"};
+		List<Map> listOrderPlantAll = excelService.parseExcelFile("E:\\sap\\ZSTFC_CONNECTION_RFID_01_IPLANT_22070.xls",orderPlant,"ZG_T_ORDER_PLANT_TEMP");
+//		List<Map> listOrderAll = excelService.parseExcelFile("E:\\sap\\ZLLTT.xls",orderFields,"ZG_T_ORDER_TEMP");
+
+		m = 0;
+		for(Map map : listOrderPlantAll){
+			map.put("BATCH_NO", batchNo);
+			getHandlerSapDataService().insertDynamicTable("ZG_T_ORDER_PLANT_TEMP", map);
 		}
 	}
 	

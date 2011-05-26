@@ -1,5 +1,9 @@
 package sap.service;
 
+import java.util.List;
+
+import com.boco.zg.plan.base.model.ZgTorderbomTempAll;
+
 public interface CompareSapDataService {
 
 	public final static int ADD = 1;
@@ -26,6 +30,16 @@ public interface CompareSapDataService {
 	 * @param batchNo
 	 */
 	public void deleteOperatorTypeByBatchNo(int batchNo);
+
+	/**
+	 * @param batchNo
+	 * @param aufnr
+	 * @param arbpl
+	 * @param plant
+	 * @return
+	 */
+	public List<ZgTorderbomTempAll> getAddBomList(int batchNo, String aufnr,
+			String arbpl, String plant);
 
 	
 	

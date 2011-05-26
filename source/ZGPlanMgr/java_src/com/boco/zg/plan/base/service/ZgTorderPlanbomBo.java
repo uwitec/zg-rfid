@@ -57,4 +57,72 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 		return zgTorderPlanbomDao.save1(zgTorderPlanbom);
 		
 	}
+	
+	
+	
+	/**
+	 * @param taskId
+	 * @param sortf
+	 * @param cuid
+	 * @return
+	 */
+	public ZgTorderPlanbom getPlanBomByTaskIdPlanTypeTaskBomId(String taskId,String planType, String taskBomId) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("taskId", taskId);
+		paramsMap.put("planType", planType);
+		paramsMap.put("taskBomId", taskBomId);
+		return zgTorderPlanbomDao.getPlanBomByTaskIdPlanTypeTaskBomId(paramsMap);
+	}
+	
+	/**
+	 * @param taskId
+	 * @param sortf
+	 * @param cuid
+	 * @return
+	 */
+	public List<ZgTorderPlanbom> getPlanBomTaskBomId(String taskBomId) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("taskBomId", taskBomId);
+		return zgTorderPlanbomDao.getPlanBomTaskBomId(paramsMap);
+	}
+	
+	
+	/**
+	 * @param cuid
+	 * @param cuid2
+	 * @return
+	 */
+	public ZgTorderPlanbom getPlanBomByPlanIdTaskBomId(String planId, String taskBomId) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("planId", planId);
+		paramsMap.put("taskBomId", taskBomId);
+		return zgTorderPlanbomDao.getPlanBomByPlanIdTaskBomId(paramsMap);
+	}
+
+	/**
+	 * 根据taskid，plantype设置其他领料计划BOM的需求数量为0 并设置退料数据
+	 * @param taskId
+	 * @param planType
+	 */
+	public void updatePlanBomCarNumTo0ByPlanId(String planId) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("planId", planId);
+		zgTorderPlanbomDao.updatePlanBomCarNumTo0ByPlanId(paramsMap);
+		
+	}
+	
+	/**
+	 * 根据taskid，plantype删除其bom
+	 * @param taskId
+	 * @param planType
+	 */
+	public void delPlanBomPlanId(String planId) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("planId", planId);
+		zgTorderPlanbomDao.delPlanBomPlanId(paramsMap);
+		
+	}
+	
+	
+	
 }

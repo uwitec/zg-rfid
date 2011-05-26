@@ -121,7 +121,14 @@
 			       nvl(t.storage_num,0) as t0_storage_num  from zg_t_order_planbom t , zg_t_orderbom orderbom where  orderbom.order_id='$targerOrderId$'
 				and orderbom.idnrk='$idnrk$'
 				and orderbom.matkl='$matkl$'
-				and orderbom.posnr='$posnr$'
+				
+			<isNotEmpty prepend="AND" property="posnr">
+	       			 orderbom.posnr='$posnr$'
+       		</isNotEmpty>   
+       		<isEmpty prepend="AND" property="posnr">
+	       			 orderbom.posnr is null
+       		</isEmpty>   
+				
         and orderbom.lgort='$lgort$'
 			and orderbom.cuid=t.order_bom_id
 			and rownum=1
