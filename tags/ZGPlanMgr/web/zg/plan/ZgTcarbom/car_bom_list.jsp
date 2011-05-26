@@ -199,7 +199,6 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 	<input type="hidden"  name="s_aufnr" id="s_aufnr" value="${pageRequest.filters.aufnr }"/>
 	
 		<div>
-		订单号:${aufnrs}
 		</div>
 		<div id="grid-panel" class="grid-panel">
 			<div class="title" >装车计划</div>
