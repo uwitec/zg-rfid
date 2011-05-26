@@ -62,9 +62,9 @@ public class LoadRequestProcessThread implements Runnable {
 	private JCoFunction function;
 	
 	
-	private static Object synLock=new Object();
-	private static Object planLock=new Object();
-	private static Object orderLock=new Object();
+	public static Object synLock=new Object();
+	public static Object planLock=new Object();
+	public static Object orderLock=new Object();
 	
 	private SapClient getSapClient() {
 		return (SapClient)ApplicationContextHolder.getBean("sapClient");
