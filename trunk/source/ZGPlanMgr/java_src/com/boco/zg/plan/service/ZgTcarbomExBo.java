@@ -269,6 +269,9 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 				if(null!=bom.getSupList()){
 					//保存具体供应商的bom数量
 					for(ZgTcarbomSuppliers sup:bom.getSupList()){
+						if(sup.getCarNum()==null){
+							sup.setCarNum(0l);
+						}
 						zgTcarbomSuppliersBo.update(sup);
 					}
 				}
@@ -303,8 +306,11 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 			if(null!=bom.getSupList()){
 				//保存具体供应商bom数量
 				for (ZgTcarbomSuppliers sup:bom.getSupList()) {
+					if(sup.getCarNum()==null){
+						sup.setCarNum(0l);
+					}
 					sup.setCarBomId(carBomId);
-						zgTcarbomSuppliersBo.save(sup);
+					zgTcarbomSuppliersBo.save(sup);
 //					}
 				}
 			}
