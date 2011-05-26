@@ -1,5 +1,8 @@
 package com.boco.zg.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 常量类
  * @author wengq
@@ -8,6 +11,12 @@ package com.boco.zg.util;
 public class Constants {
 	public static String isManulFinished="0";//手工结单
 	public static String isNotManulFinished="1";//非手工结单
+	
+	public static String NEEDPLANSORTF="ABC','ABD','ABE";
+	
+	public final static int ADD = 1;
+	public final static int EDIT = 2;  //未做任何操作 /修改
+	public final static int DELETE = 3;
 	
 	
 	
@@ -553,6 +562,8 @@ public class Constants {
 			return this.name;
 		}
 	}
+	
+	
 	
 	
 }

@@ -3,7 +3,7 @@
     "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="ZgTorderTaskbom">
-    <typeAlias alias="zgTorderTaskbom" type="com.pz.modules.base.fwdep.model.ZgTorderTaskbom"/>
+    <typeAlias alias="zgTorderTaskbom" type="com.boco.zg.plan.base.model.ZgTorderTaskbom"/>
 	<resultMap id="zgTorderTaskbomResult" class="zgTorderTaskbom">
 		<result property="cuid" column="t0_CUID"/>
 		<result property="orderTaskId" column="t0_ORDER_TASK_ID"/>
@@ -352,6 +352,78 @@
 		        ZG_T_ORDERBOM t0
 	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_ORDER_BOM_ID 
         ]]>
+    </select>
+    
+    <select id="getTaskbomByTaskIdAufnrIdnrkPosnr" resultMap="zgTorderTaskbomResult">
+	    select   m.t0_CUID,
+		    t0_0_1.t0_ARBPL as t0_0_1_t0_ARBPL,
+	        'ZG_T_ORDER_TASK' as t0_0_1_BD,
+	        m.t0_ORDER_TASK_ID,
+		    t0_1_1.t0_LABEL_CN as t0_1_1_t0_LABEL_CN,
+	        'ZG_T_ORDERBOM' as t0_1_1_BD,
+	        m.t0_ORDER_BOM_ID,
+	        m.t0_MENGE
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.ORDER_TASK_ID as t0_ORDER_TASK_ID,
+	        		t0.ORDER_BOM_ID as t0_ORDER_BOM_ID,
+	        		t0.MENGE as t0_MENGE
+	        from 
+	        ZG_T_ORDER_TASKBOM t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.ORDER_ID as t0_ORDER_ID,
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.PX_DATE as t0_PX_DATE,
+	        	t0.POSKEY as t0_POSKEY,
+	        	t0.PLANT as t0_PLANT
+	        	 from
+		        ZG_T_ORDER_TASK t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_TASK_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.IDNRK as t0_IDNRK,
+	        	t0.ORDER_ID as t0_ORDER_ID,
+	        	t0.AUFNR as t0_AUFNR,
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.MATNR as t0_MATNR,
+	        	t0.MATNR1 as t0_MATNR1,
+	        	t0.MAKTX1 as t0_MAKTX1,
+	        	t0.MAKTX2 as t0_MAKTX2,
+	        	t0.MSEHL1 as t0_MSEHL1,
+	        	t0.MSEHL2 as t0_MSEHL2,
+	        	t0.ZDTYL as t0_ZDTYL,
+	        	t0.MATKL as t0_MATKL,
+	        	t0.SORTF as t0_SORTF,
+	        	t0.SORTF_H as t0_SORTF_H,
+	        	t0.LGORT as t0_LGORT,
+	        	t0.ZBZ as t0_ZBZ,
+	        	t0.ZRZQD as t0_ZRZQD,
+	        	t0.STORAGE_NUM as t0_STORAGE_NUM,
+	        	t0.STORAGE_STATE as t0_STORAGE_STATE,
+	        	t0.POSNR as t0_POSNR,
+	        	t0.MENGE as t0_MENGE
+	        	 from
+		        ZG_T_ORDERBOM t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_ORDER_BOM_ID 
+        where    t0_1_1.t0_AUFNR='$aufnr$'
+        and t0_1_1.t0_IDNRK ='$idnrk$'     ]]>
+       		<isNotEmpty prepend="AND" property="posnr">
+	       		    t0_1_1.t0_POSNR ='$posnr$'
+       		</isNotEmpty>   
+       		<isEmpty prepend="AND" property="posnr">
+	       			 t0_1_1.t0_POSNR  is null
+       		</isEmpty>   
+       		<isNotEmpty prepend="AND" property="taskId">
+	       			 t0_0_1.t0_CUID ='$taskId$'
+       		</isNotEmpty> 
+       		
+       		
+				
+   
     </select>
     
 </sqlMap>

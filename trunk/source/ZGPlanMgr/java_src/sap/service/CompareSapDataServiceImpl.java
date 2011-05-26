@@ -1,5 +1,7 @@
 package sap.service;
 
+import java.util.List;
+
 import javacommon.base.dao.BaseDao;
 
 import org.apache.commons.logging.Log;
@@ -8,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.boco.zg.plan.base.model.ZgTorderbomTempAll;
 import com.boco.zg.util.Constants;
 
 
@@ -182,7 +185,7 @@ public class CompareSapDataServiceImpl implements CompareSapDataService {
 			addBufferSql.append("    and temp.aufnr='"+aufnr+"'  and temp.arbpl='"+arbpl+"' and not exists (select 1 from ");
 
 		}
-		addBufferSql.append(" ZG_T_ORDERBOM s where  S.aufnr='"+aufnr+"'  and s.arbpl='"+arbpl+"' and s.IDNRK = temp.IDNRK  and temp.posnr=s.posnr)");
+		addBufferSql.append(" ZG_T_ORDERBOM s where  S.aufnr='"+aufnr+"'  and s.arbpl='"+arbpl+"' and s.IDNRK = temp.IDNRK  and temp.posnr=s.posnr and s.matnr1=temp.matnr1)");
 		this.baseDao.executeSql(addBufferSql.toString());
 	}
 	
@@ -203,6 +206,14 @@ public class CompareSapDataServiceImpl implements CompareSapDataService {
 		updateBuffer.append("update zg_t_orderbom_temp_all t set t.operate_type ='' where t.batch_no='"+batchNo+"'");
 		this.baseDao.executeSql(updateBuffer.toString());
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see sap.service.CompareSapDataService#getAddBomList(int, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public List<ZgTorderbomTempAll> getAddBomList(int batchNo, String aufnr,
+			String arbpl, String plant) {
+		return null;
 	}
 		
 

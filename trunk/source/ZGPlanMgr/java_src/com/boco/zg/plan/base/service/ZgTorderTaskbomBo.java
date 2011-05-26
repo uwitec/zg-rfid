@@ -6,7 +6,9 @@
 
 package com.boco.zg.plan.base.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javacommon.base.BaseManager;
 import javacommon.base.EntityDao;
@@ -46,5 +48,54 @@ public class ZgTorderTaskbomBo extends BaseManager<ZgTorderTaskbom,java.lang.Str
 	
 	public List<ZgTorderTaskbom> findByRequest(PageRequest pageRequest) {
 		return zgTorderTaskbomDao.findByRequest(pageRequest);
+	}
+	/**
+	 * @param taskId
+	 * @param idnrk
+	 * @param aufnr
+	 * @param posnr
+	 */
+	public ZgTorderTaskbom getTaskbomByTaskIdAufnrIdnrkPosnr(String taskId, String idnrk,String aufnr, String posnr) {
+		Map paramsMap=new HashMap<String , Object>();
+		paramsMap.put("taskId", taskId);
+		paramsMap.put("idnrk", idnrk);
+		paramsMap.put("aufnr", aufnr);
+		paramsMap.put("posnr", posnr);
+		return zgTorderTaskbomDao.getTaskbomByTaskIdAufnrIdnrkPosnr(paramsMap);
+	}
+
+
+	/**
+	 * 根据taskID将他的物料全部设置需求数量为0
+	 * @param taskId
+	 */
+	public void updateTaskBomMengeTO0ByTaskId(String taskId) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("taskId", taskId);
+		zgTorderTaskbomDao.updateTaskBomMengeTO0ByTaskId(paramsMap);
+	}
+	
+	/**
+	 * 根据taskID将他的物料全部设置需求数量为0
+	 * @param taskId
+	 */
+	public void delTaskBomTaskId(String taskId) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("taskId", taskId);
+		zgTorderTaskbomDao.delTaskBomTaskId(paramsMap);
+	}
+	/**
+	 * @param idnrk
+	 * @param aufnr
+	 * @param posnr
+	 * @return
+	 */
+	public List<ZgTorderTaskbom> getTaskbomAufnrIdnrkPosnr(String idnrk,
+			String aufnr, String posnr) {
+		Map paramsMap=new HashMap<String , Object>();
+		paramsMap.put("idnrk", idnrk);
+		paramsMap.put("aufnr", aufnr);
+		paramsMap.put("posnr", posnr);
+		return zgTorderTaskbomDao.getTaskbomAufnrIdnrkPosnr(paramsMap);
 	}
 }

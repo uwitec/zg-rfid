@@ -138,8 +138,8 @@
         	CUID ,
         	LABEL_CN ,
         	ORDER_PLAN_ID,
-        	ORDER_BOM_ID ,
-        	ORDER_ID ,
+        	TASKBOM_ID ,
+        	ORDER_TASK_ID ,
         	DEPARTMENT_ID ,
         	USER_ID ,
         	PLAN_DATE ,
@@ -154,8 +154,8 @@
         	#cuid# ,
         	#labelCn# ,
         	#orderPlanId#,
-        	#orderBomId# ,
-        	#orderId# ,
+        	#taskBomId# ,
+        	#orderTaskId# ,
         	#departmentId# ,
         	#userId# ,
         	#planDate# ,
@@ -217,13 +217,14 @@
 			select sys_guid() AS ID FROM DUAL
 		</selectKey>
     </insert>
+    
     <update id="updateZG_T_ORDER_PLANBOM" parameterClass="zgTorderPlanbom">
     <![CDATA[
         UPDATE ZG_T_ORDER_PLANBOM SET
 	        LABEL_CN = #labelCn# ,
 	        ORDER_PLAN_ID = #orderPlanId# ,
-	        ORDER_BOM_ID = #orderBomId# ,
-	        ORDER_ID = #orderId# ,
+	        TASKBOM_ID=#taskBomId# ,
+        	ORDER_TASK_ID=#orderTaskId# ,
 	        DEPARTMENT_ID = #departmentId# ,
 	        USER_ID = #userId# ,
 	        PLAN_DATE = #planDate# ,
@@ -982,5 +983,73 @@
 	        ) t0_3_1 on t0_3_1.t0_CUID = m.t0_USER_ID 
         ]]>
     </select>
+    
+    <resultMap id="zgTorderPlanbomResultBase" class="zgTorderPlanbom">
+		<result property="cuid" column="CUID"/>
+		<result property="labelCn" column="LABEL_CN"/>
+		<result property="taskBomId" column="TASKBOM_ID"/>
+		<result property="orderPlanId" column="ORDER_PLAN_ID"/>
+		<result property="orderTaskId" column="ORDER_TASK_ID"/>
+		<result property="departmentId" column="DEPARTMENT_ID"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="planDate" column="PLAN_DATE"/>
+		<result property="planStartTime" column="PLAN_START_TIME"/>
+		<result property="planEndTime" column="PLAN_END_TIME"/>
+		<result property="state" column="STATE"/>
+		<result property="completeNum" column="COMPLETE_NUM"/>
+		<result property="carNum" column="CAR_NUM"/>
+		<result property="planNum" column="PLAN_NUM"/>
+		<result property="bomId" column="BOM_ID"/>
+		<result property="zbz" column="zbz"/>
+		<result property="auditNum" column="audit_num"/>
+		<result property="moveNum" column="move_num"/>
+		<result property="backNum" column="back_num"/>
+		<result property="outNum" column="out_num"/>
+		<result property="moveNumIn" column="move_num_in"/>
+		<result property="waitBackNum" column="wait_back_num"/>
+		<result property="storageNum" column="storage_num"/>
+    </resultMap>
+    
+   
+    
+    <select id="getPlanBomByTaskIdPlanTypeTaskBomId" resultMap="zgTorderPlanbomResultBase">
+	    select t0.*
+	        from 
+	        ZG_T_ORDER_PLANBOM t0,zg_t_order_plan plan 
+	        where 
+	         plan.cuid=t0.order_plan_id
+	        and t0.taskBom_id='$taskBomId$'
+	        
+	          <isNotEmpty prepend="AND" property="taskId">
+	       			plan.order_task_id='$taskId$'
+       		</isNotEmpty>    
+       		     <isNotEmpty prepend="AND" property="planType">
+	       			 plan.plan_type in ('$planType$')
+       		</isNotEmpty>    
+    </select>
+    
+      <select id="getPlanBomByPlanIdTaskBomId" resultMap="zgTorderPlanbomResultBase">
+	    select t0.*
+	        from 
+	        ZG_T_ORDER_PLANBOM t0
+	        where t0.order_plan_id='$planId$'
+	        and t0.taskBom_id='$taskBomId$'
+    </select>
+    
+      
+    <update id="updatePlanBomCarNumTo0ByPlanId" parameterClass="java.util.HashMap">
+    <![CDATA[
+       update zg_t_order_planbom t
+		   set t.state = '9', t.car_num = 0, t.wait_back_num = t.complete_num
+		 where t.order_plan_id = '$planId$'
+    ]]>
+    </update>
+    
+     <delete id="delPlanBomPlanId" parameterClass="java.util.HashMap">
+    <![CDATA[
+       delete from  zg_t_order_planbom t
+		 where t.order_plan_id = '$planId$'
+    ]]>
+    </delete>
     
 </sqlMap>

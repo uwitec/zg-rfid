@@ -3,7 +3,7 @@
     "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="ZgTorderTask">
-    <typeAlias alias="zgTorderTask" type="com.pz.modules.base.fwdep.model.ZgTorderTask"/>
+    <typeAlias alias="zgTorderTask" type="com.boco.zg.plan.base.model.ZgTorderTask"/>
 	<resultMap id="zgTorderTaskResult" class="zgTorderTask">
 		<result property="cuid" column="t0_CUID"/>
 		<result property="orderId" column="t0_ORDER_ID"/>
@@ -13,7 +13,9 @@
 		<result property="pxDate" column="t0_PX_DATE"/>
 		<result property="poskey" column="t0_POSKEY"/>
 		<result property="plant" column="t0_PLANT"/>
-		<result property="taskState" column="t0_task_State"/>
+		<result property="pmenge" column="t0_PMENGE"/>
+		<result property="aufnr" column="t0_AUFNR"/>
+		<result property="flag" column="t0_FLAG"/>
     </resultMap>
     
     <!-- 用于select查询公用抽取的列 -->
@@ -27,7 +29,9 @@
 	        m.t0_PX_DATE,
 	        m.t0_POSKEY,
 	        m.t0_PLANT,
-	        m.t0_task_state
+	        m.t0_PMENGE,
+	        m.t0_AUFNR,
+	        m.t0_FLAG
 	    ]]>
 	</sql>
 	
@@ -57,6 +61,12 @@
 		    <isNotEmpty prepend="AND" property="plant">
 	       			m.t0_PLANT like #plant#
        		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="pmenge">
+	       			m.t0_PMENGE = #pmenge#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="aufnr">
+	       			m.t0_AUFNR like #aufnr#
+       		</isNotEmpty>    
 	    </dynamic>	
 	</sql>
 	
@@ -69,7 +79,10 @@
         	ARBPL ,
         	PX_DATE ,
         	POSKEY ,
-        	PLANT ,task_State
+        	PLANT ,
+        	PMENGE ,
+        	AUFNR ,
+        	flag
         ) VALUES (
         	#cuid# ,
         	#orderId# ,
@@ -77,7 +90,9 @@
         	#pxDate# ,
         	#poskey# ,
         	#plant# ,
-        	#taskState#
+        	#pmenge# ,
+        	#aufnr# ,
+        	#flag#
         )
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
@@ -93,10 +108,13 @@
 	        PX_DATE = #pxDate# ,
 	        POSKEY = #poskey# ,
 	        PLANT = #plant# ,
-        	task_state=#taskState#
+	        PMENGE = #pmenge# ,
+	        AUFNR = #aufnr# ,
+	        flag=#flag#
 	    WHERE CUID = #cuid#
     ]]>
     </update>
+    
     
 	<delete id="deleteZG_T_ORDER_TASK" parameterClass="java.lang.String">
 		delete from ZG_T_ORDER_TASK 
@@ -113,7 +131,9 @@
 	        		t0.PX_DATE as t0_PX_DATE,
 	        		t0.POSKEY as t0_POSKEY,
 	        		t0.PLANT as t0_PLANT,
-	        		t0_task_state as t0_task_statet
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.flag as t0_flag
 	        from 
 	        ZG_T_ORDER_TASK t0
  ) m
@@ -155,7 +175,9 @@
 	        	t0.PFLAG as t0_PFLAG,
 	        	t0.FREEZE as t0_FREEZE,
 	        	t0.PSBH as t0_PSBH,
-	        	t0.ARBPL as t0_ARBPL
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.PUBLISH_NUM as t0_PUBLISH_NUM,
+	        	t0.ARBPL1 as t0_ARBPL1
 	        	 from
 		        ZG_T_ORDER t0
 	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
@@ -173,7 +195,9 @@
 	        		t0.PX_DATE as t0_PX_DATE,
 	        		t0.POSKEY as t0_POSKEY,
 	        		t0.PLANT as t0_PLANT,
-	        		t0_task_state as t0_task_statet
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.flag as t0_flag
 	        from 
 	        ZG_T_ORDER_TASK t0
  ) m
@@ -215,7 +239,9 @@
 	        	t0.PFLAG as t0_PFLAG,
 	        	t0.FREEZE as t0_FREEZE,
 	        	t0.PSBH as t0_PSBH,
-	        	t0.ARBPL as t0_ARBPL
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.PUBLISH_NUM as t0_PUBLISH_NUM,
+	        	t0.ARBPL1 as t0_ARBPL1
 	        	 from
 		        ZG_T_ORDER t0
 	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
@@ -237,7 +263,9 @@
 	        		t0.PX_DATE as t0_PX_DATE,
 	        		t0.POSKEY as t0_POSKEY,
 	        		t0.PLANT as t0_PLANT,
-	        		t0_task_state as t0_task_statet
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.flag as t0_flag
 	        from 
 	        ZG_T_ORDER_TASK t0
  ) m
@@ -279,7 +307,9 @@
 	        	t0.PFLAG as t0_PFLAG,
 	        	t0.FREEZE as t0_FREEZE,
 	        	t0.PSBH as t0_PSBH,
-	        	t0.ARBPL as t0_ARBPL
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.PUBLISH_NUM as t0_PUBLISH_NUM,
+	        	t0.ARBPL1 as t0_ARBPL1
 	        	 from
 		        ZG_T_ORDER t0
 	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
@@ -301,7 +331,9 @@
 	        		t0.PX_DATE as t0_PX_DATE,
 	        		t0.POSKEY as t0_POSKEY,
 	        		t0.PLANT as t0_PLANT,
-	        		t0_task_state as t0_task_statet
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.flag as t0_flag
 	        from 
 	        ZG_T_ORDER_TASK t0
  ) m
@@ -343,7 +375,9 @@
 	        	t0.PFLAG as t0_PFLAG,
 	        	t0.FREEZE as t0_FREEZE,
 	        	t0.PSBH as t0_PSBH,
-	        	t0.ARBPL as t0_ARBPL
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.PUBLISH_NUM as t0_PUBLISH_NUM,
+	        	t0.ARBPL1 as t0_ARBPL1
 	        	 from
 		        ZG_T_ORDER t0
 	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
@@ -364,7 +398,9 @@
 	        		t0.PX_DATE as t0_PX_DATE,
 	        		t0.POSKEY as t0_POSKEY,
 	        		t0.PLANT as t0_PLANT,
-	        		t0_task_state as t0_task_statet
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.flag as t0_flag
 	        from 
 	        ZG_T_ORDER_TASK t0
  ) m
@@ -406,11 +442,93 @@
 	        	t0.PFLAG as t0_PFLAG,
 	        	t0.FREEZE as t0_FREEZE,
 	        	t0.PSBH as t0_PSBH,
-	        	t0.ARBPL as t0_ARBPL
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.PUBLISH_NUM as t0_PUBLISH_NUM,
+	        	t0.ARBPL1 as t0_ARBPL1
 	        	 from
 		        ZG_T_ORDER t0
 	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
         ]]>
     </select>
+    
+      <update id="updateTaskBomMengeTO0ByTaskId" parameterClass="java.util.HashMap">
+    <![CDATA[
+     update zg_t_order_taskbom t set t.menge=0 where t.order_task_id='$taskId$'
+    ]]>
+    </update>
+    
+   <delete id="delTaskBomTaskId" parameterClass="java.util.HashMap">
+    <![CDATA[
+     delete from  zg_t_order_taskbom t where t.order_task_id='$taskId$'
+    ]]>
+    </delete>
+    
+    <select id="findTaskByAufnrArbplPlant" resultMap="zgTorderTaskResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.PX_DATE as t0_PX_DATE,
+	        		t0.POSKEY as t0_POSKEY,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.flag as t0_flag
+	        from 
+	        ZG_T_ORDER_TASK t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.AUFNR as t0_AUFNR,
+	        	t0.ORDER_STATE as t0_ORDER_STATE,
+	        	t0.SUBMIT_USER as t0_SUBMIT_USER,
+	        	t0.SUBMIT_DATE as t0_SUBMIT_DATE,
+	        	t0.MANDT as t0_MANDT,
+	        	t0.PXDAT as t0_PXDAT,
+	        	t0.PLANT as t0_PLANT,
+	        	t0.MIPOS as t0_MIPOS,
+	        	t0.PCDAT as t0_PCDAT,
+	        	t0.MATNR as t0_MATNR,
+	        	t0.KDAUF as t0_KDAUF,
+	        	t0.KDPOS as t0_KDPOS,
+	        	t0.KDTXT as t0_KDTXT,
+	        	t0.ZCKPP as t0_ZCKPP,
+	        	t0.MAKTX2 as t0_MAKTX2,
+	        	t0.MAKTX1 as t0_MAKTX1,
+	        	t0.ZZCKS as t0_ZZCKS,
+	        	t0.ATWRT2 as t0_ATWRT2,
+	        	t0.PSMNG as t0_PSMNG,
+	        	t0.PMENGE as t0_PMENGE,
+	        	t0.ZTXT02 as t0_ZTXT02,
+	        	t0.ZDBLC as t0_ZDBLC,
+	        	t0.BRGEW2 as t0_BRGEW2,
+	        	t0.CRDAT as t0_CRDAT,
+	        	t0.CPUTM as t0_CPUTM,
+	        	t0.CRNAM as t0_CRNAM,
+	        	t0.MRNAM as t0_MRNAM,
+	        	t0.ZMUZE as t0_ZMUZE,
+	        	t0.MNAME as t0_MNAME,
+	        	t0.FBDAT as t0_FBDAT,
+	        	t0.FBUZE as t0_FBUZE,
+	        	t0.FNAME as t0_FNAME,
+	        	t0.PFLAG as t0_PFLAG,
+	        	t0.FREEZE as t0_FREEZE,
+	        	t0.PSBH as t0_PSBH,
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.PUBLISH_NUM as t0_PUBLISH_NUM,
+	        	t0.ARBPL1 as t0_ARBPL1
+	        	 from
+		        ZG_T_ORDER t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
+        where m.t0_aufnr='$aufnr$'
+        and m.t0_arbpl='$arbpl$'
+         and m.t0_plant='$plant$'
+        ]]>
+    </select>
+    
+    
     
 </sqlMap>

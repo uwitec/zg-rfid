@@ -244,6 +244,10 @@ public class SapBusiService {
 			flag = true;
 			tableName = "ZG_T_SYN_BOM_TEMP";
 		}
+		if(table.getMetaData().getName().equals("IPLANT")){
+			flag = true;
+			tableName = "ZG_T_ORDER_PLANT_TEMP";
+		}
 		
 		Map<String,String> keyMap = getKeyMap(tableName);
 		if(flag){

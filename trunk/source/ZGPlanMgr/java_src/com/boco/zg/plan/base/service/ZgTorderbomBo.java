@@ -53,4 +53,43 @@ public class ZgTorderbomBo extends BaseManager<ZgTorderbom,java.lang.String>{
 	public List<ZgTorderbom> findByRequest(PageRequest pageRequest) {
 		return zgTorderbomDao.findByRequest(pageRequest);
 	}
+	
+	/**
+	 *  根据aufnr arbpl plant 对比BOM，获取在rfid中应该删除的BOM
+	 * @param batchNo
+	 * @param aufnr
+	 * @param arbpl
+	 * @param plant
+	 * @return
+	 */
+	public List<ZgTorderbom> getBomListByBatchNoAufnrArbplPlant(int batchNo,
+			String aufnr, String arbpl, String plant) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("batchNo", batchNo);
+		paramsMap.put("aufnr", aufnr);
+		paramsMap.put("arbpl", arbpl);
+		paramsMap.put("plant", plant);
+		return zgTorderbomDao.getBomListByBatchNoAufnrArbplPlant(paramsMap);
+	}
+	
+	/**
+	 * @param orderId
+	 * @param taskId
+	 * @param sortf
+	 * @param arbpl
+	 * @param plant
+	 * @param batchNo
+	 */
+	public void saveZgtorderTaskBomByOrderIdTaskId(String orderId,
+			String taskId, String sortf, String arbpl, String plant, int batchNo) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("orderId", orderId);
+		paramsMap.put("taskId", taskId);
+		paramsMap.put("sortf", sortf);
+		paramsMap.put("arbpl", arbpl);
+		paramsMap.put("plant", plant);
+		paramsMap.put("batchNo", batchNo);
+		zgTorderbomDao.saveZgtorderTaskBomByOrderIdTaskId(paramsMap);
+		
+	}
 }

@@ -5,6 +5,7 @@ package sap;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,8 @@ import cn.org.rapid_framework.util.ApplicationContextHolder;
 import com.boco.frame.meta.dao.IbatisDAOHelper;
 import com.boco.frame.sys.base.model.TsysIfaceLog;
 import com.boco.frame.sys.base.service.TsysIfaceLogBo;
+import com.boco.zg.plan.base.model.ZgTorderTemp;
+import com.boco.zg.plan.base.service.ZgTorderTempBo;
 import com.boco.zg.plan.service.ZgTorderExBo;
 import com.boco.zg.util.CommonUtils;
 import com.boco.zg.util.Constants;
@@ -74,6 +77,11 @@ public class LoadRequestProcessThread implements Runnable {
 		return (ZgTorderExBo) ApplicationContextHolder
 		.getBean("zgTorderExBo");
 	}
+	
+	public ZgTorderTempBo getZgTorderTempBo(){
+		return (ZgTorderTempBo) ApplicationContextHolder
+		.getBean("zgTorderTempBo");
+	}
 
 	public void run() {
 		try {
@@ -102,11 +110,11 @@ public class LoadRequestProcessThread implements Runnable {
 			}
 			// 处理变更数据
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_04")) {
-//				this.handlerChangeData();
-//				this.handleSuppliersData();
+				this.handlerChangeData();
+				this.handleSuppliersData();
 				
 				//处理自有物料组数据
-//				handlerMatklSelfData(batchNo,"bg");
+				handlerMatklSelfData(batchNo,"bg");
 			}
 			
 			// 领料数据回传sap接口
@@ -188,7 +196,7 @@ public class LoadRequestProcessThread implements Runnable {
 	 * 
 	 */
 	private void handlerBackBOM() {
-		try {
+		/*try {
 			HandlerSapDataService handlerSapDataService = getHandlerSapDataService();
 			SapResult result=handlerSapDataService.handlerBackBOM(batchNo);
 			JCoTable returnTable =(JCoTable) function.getTableParameterList().getTable("RETURN");
@@ -221,7 +229,7 @@ public class LoadRequestProcessThread implements Runnable {
 			returnTable.setValue("SYMSGNO","002");
 			returnTable.setValue("BAPI_MSG","系统异常");
 			
-		}
+		}*/
 
 
 	}
@@ -368,7 +376,9 @@ public class LoadRequestProcessThread implements Runnable {
 			HandlerSapDataService handlerSapDataService = getHandlerSapDataService();
 			handlerSapDataService.updateRelation(batchNo);
 			String aufnr = "";
-			List<Map> list = this.getBaseDao().queryBySql("select AUFNR,plant,arbpl,pxdat from zg_t_order_temp where batch_no="+batchNo);
+			ZgTorderTemp zgTorderTemp=new ZgTorderTemp();
+			zgTorderTemp.setBatchNo(batchNo+"");
+			List<ZgTorderTemp> list=getZgTorderTempBo().findByProperty(zgTorderTemp);
 			if(list==null || list.size()==0){
 				log.warn("变更数据中没有任何订单！,批次--"+batchNo);
 				throw new SapServiceException("变更数据中没有任何订单！");
@@ -376,7 +386,7 @@ public class LoadRequestProcessThread implements Runnable {
 				log.warn("变更数据中有多个订单！,批次--"+batchNo);
 				throw new SapServiceException("变更数据中有多个订单！");
 			}else{
-				aufnr = ((String)list.get(0).get("AUFNR")).trim();
+				aufnr = list.get(0).getAufnr();
 //				String arbpl=IbatisDAOHelper.getStringValue(list.get(0), "ARBPL", "").trim();
 //				List<Map> listOrder = this.getBaseDao().queryBySql("select cuid,AUFNR,t.plant,t.pflag from zg_t_order t where t.AUFNR='"+aufnr+"' and arbpl= '"+arbpl+"'");
 				List<Map> listOrder = this.getBaseDao().queryBySql("select cuid,AUFNR,t.plant,t.pflag,t.arbpl from zg_t_order t where t.AUFNR='"+aufnr+"'");
@@ -385,29 +395,32 @@ public class LoadRequestProcessThread implements Runnable {
 					throw new SapServiceException("变更数据中的订单在生产库中找不到对应的记录！");
 				}
 				
-				for(Map order:listOrder){
+				handlerSapDataService.doProdessChangeOrder(batchNo,aufnr,list.get(0));
+//				for(Map order:listOrder){
 					
-					String arbpl=IbatisDAOHelper.getStringValue(order, "ARBPL", "").trim();
-					// 比对
-					CompareSapDataService service = getCompareSapDataService();
+//					handlerSapDataService.doProdessPxOrder(batchNo,aufnr,plant,pxDateStr,orderCou);
+//					
+//					String arbpl=IbatisDAOHelper.getStringValue(order, "ARBPL", "").trim();
+//					// 比对
+//					CompareSapDataService service = getCompareSapDataService();
+//					
+//					//清空操作类型 
+//					service.deleteOperatorTypeByBatchNo(batchNo);
+//					
+//					service.compareBomDataByBatchNoAndAufnr(batchNo,aufnr,arbpl,Constants.PxType.BG.value());
+//					// 比对完后处理数据
+//					
+//					Map<String, Object> map=listOrder.get(0);
+//					String plant=IbatisDAOHelper.getStringValue(map, "PLANT", "").trim();
+//					String pflag=IbatisDAOHelper.getStringValue(map, "PFLAG","").trim(); 
 					
-					//清空操作类型 
-					service.deleteOperatorTypeByBatchNo(batchNo);
+//					handlerSapDataService.doUpdateOrder(aufnr,arbpl, batchNo, pflag, plant);
+//					handlerSapDataService.doUpdateChange(batchNo,aufnr,arbpl,Constants.PxType.BG.value());
+//					
+//					//变更接口处理订单状态
+//					handlerSapDataService.doProcessOrderState(batchNo,aufnr,arbpl);
 					
-					service.compareBomDataByBatchNoAndAufnr(batchNo,aufnr,arbpl,Constants.PxType.BG.value());
-					// 比对完后处理数据
-					
-					Map<String, Object> map=listOrder.get(0);
-					String plant=IbatisDAOHelper.getStringValue(map, "PLANT", "").trim();
-					String pflag=IbatisDAOHelper.getStringValue(map, "PFLAG","").trim(); 
-					
-					handlerSapDataService.doUpdateOrder(aufnr,arbpl, batchNo, pflag, plant);
-					handlerSapDataService.doUpdateChange(batchNo,aufnr,arbpl,Constants.PxType.BG.value());
-					
-					//变更接口处理订单状态
-					handlerSapDataService.doProcessOrderState(batchNo,aufnr,arbpl);
-					
-				}
+//				}
 				
 				
 			}
@@ -483,6 +496,13 @@ public class LoadRequestProcessThread implements Runnable {
      　　　　　　　　　　　　　　	该订单已经开始领料则应该存入备料库（注：目前还没有备料库模型，所以也是直接删除订单及其领料计划）
             2 poskey 存在则更新现在的订单数据（更新zg_t_order表及zg_t_order_aide）
             3 poskey　如果接口数据中的poskey在rfid中没有，则新增
+            
+       modify by wengqin 2011-0519 13:42
+        	业务需求变化，拆分生产线要具体到某个生产厂拆分，而不是整单拆分，导致数据模型需求发生变化 
+        	处理逻辑：
+        		1、订单不存在，直接插入
+        		2、订单只过来一条，如果之前有两条订单数据，则做订单合并处理，同时之前已经领料的做自动移单处理
+        		3、订单过来两条，如果之前只有一条订单数据，做订单拆分处理，同时做自动移单处理
 	 */
 	@SuppressWarnings("unchecked")
 	private void handlerPxData() {	
@@ -494,58 +514,36 @@ public class LoadRequestProcessThread implements Runnable {
 			// 更新关系
 			handlerSapDataService.updateRelation(batchNo);
 			
-			//删除本次对比：如果RFID中当天订单中的poskey从接口过来的排序数据中找不到　则删除　
-			handlerSapDataService.deleteNotExistOrder(batchNo);
+			
 			
 			
 			//读取本次要处理的订单
-			List<Map> orderMapList=this.getBaseDao().queryBySql("select temp.* from zg_t_order_temp temp where temp.batch_no = "+batchNo);
+			List<Map> orderMapList=this.getBaseDao().queryBySql("select temp.aufnr ,temp.pxdat,temp.plant,count(1) cou from zg_t_order_temp temp where temp.batch_no = '"+batchNo+"' group by temp.aufnr,temp.pxdat,temp.plant");
+			
+			if(orderMapList.size()==0) return;//记录为0条，直接返回
+			
+			//可在本次传递的参数(排序日期)
+			String pxDateStr=TimeFormatHelper.getFormatDate((Date)orderMapList.get(0).get("PXDAT"), TimeFormatHelper.DATE_FORMAT);
+			saveParamsForSapLog(tsysIfaceLog,pxDateStr);
+			
+			//删除本次对比：如果RFID中当天订单中的poskey从接口过来的排序数据中找不到　则删除　
+//			handlerSapDataService.deleteNotExistOrder(batchNo);
 			
 			if(log.isInfoEnabled()){
-				log.info("线程:"+batchNo+" 共找到"+orderMapList.size()+"个订单");
+				log.info("线程:"+batchNo+" 日期："+pxDateStr+" 共找到"+orderMapList.size()+"个订单");
 			}
 			
-			Map plantPxDateMap=getPlantPxDateMap();
-			
-			//循环逐条处理
-			for(Map map:orderMapList){
-				String aufnr=IbatisDAOHelper.getStringValue(map, "AUFNR", "").trim();
-				String plant=IbatisDAOHelper.getStringValue(map, "PLANT", "").trim();
-				String newPlant=IbatisDAOHelper.getStringValue(map, "PLANT", "").trim();
-				String arbpl=IbatisDAOHelper.getStringValue(map, "ARBPL", "").trim();
-				String posKey=IbatisDAOHelper.getStringValue(map, "POSKEY", "").trim();
-				String psmng=IbatisDAOHelper.getStringValue(map, "PSMNG", "").trim();
-				String pmenge=IbatisDAOHelper.getStringValue(map, "PMENGE","").trim();
-				String psbh=IbatisDAOHelper.getStringValue(map, "PSBH");
-				Date pxDate=(Date) map.get("PXDAT");
-				boolean isPsbhChange=false;
-				if(plantPxDateMap.get(plant)!=null){
-					if(pxDate.after((Date)plantPxDateMap.get(plant))){//订单排序日期大于当前排序日期，说明是提前领料的，需要改变订单排序号
-						isPsbhChange=true;
+			synchronized (orderLock) {//同步锁orderLock
+				//循环逐条处理
+				for(Map map:orderMapList){
+					String aufnr=IbatisDAOHelper.getStringValue(map, "AUFNR", "").trim();
+					String plant=IbatisDAOHelper.getStringValue(map, "PLANT","");
+					Long orderCou=IbatisDAOHelper.getLongValue(map, "COU");
+					if(aufnr.equals("1000020172")){
+						System.out.println("");
 					}
+					handlerSapDataService.doProdessPxOrder(batchNo,aufnr,plant,pxDateStr,orderCou);
 				}
-				
-				
-				synchronized (orderLock) {//同步锁
-					//判断订单是否新增订单
-					int isAddOrder=handlerSapDataService.isAddOrder(posKey,aufnr,arbpl);
-					if(log.isInfoEnabled()){
-						log.info("线程:"+batchNo+" 处理"+aufnr+"订单,订单类型为:"+isAddOrder);
-					}
-					if(isAddOrder==-1){//不是新增 1 更新订单辅表　更新订单信息　　判断需求的排序数量是否发生变化，如果发生变化，则得去变更相应的　orderbom,orderplanBom表　
-						handlerSapDataService.pxOrderInfoModify(arbpl, posKey,	psmng, pmenge,batchNo,isPsbhChange,psbh);
-					}else if (isAddOrder==0) {//该订单新增的，则直接插入订单辅表，订单表，订单bom表，再由后面统一生成领料计划
-						handlerSapDataService.pxOrderAdd(plant, posKey, pxDate,batchNo);
-					}else if(isAddOrder==3) {//折分生产线
-//						handlerSapDataService.addOrderForChangeArbpl( aufnr, plant,posKey, pxDate,batchNo);
-					}else if (isAddOrder==1) {//之前的数据是排产数据  1 保存订单辅表　更新订单信息　　判断需求的排序数量是否发生变化，如果发生变化，则得去变更相应的　orderbom,orderplanBom表　
-						handlerSapDataService.handlePcToPxData(aufnr, plant,arbpl, posKey, psmng, pmenge, pxDate,batchNo);
-					}else if (isAddOrder==2) {//2新增（生产厂为新增，订单不是新增）
-						handlerSapDataService.pxOrderAddPlanInfo(aufnr, plant,	newPlant, arbpl, posKey, pxDate);
-					}
-				}
-				
-				
 			}
 			//生成计划领料
 			synchronized (planLock) {//同步锁
@@ -554,6 +552,9 @@ public class LoadRequestProcessThread implements Runnable {
 				}
 				handlerSapDataService.generateCarPlan(batchNo);
 			}
+			
+			//删除本次对比：如果RFID中当天订单中的poskey从接口过来的排序数据中找不到　则删除　
+			handlerSapDataService.deleteNotExistOrder(batchNo);
 			
 					
 			
@@ -570,6 +571,17 @@ public class LoadRequestProcessThread implements Runnable {
 	}
 
 	
+
+	/**
+	 * @param formatDate
+	 */
+	private void saveParamsForSapLog(TsysIfaceLog tsysIfaceLog,String formatDate) {
+		if (tsysIfaceLog != null) {
+			tsysIfaceLog.setParameters(formatDate);
+			getTsysIfaceLogBo().update(tsysIfaceLog);
+		}
+		
+	}
 
 	/**
 	 * 获取各个生产厂的排序日期
@@ -656,10 +668,9 @@ public class LoadRequestProcessThread implements Runnable {
 	}
 	
 	public static void main(String[] args) {
-		if(log.isInfoEnabled()){
-			log.info("SAP处理线程: 开始");
-		}
-		log.warn("SAP处理线程: 开始");
+		Date date=new Date();
+//		Datef
+		System.out.println(date.toLocaleString());
 	}
 
 

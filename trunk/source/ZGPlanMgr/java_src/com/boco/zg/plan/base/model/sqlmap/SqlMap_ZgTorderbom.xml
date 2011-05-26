@@ -678,4 +678,80 @@
         ]]>
     </select>
     
+    <resultMap id="zgTorderbomResultBase" class="zgTorderbom">
+		<result property="cuid" column="CUID"/>
+		<result property="labelCn" column="LABEL_CN"/>
+		<result property="idnrk" column="IDNRK"/>
+		<result property="orderId" column="ORDER_ID"/>
+		<result property="aufnr" column="AUFNR"/>
+		<result property="arbpl" column="ARBPL"/>
+		<result property="matnr" column="MATNR"/>
+		<result property="matnr1" column="MATNR1"/>
+		<result property="maktx1" column="MAKTX1"/>
+		<result property="maktx2" column="MAKTX2"/>
+		<result property="msehl1" column="MSEHL1"/>
+		<result property="msehl2" column="MSEHL2"/>
+		<result property="zdtyl" column="ZDTYL"/>
+		<result property="menge" column="tmenge"/>
+		<result property="matkl" column="MATKL"/>
+		<result property="sortf" column="SORTF"/>
+		<result property="sortfH" column="SORTF_H"/>
+		<result property="lgort" column="LGORT"/>
+		<result property="zbz" column="ZBZ"/>
+		<result property="zrzqd" column="ZRZQD"/>
+		<result property="storageNum" column="STORAGE_NUM"/>
+		<result property="storageState" column="STORAGE_STATE"/>
+		<result property="posnr" column="POSNR" />
+		<result property="matklSelf" column="MATKL_self"/>
+			<result property="taskBomId" column="taskbom_id"/>
+    </resultMap>
+    
+    
+     <select id="getBomListByBatchNoAufnrArbplPlant" resultMap="zgTorderbomResultBase">
+	   select m.*,m.menge as tmenge,null as taskbom_id
+		    from zg_t_orderbom m
+		   where m.aufnr = '$aufnr$'
+		     and not exists (select 1
+		            from zg_t_orderbom_temp_all t
+		           where t.batch_no = '$batchNo$'
+		             and t.aufnr = '$aufnr$'
+				      <isNotEmpty prepend="AND" property="arbpl">
+			    	 	 t.plant='$plant$'
+			    	 </isNotEmpty>
+			    	 <isNotEmpty prepend="AND" property="plant">
+			    	 	 t.arbpl='$arbpl$'
+			    	 </isNotEmpty>
+		             and t.idnrk = m.idnrk
+		             and nvl(m.posnr,'null') = nvl(t.posnr,'null'))
+    </select>
+    
+    
+        <select id="getorderBomByTaskidSortfs" resultMap="zgTorderbomResultBase">
+        	select bom.*,taskbom.cuid taskbom_id,taskbom.menge as tmenge from zg_t_orderbom bom,zg_t_order_taskbom taskbom
+					where taskbom.order_bom_id=bom.cuid
+					and taskbom.order_task_id='$taskId$'
+					and bom.sortf = '$sortf$'
+					    </select>
+    
+     <insert id="saveZgtorderTaskBomByOrderIdTaskId" parameterClass="java.util.HashMap">
+    <![CDATA[
+        insert into zg_t_order_taskbom
+		  (cuid, order_task_id, order_bom_id, menge)
+		  select sys_guid(), '$taskId$', m.cuid, m.menge
+		    from (
+		          select t.cuid, temp.menge
+		            from zg_t_orderbom t, zg_t_orderbom_temp_all temp
+		           where t.idnrk = temp.idnrk
+		             and nvl(t.posnr,'null') = nvl(temp.posnr,'null')
+		             and temp.aufnr = t.aufnr
+		             and temp.arbpl = '$arbpl$'
+		             and temp.plant = '$plant$'
+		             and temp.batch_no = '$batchNo$'
+		             and t.order_id = '$orderId$'
+		             and t.sortf = '$sortf$') m
+        
+    ]]>
+    </insert>
+    
+    
 </sqlMap>

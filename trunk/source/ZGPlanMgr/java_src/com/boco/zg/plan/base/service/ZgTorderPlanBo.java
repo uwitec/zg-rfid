@@ -73,4 +73,16 @@ public class ZgTorderPlanBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 	public void deletePlanBomByPlanId(String planID) {
 		zgTorderPlanDao.deletePlanBomByPlanId(planID);
 	}
+	
+	/**
+	 * @param taskId
+	 * @return
+	 */
+	public ZgTorderPlan getPlanByTaskIdPlanType(String taskId,String planType) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("taskId", taskId);
+		paramsMap.put("planType", planType);
+		return zgTorderPlanDao.getPlanByTaskIdPlanType(paramsMap);
+	}
+	
 }
