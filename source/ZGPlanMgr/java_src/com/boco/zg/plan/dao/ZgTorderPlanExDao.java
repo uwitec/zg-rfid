@@ -323,10 +323,21 @@ public class ZgTorderPlanExDao extends BaseIbatisDao<ZgTorderPlanEx,java.lang.St
 	 * @param orderId
 	 * @return
 	 */
+	public List<ZgTorderPlan> getOrderPlanListByOrderTaskId(String orderTaskId) {
+		Map params=new HashMap();
+		params.put("orderTaskId", orderTaskId);
+		return getSqlMapClientTemplate().queryForList("ZgTorderPlanEx.getOrderPlanListByOrderTaskId", params);
+	}
+
+	/**
+	 * @param orderId
+	 * @return
+	 */
 	public List<ZgTorderPlan> getOrderPlanListByOrderId(String orderId) {
 		Map params=new HashMap();
 		params.put("orderId", orderId);
 		return getSqlMapClientTemplate().queryForList("ZgTorderPlanEx.getOrderPlanListByOrderId", params);
+
 	}
 
 }
