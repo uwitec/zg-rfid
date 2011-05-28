@@ -122,6 +122,42 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 		zgTorderPlanbomDao.delPlanBomPlanId(paramsMap);
 		
 	}
+	/**
+	 * @param bomId
+	 */
+	public int deletePlanBomByOrderBomId(String bomId) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("bomId", bomId);
+		return zgTorderPlanbomDao.deletePlanBomByOrderBomId(paramsMap);
+		
+	}
+	/**
+	 * @param bomId
+	 * @return
+	 */
+	public  List<ZgTorderPlanbom> getPlanBomByOrderBomId(String bomId) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("bomId", bomId);
+		return zgTorderPlanbomDao.getPlanBomByOrderBomId(paramsMap);
+	}
+	/**
+	 * 判断某个物料是否已经开始领料
+	 * @param bomId
+	 * @return
+	 */
+	public boolean isStartCar(String bomId) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("bomId", bomId);
+		boolean isStartCar=false;
+		List<ZgTorderPlanbom> planBomList= zgTorderPlanbomDao.getPlanBomByOrderBomId(paramsMap);
+		for(ZgTorderPlanbom bom:planBomList){
+			if(bom.getPlanNum()>0){
+				isStartCar=true;
+				break;
+			}
+		}
+		return isStartCar;
+	}
 	
 	
 	
