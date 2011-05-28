@@ -177,18 +177,23 @@ public class ZgTorderExBo extends ZgTorderBo {
 
 	public void submitOrder(String orderId, OperatorInfo operatorInfo) {
 		//先删除之前的领料计划
-		((ZgTorderDao)this.getEntityDao()).executeSql("delete  from zg_t_order_plan_group oup where exists (select 1  from zg_t_group_order_plan gop, zg_t_order_plan plan "
-												         +" where plan.cuid = gop.order_plan_id"
-												         +"  and gop.group_id = oup.cuid"
-												         +"  and plan.order_id='"+orderId+"')");
-		((ZgTorderDao)this.getEntityDao()).executeSql("delete from zg_t_order_planbom t where t.order_id='"+orderId+"'");
-		((ZgTorderDao)this.getEntityDao()).executeSql("delete from zg_t_order_plan t where t.order_id='"+orderId+"'");
+		((ZgTorderDao)this.getEntityDao()).executeSql("delete from zg_t_order_plan_group oup where exists (select 1   from zg_t_group_order_plan gop, zg_t_order_plan plan,zg_t_order od ,zg_t_order_task task "
+														+" where plan.cuid = gop.order_plan_id  and gop.group_id = oup.cuid   and plan.order_task_id=task.cuid  and task.order_id='"+orderId+"')");
+		((ZgTorderDao)this.getEntityDao()).executeSql("delete from zg_t_order_planbom t where exists (select 1 from zg_t_order_task task where task.order_id='"+orderId+"' and task.cuid=t.order_task_id)");
+		((ZgTorderDao)this.getEntityDao()).executeSql("delete from zg_t_order_plan t where exists (select 1 from zg_t_order_task task where task.order_id='"+orderId+"' and task.cuid=t.order_task_id)");
 		
 		//查看该订单的工厂，C01,C04,:ABE  C02,C05:ABD   C03,C06:ABC
-		List<String> softList=getOrderSoftByOrderId(orderId);
+//		List<String> softList=getOrderSoftByOrderId(orderId);
 		
-//		createPlan(orderId,softList,operatorInfo,"0","",Constants.isNotManulFinished);
+		createPlan(orderId,"","",Constants.OrderPlanStatus.NEW.value(),Constants.isNotManulFinished);
 		updateOrderState(orderId,PLAN_STATE_SUBMIT);
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("delete  from zg_t_order_plan_group oup where exists (select 1  from zg_t_group_order_plan gop, zg_t_order_plan plan "
+												         +" where plan.cuid = gop.order_plan_id"
+												         +"  and gop.group_id = oup.cuid"
+												         +"  and plan.order_id='123')");	
 	}
 	
 	/**
@@ -268,9 +273,7 @@ public class ZgTorderExBo extends ZgTorderBo {
 			task.setOrderId(orderId);
 			taskList=zgTorderTaskBo.findByProperty(task);
 		}else {
-			ZgTorderTask task=new ZgTorderTask();
-			task.setCuid(taskId);
-			task.setPlant(plant);
+			ZgTorderTask task=zgTorderTaskBo.getById(taskId);
 			taskList.add(task);
 		}
 		Map<String,ZgTorderPlan> planMap = new HashMap<String,ZgTorderPlan>();
@@ -280,7 +283,7 @@ public class ZgTorderExBo extends ZgTorderBo {
 		for(ZgTorderTask task:taskList){
 			String sortf=getSortfMap().get(task.getPlant());
 			Map paramsMap=new HashMap<String, Object>();
-			paramsMap.put("taskId", taskId);
+			paramsMap.put("taskId", task.getCuid());
 			paramsMap.put("sortf", sortf);
 			List<ZgTorderbom> list = zgTorderbomDao.getorderBomByTaskidSortfs(paramsMap);
 			
@@ -437,7 +440,7 @@ public class ZgTorderExBo extends ZgTorderBo {
 		// 更新领料计划标记为手工完结单
 		zgTorderExDao.updateOrderPlanToManul(orderId);
 		
-		List<ZgTorderPlan> planList= zgTorderPlanExBo.getOrderPlanListByOrderId(orderId);
+		List<ZgTorderPlan> planList= zgTorderPlanExBo.getOrderPlanListByOrderTaskId(orderId);
 		
 		//领料计划设置成完成
 		for(ZgTorderPlan plan:planList){
@@ -497,8 +500,8 @@ public class ZgTorderExBo extends ZgTorderBo {
 			if(obj.getCarnum()>obj.getCompleteNum()){
 				ZgTcarbom bom = new ZgTcarbom();
 				bom.setCarPlanId(carPlanId);
-				bom.setOrderId(obj.getOrderId());
-				bom.setOrderBomId(obj.getOrderBomId());
+//				bom.setOrderId(obj.getOrderId());//TODO TASKBOMID
+//				bom.setOrderBomId(obj.getOrderBomId());
 				bom.setOrderPlanbomId(obj.getCuid());
 				bom.setPlanNum(obj.getCarnum()-obj.getCompleteNum());
 				bom.setRealNum(obj.getCarnum()-obj.getCompleteNum());

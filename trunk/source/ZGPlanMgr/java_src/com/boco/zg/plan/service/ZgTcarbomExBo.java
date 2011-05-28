@@ -141,9 +141,9 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 		sql.append("       ob.msehl1,                                                         ");//呈现：度量单位
 		sql.append("       ob.idnrk,                                                          ");//展现逻辑：分组表示
 		sql.append("       fo.label_cn                                                           ");
-		sql.append("  from zg_t_order o, zg_t_orderbom ob,zg_t_order_planbom pb,zg_t_carbom cb,fw_organization fo");
+		sql.append("  from zg_t_order o, zg_t_orderbom ob,zg_t_order_planbom pb,zg_t_carbom cb,fw_organization fo,zg_t_order_taskbom taskbom");
 		sql.append(" where o.cuid = ob.order_id                                               ");
-		sql.append("   and ob.cuid = pb.order_bom_id                                          ");
+		sql.append("    and ob.cuid=taskbom.order_bom_id   and pb.taskbom_id=taskbom.cuid                                         ");
 		sql.append("   and pb.cuid = cb.order_planbom_id                                      ");
 		sql.append("   and cb.car_plan_id = '"+carPlanId+"'                                   ");
 		sql.append("   and o.arbpl=fo.cuid(+)                                                 ");

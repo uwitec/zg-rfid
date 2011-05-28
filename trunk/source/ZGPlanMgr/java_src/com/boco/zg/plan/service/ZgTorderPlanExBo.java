@@ -341,13 +341,33 @@ public class ZgTorderPlanExBo extends BaseManager<ZgTorderPlanEx,java.lang.Strin
 		}
 		StringBuffer sql=new StringBuffer();
 		sql.append("select planbom.* ");
-		sql.append("from zg_t_order_plan plan, zg_t_order_planbom planbom,zg_t_orderbom bom");
+		sql.append("from zg_t_order_plan plan, zg_t_order_planbom planbom ");
 		sql.append(" where plan.cuid = planbom.order_plan_id");
 		sql.append(" and nvl(planbom.complete_num,0)<planbom.car_num");
-		sql.append(" and planbom.car_num>'0'    and bom.cuid=planbom.order_bom_id");
+		sql.append(" and planbom.car_num>'0' ");
 		sql.append(" and plan.cuid = '"+orderPlanId+"'");
 		List<Map> list=((ZgTorderPlanExDao)this.getEntityDao()).findDynQuery(sql.toString());
 		return list.size()==0?Constants.OrderPlanStatus.FINISHED.value():(plan.getState().equals(Constants.OrderPlanStatus.FINISHED.value())?Constants.OrderPlanStatus.SAVE.value():plan.getState()) ;
+	}
+	
+	public static void main(String[] args) {
+		StringBuffer sql=new StringBuffer();
+		sql.append("select decode(sum(mengeCarNum), 0, 1,  nvl(trunc((sum(completeCarnum)) / sum(mengeCarNum), 4), 0)) percent ");
+		sql.append("  from (select planbom.car_num / bom.carnum mengeCarNum,");
+		sql.append("               nvl(planbom.complete_num, 0) / bom.carnum completeCarnum");
+		sql.append("          from zg_t_order_plan    plan,");
+		sql.append("               zg_t_order_planbom planbom,");
+		sql.append("               zg_t_orderbom      orderbom,");
+		sql.append("               zg_t_bom           bom,");
+		sql.append("               zg_t_order_taskbom taskbom");
+		sql.append("         where plan.cuid = planbom.order_plan_id");
+		sql.append("           and planbom.taskbom_id =taskbom.cuid");
+		sql.append("           and taskbom.order_bom_id=orderbom.cuid");
+		sql.append("           and orderbom.idnrk = bom.idnrk");
+		sql.append("           and bom.car_id is not null");
+		sql.append("           and bom.carnum is not null");
+		sql.append("           and plan.cuid = '123')");
+		System.out.println(sql.toString());
 	}
 	
 	/**
@@ -357,20 +377,20 @@ public class ZgTorderPlanExBo extends BaseManager<ZgTorderPlanEx,java.lang.Strin
 	 */
 	public double getPercent(String orderPlanId) {
 		StringBuffer sql=new StringBuffer();
-		sql.append("select  decode(sum(mengeCarNum),0,1,nvl(trunc((sum(completeCarnum)) / sum(mengeCarNum), 4),0)) percent ");
+		sql.append("select decode(sum(mengeCarNum), 0, 1,  nvl(trunc((sum(completeCarnum)) / sum(mengeCarNum), 4), 0)) percent ");
 		sql.append("  from (select planbom.car_num / bom.carnum mengeCarNum,");
 		sql.append("               nvl(planbom.complete_num, 0) / bom.carnum completeCarnum");
 		sql.append("          from zg_t_order_plan    plan,");
 		sql.append("               zg_t_order_planbom planbom,");
 		sql.append("               zg_t_orderbom      orderbom,");
-		sql.append("              zg_t_bom           bom");
+		sql.append("               zg_t_bom           bom,");
+		sql.append("               zg_t_order_taskbom taskbom");
 		sql.append("         where plan.cuid = planbom.order_plan_id");
-		sql.append("           and planbom.order_bom_id = orderbom.cuid");
+		sql.append("           and planbom.taskbom_id =taskbom.cuid");
+		sql.append("           and taskbom.order_bom_id=orderbom.cuid");
 		sql.append("           and orderbom.idnrk = bom.idnrk");
-		sql.append("          and orderbom.matkl=bom.matkl    ");
-        sql.append("          and orderbom.lgort=bom.lgort    ");
 		sql.append("           and bom.car_id is not null");
-		sql.append("          and bom.carnum is not null");
+		sql.append("           and bom.carnum is not null");
 		sql.append("          and plan.cuid = '"+orderPlanId+"')");
 		List<Map> list=((ZgTorderPlanExDao)this.getEntityDao()).findDynQuery(sql.toString());
 		double percent=1.0;
@@ -415,9 +435,18 @@ public class ZgTorderPlanExBo extends BaseManager<ZgTorderPlanEx,java.lang.Strin
 	 *  根据订单编号查找其领料计划
 	 * @param orderId
 	 */
+	public List<ZgTorderPlan> getOrderPlanListByOrderTaskId(String orderTaskId) {
+		return zgTorderPlanExDao.getOrderPlanListByOrderTaskId(orderTaskId);
+	}
+	
+	/**
+	 *  根据订单编号查找其领料计划
+	 * @param orderId
+	 */
 	public List<ZgTorderPlan> getOrderPlanListByOrderId(String orderId) {
 		return zgTorderPlanExDao.getOrderPlanListByOrderId(orderId);
 	}
+	
 	public ZgTorderPlanBo getZgTorderPlanBo() {
 		return zgTorderPlanBo;
 	}

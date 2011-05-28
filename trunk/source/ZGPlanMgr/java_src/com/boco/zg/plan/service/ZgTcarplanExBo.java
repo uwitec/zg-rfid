@@ -236,7 +236,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 */
 	public List<Map> getBomLIstByUserId(String planType, String operatorId,String lgort) {
 		StringBuffer sql = new StringBuffer();
-		sql.append("select car.cuid car_Plan_Id,carbom.cuid,orderbom.idnrk,    ORDERBOM.ZDTYL,orderbom.ORDER_ID,");//修改数据时需要参数
+		sql.append("select taskbom.cuid taskbom_id ,taskbom.ORDER_TASK_ID orderTaskId,car.cuid car_Plan_Id,carbom.cuid,orderbom.idnrk,    ORDERBOM.ZDTYL,orderbom.ORDER_ID,");//修改数据时需要参数
 		sql.append(" 	orderbom.maktx2,");
 		sql.append("	orderbom.cuid as order_bom_id, planbom.cuid as order_planbom_id,");   //修改数据时需要参数
 		sql.append(" 	carbom.car_plan_id,");   //修改数据时需要参数
@@ -253,12 +253,12 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		sql.append(" from zg_t_carplan       car, ");
 		sql.append("	zg_t_carbom        carbom, ");
 		sql.append("	zg_t_order_planbom planbom, ");
-		sql.append("	zg_t_orderbom      orderbom , zg_t_bom bom");
+		sql.append("	zg_t_orderbom      orderbom , zg_t_bom bom,zg_t_order_taskbom taskbom");
 		sql.append(" where car.car_user = '"+operatorId+"' ");
 		sql.append("	and car.car_state <> '8' ");
 		sql.append("	and car.cuid = carbom.car_plan_id ");
 		sql.append("	and carbom.order_planbom_id = planbom.cuid ");
-		sql.append("	and carbom.order_bom_id = orderbom.cuid and bom.idnrk = orderbom.idnrk   and car.ORDER_PLAN_TYPE='"+planType+"'");
+		sql.append("	and carbom.taskbom_id=taskbom.cuid  and taskbom.order_bom_id=orderbom.cuid  and bom.idnrk = orderbom.idnrk   and car.ORDER_PLAN_TYPE='"+planType+"'");
 		sql.append("	and car.storage_id='"+lgort+"'");
 
 		  
@@ -287,12 +287,12 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		sql.append("nvl(planbom.complete_num,0) complete_num,");
 		sql.append("0 as car_plan_num,");
 		sql.append(" planbom.car_num-nvl(planbom.plan_num,0)   max_value,");
-		sql.append("bom.carnum carCount");
-		sql.append(" from zg_t_order_planbom planbom, zg_t_orderbom orderbom, zg_t_bom bom");
-		sql.append(" where planbom.order_bom_id = orderbom.cuid and  planbom.car_num-nvl(planbom.plan_num,0)>0 ");
-		sql.append("   and bom.idnrk = orderbom.idnrk   and bom.lgort=orderbom.lgort   and bom.matkl=orderbom.matkl ");
-		sql.append(" and orderbom.cuid in ('"+bomCuids+"') ) w where w.order_bom_id not in(");
-		sql.append(" select carbom.order_bom_id from zg_t_carplan plan,zg_t_carbom carbom       where plan.car_user='"+operatorId+"' ");
+		sql.append("bom.carnum carCount,taskbom.cuid taskbom_id,taskbom.order_task_id orderTaskId");
+		sql.append(" from zg_t_order_planbom planbom, zg_t_orderbom orderbom, zg_t_bom bom,zg_t_order_taskbom taskbom");
+		sql.append(" where planbom.taskbom_id=taskbom.cuid         and taskbom.order_bom_id=orderbom.cuid and  planbom.car_num-nvl(planbom.plan_num,0)>0 ");
+		sql.append("   and bom.idnrk = orderbom.idnrk    ");
+		sql.append(" and taskbom.cuid in ('"+bomCuids+"') ) w where w.taskbom_id not in(");
+		sql.append(" select carbom.taskbom_id from zg_t_carplan plan,zg_t_carbom carbom       where plan.car_user='"+operatorId+"' ");
 		sql.append("     and plan.car_state='0'        and plan.cuid=carbom.car_plan_id   )");
 
 		
@@ -308,7 +308,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	public List<Map> getCarPlanByUserId(String operatorId,String planType,String lgort) {
 		StringBuffer sql=new StringBuffer();
 		
-		sql.append("select distinct t.*,car.cuid carId,car.code,car.label_cn,t.storage_id lgort,org.label_cn lgortName from zg_t_carplan t,zg_carinfo car,fw_organization org,zg_t_carbom bom ,zg_t_order zto where  t.storage_id=org.cuid and t.cuid=bom.car_plan_id(+)   and bom.order_id=zto.cuid(+) and t.car_id=car.cuid and t.car_user='"+operatorId+"' and t.car_state<>'8' and t.ORDER_PLAN_TYPE='"+planType+"'");
+		sql.append("select distinct t.*,car.cuid carId,car.code,car.label_cn,t.storage_id lgort,org.label_cn lgortName from zg_t_carplan t,zg_carinfo car,fw_organization org,zg_t_carbom bom   where  t.storage_id=org.cuid and t.cuid=bom.car_plan_id(+)    and t.car_id=car.cuid and t.car_user='"+operatorId+"' and t.car_state<>'8' and t.ORDER_PLAN_TYPE='"+planType+"'");
 		if(!StringHelper.isEmpty(lgort)){
 			sql.append(" and t.storage_id='"+lgort+"'");
 		}
@@ -322,7 +322,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 */
 	public List<Map> getCarPlanByUserId1(String operatorId,String planType) {
 		StringBuffer sql=new StringBuffer();
-		sql.append("select distinct t.*,zto.arbpl,car.cuid carId,car.code,car.label_cn,t.storage_id lgort,org.label_cn lgortName from zg_t_carplan t,zg_carinfo car,fw_organization org,zg_t_carbom bom ,zg_t_order zto where  t.storage_id=org.cuid and t.cuid=bom.car_plan_id(+)   and bom.order_id=zto.cuid(+) and t.car_id=car.cuid and t.car_user='"+operatorId+"' and t.car_state<>'8' and t.ORDER_PLAN_TYPE='"+planType+"'");
+		sql.append("select distinct t.*,task.arbpl,car.cuid carId,car.code,car.label_cn,t.storage_id lgort,org.label_cn lgortName from zg_t_carplan t,zg_carinfo car,fw_organization org,zg_t_carbom bom ,zg_t_order_task task where  t.storage_id=org.cuid and t.cuid=bom.car_plan_id(+)   and bom.order_task_id=task.cuid(+) and t.car_id=car.cuid and t.car_user='"+operatorId+"' and t.car_state<>'8' and t.ORDER_PLAN_TYPE='"+planType+"'");
 		return ((ZgTcarplanDao)this.getEntityDao()).findDynQuery(sql.toString());
 	}
 	
@@ -690,14 +690,17 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	}
 
 
-	public boolean checkPlanHasPause(String carPlanId) {
+	public String checkPlanHasPause(String carPlanId) {
 		StringBuffer sql=new StringBuffer();
-		sql.append("select plan.state ");
-		sql.append(" from zg_t_carplan  cplan,   zg_t_carbom  cbom,  zg_t_order_planbom pbom,   zg_t_order_plan    plan ");
+		sql.append("select task.aufnr ");
+		sql.append(" from zg_t_carplan  cplan,     zg_t_order_task task, zg_t_carbom  cbom,  zg_t_order_planbom pbom,   zg_t_order_plan    plan ");
 		sql.append(" where cplan.cuid = '"+carPlanId+"'   and cplan.cuid = cbom.car_plan_id   and cbom.order_planbom_id = pbom.cuid ");
-		sql.append("  and pbom.order_plan_id = plan.cuid   and plan.state = '-2'");
+		sql.append("  and pbom.order_plan_id = plan.cuid   and plan.state = '-2'  and task.cuid=plan.order_task_id and cbom.storage_user_id is  null and rownum=1");
 		List<Map> list= ((ZgTcarplanDao)this.getEntityDao()).findDynQuery(sql.toString());
-		return list.size()>0;
+		if(list.size()>0){
+			return IbatisDAOHelper.getStringValue(list.get(0),"AUFNR");
+		}
+		return "";
 	}
 
 
@@ -756,7 +759,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		StringBuffer sql=new StringBuffer();
 		sql.append("select op.label_cn ");
 		sql.append("  from zg_t_carbom bom, zg_t_carplan p, fw_operator op ");
-		sql.append(" where bom.order_bom_id = '"+bomId+"' ");
+		sql.append(" where bom.taskbom_id = '"+bomId+"' ");
 		sql.append("   and bom.car_plan_id = p.cuid ");
 		sql.append("   and p.car_state <> '8' ");
 		sql.append("   and op.cuid = p.car_user ");
@@ -778,7 +781,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 */
 	public List<Map> getCarPlanByCarPlanId(String carPlanId) {
 		StringBuffer sql=new StringBuffer();
-		sql.append("select distinct t.*,car.cuid carId,car.code,car.label_cn,t.storage_id lgort,org.label_cn lgortName from zg_t_carplan t,zg_carinfo car,fw_organization org,zg_t_carbom bom ,zg_t_order zto where  t.storage_id=org.cuid and t.cuid=bom.car_plan_id(+)   and bom.order_id=zto.cuid(+) and t.car_id=car.cuid and t.cuid='"+carPlanId+"'");
+		sql.append("select distinct t.*,car.cuid carId,car.code,car.label_cn,t.storage_id lgort,org.label_cn lgortName from zg_t_carplan t,zg_carinfo car,fw_organization org,zg_t_carbom bom  where  t.storage_id=org.cuid and t.cuid=bom.car_plan_id(+)   and t.car_id=car.cuid and t.cuid='"+carPlanId+"'");
 		return ((ZgTcarplanDao)this.getEntityDao()).findDynQuery(sql.toString());
 	}
 }

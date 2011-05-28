@@ -261,11 +261,11 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 		}
 		StringBuffer sql=new StringBuffer();
 		sql.append("select planbom.* ");
-		sql.append(" from zg_t_order_plan plan, zg_t_order_planbom planbom,zg_t_group_order_plan gop,zg_t_orderbom bom ");
+		sql.append(" from zg_t_order_plan plan, zg_t_order_planbom planbom,zg_t_group_order_plan gop");
 		sql.append(" where plan.cuid = planbom.order_plan_id");
 		sql.append(" and plan.cuid=gop.order_plan_id ");
 		sql.append(" and nvl(planbom.complete_num,0)<planbom.car_num");
-		sql.append(" and planbom.car_num>'0' and planbom.order_bom_id=bom.cuid ");
+		sql.append(" and planbom.car_num>'0' ");
 		sql.append(" and gop.group_id = '"+groupId+"'");
 		List<Map> list=((ZgTorderPlanGroupExDao)this.getEntityDao()).findDynQuery(sql.toString());
 		return list.size()==0?Constants.OrderPlanStatus.FINISHED.value():(group.getState().equals(Constants.OrderPlanStatus.FINISHED.value())?Constants.OrderPlanStatus.SAVE.value():group.getState()) ;
@@ -282,11 +282,11 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 		sql.append("  from (select planbom.car_num / bom.carnum mengeCarNum,");
 		sql.append("               nvl(planbom.complete_num, 0) / bom.carnum completeCarnum");
 		sql.append("          from zg_t_order_plan    plan,");
-		sql.append("               zg_t_order_planbom planbom,");
+		sql.append("               zg_t_order_planbom planbom,  zg_t_order_taskbom taskbom,");
 		sql.append("               zg_t_orderbom      orderbom,");
 		sql.append("              zg_t_bom           bom , zg_t_group_order_plan gop");
 		sql.append("         where plan.cuid = planbom.order_plan_id");
-		sql.append("           and planbom.order_bom_id = orderbom.cuid");
+		sql.append("           and planbom.taskbom_id=taskbom.cuid and taskbom.order_bom_id = orderbom.cuid");
 		sql.append("           and orderbom.idnrk = bom.idnrk");
 		sql.append("           and bom.car_id is not null");
 		sql.append("          and bom.carnum is not null  and gop.order_plan_id=plan.cuid");
@@ -320,10 +320,10 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 	 * 根据订单编号查找其订单计划分组启示录
 	 * @param orderId
 	 */
-	public  List<ZgTorderPlanGroup>  getPlanGroupListByOrderId(String orderId) {
+	public  List<ZgTorderPlanGroup>  getPlanGroupListByOrderTaskId(String orderTaskId) {
 		Map paramsMap=new HashMap();
-		paramsMap.put("orderId", orderId);
-		return zgTorderPlanGroupExDao.getPlanGroupListByOrderId(paramsMap);
+		paramsMap.put("orderTaskId", orderTaskId);
+		return zgTorderPlanGroupExDao.getPlanGroupListByOrderTaskId(paramsMap);
 	}
 
 
@@ -342,5 +342,15 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 	public void updateGroupStateByOrderPlanId(String planId, String state) {
 		zgTorderPlanGroupExDao.updateGroupStateByOrderPlanId(planId,state);
 		
+	}
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	public List<ZgTorderPlanGroup> getPlanGroupListByOrderId(String orderId) {
+		Map paramsMap=new HashMap();
+		paramsMap.put("orderId", orderId);
+		return zgTorderPlanGroupExDao.getPlanGroupListByOrderId(paramsMap);
 	}
 }
