@@ -155,8 +155,8 @@ public class ZgTorderPlanGroupExDao extends ZgTorderPlanGroupDao{
 	 * 根据订单编号查找其订单计划分组启示录
 	 * @param orderId
 	 */
-	public List<ZgTorderPlanGroup> getPlanGroupListByOrderId(Map paramsMap) {
-		return getSqlMapClientTemplate().queryForList("ZgTorderPlanGroupEx.getPlanGroupListByOrderId", paramsMap);
+	public List<ZgTorderPlanGroup> getPlanGroupListByOrderTaskId(Map paramsMap) {
+		return getSqlMapClientTemplate().queryForList("ZgTorderPlanGroupEx.getPlanGroupListByOrderTaskId", paramsMap);
 	}
 
 
@@ -170,6 +170,16 @@ public class ZgTorderPlanGroupExDao extends ZgTorderPlanGroupDao{
 		paramsMap.put("state", state);
 		return getSqlMapClientTemplate().update("ZgTorderPlanGroupEx.updateGroupStateByOrderPlanId", paramsMap);
 		
+	}
+
+
+	/**
+	 * @param paramsMap
+	 * @return
+	 */
+	public List<ZgTorderPlanGroup> getPlanGroupListByOrderId(Map paramsMap) {
+		return getSqlMapClientTemplate().queryForList("ZgTorderPlanGroupEx.getPlanGroupListByOrderId", paramsMap);
+
 	}
 
 

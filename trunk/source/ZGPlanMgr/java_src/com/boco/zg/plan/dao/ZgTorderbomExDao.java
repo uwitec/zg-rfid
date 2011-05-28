@@ -160,10 +160,10 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<Map> getBomListByOrderId(String orderId1,String orderId2,String both,String isDel) {
+	public List<Map> getBomListByOrderId(String orderTaskId1,String orderTaskId2,String both,String isDel) {
 		Map paraMap=new HashMap();
-		paraMap.put("orderId1", orderId1);
-		paraMap.put("orderId2", orderId2);
+		paraMap.put("orderTaskId1", orderTaskId1);
+		paraMap.put("orderTaskId2", orderTaskId2);
 		paraMap.put("both", both);
 		paraMap.put("isDel", isDel);
 		return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByOrderId",paraMap);
@@ -178,10 +178,10 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<Map> getBomListByOrderId1(String orderId1,String orderId2,String both,String isDel) {
+	public List<Map> getBomListByOrderId1(String orderTaskId1,String orderTaskId2,String both,String isDel) {
 		Map paraMap=new HashMap();
-		paraMap.put("orderId1", orderId1);
-		paraMap.put("orderId2", orderId2);
+		paraMap.put("orderTaskId1", orderTaskId1);
+		paraMap.put("orderTaskId2", orderTaskId2);
 		paraMap.put("both", both);
 		paraMap.put("isDel", isDel);
 		return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByOrderId1",paraMap);
