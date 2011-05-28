@@ -100,4 +100,12 @@ public class ZgTorderTaskbomDao extends BaseIbatisDao<ZgTorderTaskbom,java.lang.
 		return getSqlMapClientTemplate().queryForList("ZgTorderTaskbom.getTaskbomByTaskIdAufnrIdnrkPosnr",paramsMap);
 	}
 
+	/**
+	 * @param paramsMap
+	 */
+	public void deleteTaskBomByOrderBomId(Map paramsMap) {
+		getSqlMapClientTemplate().delete("ZgTorderTaskbom.deleteTaskBomByOrderBomId",paramsMap);
+		
+	}
+
 }

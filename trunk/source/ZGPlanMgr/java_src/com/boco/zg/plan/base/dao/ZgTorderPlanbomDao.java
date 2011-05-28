@@ -149,6 +149,22 @@ public class ZgTorderPlanbomDao extends BaseIbatisDao<ZgTorderPlanbom,java.lang.
 	public void delPlanBomPlanId(Map paramsMap) {
 		getSqlMapClientTemplate().delete("ZgTorderPlanbom.delPlanBomPlanId",paramsMap);
 	}
+
+	/**
+	 * @param paramsMap
+	 * @return
+	 */
+	public int deletePlanBomByOrderBomId(Map paramsMap) {
+		return getSqlMapClientTemplate().delete("ZgTorderPlanbom.deletePlanBomByOrderBomId",paramsMap);
+	}
+
+	/**
+	 * @param paramsMap
+	 * @return
+	 */
+	public  List<ZgTorderPlanbom> getPlanBomByOrderBomId(Map paramsMap) {
+		return getSqlMapClientTemplate().queryForList("ZgTorderPlanbom.getPlanBomByOrderBomId",paramsMap);
+	}
 	
 	
 
