@@ -87,9 +87,9 @@ public class ZgTorderPlanForBatchExBo extends BaseManager<ZgTorderPlanEx,java.la
 			}
 			ZgTcarbom bom = new ZgTcarbom();
 			bom.setCarPlanId(zgTcarplan.getCuid());
-			bom.setOrderBomId(obj.getOrderBomId());
+//			bom.setOrderBomId(obj.getOrderBomId());//TODO TASKBOMID
 			bom.setOrderPlanbomId(obj.getCuid());
-			bom.setOrderId(obj.getOrderId());
+//			bom.setOrderId(obj.getOrderId());
 			bom.setPlanNum(Long.parseLong(obj.getMenge()));
 			bom.setRealNum(0l);
 			zgTcarbomBo.save(bom);

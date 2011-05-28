@@ -10,12 +10,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javacommon.base.dao.BaseDao;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.springframework.stereotype.Component;
 
 import sap.SapClient;
+import sap.service.HandlerOrderServiceImpl;
 
 import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
@@ -32,10 +35,15 @@ import com.boco.zg.plan.base.model.ZgTorder;
 import com.boco.zg.plan.base.model.ZgTorderPlan;
 import com.boco.zg.plan.base.model.ZgTorderPlanGroup;
 import com.boco.zg.plan.base.model.ZgTorderPlanbom;
+import com.boco.zg.plan.base.model.ZgTorderTask;
+import com.boco.zg.plan.base.model.ZgTorderTaskbom;
 import com.boco.zg.plan.base.model.ZgTorderbom;
 import com.boco.zg.plan.base.model.ZgTorderbomMoveLog;
+import com.boco.zg.plan.base.service.ZgTorderBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanbomBo;
+import com.boco.zg.plan.base.service.ZgTorderTaskBo;
+import com.boco.zg.plan.base.service.ZgTorderTaskbomBo;
 import com.boco.zg.plan.base.service.ZgTorderbomBo;
 import com.boco.zg.plan.base.service.ZgTorderbomMoveLogBo;
 import com.boco.zg.plan.dao.ZgTorderPlanExDao;
@@ -76,6 +84,31 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	private ZgTcarplanDao zgTcarplanDao;
 	
 	private ZgTorderbomMoveLogBo zgTorderbomMoveLogBo;
+	
+	private ZgTorderTaskbomBo zgTorderTaskbomBo;
+	
+	private ZgTorderTaskBo zgTorderTaskBo;
+	
+	private ZgTorderBo zgTorderBo;
+	
+	public static Map<String, String> plantSortfMap=null;
+	
+	
+	public  Map<String, String>  getPlantSortfMap(){
+		if(plantSortfMap==null){
+			plantSortfMap=zgTorderBo.getPlantSortfMap();
+		}
+		return plantSortfMap;
+	}
+	
+	/**
+	 * @return
+	 */
+	private HandlerOrderServiceImpl getHandlerOrderServiceImpl() {
+		return (HandlerOrderServiceImpl) ApplicationContextHolder
+		.getBean("handlerOrderServiceImpl");
+	}
+
 	
 	public void setZgTorderbomDao(ZgTorderbomDao dao) {
 		this.zgTorderbomDao = dao;
@@ -123,12 +156,55 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 				false);
 	}
 
+	/**
+	 * 更改制作标识 并把物料插入相应的反序数据中
+	 * @param bomId
+	 * @param sortf
+	 */
 	public void updateOrderBomSortf(String bomId, String sortf) {
 		ZgTorderbom orderbom = (ZgTorderbom) zgTorderbomDao.getById(bomId);
-		orderbom.setSortf(sortf);
-		zgTorderbomDao.update(orderbom);
+		
+		if(!sortf.equals(orderbom.getSortf())){
+			//删除原排序字符串相应的planbom
+			//判断是否已经生成planBOM数据
+			 List<ZgTorderPlanbom> list=zgTorderPlanbomBo.getPlanBomByOrderBomId(bomId);
+			 if(list.size()>0){
+				 int delRow=zgTorderPlanbomBo.deletePlanBomByOrderBomId(bomId);
+					if(delRow==0) return;
+					
+					//删除原来的taskBom
+					zgTorderTaskbomBo.deleteTaskBomByOrderBomId(bomId);
+			 }
+			
+			
+			orderbom.setSortf(sortf);
+			zgTorderbomDao.update(orderbom);
+			
+			//插入新的排序
+			//获取目前的排序任务
+			ZgTorderTask task=new ZgTorderTask();
+			task.setOrderId(orderbom.getOrderId());
+			List<ZgTorderTask> taskList=zgTorderTaskBo.findByProperty(task);
+			//循环排序任务找到相应的排序任务插入
+			for(ZgTorderTask orderTask:taskList){
+				String taskSortf=getPlantSortfMap().get(orderTask.getPlant());
+				if(taskSortf.equals(sortf)){
+					//插入工单任务BOM ZG_T_ORDER_TASKBOM
+					Long menge=orderTask.getPmenge()*orderbom.getZdtyl();
+					ZgTorderTaskbom taskbom=getHandlerOrderServiceImpl().saveZgTorderTaskBom(orderTask.getCuid(),menge , bomId);
+					
+					//该BOM插入领料计划中
+					getHandlerOrderServiceImpl().doWithPlanBomBYTaskIdPlantTaskBomId(orderTask.getCuid(),orderTask.getPlant(),taskbom);
+				}
+			}
+			
+			
+		}
+		
 		zgTorderExBo.updateOrderState(orderbom.getOrderId(),
 				ZgTorderExBo.PLAN_STATE_SAVE);
+		
+		
 	}
 	
 	/**
@@ -141,73 +217,46 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	 */
 	public void updateOrderBomSortf1(String bomId, String sortf) {
 		ZgTorderbom orderbom = (ZgTorderbom) zgTorderbomDao.getById(bomId);
-		if(orderbom.getPlanNum()==0||orderbom.getPlanNum()==null){//没领取过的才能变更
-			if(!sortf.equals(orderbom.getSortf())){//标识改变的则做相应处理
-				//获取要迁移目标领料计划
-				ZgTorderPlan targetPlan=getOrderPlanByOrderIdPlanType(orderbom.getOrderId(), sortf);
-				
-				//获取BOM原来在的领料计划
-				ZgTorderPlan sourcePlan=getOrderPlanByOrderIdPlanType(orderbom.getOrderId(), orderbom.getSortf());
-				
-				if(targetPlan==null){//BOM要移向目标领料计划为空 测
-					if(sourcePlan!=null){//删除原来的领料计划下面的该bom 测
-						zgTorderPlanbomExDao.deleteByOrderBomId(orderbom.getCuid());
-						
-						//重新计划领料进度
-						ZgTorderPlanGroup group = zgTorderPlanGroupExDao.getPlanGroupListByOrderPlanId(sourcePlan.getCuid());
-						
-						doProcessOrderPercent(sourcePlan);
-						
-						doProcessGroupPercent(group);
-					}
-					
-				}else {//BOM要移向目标领料计划不为空 测
-					if(sourcePlan==null){//BOM原来在的领料计划为空 则得在目标领料计划中插入该bom
-						ZgTorderPlanbom planbom = new ZgTorderPlanbom();
-						planbom.setOrderPlanId(targetPlan.getCuid());
-						planbom.setOrderId(orderbom.getOrderId());
-						planbom.setOrderBomId(orderbom.getCuid());
-						planbom.setState("0");
-						planbom.setCarNum(orderbom.getMenge());
-						zgTorderPlanbomDao.save(planbom);
-						
-						//重新计划领料进度
-						ZgTorderPlanGroup group = zgTorderPlanGroupExDao.getPlanGroupListByOrderPlanId(targetPlan.getCuid());
-						
-						doProcessOrderPercent(targetPlan);
-						
-						doProcessGroupPercent(group);
-						
-					}else{//更新原来的领料计划下面的该bom 测
-//						zgTorderPlanbomExDao.deleteByOrderBomId(orderbom.getCuid());
-						ZgTorderPlanbom planbom=zgTorderPlanbomExDao.getByOrderBomId(orderbom.getCuid());
-						if(planbom!=null){
-							planbom.setOrderPlanId(targetPlan.getCuid());
-							zgTorderPlanbomDao.update(planbom);	
-						}
-						
-						//重新计划领料进度
-						ZgTorderPlanGroup targetGroup = zgTorderPlanGroupExDao.getPlanGroupListByOrderPlanId(targetPlan.getCuid());
-						
-						doProcessOrderPercent(targetPlan);
-						
-						doProcessGroupPercent(targetGroup);
-						
-						ZgTorderPlanGroup sourceGroup = zgTorderPlanGroupExDao.getPlanGroupListByOrderPlanId(sourcePlan.getCuid());
-						
-						doProcessOrderPercent(sourcePlan);
-						
-						doProcessGroupPercent(sourceGroup);
-						
-					}
-				}
-				
-				orderbom.setSortf(sortf);
-				zgTorderbomDao.update(orderbom);
+		if(!sortf.equals(orderbom.getSortf())){
+			//删除原排序字符串相应的planbom
+			//判断是否已经瑛料
+			boolean isStartCar=zgTorderPlanbomBo.isStartCar(bomId);
+			if(isStartCar){//已经开始领料，不允许改标识 
+				return;
 			}
+			 List<ZgTorderPlanbom> list=zgTorderPlanbomBo.getPlanBomByOrderBomId(bomId);
+			 if(list.size()>0){
+				 int delRow=zgTorderPlanbomBo.deletePlanBomByOrderBomId(bomId);
+					if(delRow==0) return;
+					//删除原来的taskBom
+					zgTorderTaskbomBo.deleteTaskBomByOrderBomId(bomId);
+			 }
+			
+			
+			orderbom.setSortf(sortf);
+			zgTorderbomDao.update(orderbom);
+			
+			//插入新的排序
+			//获取目前的排序任务
+			ZgTorderTask task=new ZgTorderTask();
+			task.setOrderId(orderbom.getOrderId());
+			List<ZgTorderTask> taskList=zgTorderTaskBo.findByProperty(task);
+			//循环排序任务找到相应的排序任务插入
+			for(ZgTorderTask orderTask:taskList){
+				String taskSortf=getPlantSortfMap().get(orderTask.getPlant());
+				if(taskSortf.equals(sortf)){
+					//插入工单任务BOM ZG_T_ORDER_TASKBOM
+					Long menge=orderTask.getPmenge()*orderbom.getZdtyl();
+					ZgTorderTaskbom taskbom=getHandlerOrderServiceImpl().saveZgTorderTaskBom(orderTask.getCuid(),menge , bomId);
+					
+					//该BOM插入领料计划中
+					getHandlerOrderServiceImpl().doWithPlanBomBYTaskIdPlantTaskBomId(orderTask.getCuid(),orderTask.getPlant(),taskbom);
+				}
+			}
+			
+			
+			
 		}
-		
-		
 		
 		
 	}
@@ -253,17 +302,6 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	
 	
 	
-	private ZgTorderPlan getOrderPlanByOrderIdPlanType(String orderId,String planType){
-		ZgTorderPlan plan=new ZgTorderPlan();
-		plan.setOrderId(orderId);
-		plan.setPlanType(planType);
-		List<ZgTorderPlan> planList=zgTorderPlanDao.findByProperty(plan);
-		String targetPlanId="";
-		if(planList.size()>0){
-			return planList.get(0);
-		}
-		return null;
-	}
 
 	/**
 	 * 获取已经提交的领料计划的bom组件
@@ -657,13 +695,20 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	}
 
 	/**
-	 * 根据计单编号计算订单的装车计划进度
-	 * @param orderId
+	 * 根据订单任务编号编号计算订单的装车计划进度
+	 * @param id 为orderId或taskId
+	 * @param type:task 为具体任务 order为订单
 	 */
-	public void doZgtorderProcess(String orderId) {
+	public void doZgtorderProcess(String id,String type) {
 		//===========计算订单领料进度=====================
 		//查找目标订单的领料计划单
-		List<ZgTorderPlan> planList= zgTorderPlanExBo.getOrderPlanListByOrderId(orderId);
+		List<ZgTorderPlan> planList=null;
+		if(type.equals("order")){//整单计算
+			planList= zgTorderPlanExBo.getOrderPlanListByOrderId(id);
+		}else {
+			planList= zgTorderPlanExBo.getOrderPlanListByOrderTaskId(id);
+		}
+		
 		// 更新领料计划表的状态及领料进度
 		for(ZgTorderPlan plan:planList){
 			String state=zgTorderPlanExBo.getState(plan.getCuid());
@@ -679,7 +724,13 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 		}
 		
 		//查找目标订单的领料计划分组单
-		List<ZgTorderPlanGroup> planGrouList=zgTorderPlanGroupExBo.getPlanGroupListByOrderId(orderId);
+		List<ZgTorderPlanGroup> planGrouList=null;
+		if(type.equals("order")){//整单计算
+			planGrouList=zgTorderPlanGroupExBo.getPlanGroupListByOrderId(id);
+		}else {
+			planGrouList=zgTorderPlanGroupExBo.getPlanGroupListByOrderTaskId(id);
+		}
+		
 		for(ZgTorderPlanGroup group:planGrouList){
 			doProcessGroupPercent(group);
 		}
@@ -777,6 +828,50 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	 */
 	public void setSelfMatkl(String idnrk, String matkl) {
 		zgTorderbomExDao.setSelfMatkl(idnrk,matkl);
+	}
+
+	/**
+	 * @return the zgTorderTaskbomBo
+	 */
+	public ZgTorderTaskbomBo getZgTorderTaskbomBo() {
+		return zgTorderTaskbomBo;
+	}
+
+	/**
+	 * @param zgTorderTaskbomBo the zgTorderTaskbomBo to set
+	 */
+	public void setZgTorderTaskbomBo(ZgTorderTaskbomBo zgTorderTaskbomBo) {
+		this.zgTorderTaskbomBo = zgTorderTaskbomBo;
+	}
+
+	/**
+	 * @return the zgTorderTaskBo
+	 */
+	public ZgTorderTaskBo getZgTorderTaskBo() {
+		return zgTorderTaskBo;
+	}
+
+	/**
+	 * @param zgTorderTaskBo the zgTorderTaskBo to set
+	 */
+	public void setZgTorderTaskBo(ZgTorderTaskBo zgTorderTaskBo) {
+		this.zgTorderTaskBo = zgTorderTaskBo;
+	}
+
+
+	/**
+	 * @return the zgTorderBo
+	 */
+	public ZgTorderBo getZgTorderBo() {
+		return zgTorderBo;
+	}
+
+
+	/**
+	 * @param zgTorderBo the zgTorderBo to set
+	 */
+	public void setZgTorderBo(ZgTorderBo zgTorderBo) {
+		this.zgTorderBo = zgTorderBo;
 	}
 
 }
