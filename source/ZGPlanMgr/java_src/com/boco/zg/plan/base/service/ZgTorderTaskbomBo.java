@@ -98,4 +98,12 @@ public class ZgTorderTaskbomBo extends BaseManager<ZgTorderTaskbom,java.lang.Str
 		paramsMap.put("posnr", posnr);
 		return zgTorderTaskbomDao.getTaskbomAufnrIdnrkPosnr(paramsMap);
 	}
+	/**
+	 * @param bomId
+	 */
+	public void deleteTaskBomByOrderBomId(String bomId) {
+		Map paramsMap=new HashMap<String , Object>();
+		paramsMap.put("bomId", bomId);
+		zgTorderTaskbomDao.deleteTaskBomByOrderBomId(paramsMap);
+	}
 }
