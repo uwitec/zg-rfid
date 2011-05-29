@@ -69,7 +69,6 @@ for(SortInfo si:list){
 						<tr>
 							<td class="tableHeader">排产日期</td>
 							<td class="tableHeader">生产订单编号</td>
-							<td class="tableHeader">原生产线</td>
 							<td class="tableHeader">生产线</td>
 							<td class="tableHeader">客户机型</td>
 							<td class="tableHeader">销售订单号</td>
@@ -86,7 +85,6 @@ for(SortInfo si:list){
 						<tr class="${trcss}" title="双击确定" ondblclick="submitAndClose('${obj.cuid}')">
 							<td>${obj.pcdatString}</td>
 							<td>${obj.aufnr}</td>
-							<td>${obj.arbpl1}</td>
 							<td>${obj.arbpl}</td>
 							<td align="left">${obj.maktx2}</td>
 							<td>${obj.kdauf}</td>

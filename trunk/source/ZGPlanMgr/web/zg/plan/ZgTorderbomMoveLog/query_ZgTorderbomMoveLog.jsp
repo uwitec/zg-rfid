@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@page import="com.boco.zg.plan.base.model.*" %>
+<%@page import="com.pz.modules.base.fwdep.model.*" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ include file="/commons/taglibs.jsp" %>
 <%
@@ -97,23 +97,27 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 			</thead>
 			<tbody attr="tbody_1" class="querybar unexpand">
 			<tr>
-			   <td class="tdLabel"><%=ZgTorderbomMoveLog.ALIAS_SOURCE_ORDER_ID%>：</td>
+			   <td class="tdLabel"><%=ZgTorderbomMoveLog.ALIAS_SOURCE_PLANBOM_ID%>：</td>
 			   <td>
-		   			<input type="text" size="30" autocomplete="true" xtype="drm-complex-select" id="sourceOrderId_label" columnNameLower="sourceOrderId" bmClassId="ZG_T_ORDER" column="m.t0_AUFNR"/>
-		   			<input type="hidden" id="sourceOrderId_value" name="s_sourceOrderId"/>
+		   			<input type="text" name="s_sourcePlanbomId" size="30"/>
 			   </td>
 			</tr>
 			<tr>
-			   <td class="tdLabel"><%=ZgTorderbomMoveLog.ALIAS_SOURCE_IDNRK%>：</td>
+			   <td class="tdLabel"><%=ZgTorderbomMoveLog.ALIAS_SOURCE_ORDER_TASK_ID%>：</td>
 			   <td>
-		   			<input type="text" name="s_sourceIdnrk" size="30"/>
+		   			<input type="text" name="s_sourceOrderTaskId" size="30"/>
 			   </td>
 			</tr>
 			<tr>
-			   <td class="tdLabel"><%=ZgTorderbomMoveLog.ALIAS_TARGET_ORDER_ID%>：</td>
+			   <td class="tdLabel"><%=ZgTorderbomMoveLog.ALIAS_TARGET_ORDER_TASK_ID%>：</td>
 			   <td>
-		   			<input type="text" size="30" autocomplete="true" xtype="drm-complex-select" id="targetOrderId_label" columnNameLower="targetOrderId" bmClassId="ZG_T_ORDER" column="m.t0_AUFNR"/>
-		   			<input type="hidden" id="targetOrderId_value" name="s_targetOrderId"/>
+		   			<input type="text" name="s_targetOrderTaskId" size="30"/>
+			   </td>
+			</tr>
+			<tr>
+			   <td class="tdLabel"><%=ZgTorderbomMoveLog.ALIAS_TARGET_PLANBOM%>：</td>
+			   <td>
+		   			<input type="text" name="s_targetPlanbom" size="30"/>
 			   </td>
 			</tr>
 			<tr>
@@ -123,9 +127,23 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 			   </td>
 			</tr>
 			<tr>
-			   <td class="tdLabel"><%=ZgTorderbomMoveLog.ALIAS_TARGET_IDNRK%>：</td>
+			   <td class="tdLabel"><%=ZgTorderbomMoveLog.ALIAS_CREATE_ID%>：</td>
 			   <td>
-		   			<input type="text" name="s_targetIdnrk" size="30"/>
+		   			<input type="text" size="30" autocomplete="true" xtype="drm-complex-select" id="createId_label" columnNameLower="createId" bmClassId="FW_EMPLOYEE" column="m.t0_LABEL_CN"/>
+		   			<input type="hidden" id="createId_value" name="s_createId"/>
+			   </td>
+			</tr>
+			<tr>
+			   <td class="tdLabel"><%=ZgTorderbomMoveLog.ALIAS_CREATE_DATE%>：</td>
+			   <td>
+		   			<input type="text" dateFlag="true" name="s_createDate_start" size="30"/>
+		   			至　<input type="text" dateFlag="true" name="s_createDate_end" size="30"/>
+			   </td>
+			</tr>
+			<tr>
+			   <td class="tdLabel"><%=ZgTorderbomMoveLog.ALIAS_CREATE_USERNAME%>：</td>
+			   <td>
+		   			<input type="text" name="s_createUsername" size="30"/>
 			   </td>
 			</tr>
 			</tbody>

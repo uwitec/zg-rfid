@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@page import="com.boco.zg.plan.base.model.*" %>
+<%@page import="com.pz.modules.base.fwdep.model.*" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ include file="/commons/taglibs.jsp" %>
 <%
@@ -50,24 +50,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<table class="form_table" cellpadding="1" cellspacing="1" style="margin-top:3px;">
 				
 					<tr>	
-						<td class="label"><%=ZgTorderbomMoveLog.ALIAS_SOURCE_ORDER_ID%></td>	
-						<td><s:property value="%{model.sourceOrderId}" /></td>
+						<td class="label"><%=ZgTorderbomMoveLog.ALIAS_SOURCE_PLANBOM_ID%></td>	
+						<td><s:property value="%{model.sourcePlanbomId}" /></td>
 					</tr>
 					<tr>	
-						<td class="label"><%=ZgTorderbomMoveLog.ALIAS_SOURCE_IDNRK%></td>	
-						<td><s:property value="%{model.sourceIdnrk}" /></td>
+						<td class="label"><%=ZgTorderbomMoveLog.ALIAS_SOURCE_ORDER_TASK_ID%></td>	
+						<td><s:property value="%{model.sourceOrderTaskId}" /></td>
 					</tr>
 					<tr>	
-						<td class="label"><%=ZgTorderbomMoveLog.ALIAS_TARGET_ORDER_ID%></td>	
-						<td><s:property value="%{model.targetOrderId}" /></td>
+						<td class="label"><%=ZgTorderbomMoveLog.ALIAS_TARGET_ORDER_TASK_ID%></td>	
+						<td><s:property value="%{model.targetOrderTaskId}" /></td>
+					</tr>
+					<tr>	
+						<td class="label"><%=ZgTorderbomMoveLog.ALIAS_TARGET_PLANBOM%></td>	
+						<td><s:property value="%{model.targetPlanbom}" /></td>
 					</tr>
 					<tr>	
 						<td class="label"><%=ZgTorderbomMoveLog.ALIAS_MOVE_NUM%></td>	
 						<td><s:property value="%{model.moveNum}" /></td>
 					</tr>
 					<tr>	
-						<td class="label"><%=ZgTorderbomMoveLog.ALIAS_TARGET_IDNRK%></td>	
-						<td><s:property value="%{model.targetIdnrk}" /></td>
+						<td class="label"><%=ZgTorderbomMoveLog.ALIAS_CREATE_ID%></td>	
+						<td><s:property value="%{model.createId}" /></td>
+					</tr>
+					<tr>	
+						<td class="label"><%=ZgTorderbomMoveLog.ALIAS_CREATE_DATE%></td>	
+						<td><s:property value="%{model.createDateString}" /></td>
+					</tr>
+					<tr>	
+						<td class="label"><%=ZgTorderbomMoveLog.ALIAS_CREATE_USERNAME%></td>	
+						<td><s:property value="%{model.createUsername}" /></td>
 					</tr>
 				</table>
 			</div>

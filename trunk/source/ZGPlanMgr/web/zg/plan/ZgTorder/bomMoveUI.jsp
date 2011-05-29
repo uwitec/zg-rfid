@@ -25,11 +25,11 @@
     function selectSourceOrder(){
     	var result=openDialog1("${ctx}/zg/plan/ZgTorder/queryForSelect.do",800,600);
     	if(result!=undefined){
-	    	document.getElementById("sourceOrderDetailFrame").src="${ctx}/zg/plan/ZgTorder/show.do?id="+result;
+	    	document.getElementById("sourceOrderDetailFrame").src="${ctx}/zg/plan/ZgTorder/showByTaskId.do?id="+result;
 	    	document.getElementById("sourceOrderBomFrame").src="${ctx}/zg/plan/ZgTorderbom/showBom.do?orderId1="+result;
 	    	document.getElementById("sourceOrderId").value=result;
 	    	
-	    	document.getElementById("targetOrderDetailFrame").src="${ctx}//zg/plan/ZgTorder/show.do?id=";
+	    	document.getElementById("targetOrderDetailFrame").src="${ctx}//zg/plan/ZgTorder/showByTaskId.do?id=";
     		document.getElementById("targetOrderBomFrame").src="${ctx}/zg/plan/ZgTorderbom/showBom1.do?orderId1=";
   			document.getElementById("targetOrderId").value='';	
     	}
@@ -44,7 +44,7 @@
     	//var result=openDialog1("${ctx}/zg/plan/ZgTorder/listForSelectByOrderId.do?sourceOrderId="+sourceOrderId,800,400);
     	var result=openDialog1("${ctx}/zg/plan/ZgTorder/queryForSelect.do?flag=target&sourceOrderId="+sourceOrderId,800,600);
     	if(result!=undefined){
-    		document.getElementById("targetOrderDetailFrame").src="${ctx}//zg/plan/ZgTorder/show.do?id="+result;
+    		document.getElementById("targetOrderDetailFrame").src="${ctx}//zg/plan/ZgTorder/showByTaskId.do?id="+result;
     		document.getElementById("targetOrderBomFrame").src="${ctx}/zg/plan/ZgTorderbom/showBom1.do?orderId1="+result+"&orderId2="+sourceOrderId+"&both=true";
   			document.getElementById("targetOrderId").value=result;	
   			
@@ -97,30 +97,28 @@
 	}
 	
 	function buildupSubmitParams(){
+
 			var jsonStr='';
 			var items = document.getElementsByName("items");
 			var form=document.frames('sourceOrderBomFrame');
 			var rowNum=(form.document.getElementById("rowNum").value)*1;
+				
 		    if (rowNum > 0) {
 		        for (var i = 0; i < rowNum; i++){
 						var cuid=form.document.getElementById("bomList["+i+"].cuid").value;
 						var idnrk=form.document.getElementById("bomList["+i+"].idnrk").value;
-						var matkl=form.document.getElementById("bomList["+i+"].matkl").value;
-						var lgort=form.document.getElementById("bomList["+i+"].lgort").value;
 						var posnr=form.document.getElementById("bomList["+i+"].posnr").value;
 						var moveNum=form.document.getElementById("bomList["+i+"].moveNum").value;
-						var bomNum=form.document.getElementById("bomList["+i+"].bomNum").value;
-						var orderId=form.document.getElementById("bomList["+i+"].orderId").value;
+						var orderTaskId=form.document.getElementById("bomList["+i+"].orderTaskId").value;
+						
+						
 		        		if(moveNum!=''){
 		        			jsonStr=jsonStr+'{' ;
 			           		jsonStr = jsonStr + '"cuid":"'+cuid+'",';
 			           		jsonStr = jsonStr + '"idnrk":"'+idnrk+'",';
-			           		jsonStr = jsonStr + '"lgort":"'+lgort+'",';
 			           		jsonStr = jsonStr + '"posnr":"'+posnr+'",';
-			           		jsonStr = jsonStr + '"moveNum":"'+moveNum+'",';
-			           		jsonStr = jsonStr + '"orderId":"'+orderId+'",';
-			           		jsonStr = jsonStr + '"bomNum":"'+bomNum+'",';
-			           		jsonStr = jsonStr +'"matkl":"'+matkl+'"},';
+			           		jsonStr = jsonStr + '"orderTaskId":"'+orderTaskId+'",';
+			           		jsonStr = jsonStr +'"moveNum":"'+moveNum+'"},';
 		        		}
 		        
 		        }
@@ -145,7 +143,7 @@
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:bomMove()">确定移单</a>
 					</div>
 					<div class="mfrmain" id="div_s_1_chart" style=" height:200px;">
-						<iframe id="sourceOrderDetailFrame" src="${ctx}/zg/plan/ZgTorder/show.do?id=" autolayout="true" width="100%" frameborder="0" scrolling="no"></iframe>
+						<iframe  id="sourceOrderDetailFrame" src="${ctx}/zg/plan/ZgTorder/showByTaskId.do?id=" autolayout="true" width="100%" frameborder="0" scrolling="no"></iframe>
 						<iframe  id="sourceOrderBomFrame" src="${ctx}/zg/plan/ZgTorderbom/showBom.do?orderId1=" autolayout="true" width="100%" frameborder="0" scrolling="no"></iframe>
 					
 					</div>
@@ -157,7 +155,7 @@
 			  	<div class="mfrwebpart"  valign="top" style="height:230px;">
 					<div class="mfrtitle">目标订单&nbsp;&nbsp;<img src="${ctx }/resources/images/frame/autocomplete.png" style="cursor: pointer" onclick="selectTargetOrder()"/></div>
 					<div class="mfrmain" id="div_s_1_chart"  style=" height:230px;">
-					<iframe id="targetOrderDetailFrame" src="${ctx}/zg/plan/ZgTorder/show.do?id=" autolayout="true" width="100%" frameborder="0" scrolling="no"></iframe>
+					<iframe id="targetOrderDetailFrame" src="${ctx}/zg/plan/ZgTorder/showByTaskId.do?id=" autolayout="true" width="100%" frameborder="0" scrolling="no"></iframe>
 					<iframe id="targetOrderBomFrame"  src="${ctx}/zg/plan/ZgTorderbom/showBom1.do?orderId1=" autolayout="true" width="100%" frameborder="0" scrolling="no"></iframe>
 					</div>
 			   </div>

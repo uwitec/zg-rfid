@@ -52,6 +52,7 @@
 					<thead>
 						<tr>
 							<td class="tableHeader">BOM组件</td>
+							<td class="tableHeader">项目编号</td>
 							<td class="tableHeader">物料描述</td>
 							<td class="tableHeader">制作标识</td>
 							<td class="tableHeader">库存地点</td>
@@ -64,6 +65,7 @@
 						<c:set var="trcss" value="${n.count%2==0?'odd':'even'}"/>
 						<tr class="${trcss}">
 							<td>${obj.IDNRK}</td>
+							<td>${obj.POSNR}</td>
 							<td align="left">${obj.MAKTX2}</td>
 							<td>${obj.SORTF}</td>
 							<td>${obj.LGORT}</td>
