@@ -49,20 +49,19 @@
     </update>
     
     <update id="revertIndexNoByPlant">
-    	update zg_t_order_plan_group oup
+    
+    update zg_t_order_plan_group oup
    set oup.indexno = 10000
  where exists (select 1
           from zg_t_group_order_plan gop,
                zg_t_order_plan       plan,
-               zg_t_order            zto,
-               zg_t_order_aide       aide,
-               fw_organization       org
+               fw_organization       org,
+               zg_t_order_task task
          where oup.cuid = gop.group_id
            and gop.order_plan_id = plan.cuid
-           and plan.order_id = zto.cuid
-           and zto.cuid = aide.order_id
+           and plan.order_task_id = task.cuid
            and org.cuid = '$cuid$'
-           and TRUNC(aide.px_date) >= TRUNC(org.extend2))
+           and TRUNC(task.px_date) >= TRUNC(org.extend2))
     </update>
     
     
