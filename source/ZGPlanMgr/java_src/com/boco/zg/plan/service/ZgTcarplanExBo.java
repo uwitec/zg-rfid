@@ -711,10 +711,10 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 * @param operatorId
 	 * @return
 	 */
-	public List<Map> getBomListByLgort(String groupId, String lgort,
-			String operatorId) {
-		return zgTcarplanExDao.getBomListByLgort(groupId,lgort,operatorId);
-	}
+//	public List<Map> getBomListByLgort(String groupId, String lgort,
+//			String operatorId) {
+//		return zgTcarplanExDao.getBomListByLgort(groupId,lgort,operatorId);
+//	}
 
 
 	/**

@@ -196,39 +196,6 @@ public class ZgTorderExBo extends ZgTorderBo {
 												         +"  and plan.order_id='123')");	
 	}
 	
-	/**
-	 * 获取应该生成的领料计划类型
-	 * @return
-	 */
-	public List<String> getOrderSoftByOrderId(String orderId){
-		  List<String> planList=zgTorderExDao.getPlantListByOrderId(orderId);
-		
-		if(planList.size()==0){
-			return new ArrayList<String>();
-		}
-		
-		if(sorftPlantList==null){
-			initSorftPlantList();
-		}
-		
-		//遍历键，通过键取值
-
-		Set set = sorftPlantList.keySet();
-		
-		List<String> sortfList=new ArrayList<String>();
-		for (Object key : set) {
-			List<Map> list=sorftPlantList.get(key);
-			for(Map obj:list){
-				String cPlant=obj.get("PLANTID").toString();
-				for(String plant:planList)
-				if(plant.equals(cPlant)){
-					sortfList.add(key.toString());
-				}
-			}
-		}
-		
-		return sortfList;
-	}
 	
 	/**
 	 * 获取应该生成的领料计划类型

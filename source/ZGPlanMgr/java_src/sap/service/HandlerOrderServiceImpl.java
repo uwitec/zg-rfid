@@ -120,10 +120,11 @@ public class HandlerOrderServiceImpl {
 	 * @param plant
 	 * @param order
 	 */
-	public void doPxEditBomData(int batchNo, String aufnr, String plant,ZgTorder order) {//测试过
+	public int doPxEditBomData(int batchNo, String aufnr, String plant,ZgTorder order) {//测试过
 		
+		String sortf=getPlantSortfMap().get(plant);
 		//设置修改物料标识为2
-		List<ZgTorderbomTempAll> editBomList=getZgTorderbomTempAllBo().getForEditBomList(batchNo,aufnr,order.getArbpl(),plant,Constants.EDIT);
+		List<ZgTorderbomTempAll> editBomList=getZgTorderbomTempAllBo().getForEditBomList(batchNo,aufnr,order.getArbpl(),plant,Constants.EDIT,sortf);
 		//查询修改物料标识为2
 //		List<ZgTorderbomTempAll> editBomList=getZgTorderbomTempAllBo().getBomListByBatchNoAufnrArbplPlantFlag(batchNo,aufnr,order.getArbpl(),plant,Constants.EDIT);
 		
@@ -134,14 +135,20 @@ public class HandlerOrderServiceImpl {
 		
 			//获取taskbom并更新
 			ZgTorderTaskbom taskbom=getZgTorderTaskbomBo().getTaskbomByTaskIdAufnrIdnrkPosnr(order.getTaskId(),tempBom.getIdnrk(),tempBom.getAufnr(),tempBom.getPosnr());
-			if(taskbom==null) return;
-			taskbom.setMenge(tempBom.getMenge());
-			getZgTorderTaskbomBo().update(taskbom);
+			if(taskbom==null){
+				taskbom=saveZgTorderTaskBom(order.getTaskId(), tempBom.getMenge(), tempBom.getCuid());
+			}else {
+				taskbom.setMenge(tempBom.getMenge());
+				getZgTorderTaskbomBo().update(taskbom);
+			}
+			
+			
 			
 			//更新orderplanbom
 			doWithPlanBomBYTaskIdPlantTaskBomId(order.getTaskId(),plant,taskbom);
 			
 		}
+		return editBomList.size();
 		
 	}
 
@@ -155,7 +162,7 @@ public class HandlerOrderServiceImpl {
 	 * @param plant
 	 * @param order
 	 */
-	public void doPxDelBomData(int batchNo, String aufnr, String plant,ZgTorder order) {//测试
+	public int doPxDelBomData(int batchNo, String aufnr, String plant,ZgTorder order) {//测试
 		List<ZgTorderbom> delBomList=getZgTorderbomBo().getBomListByBatchNoAufnrArbplPlant(batchNo,aufnr,order.getArbpl(),plant);
 		
 		for(ZgTorderbom tempBom:delBomList){
@@ -199,6 +206,7 @@ public class HandlerOrderServiceImpl {
 				getZgTorderbomBo().update(tempBom);
 			}
 		}
+		return delBomList.size();
 	}
 	
 
@@ -225,7 +233,7 @@ public class HandlerOrderServiceImpl {
 	 * @param plant
 	 * @param order
 	 */
-	public void doPxAddBomData(int batchNo, String aufnr, String plant,ZgTorder order) {//处理
+	public int doPxAddBomData(int batchNo, String aufnr, String plant,ZgTorder order) {//处理
 		//对比bom新增或是插入
 	
 		//设置新增物料标识为1
@@ -249,6 +257,7 @@ public class HandlerOrderServiceImpl {
 		
 			
 		}
+		return addBomList.size();
 	}
 	
 	/**
@@ -416,6 +425,23 @@ public class HandlerOrderServiceImpl {
 		zgTorder.setPlant(plant);
 		List<ZgTorder> rfidOrderList=getZgTorderBo().getOrderListByAufnrPlant(zgTorder);
 		return rfidOrderList;
+	}
+
+	/**
+	 * @param batchNo
+	 * @param aufnr
+	 */
+	public int doPcEditBomData(int batchNo, String aufnr,String orderId) {
+		//获取信息修改过的bom
+		List<ZgTorderbomTempAll> editBomList=getZgTorderbomTempAllBo().getForPcEditBomList(batchNo,aufnr,Constants.EDIT);
+		//查询修改物料标识为2
+//		List<ZgTorderbomTempAll> editBomList=getZgTorderbomTempAllBo().getBomListByBatchNoAufnrArbplPlantFlag(batchNo,aufnr,order.getArbpl(),plant,Constants.EDIT);
+		
+		for(ZgTorderbomTempAll tempBom:editBomList){
+			tempBom.setOrderId(orderId);
+			getZgTorderbomTempAllBo().updateOrderBomForPc(tempBom);	
+		}
+		return editBomList.size();
 	}
 
 }

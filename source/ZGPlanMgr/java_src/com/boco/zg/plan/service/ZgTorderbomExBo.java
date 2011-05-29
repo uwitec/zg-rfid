@@ -6,6 +6,7 @@
 
 package com.boco.zg.plan.service;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 import cn.org.rapid_framework.util.ApplicationContextHolder;
 
+import com.boco.frame.login.pojo.OperatorInfo;
 import com.boco.frame.meta.dao.IbatisDAOHelper;
 import com.boco.zg.plan.base.dao.ZgTcarbomDao;
 import com.boco.zg.plan.base.dao.ZgTcarplanDao;
@@ -525,9 +527,9 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	 * 检查移单数量是否大于当前剩余的库存数量
 	 * @param obj
 	 */
-	public boolean checkStorageNum(ZgTorderbom zgTorderbom,ZgTorder order) {
+	public boolean checkStorageNum(ZgTorderPlanbom planbom) {
 //		if(Constants.OrderStatus.DEL.value().equals(order.getOrderState())){//订单是删除状态 则库存量可以全部使用
-			return zgTorderbomExDao.checkStorageNum(zgTorderbom);
+			return zgTorderbomExDao.checkStorageNum(planbom);
 //		}else {//能使用的数量是completenum-carnum
 //			return zgTorderbomExDao.checkStorageNum1(zgTorderbom);
 //		}
@@ -539,16 +541,16 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	 * @param targetOrderId
 	 * @return
 	 */
-	public boolean checktargetCarNum(ZgTorderbom zgTorderbom, String targetOrderId) {
-		return zgTorderbomExDao.checktargetCarNum(zgTorderbom,targetOrderId);
+	public boolean checktargetCarNum(ZgTorderPlanbom planbom, String targetOrderTaskId) {
+		return zgTorderbomExDao.checktargetCarNum(planbom,targetOrderTaskId);
 	}
 	
 	/**
 	 * 	改变源订单转单后的BOM数量
 	 * @param zgTorderbom
 	 */
-	public boolean updateSourceBomNum(ZgTorderbom zgTorderbom) {
-		return zgTorderbomExDao.updateSourceBomNum(zgTorderbom);
+	public boolean updateSourceBomNum(ZgTorderPlanbom planbom) {
+		return zgTorderbomExDao.updateSourceBomNum(planbom);
 	}
 
 	/**
@@ -566,112 +568,80 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	 *2//改变源订单转单后的BOM数量
 	 *3//改变目标订单的 bom数量
 	 * @param objcetJOSNs
-	 * @param targetOrderId
+	 * @param targetOrderTaskId
 	 */
-	public String bomMove(String objcetJOSNs, String targetOrderId) {
+	public String bomMove(String objcetJOSNs, String sourceOrderTaskId,String targetOrderTaskId,OperatorInfo operatorInfo) {
 		String msg="";
 		JSONArray josnArray = JSONArray.fromObject(objcetJOSNs);
 		ZgTorder order=null;
 		for(int i=0;i<josnArray.size();i++){
 			JSONObject jsonObject = (JSONObject)josnArray.get(i);
 			
-			
-			ZgTorderbom zgTorderbom = (ZgTorderbom)JSONObject.toBean(jsonObject, ZgTorderbom.class);  
-			if(order==null){
-				order=zgTorderExBo.getById(zgTorderbom.getOrderId());
-			}
+			ZgTorderPlanbom planbom = (ZgTorderPlanbom)JSONObject.toBean(jsonObject, ZgTorderPlanbom.class);  
+//			ZgTorderbom zgTorderbom = (ZgTorderbom)JSONObject.toBean(jsonObject, ZgTorderbom.class);  
+//			if(order==null){
+//				order=zgTorderExBo.getById(planbom.getOrderId());
+//			}
 			
 			//检查移单数量是否大于当前剩余的库存数量
-			if(!checkStorageNum(zgTorderbom,order)){
-				msg=msg+zgTorderbom.getIdnrk()+",";
+			if(!checkStorageNum(planbom)){
+				msg=msg+planbom.getIdnrk()+",";
 				continue;
 			}
+			
 			//检查移单后目标订单的领取数量是否大于需求数量
-			if(!checktargetCarNum(zgTorderbom,targetOrderId)){
-				msg=msg+zgTorderbom.getIdnrk()+",";
+			if(!checktargetCarNum(planbom,targetOrderTaskId)){
+				msg=msg+planbom.getIdnrk()+",";
 				continue;
 			}
+			
 			
 			
 			
 			//改变源订单转单后的BOM数量
-			if(zgTorderbom.getBomNum()>=2){//注：注原订单有2个以上bom的编号一样的，则逐一减数量
-				List<Map> bomList=zgTorderbomExDao.getBomListByOrderIdAndIdnrk(zgTorderbom.getIdnrk(),order);
-				Long moveNum=zgTorderbom.getMoveNum();
-				for(Map bom:bomList){
-					Long maxMoveNum=IbatisDAOHelper.getLongValue(bom,"MAXMOVENUM");
-					String cuid=IbatisDAOHelper.getStringValue(bom, "CUID");
-					if(maxMoveNum>=moveNum){
-						zgTorderPlanbomExDao.updateSourceBomNum(cuid,moveNum);
-						//计算源订单bom领料状态
-						ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(cuid);
-						doPrecessPlanbom(planbom);
-						break;
-					}else {
-						moveNum=moveNum-maxMoveNum;
-						zgTorderPlanbomExDao.updateSourceBomNum(cuid,maxMoveNum);
-						//计算源订单bom领料状态
-						ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(cuid);
-						doPrecessPlanbom(planbom);
-					}
-					
-				
-				}
-			}else {//只有一个bom，则直接减数量
-				updateSourceBomNum(zgTorderbom);
-				
-				//计算源订单bom领料状态
-				ZgTorderPlanbom planbom = zgTorderPlanbomExDao.getByOrderBomId(zgTorderbom.getCuid());
-				doPrecessPlanbom(planbom);
-			}
+			doMoveSourceBom(planbom);
 			
-			
-			
-		
+//			System.out.println(9/0);
 			
 			//改变目标订单的 bom为数量
 			//获取移单目标BOM列表
 			ZgTorder tartgTorder=new ZgTorder();
-			tartgTorder.setCuid(targetOrderId);
-			List<Map> bomList=zgTorderbomExDao.getTargetBomListByOrderIdAndIdnrk(zgTorderbom.getIdnrk(),tartgTorder);
-			if(bomList.size()==1){//目标bom只有一个，直接更新记录
-				updateTargetBomNum(zgTorderbom,targetOrderId);
-				
-				//计算目标订单bom领料状态
-				ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(IbatisDAOHelper.getStringValue(bomList.get(0), "CUID"));
-				doPrecessPlanbom(planbom);
-			}else {//目标bom有多个，逐条更新记录
-				Long moveNum=zgTorderbom.getMoveNum();
-				for(Map bom:bomList){
-					Long maxMoveNum=IbatisDAOHelper.getLongValue(bom,"MAXMOVENUM");
-					String cuid=IbatisDAOHelper.getStringValue(bom, "CUID");
+			tartgTorder.setCuid(targetOrderTaskId);
+			List<Map> bomList=zgTorderbomExDao.getTargetBomListByOrderIdAndIdnrk(planbom.getIdnrk(),targetOrderTaskId);
+			Long moveNum=planbom.getMoveNum();
+			for(Map bom:bomList){
+				Long maxMoveNum=IbatisDAOHelper.getLongValue(bom,"MAXMOVENUM");
+				String planbomId=IbatisDAOHelper.getStringValue(bom, "CUID");
+				if(moveNum>0){
+					Long realMoveNum=0l;
 					if(maxMoveNum>=moveNum){
-						zgTorderPlanbomExDao.updateTargetBomNum(cuid,moveNum);
-						//计算目标订单bom领料状态
-						ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(cuid);
-						doPrecessPlanbom(planbom);
-						break;
+						
+						realMoveNum=moveNum;
+						doMoveTargetBom(planbomId,moveNum);
+						moveNum=0l;
 					}else {
+						realMoveNum=maxMoveNum;
+						doMoveTargetBom(planbomId,maxMoveNum);
 						moveNum=moveNum-maxMoveNum;
-						zgTorderPlanbomExDao.updateTargetBomNum(cuid,maxMoveNum);
-						//计算目标订单bom领料状态
-						ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(cuid);
-						doPrecessPlanbom(planbom);
 					}
 					
-				
+					//记录移单记录
+					ZgTorderbomMoveLog bomMoveLog=new ZgTorderbomMoveLog();
+					bomMoveLog.setSourceOrderTaskId(sourceOrderTaskId);
+					bomMoveLog.setSourcePlanbomId(planbom.getCuid());
+					bomMoveLog.setTargetOrderTaskId(targetOrderTaskId);
+					bomMoveLog.setTargetPlanbom(planbomId);
+					bomMoveLog.setMoveNum(realMoveNum);
+					bomMoveLog.setCreateDate(Calendar.getInstance().getTime());
+					bomMoveLog.setCreateId(operatorInfo.getOperatorId());
+					bomMoveLog.setCreateUsername(operatorInfo.getUserName());
+					bomMoveLog.setOrgId(operatorInfo.getOrgId());
+					zgTorderbomMoveLogBo.save(bomMoveLog);
+					
 				}
 			}
 			
 			
-			//记录移单记录
-			ZgTorderbomMoveLog bomMoveLog=new ZgTorderbomMoveLog();
-			bomMoveLog.setTargetOrderId(targetOrderId);
-			bomMoveLog.setTargetIdnrk(zgTorderbom.getIdnrk());
-			bomMoveLog.setSourceOrderId(order.getCuid());
-			bomMoveLog.setSourceIdnrk(zgTorderbom.getIdnrk());
-			bomMoveLog.setMoveNum(zgTorderbom.getMoveNum());
-			zgTorderbomMoveLogBo.save(bomMoveLog);
 			
 			
 			
@@ -679,6 +649,49 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 		}
 		
 		return msg;
+	}
+
+	/**
+	 * @param cuid
+	 * @param moveNum
+	 */
+	private void doMoveTargetBom(String planbomID, Long moveNum) {
+		ZgTorderPlanbom tempPlanbom=zgTorderPlanbomBo.getById(planbomID);
+		tempPlanbom.setMoveNumIn(tempPlanbom.getMoveNumIn()+moveNum);
+		tempPlanbom.setPlanNum(tempPlanbom.getPlanNum()+moveNum);
+		tempPlanbom.setCompleteNum(tempPlanbom.getCompleteNum()+moveNum);
+		tempPlanbom.setStorageNum(tempPlanbom.getStorageNum()+moveNum);
+		if(tempPlanbom.getCompleteNum()>=tempPlanbom.getCarNum()){
+			tempPlanbom.setState(Constants.CarPlanStatus.DONE.value());
+		}else {
+			tempPlanbom.setState(Constants.CarPlanStatus.NEW.value());
+		}
+		zgTorderPlanbomBo.update(tempPlanbom);
+	}
+
+	/**
+	 * @param planbom
+	 * @return
+	 */
+	private void doMoveSourceBom(ZgTorderPlanbom planbom) {
+		ZgTorderPlanbom tempPlanbom=zgTorderPlanbomBo.getById(planbom.getCuid());
+		tempPlanbom.setMoveNum(tempPlanbom.getMoveNum()+planbom.getMoveNum());
+		tempPlanbom.setPlanNum(tempPlanbom.getPlanNum()-planbom.getMoveNum());
+		tempPlanbom.setCompleteNum(tempPlanbom.getCompleteNum()-planbom.getMoveNum());
+		tempPlanbom.setStorageNum(tempPlanbom.getStorageNum()-planbom.getMoveNum());
+		if(tempPlanbom.getWaitBackNum()>0){
+			if(tempPlanbom.getWaitBackNum()-planbom.getMoveNum()>=0){
+				tempPlanbom.setWaitBackNum(tempPlanbom.getWaitBackNum()-planbom.getMoveNum());
+			}else {
+				tempPlanbom.setWaitBackNum(0l);
+			}
+		}
+		if(tempPlanbom.getCompleteNum()>=tempPlanbom.getCarNum()){
+			tempPlanbom.setState(Constants.CarPlanStatus.DONE.value());
+		}else {
+			tempPlanbom.setState(Constants.CarPlanStatus.NEW.value());
+		}
+		zgTorderPlanbomBo.update(tempPlanbom);
 	}
 
 /**
