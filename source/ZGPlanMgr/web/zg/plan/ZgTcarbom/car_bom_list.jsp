@@ -185,7 +185,6 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 </head>
 <body>
 
-		
 		<div class="noprint">
      
 	<form id="carList" name="carList" action="<c:url value="/zg/plan/ZgTcarplan/loadCarList.do"/>" method="post" style="display: inline;" >
@@ -195,6 +194,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 	<input type="hidden" name="s_planType" value="${pageRequest.filters.planType }"/>
 	<input type="hidden" name="s_carId" value="${pageRequest.filters.carId }"/>
 	<input type="hidden" name="s_lgort" value="${pageRequest.filters.lgort }"/>
+	<input type="hidden" name="s_lgortName" value="${pageRequest.filters.lgortName }"/>
 	<input type="hidden"  name="storageUserId" id="storageUserId"/>
 	<input type="hidden"  name="s_aufnr" id="s_aufnr" value="${pageRequest.filters.aufnr }"/>
 	
@@ -203,8 +203,10 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 		<div id="grid-panel" class="grid-panel">
 			<div class="title" >装车计划</div>
 			<div class="toolbar">
-			<a href="javascript:deleteBom()" ><span><img src="<%=iconPath%>/ico_005.gif" />删除</span></a>
-			<a href="javascript:window.focus();printScreen('block');" ><span><img src="${ctx}/resources/css/default/images/icons/ico_008.gif" />打印</span></a>
+						<a href="javascript:deleteBom()"><span><img
+									src="<%=iconPath%>/ico_005.gif" />删除</span>
+						</a>
+						<a href="javascript:window.focus();printScreen('block');" ><span><img src="${ctx}/resources/css/default/images/icons/ico_008.gif" />打印</span></a>
 			
 			</div>
 			<div id="grid-data-panel" class="grid-data-panel">
@@ -231,7 +233,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 						<tr class="${trcss}">
 							<td width="3%" >
 							<c:if test="${empty obj.STORAGE_USER_ID}">
-								<input type="checkbox" name="items" value="count=${num}&cuid=${obj.CUID }&carNum=${obj.CAR_NUM }&planNum=${obj.PLAN_NUM }&orderBomId=${obj.ORDER_BOM_ID }&orderPlanbomId=${obj.ORDER_PLANBOM_ID }&rowNum=${num}&idnrk=${obj.IDNRK}&aufnr=${obj.AUFNR}&carPlanId=${pageRequest.filters.carPlanId}"/>
+								<input type="checkbox" name="items" value="count=${num}&cuid=${obj.CUID }&carNum=${obj.CAR_NUM }&planNum=${obj.PLAN_NUM }&orderBomId=${obj.ORDER_BOM_ID }&taskBomId=${obj.TASKBOM_ID }&orderPlanbomId=${obj.ORDER_PLANBOM_ID }&rowNum=${num}&idnrk=${obj.IDNRK}&aufnr=${obj.AUFNR}&carPlanId=${pageRequest.filters.carPlanId}"/>
 							</c:if>
 							</td>
 							<td align="left">${obj.IDNRK}</td>
@@ -247,9 +249,9 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 								<input type="hidden" name="carbomList[${num}].lgort" id="carbomList[${num}].lgort" value="${pageRequest.filters.lgort }"/>
 								<input type="hidden" name="carbomList[${num}].cuid" id="carbomList[${num}].lgort" value="${obj.CUID }"/>
 								<input type="hidden" name="carbomList[${num}].carId" id="carbomList[${num}].lgort" value="${pageRequest.filters.carId }"/>
-								<input type="hidden" name="carbomList[${num}].orderBomId" id="carbomList[${num}].lgort" value="${obj.ORDER_BOM_ID }"/>
+								<input type="hidden" name="carbomList[${num}].taskBomId" id="carbomList[${num}].lgort" value="${obj.TASKBOM_ID }"/>
 								<input type="hidden" name="carbomList[${num}].orderPlanbomId" id="carbomList[${num}].lgort" value="${obj.ORDER_PLANBOM_ID }"/>
-								<input type="hidden" name="carbomList[${num}].orderId" id="carbomList[${num}].lgort" value="${obj.ORDER_ID}"/>
+								<input type="hidden" name="carbomList[${num}].orderTaskId" id="carbomList[${num}].lgort" value="${obj.ORDERTASKID}"/>
 								<input type="hidden" name="carbomList[${num}].carPlanId" id="carbomList[${num}].lgort" value="${pageRequest.filters.carPlanId}"/>
 								<input type="hidden" name="carbomList[${num}].planType" id="carbomList[${num}].lgort" value="${pageRequest.filters.planType}"/>
 								<input type="hidden"  maxlength="13" onchange="checkPlanNum(this,'${num}')" size="8" name="carbomList[${num}].realNum" id="carbomList[${num}].realNum" value="${obj.CAR_PLAN_NUM}"/>

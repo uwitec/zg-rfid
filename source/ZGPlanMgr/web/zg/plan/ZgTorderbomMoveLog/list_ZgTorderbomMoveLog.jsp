@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@page import="com.boco.zg.plan.base.model.*" %>
+<%@page import="com.pz.modules.base.fwdep.model.*" %>
 <%@page import="cn.org.rapid_framework.page.*" %>
 <%@page import="java.util.*" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
@@ -80,11 +80,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<thead>
 						<tr>
 						<td class="tableHeader"  width="3%" ><input type='checkbox' onclick="setAllCheckboxState('items',this.checked)" ></td>
-							<td class="tableHeader" onclick="queryColumn(this,'t0_SOURCE_ORDER_ID')"  title="排序 sourceOrderId" ><%=ZgTorderbomMoveLog.ALIAS_SOURCE_ORDER_ID %><%=map.get("ec_image_t0_SOURCE_ORDER_ID")==null?"":map.get("ec_image_t0_SOURCE_ORDER_ID")%></td>
-							<td class="tableHeader" onclick="queryColumn(this,'t0_SOURCE_IDNRK')"  title="排序 sourceIdnrk" ><%=ZgTorderbomMoveLog.ALIAS_SOURCE_IDNRK %><%=map.get("ec_image_t0_SOURCE_IDNRK")==null?"":map.get("ec_image_t0_SOURCE_IDNRK")%></td>
-							<td class="tableHeader" onclick="queryColumn(this,'t0_TARGET_ORDER_ID')"  title="排序 targetOrderId" ><%=ZgTorderbomMoveLog.ALIAS_TARGET_ORDER_ID %><%=map.get("ec_image_t0_TARGET_ORDER_ID")==null?"":map.get("ec_image_t0_TARGET_ORDER_ID")%></td>
+							<td class="tableHeader" onclick="queryColumn(this,'t0_SOURCE_PLANBOM_ID')"  title="排序 sourcePlanbomId" ><%=ZgTorderbomMoveLog.ALIAS_SOURCE_PLANBOM_ID %><%=map.get("ec_image_t0_SOURCE_PLANBOM_ID")==null?"":map.get("ec_image_t0_SOURCE_PLANBOM_ID")%></td>
+							<td class="tableHeader" onclick="queryColumn(this,'t0_SOURCE_ORDER_TASK_ID')"  title="排序 sourceOrderTaskId" ><%=ZgTorderbomMoveLog.ALIAS_SOURCE_ORDER_TASK_ID %><%=map.get("ec_image_t0_SOURCE_ORDER_TASK_ID")==null?"":map.get("ec_image_t0_SOURCE_ORDER_TASK_ID")%></td>
+							<td class="tableHeader" onclick="queryColumn(this,'t0_TARGET_ORDER_TASK_ID')"  title="排序 targetOrderTaskId" ><%=ZgTorderbomMoveLog.ALIAS_TARGET_ORDER_TASK_ID %><%=map.get("ec_image_t0_TARGET_ORDER_TASK_ID")==null?"":map.get("ec_image_t0_TARGET_ORDER_TASK_ID")%></td>
+							<td class="tableHeader" onclick="queryColumn(this,'t0_TARGET_PLANBOM')"  title="排序 targetPlanbom" ><%=ZgTorderbomMoveLog.ALIAS_TARGET_PLANBOM %><%=map.get("ec_image_t0_TARGET_PLANBOM")==null?"":map.get("ec_image_t0_TARGET_PLANBOM")%></td>
 							<td class="tableHeader" onclick="queryColumn(this,'t0_MOVE_NUM')"  title="排序 moveNum" ><%=ZgTorderbomMoveLog.ALIAS_MOVE_NUM %><%=map.get("ec_image_t0_MOVE_NUM")==null?"":map.get("ec_image_t0_MOVE_NUM")%></td>
-							<td class="tableHeader" onclick="queryColumn(this,'t0_TARGET_IDNRK')"  title="排序 targetIdnrk" ><%=ZgTorderbomMoveLog.ALIAS_TARGET_IDNRK %><%=map.get("ec_image_t0_TARGET_IDNRK")==null?"":map.get("ec_image_t0_TARGET_IDNRK")%></td>
+							<td class="tableHeader" onclick="queryColumn(this,'t0_CREATE_ID')"  title="排序 createId" ><%=ZgTorderbomMoveLog.ALIAS_CREATE_ID %><%=map.get("ec_image_t0_CREATE_ID")==null?"":map.get("ec_image_t0_CREATE_ID")%></td>
+							<td class="tableHeader" onclick="queryColumn(this,'t0_CREATE_DATE')"  title="排序 createDate" ><%=ZgTorderbomMoveLog.ALIAS_CREATE_DATE %><%=map.get("ec_image_t0_CREATE_DATE")==null?"":map.get("ec_image_t0_CREATE_DATE")%></td>
+							<td class="tableHeader" onclick="queryColumn(this,'t0_CREATE_USERNAME')"  title="排序 createUsername" ><%=ZgTorderbomMoveLog.ALIAS_CREATE_USERNAME %><%=map.get("ec_image_t0_CREATE_USERNAME")==null?"":map.get("ec_image_t0_CREATE_USERNAME")%></td>
 							<td class="tableHeader" >操作</td>
 						</tr>
 					</thead>
@@ -96,11 +99,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<td width="3%" >
 								<input type="checkbox" name="items" value="id=${obj.cuid}&"/>
 							</td>
-							<td><a onclick="javascript:showObject('${obj.sourceOrderId}','ZG_T_ORDER','${obj.sourceOrderId_related.relatedBmClassId}','zg/plan');return false;" href="#">${obj.sourceOrderId_related.value}</a></td>
-							<td>${obj.sourceIdnrk}</td>
-							<td><a onclick="javascript:showObject('${obj.targetOrderId}','ZG_T_ORDER','${obj.targetOrderId_related.relatedBmClassId}','zg/plan');return false;" href="#">${obj.targetOrderId_related.value}</a></td>
+							<td>${obj.sourcePlanbomId}</td>
+							<td>${obj.sourceOrderTaskId}</td>
+							<td>${obj.targetOrderTaskId}</td>
+							<td>${obj.targetPlanbom}</td>
 							<td>${obj.moveNum}</td>
-							<td>${obj.targetIdnrk}</td>
+							<td><a onclick="javascript:showObject('${obj.createId}','FW_EMPLOYEE','${obj.createId_related.relatedBmClassId}','zg/plan');return false;" href="#">${obj.createId_related.value}</a></td>
+							<td>${obj.createDateString}</td>
+							<td>${obj.createUsername}</td>
 							<td>
 								<a attr="viewLink" href="javascript:" onclick="view('${obj.cuid}&')"/>查看</a>&nbsp;&nbsp;&nbsp;
 								<a attr="viewLink" href="javascript:" onclick="edit('${obj.cuid}&')"/>修改</a>&nbsp;&nbsp;&nbsp;
@@ -109,7 +115,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</c:forEach>
 					
 						<tr>
-							<td colspan="8" >
+							<td colspan="11" >
 								<%@include file="/frame/default/ux/pagebar.jsp" %>
 							</td>
 						</tr>

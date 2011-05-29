@@ -67,7 +67,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 			<input type="hidden" name="s_pxDate" value="${param.pxDate}"/>
 			<input type="hidden" name="viewModel" value="${param.viewModel }"/>
            	<input type="hidden" id="s_isCurDay" name="s_isCurDay" value="${param.isCurDay }" />
-           	<input type="text" id="s_px" name="s_px" value="1" />
+           	<input type="hidden" id="s_px" name="s_px" value="1" />
            	<input type="hidden" id="psbhChange" name="psbhChange" value="1" />
             </form>
         </td></tr></table>

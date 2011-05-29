@@ -110,9 +110,9 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 			
 		}
 		
-		function setTitle(obj,lockNum,bomId){
+		function setTitle(obj,lockNum,taskBomId){
 			if(lockNum>0){
-				ZgTcarplanDwrAction.getLockUser(bomId,function(data){
+				ZgTcarplanDwrAction.getLockUser(taskBomId,function(data){
 					if(data.length>0){
 						obj.title="提示："+data+"　用户锁定装车计划！";
 					}
@@ -191,7 +191,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 								 	<c:set var="validNumAll" value="${validNumAll + obj1.validNum}"/>
 								 	<c:set var="carCountAll" value="${carCountAll + obj1.carCount}"/>
 								 		 	<c:set var="waitBackNumAll" value="${waitBackNumAll + obj1.waitBackNum}"/>
-								 	<c:set var="bomCuid" value="${bomCuid}${obj1.cuid },"></c:set>
+								 	<c:set var="bomCuid" value="${bomCuid}${obj1.taskBomId },"></c:set>
 								</c:forEach>
 							<c:set var="percent" value="${completeAll/mengeAll}"></c:set>
 							<td>${orderbom.key.idnrk}</td>
@@ -263,7 +263,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 							<c:set var="trcss" value="${index%2==0?'odd':'even'}"/>
 							<c:choose>
 								<c:when test="${count==1}">
-									<tr class="${trcss}" onMouseOver="setTitle(this,${obj.menge-obj.completeNum-obj.validNum },'${obj.cuid }')">
+									<tr class="${trcss}" onMouseOver="setTitle(this,${obj.menge-obj.completeNum-obj.validNum },'${obj.taskBomId }')">
 								</c:when>
 								<c:otherwise>
 									<tr class="${trcss}" attr="${orderbom.key.idnrk}">
@@ -279,7 +279,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 									<td>
 									
 									<c:if test="${ obj.percent<1&&(obj.carNum-obj.planNum>0)}">
-									 <a href="javascript:loadCar('${pageRequest.filters.groupId}','${obj.cuid }','${obj.carCode }','${obj.carId }','${obj.lgortName}','${obj.lgort }','${obj.aufnr }','${obj.maktx1 }')"><img src="<%=iconPath%>/btn_hd_exit.gif" /><a>
+									 <a href="javascript:loadCar('${pageRequest.filters.groupId}','${obj.taskBomId }','${obj.carCode }','${obj.carId }','${obj.lgortName}','${obj.lgort }','${obj.aufnr }','${obj.maktx1 }')"><img src="<%=iconPath%>/btn_hd_exit.gif" /><a>
 									</c:if>
 										
 
