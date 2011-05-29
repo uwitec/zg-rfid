@@ -597,12 +597,12 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 			Hashtable params = HttpUtils.parseQueryString(items[i]);
 			
 			String cuid=(java.lang.String)params.get("cuid");
-			String orderBomId=(java.lang.String)params.get("orderBomId");
+			String taskBomId=(java.lang.String)params.get("taskBomId");
 			String orderPlanbomId=(java.lang.String)params.get("orderPlanbomId");
 			carPlanId=(String)params.get("carPlanId");
 			
 			if(StringHelper.isEmpty(cuid)){
-				bomCuids=bomCuids.replace(orderBomId,"");
+				bomCuids=bomCuids.replace(taskBomId,"");
 				
 			}else {
 				zgTcarplanExBo.deleteBom(cuid,orderPlanbomId);
@@ -691,6 +691,10 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 					if(aufnr.equals(sup.getAufnr())&&idnrk.equals(sup.getIdnrk())){
 						tempList.add(sup);
 					}
+				}
+				
+				if(tempList.size()==1){//只有一个供应商，则默认该供应商数量和领料数量一样
+					tempList.get(0).setCarNum(bom.get("MAX_VALUE")==null?0l:Long.parseLong(bom.get("CAR_PLAN_NUM").toString()));
 				}
 				bom.put("subList", tempList);
 			}
@@ -1004,7 +1008,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		}
 		
 		//判断该领料是否暂停
-		boolean pause=zgTcarplanExBo.checkPlanHasPause(carPlanId);
+		String pause=zgTcarplanExBo.checkPlanHasPause(carPlanId);
 		getRequest().setAttribute("pause", pause);
 		
 		getRequest().setAttribute("carId", carId);
@@ -1171,7 +1175,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		
 		bomCuids="";
 		for(Map bom:newBomList){
-			bomCuids=bomCuids+IbatisDAOHelper.getStringValue(bom, "ORDER_BOM_ID")+",";
+			bomCuids=bomCuids+IbatisDAOHelper.getStringValue(bom, "TASKBOM_ID")+",";
 		}
 		if(bomCuids.endsWith(",")){
 			bomCuids=bomCuids.substring(0,bomCuids.length()-1);

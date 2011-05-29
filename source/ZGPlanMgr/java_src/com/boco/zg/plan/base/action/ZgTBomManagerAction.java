@@ -658,7 +658,7 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	public void save() throws IOException {
 		List<Map> bol=(List<Map>) this.getSession().getAttribute("bol");
 	    String update=this.getRequest().getParameter("update");
-	    ZgTorder zgTorder=zgTorderBo.getById(zgTorderPlan.getOrderId());
+	    ZgTorder zgTorder=zgTorderBo.getById("");
 		
 	    if(isNullOrEmptyString(update)){
 	    	ZgTorderPlanGroup zgTorderPlanGroup=new ZgTorderPlanGroup();
@@ -705,7 +705,7 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 		
 
 	    String update=this.getRequest().getParameter("update");// 区别是新建的时候提交，还是编辑的时候提交
-		ZgTorder zgTorder=zgTorderBo.getById(zgTorderPlan.getOrderId());
+		ZgTorder zgTorder=zgTorderBo.getById("");
 	    if(isNullOrEmptyString(update)){
 			zgTorderPlan.setState(Constants.ChangePlanStatus.WAITAUDITING.value());
 //			zgTorderPlan.setPlanType(Constants.OrderPlanType.CHANGE.value());

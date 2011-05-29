@@ -152,13 +152,13 @@
     </delete>
     
     <select id="findOrderNOListByGroupIds" resultClass="java.util.HashMap">
-		select zto.*,oup.order_plan_id  from zg_t_group_order_plan oup,
-		zg_t_order_plan plan,zg_t_order zto
+		select task.*,oup.order_plan_id  from zg_t_group_order_plan oup,
+		zg_t_order_plan plan,zg_t_order_task task
 		where oup.group_id in 
 		<iterate property="groupIds" conjunction="," open="(" close=")" >
 		      		 #groupIds[]#
 		 </iterate>
 		and oup.order_plan_id=plan.cuid
-		and plan.order_id=zto.cuid
+		and plan.order_task_id=task.cuid
     </select>
 </sqlMap>

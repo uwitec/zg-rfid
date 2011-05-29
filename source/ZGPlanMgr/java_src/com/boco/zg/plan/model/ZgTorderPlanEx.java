@@ -77,7 +77,7 @@ public class ZgTorderPlanEx extends BaseEntity{
 	}
 
 	public void setMerge(Long merge) {
-		if(merge>0){
+		if(merge!=null&&merge>0){
 			this.merge =true;
 		}else {
 			this.merge=false;

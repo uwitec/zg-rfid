@@ -70,14 +70,6 @@ public class ZgTorderExDao extends ZgTorderDao{
 	}
 
 
-	/**
-	 * 获取订单号的生产厂
-	 * @param orderId
-	 * @return
-	 */
-	public List<String> getPlantListByOrderId(String orderId) {
-		return getSqlMapClientTemplate().queryForList("ZgTorderEx.getPlantListByOrderId",orderId);
-	}
 
 
 	/**

@@ -103,13 +103,14 @@ public class ZgTorderbomTempAllDao extends BaseIbatisDao<ZgTorderbomTempAll,java
 	 * @param plant
 	 * @param flag
 	 */
-	public List<ZgTorderbomTempAll> getForEditBomList(int batchNo, String aufnr, String arbpl,String plant, int flag) {
+	public List<ZgTorderbomTempAll> getForEditBomList(int batchNo, String aufnr, String arbpl,String plant, int flag,String sortf) {
 		Map<String,Object> params=new HashMap<String , Object>();
 		params.put("batchNo", batchNo);
 		params.put("aufnr", aufnr);
 		params.put("arbpl", arbpl);
 		params.put("plant", plant);
 		params.put("flag", flag);
+		params.put("sortf", sortf);
 		return getSqlMapClientTemplate().queryForList("ZgTorderbomTempAll.getForEditBomList",params);
 	}
 
@@ -138,6 +139,29 @@ public class ZgTorderbomTempAllDao extends BaseIbatisDao<ZgTorderbomTempAll,java
 	 */
 	public void updateOrderBom(ZgTorderbomTempAll tempBom) {
 		getSqlMapClientTemplate().update("ZgTorderbomTempAll.updateZG_T_ORDERBOMBYIDNRKPOSNR",tempBom);
+	}
+
+	/**
+	 * @param batchNo
+	 * @param aufnr
+	 * @param flag
+	 * @return
+	 */
+	public List<ZgTorderbomTempAll> getForPcEditBomList(int batchNo,
+			String aufnr, int flag) {
+		Map<String,Object> params=new HashMap<String , Object>();
+		params.put("batchNo", batchNo);
+		params.put("aufnr", aufnr);
+		params.put("flag", flag);
+		return getSqlMapClientTemplate().queryForList("ZgTorderbomTempAll.getForPcEditBomList",params);
+	}
+
+	/**
+	 * @param tempBom
+	 */
+	public void updateOrderBomForPc(ZgTorderbomTempAll tempBom) {
+		getSqlMapClientTemplate().update("ZgTorderbomTempAll.updateZG_T_ORDERBOMBYIDNRKPOSNRForPc",tempBom);
+		
 	}
 
 }

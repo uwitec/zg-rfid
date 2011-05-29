@@ -84,9 +84,9 @@ public class ZgTorderPlan extends BaseEntity {
 	//columns START
 	private java.lang.String cuid;
 	private java.lang.String labelCn;
-	private java.lang.String orderId_labelCn;
-	private RelatedModel orderId_related = new RelatedModel("ZG_T_ORDER","CUID","LABEL_CN");
-	private java.lang.String orderId;
+	private java.lang.String orderTaskId_labelCn;
+	private String orderTaskId;
+	private RelatedModel orderTaskId_related = new RelatedModel("ZG_T_ORDER","CUID","LABEL_CN");
 	private java.lang.String departmenuId_labelCn;
 	private RelatedModel departmenuId_related = new RelatedModel("FW_ORGANIZATION","CUID","LABEL_CN");
 	private java.lang.String departmenuId;
@@ -112,7 +112,7 @@ public class ZgTorderPlan extends BaseEntity {
 	private java.lang.String backReason;
 	private String backZbz;
 	private String zbz;
-	private String orderTaskId;
+	
 	public String getExtend1() {
 		return extend1;
 	}
@@ -135,28 +135,6 @@ public class ZgTorderPlan extends BaseEntity {
 	
 	public void setLabelCn(java.lang.String value) {
 		this.labelCn = value;
-	}
-	public java.lang.String getOrderId_labelCn() {
-		return this.orderId_labelCn;
-	}
-	
-	public void setOrderId_labelCn(java.lang.String value) {
-		this.orderId_labelCn = value;
-	}
-	
-	public RelatedModel getOrderId_related() {
-		return this.orderId_related;
-	}
-	
-	public void setOrderId_related(RelatedModel value) {
-		this.orderId_related = value;
-	}
-	public java.lang.String getOrderId() {
-		return this.orderId;
-	}
-	
-	public void setOrderId(java.lang.String value) {
-		this.orderId = value;
 	}
 	public java.lang.String getDepartmenuId_labelCn() {
 		return this.departmenuId_labelCn;
@@ -305,7 +283,7 @@ public class ZgTorderPlan extends BaseEntity {
 		return new ToStringBuilder(this)
 			.append("Cuid",getCuid())
 			.append("LabelCn",getLabelCn())
-			.append("OrderId",getOrderId())
+			.append("OrderId",getOrderTaskId())
 			.append("DepartmenuId",getDepartmenuId())
 			.append("UserId",getUserId())
 			.append("PlanDate",getPlanDate())
@@ -320,7 +298,7 @@ public class ZgTorderPlan extends BaseEntity {
 		return new HashCodeBuilder()
 			.append(getCuid())
 			.append(getLabelCn())
-			.append(getOrderId())
+			.append(getOrderTaskId())
 			.append(getDepartmenuId())
 			.append(getUserId())
 			.append(getPlanDate())
@@ -338,7 +316,7 @@ public class ZgTorderPlan extends BaseEntity {
 		return new EqualsBuilder()
 			.append(getCuid(),other.getCuid())
 			.append(getLabelCn(),other.getLabelCn())
-			.append(getOrderId(),other.getOrderId())
+			.append(getOrderTaskId(),other.getOrderTaskId())
 			.append(getDepartmenuId(),other.getDepartmenuId())
 			.append(getUserId(),other.getUserId())
 			.append(getPlanDate(),other.getPlanDate())

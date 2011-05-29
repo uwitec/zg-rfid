@@ -84,6 +84,11 @@
 		 where CUID = #cuid#
 	</delete>
 	
+	<delete id="deleteTaskBomByOrderBomId" parameterClass="java.util.HashMap">
+		 delete from zg_t_order_taskbom t where t.order_bom_id='$bomId$'
+	</delete>
+	
+	
 	<select id="getById" resultMap="zgTorderTaskbomResult">
 	    select <include refid="commonColumns"/>
 	    <![CDATA[

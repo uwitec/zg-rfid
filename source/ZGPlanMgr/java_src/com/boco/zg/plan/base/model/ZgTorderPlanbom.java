@@ -87,9 +87,9 @@ public class ZgTorderPlanbom extends BaseEntity {
 	private java.lang.String orderBomId_labelCn;
 	private RelatedModel orderBomId_related = new RelatedModel("ZG_T_ORDERBOM","CUID","LABEL_CN");
 	private java.lang.String orderBomId;
-	private java.lang.String orderId_labelCn;
-	private RelatedModel orderId_related = new RelatedModel("ZG_T_ORDER","CUID","LABEL_CN");
-	private java.lang.String orderId;
+	private java.lang.String orderTaskId_labelCn;
+	private RelatedModel orderTaskId_related = new RelatedModel("ZG_T_ORDER","CUID","LABEL_CN");
+	private java.lang.String orderTaskId;
 	private java.lang.String departmentId_labelCn;
 	private RelatedModel departmentId_related = new RelatedModel("FW_ORGANIZATION","CUID","LABEL_CN");
 	private java.lang.String departmentId;
@@ -116,7 +116,11 @@ public class ZgTorderPlanbom extends BaseEntity {
 	private Long waitBackNum;
 	private Long storageNum;
 	private String taskBomId;
-	private String orderTaskId;
+	private RelatedModel taskBomId_related = new RelatedModel("ZG_T_ORDER_TASK_BOM","CUID","LABEL_CN");
+	private java.lang.String taskBomId_labelCn;
+	private java.lang.String idnrk;
+	private String posnr;
+	private String orderId;
 	
 	//columns END
 	public java.lang.String getCuid() {
@@ -163,28 +167,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 	public void setOrderBomId(java.lang.String value) {
 		this.orderBomId = value;
 	}
-	public java.lang.String getOrderId_labelCn() {
-		return this.orderId_labelCn;
-	}
 	
-	public void setOrderId_labelCn(java.lang.String value) {
-		this.orderId_labelCn = value;
-	}
-	
-	public RelatedModel getOrderId_related() {
-		return this.orderId_related;
-	}
-	
-	public void setOrderId_related(RelatedModel value) {
-		this.orderId_related = value;
-	}
-	public java.lang.String getOrderId() {
-		return this.orderId;
-	}
-	
-	public void setOrderId(java.lang.String value) {
-		this.orderId = value;
-	}
 	public java.lang.String getDepartmentId_labelCn() {
 		return this.departmentId_labelCn;
 	}
@@ -340,7 +323,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 			.append("Cuid",getCuid())
 			.append("LabelCn",getLabelCn())
 			.append("OrderBomId",getOrderBomId())
-			.append("OrderId",getOrderId())
+			.append("OrderId",getOrderTaskId())
 			.append("DepartmentId",getDepartmentId())
 			.append("UserId",getUserId())
 			.append("PlanDate",getPlanDate())
@@ -359,7 +342,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 			.append(getCuid())
 			.append(getLabelCn())
 			.append(getOrderBomId())
-			.append(getOrderId())
+			.append(getOrderTaskId())
 			.append(getDepartmentId())
 			.append(getUserId())
 			.append(getPlanDate())
@@ -381,7 +364,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 			.append(getCuid(),other.getCuid())
 			.append(getLabelCn(),other.getLabelCn())
 			.append(getOrderBomId(),other.getOrderBomId())
-			.append(getOrderId(),other.getOrderId())
+			.append(getOrderTaskId(),other.getOrderTaskId())
 			.append(getDepartmentId(),other.getDepartmentId())
 			.append(getUserId(),other.getUserId())
 			.append(getPlanDate(),other.getPlanDate())
@@ -404,7 +387,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 	}
 
 	public Long getMoveNum() {
-		return moveNum;
+		return moveNum==null?0l:moveNum;
 	}
 
 	public void setMoveNum(Long moveNum) {
@@ -428,7 +411,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 	}
 
 	public Long getMoveNumIn() {
-		return moveNumIn;
+		return moveNumIn==null?0l:moveNumIn;
 	}
 
 	public void setMoveNumIn(Long moveNumIn) {
@@ -444,7 +427,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 	}
 
 	public Long getStorageNum() {
-		return storageNum;
+		return storageNum==null?0l:storageNum;
 	}
 
 	public void setStorageNum(Long storageNum) {
@@ -465,6 +448,104 @@ public class ZgTorderPlanbom extends BaseEntity {
 
 	public void setOrderTaskId(String orderTaskId) {
 		this.orderTaskId = orderTaskId;
+	}
+
+	/**
+	 * @return the taskBomId_labelCn
+	 */
+	public java.lang.String getTaskBomId_labelCn() {
+		return taskBomId_labelCn;
+	}
+
+	/**
+	 * @param taskBomId_labelCn the taskBomId_labelCn to set
+	 */
+	public void setTaskBomId_labelCn(java.lang.String taskBomId_labelCn) {
+		this.taskBomId_labelCn = taskBomId_labelCn;
+	}
+
+	/**
+	 * @return the taskBomId_related
+	 */
+	public RelatedModel getTaskBomId_related() {
+		return taskBomId_related;
+	}
+
+	/**
+	 * @param taskBomId_related the taskBomId_related to set
+	 */
+	public void setTaskBomId_related(RelatedModel taskBomId_related) {
+		this.taskBomId_related = taskBomId_related;
+	}
+
+	/**
+	 * @return the orderTaskId_labelCn
+	 */
+	public java.lang.String getOrderTaskId_labelCn() {
+		return orderTaskId_labelCn;
+	}
+
+	/**
+	 * @param orderTaskId_labelCn the orderTaskId_labelCn to set
+	 */
+	public void setOrderTaskId_labelCn(java.lang.String orderTaskId_labelCn) {
+		this.orderTaskId_labelCn = orderTaskId_labelCn;
+	}
+
+	/**
+	 * @return the orderTaskId_related
+	 */
+	public RelatedModel getOrderTaskId_related() {
+		return orderTaskId_related;
+	}
+
+	/**
+	 * @param orderTaskId_related the orderTaskId_related to set
+	 */
+	public void setOrderTaskId_related(RelatedModel orderTaskId_related) {
+		this.orderTaskId_related = orderTaskId_related;
+	}
+
+	/**
+	 * @return the idnrk
+	 */
+	public java.lang.String getIdnrk() {
+		return idnrk;
+	}
+
+	/**
+	 * @param idnrk the idnrk to set
+	 */
+	public void setIdnrk(java.lang.String idnrk) {
+		this.idnrk = idnrk;
+	}
+
+	/**
+	 * @return the posnr
+	 */
+	public String getPosnr() {
+		return posnr;
+	}
+
+	/**
+	 * @param posnr the posnr to set
+	 */
+	public void setPosnr(String posnr) {
+		this.posnr = posnr;
+	}
+
+	/**
+	 * @return the orderId
+	 */
+	public String getOrderId() {
+		return orderId;
+	}
+
+	/**
+	 * @param orderId the orderId to set
+	 */
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
 	}
 
 }

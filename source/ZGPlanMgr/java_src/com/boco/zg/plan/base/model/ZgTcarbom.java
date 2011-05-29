@@ -38,8 +38,8 @@ public class ZgTcarbom extends BaseEntity {
 	
 	//columns START
 	private java.lang.String cuid;
-	private java.lang.String orderBomId;
-	private java.lang.String orderId;
+	private java.lang.String taskBomId;
+	private java.lang.String orderTaskId;
 	private java.lang.Long planNum;
 	private java.lang.Long realNum;
 	private java.lang.String labelCn;
@@ -59,20 +59,6 @@ public class ZgTcarbom extends BaseEntity {
 	
 	public void setCuid(java.lang.String value) {
 		this.cuid = value;
-	}
-	public java.lang.String getOrderBomId() {
-		return this.orderBomId;
-	}
-	
-	public void setOrderBomId(java.lang.String value) {
-		this.orderBomId = value;
-	}
-	public java.lang.String getOrderId() {
-		return this.orderId;
-	}
-	
-	public void setOrderId(java.lang.String value) {
-		this.orderId = value;
 	}
 	public java.lang.Long getPlanNum() {
 		return this.planNum;
@@ -113,8 +99,8 @@ public class ZgTcarbom extends BaseEntity {
 	public String toString() {
 		return new ToStringBuilder(this)
 			.append("Cuid",getCuid())
-			.append("OrderBomId",getOrderBomId())
-			.append("OrderId",getOrderId())
+			.append("OrderBomId",getTaskBomId())
+			.append("OrderId",getOrderTaskId())
 			.append("PlanNum",getPlanNum())
 			.append("RealNum",getRealNum())
 			.append("LabelCn",getLabelCn())
@@ -126,8 +112,8 @@ public class ZgTcarbom extends BaseEntity {
 	public int hashCode() {
 		return new HashCodeBuilder()
 			.append(getCuid())
-			.append(getOrderBomId())
-			.append(getOrderId())
+			.append(getTaskBomId())
+			.append(getOrderTaskId())
 			.append(getPlanNum())
 			.append(getRealNum())
 			.append(getLabelCn())
@@ -142,8 +128,8 @@ public class ZgTcarbom extends BaseEntity {
 		ZgTcarbom other = (ZgTcarbom)obj;
 		return new EqualsBuilder()
 			.append(getCuid(),other.getCuid())
-			.append(getOrderBomId(),other.getOrderBomId())
-			.append(getOrderId(),other.getOrderId())
+			.append("OrderBomId",getTaskBomId())
+			.append("OrderId",getOrderTaskId())
 			.append(getPlanNum(),other.getPlanNum())
 			.append(getRealNum(),other.getRealNum())
 			.append(getLabelCn(),other.getLabelCn())
@@ -182,5 +168,33 @@ public class ZgTcarbom extends BaseEntity {
 
 	public void setCarDate(java.util.Date carDate) {
 		this.carDate = carDate;
+	}
+
+	/**
+	 * @return the taskBomId
+	 */
+	public java.lang.String getTaskBomId() {
+		return taskBomId;
+	}
+
+	/**
+	 * @param taskBomId the taskBomId to set
+	 */
+	public void setTaskBomId(java.lang.String taskBomId) {
+		this.taskBomId = taskBomId;
+	}
+
+	/**
+	 * @return the orderTaskId
+	 */
+	public java.lang.String getOrderTaskId() {
+		return orderTaskId;
+	}
+
+	/**
+	 * @param orderTaskId the orderTaskId to set
+	 */
+	public void setOrderTaskId(java.lang.String orderTaskId) {
+		this.orderTaskId = orderTaskId;
 	}
 }

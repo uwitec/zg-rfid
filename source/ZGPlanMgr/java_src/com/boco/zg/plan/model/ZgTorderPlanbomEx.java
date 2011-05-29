@@ -52,6 +52,7 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	private java.lang.String state;
 	private Long planNum;
 	private Long completeNum;
+	private String taskBomId;
 	
 	private Long waitBackNum;
 	
@@ -66,6 +67,7 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	
 	private String carId;
 	private Long carnum;
+	private String orderTaskId;
 	
 	/*
 	 * wjz，领料组，领料人
@@ -335,6 +337,30 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	}
 	public void setWaitBackNum(Long waitBackNum) {
 		this.waitBackNum = waitBackNum;
+	}
+	/**
+	 * @return the taskBomId
+	 */
+	public String getTaskBomId() {
+		return taskBomId;
+	}
+	/**
+	 * @param taskBomId the taskBomId to set
+	 */
+	public void setTaskBomId(String taskBomId) {
+		this.taskBomId = taskBomId;
+	}
+	/**
+	 * @return the orderTaskId
+	 */
+	public String getOrderTaskId() {
+		return orderTaskId;
+	}
+	/**
+	 * @param orderTaskId the orderTaskId to set
+	 */
+	public void setOrderTaskId(String orderTaskId) {
+		this.orderTaskId = orderTaskId;
 	}
 	
 }

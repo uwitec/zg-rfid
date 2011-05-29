@@ -625,7 +625,7 @@
 	        		ta.LGORT as t0_LGORT,
 	        		ta.ZBZ as t0_ZBZ,
 	        		ta.ZRZQD as t0_ZRZQD,
-	        		ta.CUID as t0_CUID,
+	        		bom.CUID as t0_CUID,
 	        		ta.IDNRK as t0_IDNRK,
 	        		ta.ORDER_ID as t0_ORDER_ID,
 	        		ta.AUFNR as t0_AUFNR,
@@ -652,7 +652,32 @@
    and ta.aufnr = bom.aufnr(+)
    and ta.batch_no = '$batchNo$'
    and exists (select 1
-          from (select ZDTYL,
+          from (
+                select t.ZDTYL,
+                       t.MENGE,
+                       t.MATKL,
+                       t.LGORT,
+                       t.ZRZQD,
+                       t.IDNRK,
+                       t.aufnr,
+                       t.ARBPL,
+                       t.MATNR,
+                       t.MSEHL1,
+                       t.MSEHL2,
+                       t.MATNR1,
+                       t.posnr
+                  from ZG_T_ORDERBOM_TEMP_ALL t,zg_t_orderbom orderbom
+                 where t.batch_no = '$batchNo$'
+                   and t.operate_type is null
+                   and t.aufnr = '$aufnr$'
+                   and t.arbpl = '$arbpl$'
+                   and t.plant = '$plant$'
+                    and t.aufnr=orderbom.aufnr
+                   and t.idnrk=orderbom.idnrk
+                   and nvl(t.posnr,'null')=nvl(orderbom.posnr,'null')
+                   and orderbom.sortf='$sortf$'
+               minus    
+                  select ZDTYL,
                        taskbom.menge,
                        MATKL,
                        LGORT,
@@ -672,27 +697,7 @@
                    and taskbom.order_bom_id = orderbom.cuid
                    and task.aufnr = '$aufnr$'
                    and task.arbpl = '$arbpl$'
-                   and task.plant = '$plant$'
-                minus
-                select ZDTYL,
-                       MENGE,
-                       MATKL,
-                       LGORT,
-                       ZRZQD,
-                       IDNRK,
-                       aufnr,
-                       ARBPL,
-                       MATNR,
-                       MSEHL1,
-                       MSEHL2,
-                       MATNR1,
-                       posnr
-                  from ZG_T_ORDERBOM_TEMP_ALL t
-                 where t.batch_no = '$batchNo$'
-                   and t.operate_type is null
-                   and t.aufnr = '$aufnr$'
-                   and t.arbpl = '$arbpl$'
-                   and t.plant = '$plant$') m
+                   and task.plant = '$plant$' ) m
         
          where ta.idnrk = m.idnrk
            and ta.aufnr = m.aufnr
@@ -701,18 +706,94 @@
            and ta.arbpl = m.arbpl)
     </select>
     
+    <select id="getForPcEditBomList" resultMap="zgTorderbomTempAllResult">
+          select ta.MENGE         as t0_MENGE,
+       ta.MATKL         as t0_MATKL,
+       ta.SORTF         as t0_SORTF,
+       ta.LGORT         as t0_LGORT,
+       ta.ZBZ           as t0_ZBZ,
+       ta.ZRZQD         as t0_ZRZQD,
+       bom.CUID         as t0_CUID,
+       ta.IDNRK         as t0_IDNRK,
+       ta.ORDER_ID      as t0_ORDER_ID,
+       ta.AUFNR         as t0_AUFNR,
+       ta.ARBPL         as t0_ARBPL,
+       ta.MATNR         as t0_MATNR,
+       ta.MAKTX1        as t0_MAKTX1,
+       ta.MAKTX2        as t0_MAKTX2,
+       ta.MSEHL1        as t0_MSEHL1,
+       ta.MSEHL2        as t0_MSEHL2,
+       ta.LABEL_CN      as t0_LABEL_CN,
+       ta.SORTF_H       as t0_SORTF_H,
+       ta.MATNR1        as t0_MATNR1,
+       ta.STORAGE_STATE as t0_STORAGE_STATE,
+       ta.STORAGE_NUM   as t0_STORAGE_NUM,
+       ta.ZDTYL         as t0_ZDTYL,
+       ta.PLANT         as t0_PLANT,
+       ta.BATCH_NO      as t0_BATCH_NO,
+       ta.OPERATE_TYPE  as t0_OPERATE_TYPE,
+       ta.POSNR         as t0_POSNR,
+       ta.MATKL_SELF    as t0_MATKL_SELF
+  from zg_t_orderbom_temp_all ta, zg_t_orderbom bom
+ where ta.idnrk = bom.idnrk
+   and nvl(ta.posnr, 'null') = nvl(bom.posnr, 'null')
+   and ta.aufnr = bom.aufnr(+)
+      
+   and exists (select 1
+          from (
+                
+                select ZDTYL,
+                        orderbom.menge,
+                        MATKL,
+                        LGORT,
+                        ZRZQD,
+                        IDNRK,
+                        orderbom.aufnr,
+                        MATNR,
+                        MSEHL1,
+                        MSEHL2,
+                        MATNR1,
+                        posnr
+                  from ZG_T_ORDERBOM orderbom
+                 WHERE orderbom.aufnr = '$aufnr$'
+                
+                minus
+                select t.ZDTYL,
+                       t.MENGE,
+                       t.MATKL,
+                       t.LGORT,
+                       t.ZRZQD,
+                       t.IDNRK,
+                       t.aufnr,
+                       t.MATNR,
+                       t.MSEHL1,
+                       t.MSEHL2,
+                       t.MATNR1,
+                       t.posnr
+                  from ZG_T_ORDERBOM_TEMP_ALL t
+                 where t.batch_no = '$batchNo$'
+                   and t.operate_type is null
+                   and t.aufnr = '$aufnr$'
+                
+                ) m
+        
+         where ta.idnrk = m.idnrk
+           and ta.aufnr = m.aufnr
+           and nvl(ta.posnr, 'null') = nvl(m.posnr, 'null'))
+      
+		   and ta.batch_no = '$batchNo$'
+		   and ta.aufnr = '$aufnr$'
+    </select>
+    
      <update id="updateZG_T_ORDERBOMBYIDNRKPOSNR" parameterClass="zgTorderbomTempAll">
     <![CDATA[
         UPDATE ZG_T_ORDERBOM SET
 	        MATKL = #matkl# ,
-	        SORTF = #sortf# ,
 	        LGORT = #lgort# ,
 	        ZBZ = #zbz# ,
 	        ZRZQD = #zrzqd# ,
 	        IDNRK = #idnrk# ,
-	        ORDER_ID = #orderId# ,
 	        AUFNR = #aufnr# ,
-	        ARBPL = #arbpl# ,
 	        MATNR = #matnr# ,
 	        MAKTX1 = #maktx1# ,
 	        MAKTX2 = #maktx2# ,
@@ -721,10 +802,41 @@
 	        LABEL_CN = #labelCn# ,
 	        SORTF_H = #sortfH# ,
 	        MATNR1 = #matnr1# ,
-	        STORAGE_STATE = #storageState# ,
-	        STORAGE_NUM = #storageNum# ,
 	        ZDTYL = #zdtyl# ,
 	        POSNR = #posnr# 
+	    WHERE aufnr=#aufnr#
+	    and idnrk=#idnrk#
+	     ]]>
+	       <isNotEmpty prepend="AND" property="posnr">
+	       		posnr=#posnr#
+       		</isNotEmpty>   
+       		<isEmpty prepend="AND" property="posnr">
+	       		posnr is null
+       		</isEmpty>   
+				
+   
+    </update>
+    
+     <update id="updateZG_T_ORDERBOMBYIDNRKPOSNRForPc" parameterClass="zgTorderbomTempAll">
+    <![CDATA[
+        UPDATE ZG_T_ORDERBOM SET
+	        MATKL = #matkl# ,
+	        LGORT = #lgort# ,
+	        ZBZ = #zbz# ,
+	        ZRZQD = #zrzqd# ,
+	        IDNRK = #idnrk# ,
+	        AUFNR = #aufnr# ,
+	        MATNR = #matnr# ,
+	        MAKTX1 = #maktx1# ,
+	        MAKTX2 = #maktx2# ,
+	        MSEHL1 = #msehl1# ,
+	        MSEHL2 = #msehl2# ,
+	        LABEL_CN = #labelCn# ,
+	        SORTF_H = #sortfH# ,
+	        MATNR1 = #matnr1# ,
+	        ZDTYL = #zdtyl# ,
+	        POSNR = #posnr# ,
+	        MENGE=#menge#
 	    WHERE aufnr=#aufnr#
 	    and idnrk=#idnrk#
 	     ]]>

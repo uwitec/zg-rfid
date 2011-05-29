@@ -34,7 +34,7 @@
     <resultMap id="zgTorderPlanResult" class="zgTorderPlan">
 		<result property="cuid" column="cuid"/>
 		<result property="labelCn" column="label_Cn"/>
-		<result property="orderId" column="order_Id"/>
+		<result property="orderTaskId" column="order_task_Id"/>
 		<result property="departmenuId" column="DEPARTMENU_ID"/>
 		<result property="userId" column="USER_ID"/>
 		<result property="planDate" column="PLAN_DATE"/>
@@ -179,24 +179,25 @@
 			       od.matnr,
 			       od.maktx1,
 			       od.psmng,
-			       od.pmenge,
-			       op.plant,
-			       od.arbpl,
+			       task.pmenge,
+			       task.plant,
+			       task.arbpl,
 			       od.arbpl1,
 			       gop.group_id,
-			         op.plan_type,op.percent,op.state,oup.label_cn as groupName,aide.px_date pxdat,nvl(od.freeze,0) freeze,
+			         op.plan_type,op.percent,op.state,oup.label_cn as groupName,task.px_date pxdat,nvl(od.freeze,0) freeze,
 			          0 as notsetBomnum,oup.indexno,op.zbz
 			  from zg_t_order_plan       op,
 			       zg_t_group_order_plan gop,
 			       zg_t_order            od,
-			        zg_t_order_plan_group oup, zg_t_order_aide aide]]>
+			        zg_t_order_plan_group oup, zg_t_order_task task]]>
 		  <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
 		   <![CDATA[       
-		 where aide.order_id=od.cuid and  op.plant=aide.plant and  op.cuid = gop.order_plan_id
-		   and op.order_id = od.cuid
-		   and gop.group_id=oup.cuid
-		   and op.state<>'9'
-		   	   and od.order_state<>'-1'
+		 where op.cuid = gop.order_plan_id 
+                 and gop.group_id = oup.cuid
+                 and op.order_task_id=task.cuid
+                 and task.order_id=od.cuid
+                and op.state <> '9'
+                and task.flag<>'-1'
 		   ]]>
 		     <isNotEmpty prepend="AND" property="px">
        		  		    <![CDATA[ op.state<>'-1']]>
@@ -206,7 +207,7 @@
 		     and op.plant=ma.org_id
        		</isNotEqual>
        		 and op.plant is not null
-       		 and op.plant='$plant$'
+       		 and task.plant='$plant$'
 			) m
 		<include refid="dynamicWhere3"/>)
 		union 
@@ -236,23 +237,24 @@
 			       od.matnr,
 			       od.maktx1,
 			       od.psmng,
-			       od.pmenge,
-			       op.plant,
-			       od.arbpl,
+			       task.pmenge,
+			       task.plant,
+			       task.arbpl,
 			       od.arbpl1,
 			       gop.group_id,
-			         op.plan_type,op.percent,op.state,oup.label_cn as groupName,aide.px_date pxdat,nvl(od.freeze,0) freeze,
+			         op.plan_type,op.percent,op.state,oup.label_cn as groupName,task.px_date pxdat,nvl(od.freeze,0) freeze,
 			          0 as notsetBomnum,oup.indexno,op.zbz
 			  from zg_t_order_plan       op,
 			       zg_t_group_order_plan gop,
 			       zg_t_order            od,
-			        zg_t_order_plan_group oup, zg_t_order_aide aide]]>
+			        zg_t_order_plan_group oup, zg_t_order_task task]]>
 		  <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
 		   <![CDATA[       
-		 where aide.order_id=od.cuid and  op.plant=aide.plant and  op.cuid = gop.order_plan_id
-		   and op.order_id = od.cuid
-		   and gop.group_id=oup.cuid
-		      and od.order_state<>'-1'
+		 where op.cuid = gop.order_plan_id 
+                 and gop.group_id = oup.cuid
+                 and op.order_task_id=task.cuid
+                 and task.order_id=od.cuid
+                and task.flag<>'-1'
 		   ]]>  
 		   <isNotEmpty prepend="AND" property="px">
        		  		    <![CDATA[ op.state<>'-1']]>
@@ -260,10 +262,10 @@
 		   
 		    <isNotEqual property="operatorId" compareValue="0"> 
        		and  ma.employee_id = '$operatorId$'
-		     and op.plant=ma.org_id
+		     and task.plant=ma.org_id
        		</isNotEqual>
        		 and op.plant is not null
-       		 and op.plant='$plant$'
+       		 and task.plant='$plant$'
 			) m
 		<include refid="dynamicWhere"/>)
 		<isEmpty property="psbhChange">
@@ -295,17 +297,18 @@
 			       od.matnr,
 			       od.maktx1,
 			       od.psmng,
-			       od.pmenge,
-			       op.plant,
-			       od.arbpl,
+			       task.pmenge,
+			       task.plant,
+			       task.arbpl,
 			       od.arbpl1,
 			       gop.group_id,
-			         op.plan_type,op.percent,op.state,oup.label_cn as groupName,aide.px_date pxdat,nvl(od.freeze,0) freeze,
+			         op.plan_type,op.percent,op.state,oup.label_cn as groupName,task.px_date pxdat,nvl(od.freeze,0) freeze,
 			          0 as notsetBomnum, oup.indexno,op.zbz
 			  from zg_t_order_plan       op,
 			       zg_t_group_order_plan gop,
 			       zg_t_order            od,
-			       zg_t_order_plan_group oup, zg_t_order_aide aide,
+			       zg_t_order_plan_group oup, zg_t_order_task task,
+			       zg_t_order_taskbom taskbom,
 			       zg_t_orderbom orderbom,
                	   zg_t_order_planbom planbom,
                	   zg_t_bom bom,
@@ -314,20 +317,19 @@
 		   <![CDATA[       
 		 where 
 		 		od.cuid=orderbom.order_id
-               and planbom.order_bom_id=orderbom.cuid
+                and planbom.taskbom_id = taskbom.cuid
+                  and taskbom.order_bom_id=orderbom.cuid
                and planbom.order_plan_id=op.cuid
                and orderbom.idnrk=bom.idnrk
-               and orderbom.matkl=bom.matkl
-               and orderbom.lgort=bom.lgort
                and bom.matkl=mat.id
-               and bom.lgort=mat.lgort
                and mat.advance='1'
                and planbom.state<>'9'
-               and  trunc(aide.px_date)>trunc(to_date('$pxDate$', 'yyyy-MM-dd')) 
-               and aide.order_id=od.cuid and  op.plant=aide.plant and  op.cuid = gop.order_plan_id
-		   and op.order_id = od.cuid
-		   and gop.group_id=oup.cuid
-		      and od.order_state<>'-1'
+               and  trunc(task.px_date)>trunc(to_date('$pxDate$', 'yyyy-MM-dd')) 
+              and op.order_task_id=task.cuid
+               and task.order_id=od.cuid
+                 and  op.cuid = gop.order_plan_id
+		  	 and gop.group_id=oup.cuid
+		         AND task.flag<>'-1'
 		   ]]>
 		     <isNotEmpty prepend="AND" property="px">
        		  		    <![CDATA[ op.state<>'-1']]>
@@ -337,7 +339,7 @@
 		     and op.plant=ma.org_id
        		</isNotEqual>
        		 and op.plant is not null
-       		 and op.plant='$plant$'
+       		 and task.plant='$plant$'
 			) m
       		<include refid="dynamicWhere1"/>
 		)
@@ -380,23 +382,24 @@
 			       od.matnr,
 			       od.maktx1,
 			       od.psmng,
-			       od.pmenge,
-			       op.plant,
-			       od.arbpl,
+			       task.pmenge,
+			       task.plant,
+			       task.arbpl,
 			       od.arbpl1,
 			       gop.group_id,
-			         op.plan_type,op.percent,op.state,oup.label_cn as groupName,aide.px_date pxdat,nvl(od.freeze,0) freeze,
+			         op.plan_type,op.percent,op.state,oup.label_cn as groupName,task.px_date pxdat,nvl(od.freeze,0) freeze,
 			          0 as notsetBomnum, indexno,op.zbz
 			  from zg_t_order_plan       op,
 			       zg_t_group_order_plan gop,
 			       zg_t_order            od,
-			        zg_t_order_plan_group oup, zg_t_order_aide aide]]>
+			        zg_t_order_plan_group oup, zg_t_order_task task]]>
 		  <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
 		   <![CDATA[       
-		 where aide.order_id=od.cuid and  op.plant=aide.plant and  op.cuid = gop.order_plan_id
-		   and op.order_id = od.cuid
+		 where task.cuid=op.order_task_id 
+		 and  op.cuid = gop.order_plan_id
+		 and task.order_id=od.cuid
 		   and gop.group_id=oup.cuid
-		      and od.order_state<>'-1'
+		      AND task.flag<>'-1'
 		   ]]>
 		     <isNotEmpty prepend="AND" property="px">
        		  		    <![CDATA[ op.state<>'-1']]>
@@ -406,7 +409,7 @@
 		     and op.plant=ma.org_id
        		</isNotEqual>
        		 and op.plant is not null
-       		 and op.plant='$plant$'
+       		 and task.plant='$plant$'
 			) m
 		<include refid="dynamicWhere2"/>
 		<!--<isEqual property="planType" compareValue="ABE"> -->
@@ -506,76 +509,65 @@
 	<!-- 今天之前的没有完成的订单，今天的订单和有需求提前领料的订单和 -->
 	<select id="getCurDateTotalOrderCount" resultClass="java.lang.Integer">
 		select count(distinct cuid) from  (
-		( select distinct t.cuid from zg_t_order_plan t,ZG_T_ORDER zto,zg_t_order_aide aide
+		( select distinct t.cuid from zg_t_order_plan t, zg_t_order_task task
         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
-	      where 
-	      zto.cuid=aide.order_id
-	      and t.plant=aide.plant
-	      and zto.cuid=t.order_id 
-	      <![CDATA[ and zto.order_state<>'-1'
+	      where  t.order_task_id=task.cuid
+	      <![CDATA[  and task.flag <> '-1'
 	     
 	  			 and t.state<>'9'
 	  	  ]]>
 	      and  t.plan_type=#type#
-	      and  trunc(#pxDate#)>trunc(aide.px_date)
+	      and  trunc(#pxDate#)>trunc(task.px_date)
 	      and  t.plant='$plant$'
 	       <isNotEqual property="operatorId" compareValue="0"> 
          	and ma.employee_id='$operatorId$'
-            and t.plant=ma.org_id
+            and task.plant=ma.org_id
           </isNotEqual>
           <isNotEmpty prepend="AND" property="arbpl">
-              zto.arbpl='$arbpl$'
+              task.arbpl='$arbpl$'
            </isNotEmpty>) union
 		
-		( select distinct t.cuid from zg_t_order_plan t,ZG_T_ORDER zto,zg_t_order_aide aide
+		( select distinct t.cuid from zg_t_order_plan t,  zg_t_order_task task
         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
-	      where 
-	      zto.cuid=aide.order_id
-	      and t.plant=aide.plant
-	      and zto.cuid=t.order_id 
-	      <![CDATA[  and zto.order_state<>'-1' ]]>
+	      where t.order_task_id=task.cuid
+	      <![CDATA[  and task.flag <> '-1']]>
 	      and  t.plan_type=#type#
-	      and  trunc(#pxDate#)=trunc(aide.px_date)
+	      and  trunc(#pxDate#)=trunc(task.px_date)
 	      and  t.plant='$plant$'
 	       <isNotEqual property="operatorId" compareValue="0"> 
          	and ma.employee_id='$operatorId$'
             and t.plant=ma.org_id
           </isNotEqual>
           <isNotEmpty prepend="AND" property="arbpl">
-              zto.arbpl='$arbpl$'
+              task.arbpl='$arbpl$'
            </isNotEmpty>) union
            
-         ( select distinct t.cuid from zg_t_order_plan t,ZG_T_ORDER zto,zg_t_order_aide aide,
+         ( select distinct t.cuid from zg_t_order_plan t, zg_t_order_task task,  zg_t_order_taskbom taskbom,
           			 zg_t_orderbom           orderbom,
        				 zg_t_order_planbom      planbom,
         			 zg_t_bom                bom,
         			 zg_materiel             mat
         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
-	      where 
-	      zto.cuid=aide.order_id
-	      and t.plant=aide.plant
-	      and zto.cuid=t.order_id 
-	       and orderbom.order_id=zto.cuid
-   			and orderbom.cuid=planbom.order_bom_id
+	      where t.order_task_id=task.cuid
+	       and orderbom.order_id= task.order_id
+   			 and orderbom.cuid=taskbom.order_bom_id
+            and planbom.taskbom_id=taskbom.cuid
    			and planbom.order_plan_id=t.cuid
    			and orderbom.idnrk=bom.idnrk
-   			and orderbom.matkl=bom.matkl
-  			and orderbom.lgort=bom.lgort
  			and bom.matkl=mat.id
-   			and bom.lgort=mat.lgort
    			and mat.advance = '1'
-   			   <![CDATA[  and zto.order_state<>'-1' ]]>
+   			   <![CDATA[   and task.flag <> '-1']]>
     		<![CDATA[and planbom.state <> '9'  ]]>
 	      
 	      and  t.plan_type=#type#
-	      and trunc(aide.px_date)>trunc(#pxDate#)
+	      and trunc(task.px_date)>trunc(#pxDate#)
 	      and  t.plant='$plant$'
 	       <isNotEqual property="operatorId" compareValue="0"> 
          	and ma.employee_id='$operatorId$'
-            and t.plant=ma.org_id
+            and task.plant=ma.org_id
           </isNotEqual>
           <isNotEmpty prepend="AND" property="arbpl">
-              zto.arbpl='$arbpl$'
+              task.arbpl='$arbpl$'
           </isNotEmpty>
            
            
@@ -586,48 +578,49 @@
 	<select id="getCurDateTotalOrderCount1" resultClass="java.lang.Integer">
 		select count(distinct cuid) from  (
 		
-		( select distinct t.cuid from zg_t_order_plan t,ZG_T_ORDER zto,zg_t_order_aide aide
+		( select distinct t.cuid from zg_t_order_plan t,ZG_T_ORDER zto,zg_t_order_task task
         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
 	      where 
-	      zto.cuid=aide.order_id
-	      and t.plant=aide.plant
-	      and zto.cuid=t.order_id 
+	      zto.cuid=task.order_id
+	      and task.cuid=t.order_task_id 
 	      <![CDATA[  and zto.order_state<>'-1' ]]>
 	      and  t.plan_type=#type#
 	      and  trunc(#pxDate#)=trunc(aide.px_date)
-	      and  t.plant='$plant$'
+	      and  task.plant='$plant$'
 	       <isNotEqual property="operatorId" compareValue="0"> 
          	and ma.employee_id='$operatorId$'
-            and t.plant=ma.org_id
+            and task.plant=ma.org_id
           </isNotEqual>
           <isNotEmpty prepend="AND" property="arbpl">
-              zto.arbpl='$arbpl$'
+              task.arbpl='$arbpl$'
            </isNotEmpty>) 
          )
 	</select>
 	
 		<select id="getCurDateFinishedOrderCount" resultClass="java.lang.Integer">
-		     select count(1) from zg_t_order_plan t,ZG_T_ORDER zto,zg_t_order_aide aide
+		     select count(1) from zg_t_order_plan t, zg_t_order_task task
        	 <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
-		      where zto.cuid=aide.order_id
-		      and t.plant=aide.plant
-		      and zto.cuid=t.order_id 
-		      <![CDATA[  and zto.order_state<>'-1' ]]>
+		      where  t.order_task_id=task.cuid
+		      <![CDATA[   and task.flag <> '-1' ]]>
 		      and  t.plan_type=#type#
-		      and  trunc(#pxDate#)=trunc(aide.px_date)
+		      and  trunc(#pxDate#)=trunc(task.px_date)
 		      and  t.plant='$plant$'
       	<isNotEqual property="operatorId" compareValue="0"> 
          	and ma.employee_id='$operatorId$'
             and t.plant=ma.org_id
           </isNotEqual>
           <isNotEmpty prepend="AND" property="arbpl">
-              zto.arbpl='$arbpl$'
+              task.arbpl='$arbpl$'
            </isNotEmpty>
       and t.state='9' 
 	</select>
 	
-	<select id="getOrderPlanListByOrderId" resultMap="zgTorderPlanResult" >
-    	select t.* from zg_t_order_plan t where t.order_id='$orderId$'
+	<select id="getOrderPlanListByOrderTaskId" resultMap="zgTorderPlanResult" >
+    	select t.* from zg_t_order_plan t where t.order_task_id='$orderTaskId$'
+    </select>
+    
+    <select id="getOrderPlanListByOrderId" resultMap="zgTorderPlanResult" >
+    	select t.* from zg_t_order_plan t,zg_t_order_task task where task.cuid=t.order_task_id and task.order_id='$orderId$'
     </select>
 	
 </sqlMap>
