@@ -115,7 +115,7 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 					
 					zgTorderPlanbom.setOrderPlanId(zgTorderPlan.getCuid());
 					
-					zgTorderPlanbom.setOrderId(zgTorderPlan.getOrderId());
+					zgTorderPlanbom.setOrderId("");
 					
 				   //zgTorderPlanbom.setCuid(String.valueOf(obj.get("CUID")));
 					zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
@@ -151,7 +151,7 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 				
 				zgTorderPlanbom.setOrderPlanId(zgTorderPlan.getCuid());
 				
-				zgTorderPlanbom.setOrderId(zgTorderPlan.getOrderId());
+				zgTorderPlanbom.setOrderId("");
 				
 				//zgTorderPlanbom.setCuid(String.valueOf(obj.get("CUID")));
 				zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
@@ -174,7 +174,7 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 					
 					zgTorderPlanbom.setOrderPlanId(zgTorderPlan.getCuid());
 					
-					zgTorderPlanbom.setOrderId(zgTorderPlan.getOrderId());
+					zgTorderPlanbom.setOrderId("");
 					
 					//zgTorderPlanbom.setCuid(String.valueOf(obj.get("CUID")));
 					zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
@@ -192,7 +192,7 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 				
 				zgTorderPlanbom.setOrderPlanId(zgTorderPlan.getCuid());
 				
-				zgTorderPlanbom.setOrderId(zgTorderPlan.getOrderId());
+				zgTorderPlanbom.setOrderId("");
 				
 				//zgTorderPlanbom.setCuid(String.valueOf(obj.get("CUID")));
 				zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));

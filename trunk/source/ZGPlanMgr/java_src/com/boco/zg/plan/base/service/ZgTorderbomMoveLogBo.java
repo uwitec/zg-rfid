@@ -6,25 +6,18 @@
 
 package com.boco.zg.plan.base.service;
 
+import java.util.List;
+
+import javacommon.base.BaseManager;
+import javacommon.base.EntityDao;
+
 import org.springframework.stereotype.Component;
 
+import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 
-import java.util.*;
-
-import javacommon.base.*;
-import javacommon.util.*;
-import javacommon.base.model.*;
-
-import cn.org.rapid_framework.util.*;
-import cn.org.rapid_framework.web.util.*;
-import cn.org.rapid_framework.page.*;
-import cn.org.rapid_framework.page.impl.*;
-import cn.org.rapid_framework.beanutils.BeanUtils;
-
-import com.boco.zg.plan.base.model.*;
-import com.boco.zg.plan.base.dao.*;
-import com.boco.zg.plan.base.service.*;
+import com.boco.zg.plan.base.dao.ZgTorderbomMoveLogDao;
+import com.boco.zg.plan.base.model.ZgTorderbomMoveLog;
 
 /**
  * @author system email:mysunshines@163.com

@@ -6,33 +6,12 @@
 
 package com.boco.zg.plan.base.model;
 
-import java.util.List;
-
-import javacommon.base.service.IVmModelBo;
+import javacommon.base.BaseEntity;
+import javacommon.base.model.RelatedModel;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
-import cn.org.rapid_framework.util.ApplicationContextHolder;
-
-import com.boco.frame.meta.base.model.TmdEnumevalue;
-
-import java.util.*;
-
-import javacommon.base.*;
-import javacommon.util.*;
-import javacommon.base.model.*;
-
-import cn.org.rapid_framework.util.*;
-import cn.org.rapid_framework.web.util.*;
-import cn.org.rapid_framework.page.*;
-import cn.org.rapid_framework.page.impl.*;
-import cn.org.rapid_framework.beanutils.BeanUtils;
-
-import com.boco.zg.plan.base.model.*;
-import com.boco.zg.plan.base.dao.*;
-import com.boco.zg.plan.base.service.*;
 
 /**
  * @author system email:mysunshines@163.com
@@ -50,15 +29,17 @@ public class ZgTorderbomMoveLog extends BaseEntity {
 		return BM_CLASS_ID;
 	}
 	public static final String ALIAS_CUID = "CUID";
-	public static final String ALIAS_SOURCE_ORDER_ID = "源订单";
-	public static final String ALIAS_SOURCE_IDNRK = "源BOM";
-	public static final String ALIAS_TARGET_ORDER_ID = "目标订单";
-	public static final String ALIAS_MOVE_NUM = "移单数量";
-	public static final String ALIAS_TARGET_IDNRK = "目标bom";
-	public static final String CUID_ZG_T_ORDER_ZG_T_ORDER = "t0_0_1.t0_";
-	public static final String SOURCE_ORDER_ID_ZG_T_ORDER_ZG_T_ORDER = "t0_1_2.t0_";
-	public static final String TARGET_ORDER_ID_ZG_T_ORDER_ZG_T_ORDER = "t0_2_3.t0_";
+	public static final String ALIAS_SOURCE_PLANBOM_ID = "SOURCE_ORDER_TASK_ID";
+	public static final String ALIAS_SOURCE_ORDER_TASK_ID = "SOURCE_ORDER_TASK_ID";
+	public static final String ALIAS_TARGET_ORDER_TASK_ID = "TARGET_ORDER_TASK_ID";
+	public static final String ALIAS_TARGET_PLANBOM = "TARGET_PLANBOM";
+	public static final String ALIAS_MOVE_NUM = "MOVE_NUM";
+	public static final String ALIAS_CREATE_ID = "移单人";
+	public static final String ALIAS_CREATE_DATE = "移单时间";
+	public static final String ALIAS_CREATE_USERNAME = "移单人姓名";
+	public static final String CREATE_ID_FW_EMPLOYEE_FW_OPERATOR = "t0_0_1.t0_";
 	//date formats
+	public static final String FORMAT_CREATE_DATE = DATE_FORMAT;
 	
 	/**
 	 * get meta labelValue with , split
@@ -66,39 +47,27 @@ public class ZgTorderbomMoveLog extends BaseEntity {
 	 */
 	public String getLabelValue() {
 		String labelValue="";
-		labelValue+=this.getSourceOrderId()==null?"":this.getSourceOrderId().toString();
+		labelValue+=this.getCreateUsername()==null?"":this.getCreateUsername().toString();
 		return labelValue;
 	}
 	
 	//columns START
-	private java.lang.String cuid_labelCn;
-	private RelatedModel cuid_related = new RelatedModel("ZG_T_ORDER","CUID","LABEL_CN");
 	private java.lang.String cuid;
-	private java.lang.String sourceOrderId_labelCn;
-	private RelatedModel sourceOrderId_related = new RelatedModel("ZG_T_ORDER","CUID","LABEL_CN");
-	private java.lang.String sourceOrderId;
-	private java.lang.String sourceIdnrk;
-	private java.lang.String targetOrderId_labelCn;
-	private RelatedModel targetOrderId_related = new RelatedModel("ZG_T_ORDER","CUID","LABEL_CN");
-	private java.lang.String targetOrderId;
+	private java.lang.String sourcePlanbomId;
+	private java.lang.String sourceOrderTaskId;
+	private java.lang.String targetOrderTaskId;
+	private java.lang.String targetPlanbom;
 	private java.lang.Long moveNum;
-	private java.lang.String targetIdnrk;
+	private java.lang.String createId_labelCn;
+	private RelatedModel createId_related = new RelatedModel("FW_EMPLOYEE","CUID","LABEL_CN");
+	private java.lang.String createId;
+	private java.util.Date createDate_start;
+	private java.util.Date createDate_end;
+	private java.util.Date createDate;
+	private java.lang.String createUsername;
+	private String orgId;
+	private String orgName;
 	//columns END
-	public java.lang.String getCuid_labelCn() {
-		return this.cuid_labelCn;
-	}
-	
-	public void setCuid_labelCn(java.lang.String value) {
-		this.cuid_labelCn = value;
-	}
-	
-	public RelatedModel getCuid_related() {
-		return this.cuid_related;
-	}
-	
-	public void setCuid_related(RelatedModel value) {
-		this.cuid_related = value;
-	}
 	public java.lang.String getCuid() {
 		return this.cuid;
 	}
@@ -106,56 +75,33 @@ public class ZgTorderbomMoveLog extends BaseEntity {
 	public void setCuid(java.lang.String value) {
 		this.cuid = value;
 	}
-	public java.lang.String getSourceOrderId_labelCn() {
-		return this.sourceOrderId_labelCn;
+	public java.lang.String getSourcePlanbomId() {
+		return this.sourcePlanbomId;
 	}
 	
-	public void setSourceOrderId_labelCn(java.lang.String value) {
-		this.sourceOrderId_labelCn = value;
+	public void setSourcePlanbomId(java.lang.String value) {
+		this.sourcePlanbomId = value;
+	}
+	public java.lang.String getSourceOrderTaskId() {
+		return this.sourceOrderTaskId;
 	}
 	
-	public RelatedModel getSourceOrderId_related() {
-		return this.sourceOrderId_related;
+	public void setSourceOrderTaskId(java.lang.String value) {
+		this.sourceOrderTaskId = value;
+	}
+	public java.lang.String getTargetOrderTaskId() {
+		return this.targetOrderTaskId;
 	}
 	
-	public void setSourceOrderId_related(RelatedModel value) {
-		this.sourceOrderId_related = value;
+	public void setTargetOrderTaskId(java.lang.String value) {
+		this.targetOrderTaskId = value;
 	}
-	public java.lang.String getSourceOrderId() {
-		return this.sourceOrderId;
-	}
-	
-	public void setSourceOrderId(java.lang.String value) {
-		this.sourceOrderId = value;
-	}
-	public java.lang.String getSourceIdnrk() {
-		return this.sourceIdnrk;
+	public java.lang.String getTargetPlanbom() {
+		return this.targetPlanbom;
 	}
 	
-	public void setSourceIdnrk(java.lang.String value) {
-		this.sourceIdnrk = value;
-	}
-	public java.lang.String getTargetOrderId_labelCn() {
-		return this.targetOrderId_labelCn;
-	}
-	
-	public void setTargetOrderId_labelCn(java.lang.String value) {
-		this.targetOrderId_labelCn = value;
-	}
-	
-	public RelatedModel getTargetOrderId_related() {
-		return this.targetOrderId_related;
-	}
-	
-	public void setTargetOrderId_related(RelatedModel value) {
-		this.targetOrderId_related = value;
-	}
-	public java.lang.String getTargetOrderId() {
-		return this.targetOrderId;
-	}
-	
-	public void setTargetOrderId(java.lang.String value) {
-		this.targetOrderId = value;
+	public void setTargetPlanbom(java.lang.String value) {
+		this.targetPlanbom = value;
 	}
 	public java.lang.Long getMoveNum() {
 		return this.moveNum;
@@ -164,33 +110,89 @@ public class ZgTorderbomMoveLog extends BaseEntity {
 	public void setMoveNum(java.lang.Long value) {
 		this.moveNum = value;
 	}
-	public java.lang.String getTargetIdnrk() {
-		return this.targetIdnrk;
+	public java.lang.String getCreateId_labelCn() {
+		return this.createId_labelCn;
 	}
 	
-	public void setTargetIdnrk(java.lang.String value) {
-		this.targetIdnrk = value;
+	public void setCreateId_labelCn(java.lang.String value) {
+		this.createId_labelCn = value;
+	}
+	
+	public RelatedModel getCreateId_related() {
+		return this.createId_related;
+	}
+	
+	public void setCreateId_related(RelatedModel value) {
+		this.createId_related = value;
+	}
+	public java.lang.String getCreateId() {
+		return this.createId;
+	}
+	
+	public void setCreateId(java.lang.String value) {
+		this.createId = value;
+	}
+	public String getCreateDateString() {
+		return date2String(getCreateDate(), FORMAT_CREATE_DATE);
+	}
+	public void setCreateDateString(String value) {
+		setCreateDate(string2Date(value, FORMAT_CREATE_DATE,java.util.Date.class));
+	}
+	public java.util.Date getCreateDate_start() {
+		return this.createDate_start;
+	}
+	
+	public void setCreateDate_start(java.util.Date value) {
+		this.createDate_start = value;
+	}
+	
+	public java.util.Date getCreateDate_end() {
+		return this.createDate_end;
+	}
+	
+	public void setCreateDate_end(java.util.Date value) {
+		this.createDate_end = value;
+	}
+	public java.util.Date getCreateDate() {
+		return this.createDate;
+	}
+	
+	public void setCreateDate(java.util.Date value) {
+		this.createDate = value;
+	}
+	public java.lang.String getCreateUsername() {
+		return this.createUsername;
+	}
+	
+	public void setCreateUsername(java.lang.String value) {
+		this.createUsername = value;
 	}
 
 	public String toString() {
 		return new ToStringBuilder(this)
 			.append("Cuid",getCuid())
-			.append("SourceOrderId",getSourceOrderId())
-			.append("SourceIdnrk",getSourceIdnrk())
-			.append("TargetOrderId",getTargetOrderId())
+			.append("SourcePlanbomId",getSourcePlanbomId())
+			.append("SourceOrderTaskId",getSourceOrderTaskId())
+			.append("TargetOrderTaskId",getTargetOrderTaskId())
+			.append("TargetPlanbom",getTargetPlanbom())
 			.append("MoveNum",getMoveNum())
-			.append("TargetIdnrk",getTargetIdnrk())
+			.append("CreateId",getCreateId())
+			.append("CreateDate",getCreateDate())
+			.append("CreateUsername",getCreateUsername())
 			.toString();
 	}
 	
 	public int hashCode() {
 		return new HashCodeBuilder()
 			.append(getCuid())
-			.append(getSourceOrderId())
-			.append(getSourceIdnrk())
-			.append(getTargetOrderId())
+			.append(getSourcePlanbomId())
+			.append(getSourceOrderTaskId())
+			.append(getTargetOrderTaskId())
+			.append(getTargetPlanbom())
 			.append(getMoveNum())
-			.append(getTargetIdnrk())
+			.append(getCreateId())
+			.append(getCreateDate())
+			.append(getCreateUsername())
 			.toHashCode();
 	}
 	
@@ -200,11 +202,28 @@ public class ZgTorderbomMoveLog extends BaseEntity {
 		ZgTorderbomMoveLog other = (ZgTorderbomMoveLog)obj;
 		return new EqualsBuilder()
 			.append(getCuid(),other.getCuid())
-			.append(getSourceOrderId(),other.getSourceOrderId())
-			.append(getSourceIdnrk(),other.getSourceIdnrk())
-			.append(getTargetOrderId(),other.getTargetOrderId())
+			.append(getSourcePlanbomId(),other.getSourcePlanbomId())
+			.append(getSourceOrderTaskId(),other.getSourceOrderTaskId())
+			.append(getTargetOrderTaskId(),other.getTargetOrderTaskId())
+			.append(getTargetPlanbom(),other.getTargetPlanbom())
 			.append(getMoveNum(),other.getMoveNum())
-			.append(getTargetIdnrk(),other.getTargetIdnrk())
+			.append(getCreateId(),other.getCreateId())
+			.append(getCreateDate(),other.getCreateDate())
+			.append(getCreateUsername(),other.getCreateUsername())
 			.isEquals();
+	}
+
+	/**
+	 * @return the orgId
+	 */
+	public String getOrgId() {
+		return orgId;
+	}
+
+	/**
+	 * @param orgId the orgId to set
+	 */
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
 	}
 }

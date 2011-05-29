@@ -86,5 +86,12 @@ public class ZgTorderBo extends BaseManager<ZgTorder,java.lang.String>{
 		return plantSortfMap;
 		
 	}
+	/**
+	 * @param id
+	 * @return
+	 */
+	public ZgTorder getByTaskId(String id) {
+		return zgTorderDao.getByTaskId(id);
+	}
 
 }

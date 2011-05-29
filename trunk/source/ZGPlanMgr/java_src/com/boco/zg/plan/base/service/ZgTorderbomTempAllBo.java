@@ -79,8 +79,8 @@ public class ZgTorderbomTempAllBo extends BaseManager<ZgTorderbomTempAll,java.la
 	 * @param delete
 	 */
 	public List<ZgTorderbomTempAll>  getForEditBomList(int batchNo, String aufnr, String arbpl,
-			String plant, int flag) {
-		return zgTorderbomTempAllDao.getForEditBomList(batchNo,aufnr,arbpl,plant,flag);
+			String plant, int flag,String sortf) {
+		return zgTorderbomTempAllDao.getForEditBomList(batchNo,aufnr,arbpl,plant,flag,sortf);
 	}
 	
 	
@@ -112,5 +112,22 @@ public class ZgTorderbomTempAllBo extends BaseManager<ZgTorderbomTempAll,java.la
 	}
 	public void setZgTorderbomBo(ZgTorderbomBo zgTorderbomBo) {
 		this.zgTorderbomBo = zgTorderbomBo;
+	}
+	/**
+	 * @param batchNo
+	 * @param aufnr
+	 * @param edit
+	 * @return
+	 */
+	public List<ZgTorderbomTempAll> getForPcEditBomList(int batchNo,
+			String aufnr, int flag) {
+		return zgTorderbomTempAllDao.getForPcEditBomList(batchNo,aufnr,flag);
+	}
+	/**
+	 * @param tempBom
+	 */
+	public void updateOrderBomForPc(ZgTorderbomTempAll tempBom) {
+		zgTorderbomTempAllDao.updateOrderBomForPc(tempBom);
+		
 	}
 }

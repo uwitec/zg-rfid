@@ -156,6 +156,16 @@ public class ZgTorderAction extends BaseStruts2Action implements Preparable,Mode
 	}
 	
 	/** 查看对象*/
+	public String showByTaskId() {
+		String publishNum=this.getRequest().getParameter("publishNum");
+		if(publishNum!=null){
+			getRequest().setAttribute("publishNum", publishNum);
+		}
+		zgTorder = (ZgTorder)zgTorderBo.getByTaskId(id);
+		return SHOW_JSP;
+	}
+	
+	/** 查看对象*/
 	public String showInfo() {
 		return SHOW_JSP;
 	}

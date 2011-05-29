@@ -145,6 +145,7 @@ public class ZgTorderbomEx extends BaseEntity {
 	private Long validNum;
 	private Long waitBackNum;
 	private Long backNum;
+	private String taskBomId;
 	
 	
 	
@@ -602,5 +603,19 @@ public class ZgTorderbomEx extends BaseEntity {
 
 	public void setBackNum(Long backNum) {
 		this.backNum = backNum;
+	}
+
+	/**
+	 * @return the taskBomId
+	 */
+	public String getTaskBomId() {
+		return taskBomId;
+	}
+
+	/**
+	 * @param taskBomId the taskBomId to set
+	 */
+	public void setTaskBomId(String taskBomId) {
+		this.taskBomId = taskBomId;
 	}
 }

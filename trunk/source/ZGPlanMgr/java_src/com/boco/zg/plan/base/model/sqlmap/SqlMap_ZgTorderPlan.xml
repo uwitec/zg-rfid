@@ -7,9 +7,9 @@
 	<resultMap id="zgTorderPlanResult" class="zgTorderPlan">
 		<result property="cuid" column="t0_CUID"/>
 		<result property="labelCn" column="t0_LABEL_CN"/>
-		<result property="orderId" column="t0_ORDER_ID"/>
-		<result property="orderId_related.value" column="t0_0_1_t0_AUFNR"/>
-		<result property="orderId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="orderTaskId" column="t0_ORDER_TASK_ID"/>
+		<result property="orderTaskId_related.value" column="t0_0_1_t0_AUFNR"/>
+		<result property="orderTaskId_related.relatedBmClassId" column="t0_0_1_BD"/>
 		<result property="departmenuId" column="t0_DEPARTMENU_ID"/>
 		<result property="departmenuId_related.value" column="t0_1_1_t0_LABEL_CN"/>
 		<result property="departmenuId_related.relatedBmClassId" column="t0_1_1_BD"/>
@@ -35,7 +35,7 @@
 	        m.t0_LABEL_CN,
 		    t0_0_1.t0_AUFNR as t0_0_1_t0_AUFNR,
 	        'ZG_T_ORDER' as t0_0_1_BD,
-	        m.t0_ORDER_ID,
+	        m.t0_ORDER_TASK_ID,
 		    t0_1_1.t0_LABEL_CN as t0_1_1_t0_LABEL_CN,
 	        'FW_ORGANIZATION' as t0_1_1_BD,
 	        m.t0_DEPARTMENU_ID,
@@ -67,8 +67,8 @@
 		    <isNotEmpty prepend="AND" property="labelCn">
 	       			m.t0_LABEL_CN like #labelCn#
        		</isNotEmpty>    
-		    <isNotEmpty prepend="AND" property="orderId">
-	       			m.t0_ORDER_ID like #orderId#
+		    <isNotEmpty prepend="AND" property="orderTaskId">
+	       			m.t0_ORDER_TASK_ID like #orderTaskId#
        		</isNotEmpty>    
 		    <isNotEmpty prepend="AND" property="departmenuId">
 	       			m.t0_DEPARTMENU_ID like #departmenuId#
@@ -149,7 +149,7 @@
         ZG_T_ORDER_PLAN (
         	CUID ,
         	LABEL_CN ,
-        	ORDER_ID ,
+        	ORDER_TASK_ID ,
         	DEPARTMENU_ID ,
         	USER_ID ,
         	PLAN_DATE ,
@@ -167,7 +167,7 @@
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
-        	#orderId# ,
+        	#orderTaskId# ,
         	#departmenuId# ,
         	#userId# ,
         	#planDate# ,
@@ -191,7 +191,7 @@
     <![CDATA[
         UPDATE ZG_T_ORDER_PLAN SET
 	        LABEL_CN = #labelCn# ,
-	        ORDER_ID = #orderId# ,
+	        ORDER_task_ID = #orderTaskId# ,
 	        DEPARTMENU_ID = #departmenuId# ,
 	       
 	        PLAN_DATE = #planDate# ,
@@ -262,7 +262,7 @@
 	       from (select 
 	        		t0.CUID as t0_CUID,
 	        		t0.LABEL_CN as t0_LABEL_CN,
-	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.order_task_id as t0_ORDER_task_ID,
 	        		t0.DEPARTMENU_ID as t0_DEPARTMENU_ID,
 	        		t0.USER_ID as t0_USER_ID,
 	        		t0.PLAN_DATE as t0_PLAN_DATE,
@@ -279,45 +279,10 @@
 	        ZG_T_ORDER_PLAN t0
  ) m
 	        left join  ( select 
-	        	t0.CUID as t0_CUID,
-	        	t0.LABEL_CN as t0_LABEL_CN,
-	        	t0.AUFNR as t0_AUFNR,
-	        	t0.ORDER_STATE as t0_ORDER_STATE,
-	        	t0.SUBMIT_USER as t0_SUBMIT_USER,
-	        	t0.SUBMIT_DATE as t0_SUBMIT_DATE,
-	        	t0.MANDT as t0_MANDT,
-	        	t0.PXDAT as t0_PXDAT,
-	        	t0.PLANT as t0_PLANT,
-	        	t0.MIPOS as t0_MIPOS,
-	        	t0.PCDAT as t0_PCDAT,
-	        	t0.ARBPL as t0_ARBPL,
-	        	t0.MATNR as t0_MATNR,
-	        	t0.KDAUF as t0_KDAUF,
-	        	t0.KDPOS as t0_KDPOS,
-	        	t0.KDTXT as t0_KDTXT,
-	        	t0.ZCKPP as t0_ZCKPP,
-	        	t0.MAKTX2 as t0_MAKTX2,
-	        	t0.MAKTX1 as t0_MAKTX1,
-	        	t0.ZZCKS as t0_ZZCKS,
-	        	t0.ATWRT2 as t0_ATWRT2,
-	        	t0.PSMNG as t0_PSMNG,
-	        	t0.PMENGE as t0_PMENGE,
-	        	t0.ZTXT02 as t0_ZTXT02,
-	        	t0.ZDBLC as t0_ZDBLC,
-	        	t0.BRGEW2 as t0_BRGEW2,
-	        	t0.CRDAT as t0_CRDAT,
-	        	t0.CPUTM as t0_CPUTM,
-	        	t0.CRNAM as t0_CRNAM,
-	        	t0.MRNAM as t0_MRNAM,
-	        	t0.ZMUZE as t0_ZMUZE,
-	        	t0.MNAME as t0_MNAME,
-	        	t0.FBDAT as t0_FBDAT,
-	        	t0.FBUZE as t0_FBUZE,
-	        	t0.FNAME as t0_FNAME,
-	        	t0.PFLAG as t0_PFLAG
-	        	 from
-		        ZG_T_ORDER t0
-	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
+	        		 t0.cuid as t0_cuid,
+                    t0.AUFNR       as t0_AUFNR
+               from zg_t_order_task t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_task_ID 
 	        left join  ( select 
 	        	t0.CUID as t0_CUID,
 	        	t0.LABEL_CN as t0_LABEL_CN,
@@ -362,7 +327,7 @@
 	        from ( select 
 	        		t0.CUID as t0_CUID,
 	        		t0.LABEL_CN as t0_LABEL_CN,
-	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.ORDER_task_ID as t0_ORDER_TASK_ID,
 	        		t0.DEPARTMENU_ID as t0_DEPARTMENU_ID,
 	        		t0.USER_ID as t0_USER_ID,
 	        		t0.PLAN_DATE as t0_PLAN_DATE,
@@ -380,45 +345,10 @@
 	        ZG_T_ORDER_PLAN t0
  ) m
 	        left join  ( select 
-	        	t0.CUID as t0_CUID,
-	        	t0.LABEL_CN as t0_LABEL_CN,
-	        	t0.AUFNR as t0_AUFNR,
-	        	t0.ORDER_STATE as t0_ORDER_STATE,
-	        	t0.SUBMIT_USER as t0_SUBMIT_USER,
-	        	t0.SUBMIT_DATE as t0_SUBMIT_DATE,
-	        	t0.MANDT as t0_MANDT,
-	        	t0.PXDAT as t0_PXDAT,
-	        	t0.PLANT as t0_PLANT,
-	        	t0.MIPOS as t0_MIPOS,
-	        	t0.PCDAT as t0_PCDAT,
-	        	t0.ARBPL as t0_ARBPL,
-	        	t0.MATNR as t0_MATNR,
-	        	t0.KDAUF as t0_KDAUF,
-	        	t0.KDPOS as t0_KDPOS,
-	        	t0.KDTXT as t0_KDTXT,
-	        	t0.ZCKPP as t0_ZCKPP,
-	        	t0.MAKTX2 as t0_MAKTX2,
-	        	t0.MAKTX1 as t0_MAKTX1,
-	        	t0.ZZCKS as t0_ZZCKS,
-	        	t0.ATWRT2 as t0_ATWRT2,
-	        	t0.PSMNG as t0_PSMNG,
-	        	t0.PMENGE as t0_PMENGE,
-	        	t0.ZTXT02 as t0_ZTXT02,
-	        	t0.ZDBLC as t0_ZDBLC,
-	        	t0.BRGEW2 as t0_BRGEW2,
-	        	t0.CRDAT as t0_CRDAT,
-	        	t0.CPUTM as t0_CPUTM,
-	        	t0.CRNAM as t0_CRNAM,
-	        	t0.MRNAM as t0_MRNAM,
-	        	t0.ZMUZE as t0_ZMUZE,
-	        	t0.MNAME as t0_MNAME,
-	        	t0.FBDAT as t0_FBDAT,
-	        	t0.FBUZE as t0_FBUZE,
-	        	t0.FNAME as t0_FNAME,
-	        	t0.PFLAG as t0_PFLAG
-	        	 from
-		        ZG_T_ORDER t0
-	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
+	        		 t0.cuid as t0_cuid,
+                    t0.AUFNR       as t0_AUFNR
+               from zg_t_order_task t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_task_ID 
 	        left join  ( select 
 	        	t0.CUID as t0_CUID,
 	        	t0.LABEL_CN as t0_LABEL_CN,
@@ -467,7 +397,7 @@
         from ( select 
 	        		t0.CUID as t0_CUID,
 	        		t0.LABEL_CN as t0_LABEL_CN,
-	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.ORDER_task_ID as t0_ORDER_TASK_ID,
 	        		t0.DEPARTMENU_ID as t0_DEPARTMENU_ID,
 	        		t0.USER_ID as t0_USER_ID,
 	        		t0.PLAN_DATE as t0_PLAN_DATE,
@@ -483,46 +413,11 @@
 	        from 
 	        ZG_T_ORDER_PLAN t0
  ) m
-	        left join  ( select 
-	        	t0.CUID as t0_CUID,
-	        	t0.LABEL_CN as t0_LABEL_CN,
-	        	t0.AUFNR as t0_AUFNR,
-	        	t0.ORDER_STATE as t0_ORDER_STATE,
-	        	t0.SUBMIT_USER as t0_SUBMIT_USER,
-	        	t0.SUBMIT_DATE as t0_SUBMIT_DATE,
-	        	t0.MANDT as t0_MANDT,
-	        	t0.PXDAT as t0_PXDAT,
-	        	t0.PLANT as t0_PLANT,
-	        	t0.MIPOS as t0_MIPOS,
-	        	t0.PCDAT as t0_PCDAT,
-	        	t0.ARBPL as t0_ARBPL,
-	        	t0.MATNR as t0_MATNR,
-	        	t0.KDAUF as t0_KDAUF,
-	        	t0.KDPOS as t0_KDPOS,
-	        	t0.KDTXT as t0_KDTXT,
-	        	t0.ZCKPP as t0_ZCKPP,
-	        	t0.MAKTX2 as t0_MAKTX2,
-	        	t0.MAKTX1 as t0_MAKTX1,
-	        	t0.ZZCKS as t0_ZZCKS,
-	        	t0.ATWRT2 as t0_ATWRT2,
-	        	t0.PSMNG as t0_PSMNG,
-	        	t0.PMENGE as t0_PMENGE,
-	        	t0.ZTXT02 as t0_ZTXT02,
-	        	t0.ZDBLC as t0_ZDBLC,
-	        	t0.BRGEW2 as t0_BRGEW2,
-	        	t0.CRDAT as t0_CRDAT,
-	        	t0.CPUTM as t0_CPUTM,
-	        	t0.CRNAM as t0_CRNAM,
-	        	t0.MRNAM as t0_MRNAM,
-	        	t0.ZMUZE as t0_ZMUZE,
-	        	t0.MNAME as t0_MNAME,
-	        	t0.FBDAT as t0_FBDAT,
-	        	t0.FBUZE as t0_FBUZE,
-	        	t0.FNAME as t0_FNAME,
-	        	t0.PFLAG as t0_PFLAG
-	        	 from
-		        ZG_T_ORDER t0
-	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
+	     left join  ( select 
+	     			 t0.cuid as t0_cuid,
+                    t0.AUFNR       as t0_AUFNR
+               from zg_t_order_task t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_task_ID 
 	        left join  ( select 
 	        	t0.CUID as t0_CUID,
 	        	t0.LABEL_CN as t0_LABEL_CN,
@@ -571,7 +466,7 @@
 	        from ( select 
 	        		t0.CUID as t0_CUID,
 	        		t0.LABEL_CN as t0_LABEL_CN,
-	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.ORDER_task_ID as t0_ORDER_TASK_ID,
 	        		t0.DEPARTMENU_ID as t0_DEPARTMENU_ID,
 	        		t0.USER_ID as t0_USER_ID,
 	        		t0.PLAN_DATE as t0_PLAN_DATE,
@@ -587,46 +482,11 @@
 	        from 
 	        ZG_T_ORDER_PLAN t0
  ) m
-	        left join  ( select 
-	        	t0.CUID as t0_CUID,
-	        	t0.LABEL_CN as t0_LABEL_CN,
-	        	t0.AUFNR as t0_AUFNR,
-	        	t0.ORDER_STATE as t0_ORDER_STATE,
-	        	t0.SUBMIT_USER as t0_SUBMIT_USER,
-	        	t0.SUBMIT_DATE as t0_SUBMIT_DATE,
-	        	t0.MANDT as t0_MANDT,
-	        	t0.PXDAT as t0_PXDAT,
-	        	t0.PLANT as t0_PLANT,
-	        	t0.MIPOS as t0_MIPOS,
-	        	t0.PCDAT as t0_PCDAT,
-	        	t0.ARBPL as t0_ARBPL,
-	        	t0.MATNR as t0_MATNR,
-	        	t0.KDAUF as t0_KDAUF,
-	        	t0.KDPOS as t0_KDPOS,
-	        	t0.KDTXT as t0_KDTXT,
-	        	t0.ZCKPP as t0_ZCKPP,
-	        	t0.MAKTX2 as t0_MAKTX2,
-	        	t0.MAKTX1 as t0_MAKTX1,
-	        	t0.ZZCKS as t0_ZZCKS,
-	        	t0.ATWRT2 as t0_ATWRT2,
-	        	t0.PSMNG as t0_PSMNG,
-	        	t0.PMENGE as t0_PMENGE,
-	        	t0.ZTXT02 as t0_ZTXT02,
-	        	t0.ZDBLC as t0_ZDBLC,
-	        	t0.BRGEW2 as t0_BRGEW2,
-	        	t0.CRDAT as t0_CRDAT,
-	        	t0.CPUTM as t0_CPUTM,
-	        	t0.CRNAM as t0_CRNAM,
-	        	t0.MRNAM as t0_MRNAM,
-	        	t0.ZMUZE as t0_ZMUZE,
-	        	t0.MNAME as t0_MNAME,
-	        	t0.FBDAT as t0_FBDAT,
-	        	t0.FBUZE as t0_FBUZE,
-	        	t0.FNAME as t0_FNAME,
-	        	t0.PFLAG as t0_PFLAG
-	        	 from
-		        ZG_T_ORDER t0
-	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
+	       left join  ( select 
+	       			 t0.cuid as t0_cuid,
+                    t0.AUFNR       as t0_AUFNR
+               from zg_t_order_task t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_task_ID 
 	        left join  ( select 
 	        	t0.CUID as t0_CUID,
 	        	t0.LABEL_CN as t0_LABEL_CN,
@@ -674,7 +534,7 @@
 	        from ( select 
 	        		t0.CUID as t0_CUID,
 	        		t0.LABEL_CN as t0_LABEL_CN,
-	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.ORDER_task_ID as t0_ORDER_TASK_ID,
 	        		t0.DEPARTMENU_ID as t0_DEPARTMENU_ID,
 	        		t0.USER_ID as t0_USER_ID,
 	        		t0.PLAN_DATE as t0_PLAN_DATE,
@@ -690,46 +550,11 @@
 	        from 
 	        ZG_T_ORDER_PLAN t0
  ) m
-	        left join  ( select 
-	        	t0.CUID as t0_CUID,
-	        	t0.LABEL_CN as t0_LABEL_CN,
-	        	t0.AUFNR as t0_AUFNR,
-	        	t0.ORDER_STATE as t0_ORDER_STATE,
-	        	t0.SUBMIT_USER as t0_SUBMIT_USER,
-	        	t0.SUBMIT_DATE as t0_SUBMIT_DATE,
-	        	t0.MANDT as t0_MANDT,
-	        	t0.PXDAT as t0_PXDAT,
-	        	t0.PLANT as t0_PLANT,
-	        	t0.MIPOS as t0_MIPOS,
-	        	t0.PCDAT as t0_PCDAT,
-	        	t0.ARBPL as t0_ARBPL,
-	        	t0.MATNR as t0_MATNR,
-	        	t0.KDAUF as t0_KDAUF,
-	        	t0.KDPOS as t0_KDPOS,
-	        	t0.KDTXT as t0_KDTXT,
-	        	t0.ZCKPP as t0_ZCKPP,
-	        	t0.MAKTX2 as t0_MAKTX2,
-	        	t0.MAKTX1 as t0_MAKTX1,
-	        	t0.ZZCKS as t0_ZZCKS,
-	        	t0.ATWRT2 as t0_ATWRT2,
-	        	t0.PSMNG as t0_PSMNG,
-	        	t0.PMENGE as t0_PMENGE,
-	        	t0.ZTXT02 as t0_ZTXT02,
-	        	t0.ZDBLC as t0_ZDBLC,
-	        	t0.BRGEW2 as t0_BRGEW2,
-	        	t0.CRDAT as t0_CRDAT,
-	        	t0.CPUTM as t0_CPUTM,
-	        	t0.CRNAM as t0_CRNAM,
-	        	t0.MRNAM as t0_MRNAM,
-	        	t0.ZMUZE as t0_ZMUZE,
-	        	t0.MNAME as t0_MNAME,
-	        	t0.FBDAT as t0_FBDAT,
-	        	t0.FBUZE as t0_FBUZE,
-	        	t0.FNAME as t0_FNAME,
-	        	t0.PFLAG as t0_PFLAG
-	        	 from
-		        ZG_T_ORDER t0
-	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
+	       left join  ( select 
+	       				 t0.cuid as t0_cuid,
+                    t0.AUFNR       as t0_AUFNR
+               from zg_t_order_task t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_task_ID 
 	        left join  ( select 
 	        	t0.CUID as t0_CUID,
 	        	t0.LABEL_CN as t0_LABEL_CN,

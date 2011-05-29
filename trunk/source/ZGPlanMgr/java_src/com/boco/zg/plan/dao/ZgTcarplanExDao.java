@@ -63,15 +63,15 @@ public class ZgTcarplanExDao extends BaseIbatisDao<ZgTcarplan,java.lang.String>{
 	 * @param operatorId
 	 * @return
 	 */
-	public List<Map> getBomListByLgort(String groupId, String lgort,
-			String operatorId) {
-		Map paramsMap=new HashMap();
-		paramsMap.put("groupId", groupId);
-		paramsMap.put("lgort", lgort);
-		paramsMap.put("operatorId", operatorId);
-		return getSqlMapClientTemplate().queryForList("ZgTcarplanEx.getBomListByLgort",paramsMap);
-	}
-	
+//	public List<Map> getBomListByLgort(String groupId, String lgort,
+//			String operatorId) {
+//		Map paramsMap=new HashMap();
+//		paramsMap.put("groupId", groupId);
+//		paramsMap.put("lgort", lgort);
+//		paramsMap.put("operatorId", operatorId);
+//		return getSqlMapClientTemplate().queryForList("ZgTcarplanEx.getBomListByLgort",paramsMap);
+//	}
+//	
 	
 
 }

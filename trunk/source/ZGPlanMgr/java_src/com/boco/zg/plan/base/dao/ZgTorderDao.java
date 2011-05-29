@@ -105,5 +105,13 @@ public class ZgTorderDao extends BaseIbatisDao<ZgTorder,java.lang.String>{
 		return getSqlMapClientTemplate().queryForList("ZgTorder.getOrderListByAufnrPlant",zgTorder);
 	}
 
+	/**
+	 * @param id
+	 * @return
+	 */
+	public ZgTorder getByTaskId(String id) {
+		return (ZgTorder)getSqlMapClientTemplate().queryForObject("ZgTorder.getByTaskId",id);
+	}
+
 
 }

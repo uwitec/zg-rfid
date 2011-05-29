@@ -6,8 +6,9 @@
     <typeAlias alias="zgTorderPlanbomEx" type="com.boco.zg.plan.model.ZgTorderPlanbomEx"/>
 	<typeAlias alias="zgTorderPlanbom" type="com.boco.zg.plan.base.model.ZgTorderPlanbom"/>
 	<resultMap id="zgTorderPlanbomExResult" class="zgTorderPlanbomEx">
-		<result property="orderId" column="ORDER_ID"/>
+		<result property="orderTaskId" column="ORDER_ID"/>
 		<result property="orderBomId" column="ORDER_BOM_ID"/>
+		<result property="taskBomId" column="taskBomId"/>
 		<result property="cuid" column="CUID"/>
 		<result property="idnrk" column="IDNRK"/>
 		<result property="maktx2" column="MAKTX2"/>
@@ -55,13 +56,13 @@
     <resultMap id="zgTorderPlanbomResult" class="zgTorderPlanbom">
 		<result property="cuid" column="t0_CUID"/>
 		<result property="labelCn" column="t0_LABEL_CN"/>
-		<result property="orderBomId" column="t0_ORDER_BOM_ID"/>
+		<result property="taskBomId" column="t0_ORDER_BOM_ID"/>
 		<result property="orderPlanId" column="t0_ORDER_PLAN_ID"/>
-		<result property="orderBomId_related.value" column="t0_0_1_t0_LABEL_CN"/>
-		<result property="orderBomId_related.relatedBmClassId" column="t0_0_1_BD"/>
-		<result property="orderId" column="t0_ORDER_ID"/>
-		<result property="orderId_related.value" column="t0_1_1_t0_AUFNR"/>
-		<result property="orderId_related.relatedBmClassId" column="t0_1_1_BD"/>
+		<result property="taskBomId_related.value" column="t0_0_1_t0_LABEL_CN"/>
+		<result property="taskBomId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="orderTaskId" column="t0_ORDER_ID"/>
+		<result property="orderTaskId_related.value" column="t0_1_1_t0_AUFNR"/>
+		<result property="orderTaskId_related.relatedBmClassId" column="t0_1_1_BD"/>
 		<result property="departmentId" column="t0_DEPARTMENT_ID"/>
 		<result property="departmentId_related.value" column="t0_2_1_t0_LABEL_CN"/>
 		<result property="departmentId_related.relatedBmClassId" column="t0_2_1_BD"/>
@@ -438,18 +439,20 @@
 	<!-- 查找订单分组下面的bom -->
     <select id="findBomListByGroupId" resultMap="zgTorderPlanbomExResult">
 		<![CDATA[
-					  select distinct bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,bom.menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
+					  select distinct bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,bom.menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
 			org.label_cn org_name,bom.zbz,         decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per ,bom.posnr,bom.aufnr,
      		  tbom.car_id,
       		 tbom.carnum,planbom.wait_back_num from zg_t_group_order_plan oup,zg_t_order_plan plan,
 			zg_t_order_planbom planBom,zg_t_orderbom bom,fw_organization org,
-       			zg_t_bom              tbom
+       			zg_t_bom              tbom,
+       			zg_t_order_taskbom taskbom
 			
 			where 
 			 bom.idnrk=tbom.idnrk
  			 and oup.order_plan_id=plan.cuid
 			and plan.cuid=planBom.Order_Plan_Id
-			and planBom.Order_Bom_Id=bom.cuid
+			and planbom.taskbom_id=taskbom.cuid
+       	 and taskbom.order_bom_id=bom.cuid
 			and org.cuid(+)=bom.lgort
         ]]>
       	<isNotEmpty prepend="AND" property="groupId">
@@ -461,21 +464,22 @@
     	<!-- 查找订单分组下面的bom 提前领料 -->
      <select id="findBomListByGroupIdAdvance" resultMap="zgTorderPlanbomExResult">
 		<![CDATA[
-					  select distinct bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,bom.menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
+					  select distinct bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,bom.menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
 			org.label_cn org_name,bom.zbz,         decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per,bom.posnr,bom.aufnr,
     		  tbom.car_id,
       		 tbom.carnum,planbom.wait_back_num from zg_t_group_order_plan oup,zg_t_order_plan plan,
 			zg_t_order_planbom planBom,zg_t_orderbom bom,fw_organization org,
-       			zg_t_bom              tbom,zg_materiel ma
+       			zg_t_bom              tbom,zg_materiel ma,
+       			 zg_t_order_taskbom taskbom
 			
 			where 
 			 bom.idnrk=tbom.idnrk
  			and	 oup.order_plan_id=plan.cuid
 			and plan.cuid=planBom.Order_Plan_Id
-			and planBom.Order_Bom_Id=bom.cuid
+			  and planbom.taskbom_id=taskbom.cuid
+        and taskbom.order_bom_id=bom.cuid
 			and org.cuid(+)=bom.lgort
 			and tbom.matkl_self=ma.id
-         	and ma.lgort=bom.lgort
          	and ma.advance='1'
         ]]>
       	<isNotEmpty prepend="AND" property="groupId">
@@ -486,7 +490,7 @@
     
     
      <select id="findBomListByOrderPlanId" resultMap="zgTorderPlanbomExResult">
-				select distinct bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl,
+				select distinct bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl,
 		       bom.idnrk,
 		       bom.maktx2,
 		       bom.matnr,
@@ -508,12 +512,15 @@
 		       zg_t_order_plan       plan,
 		       zg_t_order_planbom    planBom,
 		       zg_t_orderbom         bom,
+		           zg_t_order_taskbom taskbom,
 		       fw_organization       org,
      		   zg_t_bom tbom
 		 where 
 		    bom.idnrk=tbom.idnrk
   			and plan.cuid = planBom.Order_Plan_Id
-		   and planBom.Order_Bom_Id = bom.cuid
+		   and plan.cuid = planBom.Order_Plan_Id
+        and planbom.taskbom_id=taskbom.cuid
+          and taskbom.order_bom_id=bom.cuid
 		   and org.cuid(+) = bom.lgort
 		      
 		  <isNotEmpty prepend="AND" property="orderPlanId">
@@ -527,7 +534,7 @@
     
     
     <select id="findBomListByOrderId" resultMap="zgTorderPlanbomExResult">
-				select bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl,
+				select bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl,
 		       bom.idnrk,
 		       bom.maktx2,
 		       bom.matnr,
@@ -549,9 +556,11 @@
 		       zg_t_order_plan       plan,
 		       zg_t_order_planbom    planBom,
 		       zg_t_orderbom         bom,
-		       fw_organization       org
+		       fw_organization       org,
+		          zg_t_order_taskbom taskbom
 		 where plan.cuid = planBom.Order_Plan_Id
-		   and planBom.Order_Bom_Id = bom.cuid
+		      and planbom.taskbom_id=taskbom.cuid
+        and taskbom.order_bom_id=bom.cuid
 		   and org.cuid(+) = bom.lgort
 		 <![CDATA[  and  planbom.STATE<>'9']]>
 		      
@@ -565,7 +574,7 @@
     </select>
     
     <select id="findBomListByOrderPlanIdAdvance" resultMap="zgTorderPlanbomExResult">
-				select distinct bom.order_id,planBom.ORDER_BOM_ID,planBom.cuid,bom.zdtyl,
+				select distinct bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl,
 		       bom.idnrk,
 		       bom.maktx2,
 		       bom.matnr,
@@ -587,15 +596,16 @@
 		       zg_t_order_plan       plan,
 		       zg_t_order_planbom    planBom,
 		       zg_t_orderbom         bom,
+		       zg_t_order_taskbom taskbom,
 		       fw_organization       org,
      		   zg_t_bom tbom,zg_materiel ma
 		 where 
 		    bom.idnrk=tbom.idnrk(+)
   			and plan.cuid = planBom.Order_Plan_Id
-		   and planBom.Order_Bom_Id = bom.cuid
+		   and planbom.taskbom_id=taskbom.cuid
+        and taskbom.order_bom_id=bom.cuid
 		   and org.cuid(+) = bom.lgort
 		   and tbom.matkl=ma.id
-         	and ma.lgort=bom.lgort
          	and ma.advance='1'
 		      
 		  <isNotEmpty prepend="AND" property="orderPlanId">

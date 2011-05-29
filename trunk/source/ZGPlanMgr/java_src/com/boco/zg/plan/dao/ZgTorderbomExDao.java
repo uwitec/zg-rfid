@@ -192,8 +192,8 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 	 * @param zgTorderbom
 	 * @return
 	 */
-	public boolean checkStorageNum(ZgTorderbom zgTorderbom) {
-		return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.checkStorageNum",zgTorderbom).size()>0;
+	public boolean checkStorageNum(ZgTorderPlanbom planbom) {
+		return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.checkStorageNum",planbom).size()>0;
 
 	}
 
@@ -204,14 +204,11 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean checktargetCarNum(ZgTorderbom zgTorderbom,String targetOrderId) {
+	public boolean checktargetCarNum(ZgTorderPlanbom planbom,String targetOrderTaskId) {
 		Map paraMap=new HashMap();
-		paraMap.put("targerOrderId", targetOrderId);
-		paraMap.put("idnrk", zgTorderbom.getIdnrk());
-		paraMap.put("matkl", zgTorderbom.getMatkl());
-		paraMap.put("posnr", zgTorderbom.getPosnr());
-		paraMap.put("moveNum", zgTorderbom.getMoveNum());
-		paraMap.put("lgort", zgTorderbom.getLgort());
+		paraMap.put("targetOrderTaskId", targetOrderTaskId);
+		paraMap.put("idnrk", planbom.getIdnrk());
+		paraMap.put("moveNum", planbom.getMoveNum());
 		return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.checktargetCarNum",paraMap).size()>0;
 
 	}
@@ -222,8 +219,8 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 	 * @param zgTorderbom
 	 * @return
 	 */
-	public boolean updateSourceBomNum(ZgTorderbom zgTorderbom) {
-		return 	getSqlMapClientTemplate().update("ZgTorderbomEx.updateSourceBomNum",zgTorderbom)==1;
+	public boolean updateSourceBomNum(ZgTorderPlanbom planbom) {
+		return 	getSqlMapClientTemplate().update("ZgTorderbomEx.updateSourceBomNum",planbom)==1;
 	}
 
 
@@ -311,10 +308,10 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 	 * @param order
 	 * @return
 	 */
-	public List<Map> getTargetBomListByOrderIdAndIdnrk(String idnrk,ZgTorder order) {
+	public List<Map> getTargetBomListByOrderIdAndIdnrk(String idnrk,String orderTaskId) {
 		Map paramsMap=new HashMap();
 		paramsMap.put("idnrk", idnrk);
-		paramsMap.put("orderId", order.getCuid());
+		paramsMap.put("orderTaskId", orderTaskId);
 		return getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getTargetBomListByOrderIdAndIdnrk",paramsMap);
 
 	}

@@ -85,7 +85,7 @@
 	    		$sqlQueryString$ 
 	    	</isNotEmpty>   
 		    <isNotEmpty prepend="AND" property="cuid">
-	       			m.t0_CUID like #cuid#
+	       			m.t0_CUID = #cuid#
        		</isNotEmpty>    
 		    <isNotEmpty prepend="AND" property="labelCn">
 	       			m.t0_LABEL_CN like #labelCn#
@@ -242,7 +242,7 @@
 	</delete>
 	
 	<select id="getById" resultMap="zgTorderbomResult">
-	    select <include refid="commonColumns"/>,nvl(planbom.plan_num,0) plan_num
+	    select <include refid="commonColumns"/>,null as  plan_num
 	    ,null as complete_num,
 	    null as move_num,
 	    null as back_num,
@@ -322,22 +322,20 @@
 	        	 from
 		        ZG_T_ORDER t0
 	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
-	        left join (select pb.order_bom_id,plan_num from zg_t_order_planbom  pb ,zg_t_order_plan p  where p.plan_type in ('ABE','ABC','ABD')
-          and p.cuid=pb.order_plan_id) planbom 
-          on planbom.order_bom_id=m.t0_CUID 
         where m.t0_CUID =#cuid# and rownum=1
         ]]>
     </select>
     
     <select id="findByProperty" resultMap="zgTorderbomResult">
+    <!-- 涉及到修改 -->
     	select <include refid="commonColumns"/> ,
-    	nvl(planbom.plan_num,0) plan_num,        
-    	nvl(planbom.complete_num, 0) complete_num,
-        nvl(planbom.move_num, 0) move_num,
-         nvl(planbom.back_num, 0) back_num,
-          nvl(planbom.out_num, 0) out_num,
-        (nvl(planbom.complete_num,0)-nvl(planbom.move_num,0)-nvl(planbom.back_num,0)-nvl(planbom.out_num,0)) remain_num,
-        (nvl(storagestat.num,0)-nvl(storagestat.outnum,0)) semifinStoreNum
+    	null as plan_num,        
+    	null as complete_num,
+       null as move_num,
+       null as back_num,
+      null as out_num,
+      null as remain_num,
+      null as semifinStoreNum
 	    <![CDATA[
 	        from ( select distinct
 	        		t0.CUID as t0_CUID,
@@ -411,10 +409,6 @@
 	        	 from
 		        ZG_T_ORDER t0
 	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_ID 
-	        
-	          left join zg_t_order_planbom planbom 
-          on m.t0_CUID = planbom.order_bom_id
-          left join ZG_T_STORAGE_STAT storagestat on storagestat.order_id=t0_0_1.t0_cuid and storagestat.order_bomid=m.t0_cuid
         ]]>
         <include refid="dynamicWhere"/>
 		<dynamic prepend="ORDER BY">

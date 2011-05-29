@@ -6,8 +6,8 @@
     <typeAlias alias="zgTcarbom" type="com.boco.zg.plan.base.model.ZgTcarbom"/>
 	<resultMap id="zgTcarbomResult" class="zgTcarbom">
 		<result property="cuid" column="t0_CUID"/>
-		<result property="orderBomId" column="t0_ORDER_BOM_ID"/>
-		<result property="orderId" column="t0_ORDER_ID"/>
+		<result property="taskBomId" column="t0_taskBOM_ID"/>
+		<result property="orderTaskId" column="t0_ORDER_task_ID"/>
 		<result property="planNum" column="t0_PLAN_NUM"/>
 		<result property="realNum" column="t0_REAL_NUM"/>
 		<result property="labelCn" column="t0_LABEL_CN"/>
@@ -20,8 +20,8 @@
 	<sql id="commonColumns">
 	    <![CDATA[
 	        m.t0_CUID,
-	        m.t0_ORDER_BOM_ID,
-	        m.t0_ORDER_ID,
+	        m.t0_taskBOM_ID,
+	        m.t0_ORDER_task_ID,
 	        m.t0_PLAN_NUM,
 	        m.t0_REAL_NUM,
 	        m.t0_LABEL_CN,
@@ -39,11 +39,11 @@
 		    <isNotEmpty prepend="AND" property="cuid">
 	       			m.t0_CUID like #cuid#
        		</isNotEmpty>    
-		    <isNotEmpty prepend="AND" property="orderBomId">
-	       			m.t0_ORDER_BOM_ID like #orderBomId#
+		    <isNotEmpty prepend="AND" property="taskBomId">
+	       			m.t0_taskBOM_ID like #taskBomId#
        		</isNotEmpty>    
 		    <isNotEmpty prepend="AND" property="orderId">
-	       			m.t0_ORDER_ID like #orderId#
+	       			m.t0_ORDER_task_ID like #orderTaskId#
        		</isNotEmpty>    
 		    <isNotEmpty prepend="AND" property="planNum">
 	       			m.t0_PLAN_NUM = #planNum#
@@ -71,8 +71,8 @@
         INSERT INTO
         ZG_T_CARBOM (
         	CUID ,
-        	ORDER_BOM_ID ,
-        	ORDER_ID ,
+        	taskBOM_ID ,
+        	ORDER_task_ID ,
         	PLAN_NUM ,
         	REAL_NUM ,
         	LABEL_CN ,
@@ -81,8 +81,8 @@
         	storage_user_id
         ) VALUES (
         	#cuid# ,
-        	#orderBomId# ,
-        	#orderId# ,
+        	#taskBomId# ,
+        	#orderTaskId# ,
         	#planNum# ,
         	#realNum# ,
         	#labelCn# ,
@@ -99,8 +99,8 @@
     <update id="updateZG_T_CARBOM" parameterClass="zgTcarbom">
     <![CDATA[
         UPDATE ZG_T_CARBOM SET
-	        ORDER_BOM_ID = #orderBomId# ,
-	        ORDER_ID = #orderId# ,
+	        taskBOM_ID = #taskBomId# ,
+	        ORDER_task_ID = #orderTaskId# ,
 	        PLAN_NUM = #planNum# ,
 	        REAL_NUM = #realNum# ,
 	        LABEL_CN = #labelCn# ,
@@ -124,8 +124,8 @@
 	    <![CDATA[
 	        from ( select 
 	        		t0.CUID as t0_CUID,
-	        		t0.ORDER_BOM_ID as t0_ORDER_BOM_ID,
-	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.TASKBOM_ID as t0_TASKBOM_ID,
+	        		t0.ORDER_TASK_ID as t0_ORDER_TASK_ID,
 	        		t0.PLAN_NUM as t0_PLAN_NUM,
 	        		t0.REAL_NUM as t0_REAL_NUM,
 	        		t0.LABEL_CN as t0_LABEL_CN,
@@ -144,8 +144,8 @@
 	    <![CDATA[
 	        from ( select 
 	        		t0.CUID as t0_CUID,
-	        		t0.ORDER_BOM_ID as t0_ORDER_BOM_ID,
-	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.TASKBOM_ID as t0_TASKBOM_ID,
+	        		t0.ORDER_TASK_ID as t0_ORDER_TASK_ID,
 	        		t0.PLAN_NUM as t0_PLAN_NUM,
 	        		t0.REAL_NUM as t0_REAL_NUM,
 	        		t0.LABEL_CN as t0_LABEL_CN,
@@ -162,8 +162,8 @@
 	    <![CDATA[
 	        from ( select 
 	        		t0.CUID as t0_CUID,
-	        		t0.ORDER_BOM_ID as t0_ORDER_BOM_ID,
-	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.TASKBOM_ID as t0_TASKBOM_ID,
+	        		t0.ORDER_TASK_ID as t0_ORDER_TASK_ID,
 	        		t0.PLAN_NUM as t0_PLAN_NUM,
 	        		t0.REAL_NUM as t0_REAL_NUM,
 	        		t0.LABEL_CN as t0_LABEL_CN,
@@ -184,8 +184,8 @@
     <![CDATA[
         select count(*) from (select 
 	        		t0.CUID as t0_CUID,
-	        		t0.ORDER_BOM_ID as t0_ORDER_BOM_ID,
-	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.TASKBOM_ID as t0_TASKBOM_ID,
+	        		t0.ORDER_TASK_ID as t0_ORDER_TASK_ID,
 	        		t0.PLAN_NUM as t0_PLAN_NUM,
 	        		t0.REAL_NUM as t0_REAL_NUM,
 	        		t0.LABEL_CN as t0_LABEL_CN,
@@ -208,8 +208,8 @@
 	    <![CDATA[
 	        from ( select 
 	        		t0.CUID as t0_CUID,
-	        		t0.ORDER_BOM_ID as t0_ORDER_BOM_ID,
-	        		t0.ORDER_ID as t0_ORDER_ID,
+	        		t0.TASKBOM_ID as t0_TASKBOM_ID,
+	        		t0.ORDER_TASK_ID as t0_ORDER_TASK_ID,
 	        		t0.PLAN_NUM as t0_PLAN_NUM,
 	        		t0.REAL_NUM as t0_REAL_NUM,
 	        		t0.LABEL_CN as t0_LABEL_CN,

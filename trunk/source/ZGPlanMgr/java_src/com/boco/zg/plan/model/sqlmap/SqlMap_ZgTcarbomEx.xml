@@ -11,8 +11,8 @@
         INSERT INTO
         ZG_T_CARBOM (
         	CUID ,
-        	ORDER_BOM_ID ,
-        	ORDER_ID ,
+        	TASKBOM_ID ,
+        	ORDER_TASK_ID ,
         	PLAN_NUM ,
         	REAL_NUM ,
         	LABEL_CN ,
@@ -22,8 +22,8 @@
         	
         ) VALUES (
         	#cuid# ,
-        	#orderBomId# ,
-        	#orderId# ,
+        	#taskBomId# ,
+        	#orderTaskId# ,
         	#planNum# ,
         	#realNum# ,
         	#labelCn# ,

@@ -292,40 +292,40 @@
 				       t.plan_type t0_plan_type,
 				       t.PSBH t0_PSBH,
 				      null as  t0_plant,
-				    	 tor.arbpl as t0_arbpl,
+				    	 task.arbpl as t0_arbpl,
 				       count(1) num,
-                       tor.pcdat,      aide.px_date,t.INDEXNO indexNo,'0' as advance
+                       tor.pcdat,      task.px_date,t.INDEXNO indexNo,'0' as advance
 				  from zg_t_order_plan_group t,
 				       zg_t_group_order_plan gop,
 				       zg_t_order_plan       op,
 				       zg_t_order            tor ,
-				        Zg_t_Order_Aide aide ]]>
+				        Zg_t_Order_task task ]]>
 				         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
-				    <![CDATA[ where   aide.order_id=tor.cuid
-        				 and aide.plant=op.plant
-        				 and t.cuid = gop.group_id
+				    <![CDATA[ where   
+        				  t.cuid = gop.group_id
 				   and gop.order_plan_id = op.cuid
+				   and op.order_task_id=task.cuid
+				   and task.order_id=tor.cuid
 				   and op.state<>'9'
-				   and tor.order_state<>'-1'
-				   and op.order_id = tor.cuid
+				   and task.flag<>'-1'
 				   and op.plant is not null]]>
 				   <isNotEmpty prepend="AND" property="px">
        		  		 <![CDATA[ op.state<>'-1']]>
        				</isNotEmpty>
        				<isNotEmpty prepend="AND" property="arbpl">
-       		  		 tor.arbpl='$arbpl$'
+       		  		 task.arbpl='$arbpl$'
        				</isNotEmpty>
 				    <isNotEqual property="operatorId" compareValue="0"> 
 				   		and ma.employee_id='$operatorId$'
 				 		and op.plant=ma.org_id
 				  	</isNotEqual>
-				  and op.plant='$plant$'
+				  and task.plant='$plant$'
 				  <![CDATA[ group by t.cuid,
 				          t.label_cn,
 				          t.state,
 				          t.percent,
 				          t.plan_type,
-				          t.psbh, tor.arbpl, aide.px_date,t.INDEXNO
+				          t.psbh, task.arbpl, task.px_date,t.INDEXNO
 				 ) m
         ]]>
 		<include refid="dynamicWhere3"/>)
@@ -339,39 +339,38 @@
 				       t.plan_type t0_plan_type,
 				       t.PSBH t0_PSBH,
 				      null as  t0_plant,
-				    	 tor.arbpl as t0_arbpl,
+				    	 task.arbpl as t0_arbpl,
 				       count(1) num,
-                       tor.pcdat,      aide.px_date,t.INDEXNO indexNo,'0' as advance
+                       tor.pcdat,      task.px_date,t.INDEXNO indexNo,'0' as advance
 				  from zg_t_order_plan_group t,
 				       zg_t_group_order_plan gop,
 				       zg_t_order_plan       op,
 				       zg_t_order            tor ,
-				        Zg_t_Order_Aide aide ]]>
+				        Zg_t_Order_task task ]]>
 				         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
-				    <![CDATA[ where   aide.order_id=tor.cuid
-        				 and aide.plant=op.plant
-        				 and t.cuid = gop.group_id
+				    <![CDATA[ where    t.cuid = gop.group_id
 				   and gop.order_plan_id = op.cuid
-				   and op.order_id = tor.cuid
+				   and op.order_task_id=task.cuid
+				   and task.order_id=tor.cuid
 				   and op.plant is not null
-				   and tor.order_state<>'-1']]>
+				   and task.flag<>'-1']]>
 				    <isNotEmpty prepend="AND" property="px">
        		  		 <![CDATA[ op.state<>'-1']]>
        				</isNotEmpty>
 				   <isNotEmpty prepend="AND" property="arbpl">
-       		  		 tor.arbpl='$arbpl$'
+       		  		 task.arbpl='$arbpl$'
        				</isNotEmpty>
 				    <isNotEqual property="operatorId" compareValue="0"> 
 				   		and ma.employee_id='$operatorId$'
 				 		and op.plant=ma.org_id
 				  	</isNotEqual>
-				  and op.plant='$plant$'
+				  and task.plant='$plant$'
 				  <![CDATA[ group by t.cuid,
 				          t.label_cn,
 				          t.state,
 				          t.percent,
 				          t.plan_type,
-				          t.psbh, tor.arbpl, aide.px_date,t.INDEXNO
+				          t.psbh, task.arbpl, task.px_date,t.INDEXNO
 				 ) m
         ]]>
 		<include refid="dynamicWhere"/>)
@@ -388,56 +387,54 @@
 				       t.plan_type t0_plan_type,
 				       t.PSBH t0_PSBH,
 				      null as  t0_plant,
-				    	 tor.arbpl as t0_arbpl,
+				    	 task.arbpl as t0_arbpl,
 				      count(distinct op.cuid) num,
-                       tor.pcdat,      aide.px_date,t.INDEXNO indexNo,'0' as advance
+                       tor.pcdat,      task.px_date,t.INDEXNO indexNo,'0' as advance
 				  from zg_t_order_plan_group t,
 				       zg_t_group_order_plan gop,
 				       zg_t_order_plan       op,
 				       zg_t_order            tor ,
-				       Zg_t_Order_Aide aide,
+				       Zg_t_Order_task task,
 				       zg_t_orderbom orderbom,
+				       zg_t_order_taskbom taskbom,
                			zg_t_order_planbom planbom,
                			zg_t_bom bom,
                			zg_materiel mat ]]>
 				         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
 				    <![CDATA[ where   
-				    	   orderbom.order_id=tor.cuid
+				    	  	 orderbom.order_id=tor.cuid
 					         and planbom.order_plan_id=op.cuid
-					         and planbom.order_bom_id=orderbom.cuid
+					         and planbom.taskbom_id=taskbom.cuid
+					         and taskbom.order_bom_id=orderbom.cuid
 					         and orderbom.idnrk=bom.idnrk
-					         and orderbom.matkl=bom.matkl
-					         and orderbom.lgort=bom.lgort
 					         and bom.matkl=mat.id
-					         and bom.lgort=mat.lgort
 					         and mat.advance='1'
 					         and planbom.state<>'9'
-					         and aide.order_id=tor.cuid
-        				 	and aide.plant=op.plant
-        				 	and t.cuid = gop.group_id
-				   			and gop.order_plan_id = op.cuid
-				   			and op.order_id = tor.cuid
+					      and   t.cuid = gop.group_id
+				   and gop.order_plan_id = op.cuid
+				   and op.order_task_id=task.cuid
+				   and task.order_id=tor.cuid
 				   			and op.plant is not null
-				   			and tor.order_state<>'-1'
+				   			and task.flag<>'-1'
 				   			]]>
-				   			and  trunc(aide.px_date)> to_date('$pxDate$', 'yyyy-MM-dd')
+				   			and  trunc(task.px_date)> to_date('$pxDate$', 'yyyy-MM-dd')
 				   	<isNotEmpty prepend="AND" property="px">
        		  		 	<![CDATA[ op.state<>'-1']]>
        				</isNotEmpty>
 				   <isNotEmpty prepend="AND" property="arbpl">
-       		  		 tor.arbpl='$arbpl$'
+       		  		 task.arbpl='$arbpl$'
        				</isNotEmpty>
 				    <isNotEqual property="operatorId" compareValue="0"> 
 				   		and ma.employee_id='$operatorId$'
 				 		and op.plant=ma.org_id
 				  	</isNotEqual>
-				  and op.plant='$plant$'
+				  and task.plant='$plant$'
 				  <![CDATA[ group by t.cuid,
 				          t.label_cn,
 				          t.state,
 				          t.percent,
 				          t.plan_type,
-				          t.psbh, tor.arbpl, aide.px_date,t.INDEXNO
+				          t.psbh, task.arbpl, task.px_date,t.INDEXNO
 				 ) m
         ]]>
 		<include refid="dynamicWhere1"/>
@@ -465,39 +462,38 @@
 				       t.plan_type t0_plan_type,
 				       t.PSBH t0_PSBH,
 				      null as  t0_plant,
-				    	 tor.arbpl as t0_arbpl,
+				    	 task.arbpl as t0_arbpl,
 				       count(1) num,
-                       tor.pcdat,      aide.px_date,t.INDEXNO indexNo,'0' as advance
+                       tor.pcdat,      task.px_date,t.INDEXNO indexNo,'0' as advance
 				  from zg_t_order_plan_group t,
 				       zg_t_group_order_plan gop,
 				       zg_t_order_plan       op,
 				       zg_t_order            tor ,
-				        Zg_t_Order_Aide aide ]]>
+				        Zg_t_Order_Aide task ]]>
 				         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
-				    <![CDATA[ where   aide.order_id=tor.cuid
-        				 and aide.plant=op.plant
-        				 and t.cuid = gop.group_id
-				   and gop.order_plan_id = op.cuid
-				   and op.order_id = tor.cuid
+				    <![CDATA[ where      t.cuid = gop.group_id
+                   and gop.order_plan_id = op.cuid
+                   and op.order_task_id=task.cuid
+                   and task.order_id=tor.cuid
 				   and op.plant is not null
-				   and tor.order_state<>'-1' ]]>
+				   and task.flag<>'-1' ]]>
 				    <isNotEmpty prepend="AND" property="px">
        		  		    <![CDATA[ op.state<>'-1']]>
        				</isNotEmpty>
 				   <isNotEmpty prepend="AND" property="arbpl">
-       		  		 tor.arbpl='$arbpl$'
+       		  		 task.arbpl='$arbpl$'
        				</isNotEmpty>
 				    <isNotEqual property="operatorId" compareValue="0"> 
 				   		and ma.employee_id='$operatorId$'
 				 		and op.plant=ma.org_id
 				  	</isNotEqual>
-				  and op.plant='$plant$'
+				  and task.plant='$plant$'
 				  <![CDATA[ group by t.cuid,
 				          t.label_cn,
 				          t.state,
 				          t.percent,
 				          t.plan_type,
-				          t.psbh, tor.arbpl, aide.px_date,t.INDEXNO
+				          t.psbh, task.arbpl, task.px_date,t.INDEXNO
 				 ) m
         ]]>
 		<include refid="dynamicWhere2"/>

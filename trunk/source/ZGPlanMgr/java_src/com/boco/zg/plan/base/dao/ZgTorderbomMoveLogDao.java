@@ -6,41 +6,20 @@
 
 package com.boco.zg.plan.base.dao;
 
-import java.util.*;
-
-import javacommon.base.*;
-import javacommon.util.*;
-import javacommon.base.model.*;
-
-import cn.org.rapid_framework.util.*;
-import cn.org.rapid_framework.web.util.*;
-import cn.org.rapid_framework.page.*;
-import cn.org.rapid_framework.page.impl.*;
-import cn.org.rapid_framework.beanutils.BeanUtils;
-
-import com.boco.zg.plan.base.model.*;
-import com.boco.zg.plan.base.dao.*;
-import com.boco.zg.plan.base.service.*;
-
-/**
- * @author system email:mysunshines@163.com
- * @version 1.0
- * @since 1.0
- */
-
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javacommon.base.BaseIbatisDao;
+
 import org.springframework.stereotype.Component;
 
+import cn.org.rapid_framework.beanutils.BeanUtils;
+import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 import cn.org.rapid_framework.util.MapAndObject;
 
 import com.boco.zg.plan.base.model.ZgTorderbomMoveLog;
-import com.boco.frame.sys.base.model.FwOrganization;
-import com.boco.frame.sys.base.model.Province;
 
 
 @Component

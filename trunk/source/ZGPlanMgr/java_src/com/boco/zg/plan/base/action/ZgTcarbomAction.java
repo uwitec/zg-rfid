@@ -414,8 +414,8 @@ public class ZgTcarbomAction extends BaseStruts2Action implements Preparable,Mod
 			//生成装车计划bom
 			ZgTcarbom bom = new ZgTcarbom();
 			bom.setCarPlanId(carPlanId);
-			bom.setOrderBomId(orderBomId);
-			bom.setOrderId(orderId);
+//			bom.setOrderBomId(orderBomId);
+//			bom.setOrderId(orderId);
 			bom.setPlanNum(planbom.getCarNum()-planbom.getCompleteNum());
 			bom.setRealNum(0l);
 			bom.setOrderPlanbomId(orderPlanbomId);
@@ -440,7 +440,8 @@ public class ZgTcarbomAction extends BaseStruts2Action implements Preparable,Mod
 		List<ZgTcarbom> list = this.zgTcarbomBo.findByProperty(entity);
 		if(list!=null && list.size()>0){
 			ZgTcarbom zgTcarbom = list.get(0);
-			String  orderBomID = zgTcarbom.getOrderBomId();
+//			String  orderBomID = zgTcarbom.getOrderBomId();
+			String  orderBomID = "";
 			ZgTorderbom zgTorderbom = zgTorderbomBo.getById(orderBomID);
 			String lgort = zgTorderbom.getLgort();
 			PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
