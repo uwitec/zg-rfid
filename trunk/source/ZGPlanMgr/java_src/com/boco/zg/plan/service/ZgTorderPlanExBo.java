@@ -425,8 +425,8 @@ public class ZgTorderPlanExBo extends BaseManager<ZgTorderPlanEx,java.lang.Strin
 	 */
 	public List<Map> getOrderListByGroupId(String groupId) {
 		StringBuffer sql=new StringBuffer();
-		sql.append("select distinct t.cuid cuid from zg_t_order t,zg_t_order_plan plan,zg_t_group_order_plan gop  ");
-		sql.append(" where t.cuid=plan.order_id and plan.cuid=gop.order_plan_id ");
+		sql.append("select distinct t.cuid cuid from zg_t_order t,zg_t_order_plan plan,zg_t_group_order_plan gop,zg_t_order_task task  ");
+		sql.append(" where  t.cuid = task.order_id and task.cuid=plan.order_task_id and plan.cuid=gop.order_plan_id ");
 	    sql.append("and gop.group_id='"+groupId+"'");
 		return ((ZgTorderPlanExDao)this.getEntityDao()).findDynQuery(sql.toString());
 	}
