@@ -15,7 +15,7 @@
 		       orderbom.maktx2,
 		       orderbom.msehl2 msehl1,
 		       orderbom.zdtyl,
-		      orderbom.menge,
+		      taskbom.menge,
 		      sum(nvl(sup.car_num,0))  LGMNG,
 		       sup.lifnr,
 		       sup.lifnr_name,
@@ -28,13 +28,19 @@
 		       zg_t_carplan          carplan,
 		       zg_t_carbom           carbom,
 		       zg_t_carbom_suppliers sup,
-           zg_t_order_planbom planbom
-		 where zto.cuid = carbom.order_id 
-		   and orderbom.cuid = carbom.order_bom_id
+           zg_t_order_planbom planbom,
+           
+           zg_t_order_task task,
+           zg_t_order_taskbom taskbom
+           
+		 where zto.cuid = task.order_id
+        and task.cuid=carbom.order_task_id 
+		   and taskbom.cuid = carbom.taskbom_id
 		   and carbom.car_plan_id = carplan.cuid
 		   and carbom.cuid = sup.car_bom_id
        and planbom.cuid=carbom.order_planbom_id
-       and planbom.order_bom_id=orderbom.cuid
+       and planbom.taskbom_id=taskbom.cuid
+       and taskbom.order_bom_id=orderbom.cuid
          and sup.car_num>0
 		   and  carplan.syn = '0'
 		   and carplan.type='2'
@@ -50,13 +56,13 @@
 		       orderbom.maktx2,
 		       orderbom.msehl2 ,
 		       orderbom.zdtyl,
-		       orderbom.menge,
+		       taskbom.menge,
 		       sup.lifnr,
 		       sup.lifnr_name,
 		       orderbom.sortf,
 		       orderbom.lgort,
             	zto.MIPOS,
-           		zto.KDAUF         ]]>
+           		zto.KDAUF            ]]>
 	</select>
 	
 	<select id="getSynSapOrderBomByOrderPlanId" resultClass="java.util.HashMap">
@@ -71,7 +77,7 @@
 		       orderbom.maktx2,
 		       orderbom.msehl2 msehl1,
 		       orderbom.zdtyl,
-		       orderbom.menge,
+		       taskbom.menge,
 		     sum(nvl(sup.car_num,0))  LGMNG,
 		       sup.lifnr,
 		       sup.lifnr_name,
@@ -84,12 +90,18 @@
 		       zg_t_carplan          carplan,
 		       zg_t_carbom           carbom,
 		       zg_t_carbom_suppliers sup,
-		       zg_t_order_planbom planbom
+		       zg_t_order_planbom planbom,
+           
+           zg_t_order_task task,
+           zg_t_order_taskbom taskbom
 		 where 
-		   planbom.order_bom_id=orderbom.cuid
+		   planbom.taskbom_id=taskbom.cuid
+       and taskbom.order_bom_id=orderbom.cuid
 		   and planbom.cuid=carbom.order_planbom_id
-		   and zto.cuid = carbom.order_id 
-		   and orderbom.cuid = carbom.order_bom_id
+		   and zto.cuid = task.order_id
+       and task.cuid=carbom.order_task_id 
+		   and orderbom.cuid = taskbom.order_bom_id
+       and carbom.taskbom_id=taskbom.cuid
 		   and carbom.car_plan_id = carplan.cuid
 		   and carbom.cuid = sup.car_bom_id
 		    and sup.car_num>0
@@ -107,18 +119,18 @@
 		       orderbom.maktx2,
 		       orderbom.msehl2 ,
 		       orderbom.zdtyl,
-		       orderbom.menge,
+		       taskbom.menge,
 		       sup.lifnr,
 		       sup.lifnr_name,
 		       orderbom.sortf,
 		       orderbom.lgort,
 		        zto.MIPOS,
-           		zto.KDAUF    ]]>
+           		zto.KDAUF      ]]>
 	</select>
 	
 	<select id="getSynSapOrderBomByCarPlanId" resultClass="java.util.HashMap">
 			<![CDATA[
-		select zto.mandt,
+			select zto.mandt,
 		       zto.aufnr,
 		       zto.matnr,
 		       zto.maktx1,
@@ -128,7 +140,7 @@
 		       orderbom.maktx2,
 		       orderbom.msehl2 msehl1,
 		       orderbom.zdtyl,
-		       orderbom.menge,
+		       taskbom.menge,
 		     sum(nvl(sup.car_num,0))  LGMNG,
 		       sup.lifnr,
 		       sup.lifnr_name,
@@ -141,12 +153,18 @@
 		       zg_t_carplan          carplan,
 		       zg_t_carbom           carbom,
 		       zg_t_carbom_suppliers sup,
-		       zg_t_order_planbom planbom
+		       zg_t_order_planbom planbom,
+           
+           zg_t_order_task task,
+           zg_t_order_taskbom taskbom
 		 where 
-		   planbom.order_bom_id=orderbom.cuid
+		   planbom.taskbom_id=taskbom.cuid
+       and taskbom.order_bom_id=orderbom.cuid
 		   and planbom.cuid=carbom.order_planbom_id
-		   and zto.cuid = carbom.order_id 
-		   and orderbom.cuid = carbom.order_bom_id
+		   and zto.cuid=task.order_id
+       and task.cuid = carbom.order_task_id 
+		   and orderbom.cuid = taskbom.order_bom_id
+       and carbom.taskbom_id=taskbom.cuid
 		   and carbom.car_plan_id = carplan.cuid
 		   and carbom.cuid = sup.car_bom_id
 		    and sup.car_num>0
@@ -163,13 +181,13 @@
 		       orderbom.maktx2,
 		       orderbom.msehl2 ,
 		       orderbom.zdtyl,
-		       orderbom.menge,
+		       taskbom.menge,
 		       sup.lifnr,
 		       sup.lifnr_name,
 		       orderbom.sortf,
 		       orderbom.lgort,
 		        zto.MIPOS,
-           		zto.KDAUF    ]]>
+           		zto.KDAUF     ]]>
 	</select>
 	
 	

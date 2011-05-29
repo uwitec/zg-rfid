@@ -68,6 +68,7 @@ public class LoadRequestProcessThread implements Runnable {
 	private static Object synLock=new Object();
 	private static Object planLock=new Object();
 	private static Object orderLock=new Object();
+	public static Object pcOrderLock=new Object();
 	
 	private SapClient getSapClient() {
 		return (SapClient)ApplicationContextHolder.getBean("sapClient");
@@ -457,14 +458,18 @@ public class LoadRequestProcessThread implements Runnable {
 			HandlerSapDataService handlerSapDataService = getHandlerSapDataService();
 			handlerSapDataService.updateRelation(batchNo);
 			
-			List<Map> list= getBaseDao().queryBySql("select temp.aufnr ,temp.arbpl from zg_t_order_temp temp where temp.batch_no="+batchNo);
-			for (Map map:list) {
-				String aufnr=IbatisDAOHelper.getStringValue(map, "AUFNR", "").trim();
-				
-				List<Map> tempList=getBaseDao().queryBySql("select * from zg_t_order t where t.aufnr='"+aufnr+"' ");
-				if(tempList.size()==0){//订单不存在则进行插入
-					String orderId=handlerSapDataService.saveZgTorderByAufnr(aufnr,batchNo);
-					handlerSapDataService.addSapBomsDataByAufnr(batchNo, aufnr,orderId);
+//			List<Map> list= getBaseDao().queryBySql("select temp.aufnr ,temp.arbpl from zg_t_order_temp temp where temp.batch_no="+batchNo);
+			ZgTorderTemp orderTemp=new ZgTorderTemp();
+			orderTemp.setBatchNo(batchNo+"");
+			List<ZgTorderTemp> list=getZgTorderTempBo().findByProperty(orderTemp);
+			
+			for (ZgTorderTemp temp:list) {
+				synchronized (pcOrderLock) {
+					String aufnr=temp.getAufnr();
+					
+					handlerSapDataService.doProdessPcOrder(batchNo,temp);
+					
+					
 				}
 			}
 			

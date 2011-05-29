@@ -108,6 +108,12 @@ public interface HandlerSapDataService {
 	 */
 	void doProdessChangeOrder(int batchNo, String aufnr,ZgTorderTemp sapOrder);
 
+	/**
+	 * @param batchNo
+	 * @param temp
+	 */
+	void doProdessPcOrder(int batchNo, ZgTorderTemp temp);
+
 
 
 	

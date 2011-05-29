@@ -770,19 +770,25 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 					}
 					
 					//处理新增物料 处理
-					getHandlerOrderServiceImpl().doPxAddBomData(batchNo, aufnr, plant, order);
+					int addRow=getHandlerOrderServiceImpl().doPxAddBomData(batchNo, aufnr, plant, order);
 					
 					//处理修改的物料
-					getHandlerOrderServiceImpl().doPxEditBomData(batchNo, aufnr, plant, order);
+					int editRow = getHandlerOrderServiceImpl().doPxEditBomData(batchNo, aufnr, plant, order);
 					
 					//处理删除的物料
-					getHandlerOrderServiceImpl().doPxDelBomData(batchNo, aufnr, plant, order);
+					int delRow=getHandlerOrderServiceImpl().doPxDelBomData(batchNo, aufnr, plant, order);
 					
 					//该生产线加入已经处理标识 
 					sapIsDoArbpls=sapIsDoArbpls+","+order.getArbpl();
+					
+					if(addRow>0||editRow>0||delRow>0){
+						getZgTorderbomExBo().doZgtorderProcess(order.getTaskId(),"task");
+					}
 					break;
 				}
 			}
+			
+			//计算领料进度
 		}
 		
 		//B、处理SAP中存在，但是持RFID中不存在的排序数据
@@ -801,19 +807,26 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 						getZgTorderTaskBo().updateZgtorderTaskByOrder(order,ZgTorderTask.NUMULSTATE);
 						
 						//处理新增物料
-						getHandlerOrderServiceImpl().doPxAddBomData(batchNo, aufnr, plant, order);
+						int addRow=getHandlerOrderServiceImpl().doPxAddBomData(batchNo, aufnr, plant, order);
 						
 						//处理修改的物料
-						getHandlerOrderServiceImpl().doPxEditBomData(batchNo, aufnr, plant, order);
+						int editRow=getHandlerOrderServiceImpl().doPxEditBomData(batchNo, aufnr, plant, order);
 						
 						//处理删除的物料
-						getHandlerOrderServiceImpl().doPxDelBomData(batchNo, aufnr, plant, order);
+						int delRow=getHandlerOrderServiceImpl().doPxDelBomData(batchNo, aufnr, plant, order);
 						
 						//该生产线加入已经处理标识 
 						sapIsDoArbpls=sapIsDoArbpls+","+order.getArbpl();
 						
 						rfidIsDoArbpls=rfidIsDoArbpls+","+order.getArbpl();//该生产线加入已经处理标识 
 						flag=true;
+						
+						if(addRow>0||editRow>0||delRow>0){//重新计算领料进度
+							getZgTorderbomExBo().doZgtorderProcess(order.getTaskId(),"task");
+						}
+						break;
+						
+						
 					}
 				}
 				
@@ -889,7 +902,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 				}
 				
 				
-				
+				getZgTorderbomExBo().doZgtorderProcess(order.getTaskId(),"task");
 				
 			}
 		}
@@ -922,13 +935,18 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		//处理新增物料 处理
 		getHandlerOrderServiceImpl().doChangeAddBomData(batchNo, aufnr,rfidTorder.getCuid());
 		
-		//处理修改的物料
-//		getHandlerOrderServiceImpl().doPxEditBomData(batchNo, aufnr);
+		//处理修改BOM数量
+		getHandlerOrderServiceImpl().doPcEditBomData(batchNo, aufnr,rfidTorder.getCuid());
 		
 		//处理删除的物料
 		ZgTorder orderTorder=new ZgTorder();
 		orderTorder.setCuid(rfidTorder.getCuid());
-		getHandlerOrderServiceImpl().doPxDelBomData(batchNo, aufnr,"",orderTorder);
+		int delRow=getHandlerOrderServiceImpl().doPxDelBomData(batchNo, aufnr,"",orderTorder);
+		
+		
+		if(delRow>0){
+			getZgTorderbomExBo().doZgtorderProcess(rfidTorder.getCuid(),"order");
+		}
 	}
 
 	
@@ -972,9 +990,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			String plant=IbatisDAOHelper.getStringValue(map, "PLANT", "").trim();
 			String orderState=IbatisDAOHelper.getStringValue(map, "ORDER_STATE");
 			String aufnr=IbatisDAOHelper.getStringValue(map,"AUFNR");
-			if(aufnr.equals("1000020172")){
-				System.out.println("");
-			}
+
 			String sortf=getPlantSortfMap().get(plant);
 			
 			List<String> softList=new ArrayList<String>();
@@ -1028,6 +1044,48 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 							"  and temp.batch_no='"+batchNo+"' and rownum=1");
 		this.baseDao.executeSql(insertBuffer.toString());
 		return orderId;
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see sap.service.HandlerSapDataService#doProdessPcOrder(int, com.boco.zg.plan.base.model.ZgTorderTemp)
+	 */
+	public void doProdessPcOrder(int batchNo, ZgTorderTemp temp) {
+		
+		ZgTorder order=new ZgTorder();
+		order.setAufnr(temp.getAufnr());
+		List<ZgTorder> list=getZgTorderBo().findByProperty(order);
+		
+		
+		if(list.size()==0){//订单不存在则进行插入
+			String orderId=saveZgTorderByAufnr(temp.getAufnr(),batchNo);
+			addSapBomsDataByAufnr(batchNo, temp.getAufnr(),orderId);
+		}else {//修改相关信息
+			
+			//修改订单信息
+			String orderId=list.get(0).getCuid();
+			temp.setCuid(orderId);
+			temp.setArbpl1(temp.getArbpl());
+			getZgTorderTempBo().updateZgTOrder(temp);
+			
+			//处理新增物料
+			getHandlerOrderServiceImpl().doChangeAddBomData(batchNo, temp.getAufnr(),orderId);
+			
+			//处理修改BOM数量
+			getHandlerOrderServiceImpl().doPcEditBomData(batchNo, temp.getAufnr(),orderId);
+			
+			//处理删除的物料
+			ZgTorder orderTorder=new ZgTorder();
+			orderTorder.setCuid(orderId);
+			int delRow=getHandlerOrderServiceImpl().doPxDelBomData(batchNo, temp.getAufnr(),"",orderTorder);
+			
+			if(delRow>0){
+				getZgTorderbomExBo().doZgtorderProcess(orderId,"order");
+			}
+			
+		}
+		
 	}
 
 
