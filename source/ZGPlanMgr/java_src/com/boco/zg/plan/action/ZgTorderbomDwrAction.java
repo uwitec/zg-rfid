@@ -23,11 +23,13 @@ import javacommon.base.BaseDwrAction;
 import javacommon.util.StringHelper;
 import cn.org.rapid_framework.util.ApplicationContextHolder;
 
+import com.boco.frame.login.pojo.OperatorInfo;
 import com.boco.zg.plan.base.model.ZgTorderPlan;
 import com.boco.zg.plan.base.model.ZgTorderPlanGroup;
 import com.boco.zg.plan.base.model.ZgTorderPlanbom;
 import com.boco.zg.plan.base.model.ZgTorderbom;
 import com.boco.zg.plan.base.service.ZgTorderPlanBo;
+import com.boco.zg.plan.base.service.ZgTorderbomBo;
 import com.boco.zg.plan.service.ZgTorderPlanExBo;
 import com.boco.zg.plan.service.ZgTorderPlanGroupExBo;
 import com.boco.zg.plan.service.ZgTorderbomExBo;
@@ -61,6 +63,11 @@ public class ZgTorderbomDwrAction extends BaseDwrAction {
 		return (ZgTorderPlanBo) ApplicationContextHolder.getBean("zgTorderPlanBo");
 	}
 	
+	private ZgTorderbomBo getzgTorderbomBo(){
+		return (ZgTorderbomBo) ApplicationContextHolder.getBean("zgTorderbomBo");
+	}
+	
+	
 
 	public String changeSortF(String[] sortfs) {
 		for (int j = 0; j < sortfs.length; j++) {
@@ -81,12 +88,19 @@ public class ZgTorderbomDwrAction extends BaseDwrAction {
 	 * @return
 	 */
 	public String changeSortF1(String[] sortfs) {
+		String orderId="";
 		for (int j = 0; j < sortfs.length; j++) {
 			if (!StringUtils.isBlank(sortfs[j])) {
 				String[] s = sortfs[j].split("_");
 				getZgTorderbomExBo().updateOrderBomSortf1(s[0], s[1]);
 			}
 		}
+		if(sortfs.length>0){//重新计算领料进度
+			String[] s = sortfs[0].split("_");
+			ZgTorderbom orderbom = (ZgTorderbom) getzgTorderbomBo().getById(s[0]);
+			getZgTorderbomExBo().doZgtorderProcess(orderbom.getOrderId(),"order");
+		}
+		
 		return "success";
 	}
 
@@ -196,16 +210,17 @@ public class ZgTorderbomDwrAction extends BaseDwrAction {
 	 * @param sourceOrderId
 	 * @return
 	 */
-	public String bomMove(String objcetJOSNs,String sourceOrderId,String targetOrderId){
+	public String bomMove(HttpServletRequest request,String objcetJOSNs,String sourceOrderTaskId,String targetOrderTaskId){
 		//设置日期转换的格式  
 		boolean flag = true;
-		String msg="";
+		String msg="失败";
 		try{
-			msg=getZgTorderbomExBo().bomMove(objcetJOSNs, targetOrderId);
+			OperatorInfo operatorInfo=getSessionOperatorInfo(request);
+			msg=getZgTorderbomExBo().bomMove(objcetJOSNs, sourceOrderTaskId,targetOrderTaskId,operatorInfo);
 			
-			getZgTorderbomExBo().doZgtorderProcess(sourceOrderId);
+			getZgTorderbomExBo().doZgtorderProcess(sourceOrderTaskId,"order");
 			
-			getZgTorderbomExBo().doZgtorderProcess(targetOrderId);
+			getZgTorderbomExBo().doZgtorderProcess(targetOrderTaskId,"order");
 			
 		}catch(Exception e){
 			flag = false;

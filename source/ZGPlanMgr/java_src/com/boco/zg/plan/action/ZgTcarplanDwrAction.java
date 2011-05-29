@@ -437,9 +437,8 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 	 * 获取bom的锁定装车人
 	 * @return
 	 */
-	public String getLockUser(String bomId){
-		String aaString=getZgTcarplanExBo().getLockUser(bomId);
-		return getZgTcarplanExBo().getLockUser(bomId);
+	public String getLockUser(String taskBomId){
+		return getZgTcarplanExBo().getLockUser(taskBomId);
 	}
 	
 	/**
