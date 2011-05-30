@@ -730,6 +730,9 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		String[]  aufnrArbpls =zgTcarplanExBo.getAufnrsByorderBomIds(bomList);
 		getRequest().setAttribute("aufnrs", aufnrArbpls[0]);
 		getRequest().setAttribute("arbpls", aufnrArbpls[1]);
+		getRequest().setAttribute("kdauf", aufnrArbpls[2]);
+		getRequest().setAttribute("kdpos", aufnrArbpls[3]);
+		getRequest().setAttribute("maktx1", aufnrArbpls[4]);
 		//根据领料计划分组ID
 		List<ZgTorder> orderList=zgTorderExBo.getOrderInfoListByGroupId(groupId);
 		getRequest().setAttribute("orderList", orderList);
@@ -1184,6 +1187,9 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		Long endLong=System.currentTimeMillis();
 		getRequest().setAttribute("aufnrs", aufnrArbpls[0]);
 		getRequest().setAttribute("arbpls", aufnrArbpls[1]);
+		getRequest().setAttribute("kdauf", aufnrArbpls[2]);
+		getRequest().setAttribute("kdpos", aufnrArbpls[3]);
+		getRequest().setAttribute("maktx1", aufnrArbpls[4]);
 		getRequest().setAttribute("bomList", bomList);
 		pageRequest.getFilters().put("bomCuids", bomCuids);
 		getRequest().setAttribute("pageRequest", pageRequest);
