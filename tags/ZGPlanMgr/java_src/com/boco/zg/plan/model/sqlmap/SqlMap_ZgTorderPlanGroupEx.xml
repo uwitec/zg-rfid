@@ -146,10 +146,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		    and mat.id in   
 		 and mat.id = bom.matkl_self   
 		  and mat.lgort = orderbom.lgort-->
-		    and mat.id in (select tm.id
-                    from zg_materiel tm
-                   start with tm.id = morg.matkl
-                  connect by prior  tm.cuid=tm.parent_id)
+		    and mat.id in ('$carMatkls$')
    			and mat.id=orderbom.matkl_self
 		   </isNotEqual>
 		    and bom.idnrk = orderbom.idnrk 
@@ -221,10 +218,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
 			<!--    and morg.matkl = ma.id-->
-		      and mat.id in (select tm.id
-                    from zg_materiel tm
-                   start with tm.id = morg.matkl
-                  connect by prior  tm.cuid=tm.parent_id)
+		    and mat.id in ('$carMatkls$')
    				and mat.id=orderbom.matkl_self
 		   and
 		   </isNotEqual>
