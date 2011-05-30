@@ -59,11 +59,16 @@ public class ZgTorderTaskBo extends BaseManager<ZgTorderTask,java.lang.String>{
 	 */
 	public void updateZgtorderTaskByOrder(ZgTorder order,String flag) {
 		ZgTorderTask task=new ZgTorderTask();
+		task=getById(order.getTaskId());
 		task.setCuid(order.getTaskId());
 		task.setPlant(order.getPlant());
 		task.setArbpl(order.getArbpl());
 		task.setOrderId(order.getCuid());
-		task.setPxDate(order.getPxdat());
+		
+		//特殊处理 用于重复做排序数据的订单，不做排序日期推后修改
+		if(task.getPxDate().after(order.getPxdat())){
+			task.setPxDate(order.getPxdat());
+		}
 		task.setPoskey(order.getPoskey());
 		task.setPmenge(order.getPmenge());
 		task.setAufnr(order.getAufnr());
