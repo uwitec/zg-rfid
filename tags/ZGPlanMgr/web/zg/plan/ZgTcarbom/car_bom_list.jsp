@@ -184,6 +184,39 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
     </style> 
 </head>
 <body>
+<div id="block" style="display:none">
+			<table>
+				<tr>
+					<td style="font-size: 10px; word-break: break-all; width: 185px;">
+						<font style="font-size: 10px;font-weight: bold">
+							装车编号:${pageRequest.filters.carPlanId }<br />
+							&nbsp;&nbsp;订单号:${aufnrs}<br />
+							&nbsp;&nbsp;生产线：${arbpls}<br />
+							<c:if test="${fn:indexOf(aufnrs,'6')==0}">
+							销售订单号：${kdauf }<br />
+							&nbsp;&nbsp;项目号：${kdpos }<br />
+							</c:if>
+							公司机型：${maktx1 }<br />
+							仓库编号：${pageRequest.filters.lgort} <br />
+							仓库名称：${pageRequest.filters.lgortName }
+							<br /><br /> </font>
+						<c:forEach items="${bomList}" var="obj" varStatus="n">
+							<c:if test="${empty obj.STORAGE_USER_ID}">
+							<font style="font-size: 10px;"> 
+							<c:if test="${fn:indexOf(aufnrs,',')>0}">
+								订单编号:${obj.AUFNR}<br />
+							</c:if>
+								物料编码:${obj.IDNRK}<br />
+								物料描述:${obj.MAKTX2}<br /> 
+								大小量纲:${obj.ZBZ} <br />
+								领取数量:<span id="carPlaNum${n.count-1 }">${obj.CAR_PLAN_NUM}</span>
+								 <br /> <br /> </font>
+						</c:if>
+						</c:forEach>
+					</td>
+				</tr>
+			</table>
+		</div>
 
 		<div class="noprint">
      
@@ -201,7 +234,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 		<div>
 		</div>
 		<div id="grid-panel" class="grid-panel">
-			<div class="title" >装车计划</div>
+			<div class="title" >装车计划${orderList[0].kdauf }</div>
 			<div class="toolbar">
 			<a href="javascript:deleteBom()" ><span><img src="<%=iconPath%>/ico_005.gif" />删除</span></a>
 			<a href="javascript:window.focus();printScreen('block');" ><span><img src="${ctx}/resources/css/default/images/icons/ico_008.gif" />打印</span></a>
@@ -320,39 +353,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 	
 	</form>
 	</div>
-	<div id="block" style="display:none">
-			<table>
-				<tr>
-					<td style="font-size: 10px; word-break: break-all; width: 185px;">
-						<font style="font-size: 10px;font-weight: bold">
-							装车编号:${pageRequest.filters.carPlanId }<br />
-							&nbsp;&nbsp;订单号:${aufnrs}<br />
-							&nbsp;&nbsp;生产线：${arbpls}<br />
-							<c:if test="${fn:indexOf(aufnrs,'6')==0}">
-							销售订单号：${orderList[0].kdauf }<br />
-							&nbsp;&nbsp;项目号：${orderList[0].kdpos }<br />
-							</c:if>
-							公司机型：${orderList[0].maktx1 }<br />
-							仓库编号：${pageRequest.filters.lgort} <br />
-							仓库名称：${pageRequest.filters.lgortName }
-							<br /><br /> </font>
-						<c:forEach items="${bomList}" var="obj" varStatus="n">
-							<c:if test="${empty obj.STORAGE_USER_ID}">
-							<font style="font-size: 10px;"> 
-							<c:if test="${fn:indexOf(aufnrs,',')>0}">
-								订单编号:${obj.AUFNR}<br />
-							</c:if>
-								物料编码:${obj.IDNRK}<br />
-								物料描述:${obj.MAKTX2}<br /> 
-								大小量纲:${obj.ZBZ} <br />
-								领取数量:<span id="carPlaNum${n.count-1 }">${obj.CAR_PLAN_NUM}</span>
-								 <br /> <br /> </font>
-						</c:if>
-						</c:forEach>
-					</td>
-				</tr>
-			</table>
-		</div>
+	
 
 </body>
 </html>
