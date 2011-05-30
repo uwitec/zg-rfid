@@ -540,6 +540,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	public String doProcessPlanByCarPlanId( String carPlanId) {
 		
 		ZgTcarplan zgTcarplan = zgTcarplanBo.getById(carPlanId);
+		if(zgTcarplan==null) return "noTurn";
 		zgTcarplan.setCarState(Constants.CarPlanStatus.SUBMIT.value());
 		zgTcarplan.setCarDate(Calendar.getInstance().getTime());
 		zgTcarplanBo.update(zgTcarplan);
