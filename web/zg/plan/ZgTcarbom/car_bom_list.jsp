@@ -190,14 +190,15 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 					<td style="font-size: 10px; word-break: break-all; width: 185px;">
 						<font style="font-size: 10px;font-weight: bold">
 							装车编号:${pageRequest.filters.carPlanId }<br />
-							仓库编号：${pageRequest.filters.lgort} <br />
-							仓库名称：${pageRequest.filters.lgortName }
+							
 							<br /><br /> </font>
 						<c:forEach items="${bomList}" var="obj" varStatus="n" >
 							<c:if test="${empty obj.STORAGE_USER_ID}">
 							<font style="font-size: 10px;"> 
 								订单号:${obj.AUFNR}<br />
 								生产线：${obj.ARBPL}<br />
+								仓库编号：${pageRequest.filters.lgort} <br />
+							仓库名称：${pageRequest.filters.lgortName }
 								销售订单号：${obj.KDAUF}<br />
 								项目号：${obj.KDPOS }<br />
 								公司机型：${obj.MAKTX1 }<br />
