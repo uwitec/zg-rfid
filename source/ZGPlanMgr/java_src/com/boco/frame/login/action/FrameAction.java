@@ -1,15 +1,10 @@
 package com.boco.frame.login.action;
 
 import java.io.PrintWriter;
-import java.util.List;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import javacommon.base.BaseStruts2Action;
 
 import com.boco.frame.login.pojo.OperatorInfo;
-import com.boco.frame.sys.base.model.FwOrganization;
 import com.boco.frame.sys.service.IFwMenuExBo;
 
 public class FrameAction extends BaseStruts2Action {
