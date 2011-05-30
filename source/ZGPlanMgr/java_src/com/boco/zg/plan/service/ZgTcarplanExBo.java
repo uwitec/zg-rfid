@@ -275,7 +275,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	public List<Map> getBomListByBomIds(String bomCuids,String operatorId) {
 		bomCuids=bomCuids.replace(",", "','");
 		StringBuffer sql = new StringBuffer();
-		sql.append("select * from ( select null as cuid,    ORDERBOM.ZDTYL,orderbom.ORDER_ID,");
+		sql.append("select * from ( select distinct null as cuid,    ORDERBOM.ZDTYL,orderbom.ORDER_ID,");
 		sql.append("orderbom.cuid order_bom_id,");
 		sql.append("orderbom.idnrk,");
 		sql.append(" orderbom.maktx2,");
@@ -540,6 +540,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	public String doProcessPlanByCarPlanId( String carPlanId) {
 		
 		ZgTcarplan zgTcarplan = zgTcarplanBo.getById(carPlanId);
+		if(zgTcarplan==null) return "noTurn";
 		zgTcarplan.setCarState(Constants.CarPlanStatus.SUBMIT.value());
 		zgTcarplan.setCarDate(Calendar.getInstance().getTime());
 		zgTcarplanBo.update(zgTcarplan);
@@ -723,26 +724,36 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	public String[] getAufnrsByorderBomIds(List<Map> bomList) {
 		String ordreBOmIds="";
 		for(Map obj:bomList){
-			ordreBOmIds=ordreBOmIds+ IbatisDAOHelper.getStringValue(obj, "ORDER_BOM_ID")+"','";
+			ordreBOmIds=ordreBOmIds+ IbatisDAOHelper.getStringValue(obj, "TASKBOM_ID")+"','";
 		}
 		if(ordreBOmIds.length()>0){
 			ordreBOmIds=ordreBOmIds.substring(0,ordreBOmIds.length()-3);
 		}
 		
 		StringBuffer sql=new StringBuffer();
-		sql.append("select distinct t.aufnr,t.arbpl from zg_t_orderbom t  where t.cuid in ('"+ordreBOmIds+"') ");
+		sql.append("select distinct od.aufnr, task.arbpl, od.kdauf, od.kdpos, od.maktx1 ");
+		sql.append("  from zg_t_order_taskbom t, zg_t_order_task task, zg_t_order od ");
+		sql.append(" where t.order_task_id = task.cuid ");
+		sql.append("   and task.order_id = od.cuid ");
+		sql.append("   and t.cuid in ('"+ordreBOmIds+"') ");
 		String aufnrs="";
 		List<Map> list= ((ZgTcarplanDao)this.getEntityDao()).findDynQuery(sql.toString());
 		
-		String[] aufnrArbpl1={"",""};
+String[] aufnrArbpl1={"","","","",""};
 		
 		for (Map obj:list) {
 			aufnrArbpl1[0]=aufnrArbpl1[0]+IbatisDAOHelper.getStringValue(obj, "AUFNR")+",";
 			aufnrArbpl1[1]=aufnrArbpl1[1]+IbatisDAOHelper.getStringValue(obj, "ARBPL")+",";
+			aufnrArbpl1[2]=aufnrArbpl1[2]+IbatisDAOHelper.getStringValue(obj, "KDAUF")+",";
+			aufnrArbpl1[3]=aufnrArbpl1[1]+IbatisDAOHelper.getStringValue(obj, "KDPOS")+",";
+			aufnrArbpl1[4]=aufnrArbpl1[1]+IbatisDAOHelper.getStringValue(obj, "MAKTX1")+",";
 		}
 		if(aufnrArbpl1[0].length()>0){
 			aufnrArbpl1[0]=aufnrArbpl1[0].substring(0,aufnrArbpl1[0].length()-1);
 			aufnrArbpl1[1]=aufnrArbpl1[1].substring(0,aufnrArbpl1[1].length()-1);
+			aufnrArbpl1[2]=aufnrArbpl1[0].substring(0,aufnrArbpl1[0].length()-1);
+			aufnrArbpl1[3]=aufnrArbpl1[1].substring(0,aufnrArbpl1[1].length()-1);
+			aufnrArbpl1[4]=aufnrArbpl1[0].substring(0,aufnrArbpl1[0].length()-1);
 		}
 		
 		
@@ -783,5 +794,35 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		StringBuffer sql=new StringBuffer();
 		sql.append("select distinct t.*,car.cuid carId,car.code,car.label_cn,t.storage_id lgort,org.label_cn lgortName from zg_t_carplan t,zg_carinfo car,fw_organization org,zg_t_carbom bom  where  t.storage_id=org.cuid and t.cuid=bom.car_plan_id(+)   and t.car_id=car.cuid and t.cuid='"+carPlanId+"'");
 		return ((ZgTcarplanDao)this.getEntityDao()).findDynQuery(sql.toString());
+	}
+
+
+	/**
+	 * @param carPlanId
+	 * @return
+	 */
+	public String getSapDataDownLoadPlant(String carPlanId) {
+		StringBuffer sql=new StringBuffer();
+		sql.append("select distinct plan.plant ");
+		sql.append("  from zg_t_carbom           carbom, ");
+		sql.append("       zg_t_order_planbom    planbom, ");
+		sql.append("       zg_t_order_plan       plan,");
+		sql.append("       t_sys_iface_log       l,");
+		sql.append("       ZG_T_ORDER_PLANT_TEMP p ");
+		sql.append(" where carbom.order_planbom_id = planbom.cuid ");
+		sql.append("   and planbom.order_plan_id = plan.cuid ");
+		sql.append("   and l.batch_no = p.batch_no ");
+		sql.append("   and trunc(l.call_time) >= trunc(sysdate) ");
+		sql.append("   and ((l.method_name = 'ZSTFC_CONNECTION_RFID_02' and ");
+		sql.append("       p.plant = plan.plant) or ");
+		sql.append("       (l.method_name = 'ZSTFC_CONNECTION_RFID_01')) ");
+		sql.append("   and l.data_stauts = '0' ");
+		sql.append("   and carbom.car_plan_id='"+carPlanId+"'");
+		List<Map> list= ((ZgTcarplanDao)this.getEntityDao()).findDynQuery(sql.toString());
+		if(list.size()>0){
+			return IbatisDAOHelper.getStringValue(list.get(0), "PLANT").toString();
+		}
+		return null;
+		
 	}
 }
