@@ -236,7 +236,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 */
 	public List<Map> getBomLIstByUserId(String planType, String operatorId,String lgort) {
 		StringBuffer sql = new StringBuffer();
-		sql.append("select car.cuid car_Plan_Id,carbom.cuid,orderbom.idnrk,    ORDERBOM.ZDTYL,orderbom.ORDER_ID,");//修改数据时需要参数
+		sql.append("select distinct  od.aufnr,od.arbpl,od.kdauf,od.kdpos,od.maktx1,car.cuid car_Plan_Id,carbom.cuid,orderbom.idnrk,    ORDERBOM.ZDTYL,orderbom.ORDER_ID,");//修改数据时需要参数
 		sql.append(" 	orderbom.maktx2,");
 		sql.append("	orderbom.cuid as order_bom_id, planbom.cuid as order_planbom_id,");   //修改数据时需要参数
 		sql.append(" 	carbom.car_plan_id,");   //修改数据时需要参数
@@ -253,8 +253,8 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		sql.append(" from zg_t_carplan       car, ");
 		sql.append("	zg_t_carbom        carbom, ");
 		sql.append("	zg_t_order_planbom planbom, ");
-		sql.append("	zg_t_orderbom      orderbom , zg_t_bom bom");
-		sql.append(" where car.car_user = '"+operatorId+"' ");
+		sql.append("	zg_t_orderbom      orderbom , zg_t_bom bom, zg_t_order od");
+		sql.append(" where  orderbom.order_id=od.cuid and  car.car_user = '"+operatorId+"' ");
 		sql.append("	and car.car_state <> '8' ");
 		sql.append("	and car.cuid = carbom.car_plan_id ");
 		sql.append("	and carbom.order_planbom_id = planbom.cuid ");
@@ -281,15 +281,14 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		sql.append(" orderbom.maktx2,");
 		sql.append("planbom.cuid as order_planbom_id,");
 		sql.append("null as car_plan_id,");
-		sql.append("orderbom.aufnr,");
 		sql.append(" planbom.car_num,");
 		sql.append("nvl(planbom.plan_num,0) plan_num,");
 		sql.append("nvl(planbom.complete_num,0) complete_num,");
 		sql.append("0 as car_plan_num,");
 		sql.append(" planbom.car_num-nvl(planbom.plan_num,0)   max_value,");
-		sql.append("bom.carnum carCount");
-		sql.append(" from zg_t_order_planbom planbom, zg_t_orderbom orderbom, zg_t_bom bom");
-		sql.append(" where planbom.order_bom_id = orderbom.cuid and  planbom.car_num-nvl(planbom.plan_num,0)>0 ");
+		sql.append("bom.carnum carCount, od.aufnr,od.arbpl,od.kdauf,od.kdpos,od.maktx1 ");
+		sql.append(" from zg_t_order_planbom planbom, zg_t_orderbom orderbom, zg_t_bom bom,zg_t_order od");
+		sql.append(" where orderbom.order_id=od.cuid and  planbom.order_bom_id = orderbom.cuid and  planbom.car_num-nvl(planbom.plan_num,0)>0 ");
 		sql.append("   and bom.idnrk = orderbom.idnrk   ");
 		sql.append(" and orderbom.cuid in ('"+bomCuids+"') ) w where w.order_bom_id not in(");
 		sql.append(" select carbom.order_bom_id from zg_t_carplan plan,zg_t_carbom carbom       where plan.car_user='"+operatorId+"' ");
