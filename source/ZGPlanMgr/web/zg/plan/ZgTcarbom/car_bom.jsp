@@ -196,18 +196,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		       		 if(items[i].checked) {
 				
 		        	var carNum=document.frames['listFrame'].document.getElementById("carbomList["+i+"].planNum").value*1;
+		        	var idnrk=document.frames['listFrame'].document.getElementById("carbomList["+i+"].idnrk").value;
 		        	if(carNum=='0'){
-		        		alert("实际装车数量不能为零，请确认！");
+		        		alert(idnrk+" 实际装车数量不能为零，请确认！");
 						return;
 		        	}
 		        	var supItems=document.frames['listFrame'].document.getElementsByName("items"+i);
 		        	var carSupNumAll=0;
+		        	if(supItems.length==0){
+		        		alert(idnrk+' 供应商不能为空，可能系统正在初始化供应商数据，请稍候!');
+		        		return;
+		        	}
 		        	for (var j = 0; j < supItems.length; j++){
 		        	   var carSupNum=document.frames['listFrame'].document.getElementById("carbomList["+i+"].supList["+j+"].carNum").value;
 		        	   carSupNumAll=carSupNumAll+carSupNum*1;
 		        	}
 		        	if(carNum!=carSupNumAll&&supItems.length>0){
-		        		alert("装车数量与具体供应商数量不相等，请确认！");
+		        		alert( idnrk+" 装车数量与具体供应商数量不相等，请确认！");
 		        		return false;
 		        	}
 		        	}

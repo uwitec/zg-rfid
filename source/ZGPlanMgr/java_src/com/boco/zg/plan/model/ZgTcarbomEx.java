@@ -59,6 +59,7 @@ public class ZgTcarbomEx extends BaseEntity {
 	private String storageUserId;
 	private String taskBomId;
 	private String orderTaskId;
+	private String idnrk;
 	
 	private  List<ZgTcarbomSuppliers> supList;
 
@@ -348,5 +349,19 @@ public class ZgTcarbomEx extends BaseEntity {
 	 */
 	public void setOrderTaskId(String orderTaskId) {
 		this.orderTaskId = orderTaskId;
+	}
+
+	/**
+	 * @return the idnrk
+	 */
+	public String getIdnrk() {
+		return idnrk;
+	}
+
+	/**
+	 * @param idnrk the idnrk to set
+	 */
+	public void setIdnrk(String idnrk) {
+		this.idnrk = idnrk;
 	}
 }

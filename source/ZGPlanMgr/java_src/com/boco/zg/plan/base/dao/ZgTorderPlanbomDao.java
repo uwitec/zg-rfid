@@ -74,6 +74,10 @@ public class ZgTorderPlanbomDao extends BaseIbatisDao<ZgTorderPlanbom,java.lang.
 		super.getSqlMapClientTemplate().delete("ZgTorderPlanbom.deleteZG_T_ORDER_PLANBOM", id);
 	}
 	
+	public int deleteById1(java.lang.String id) {
+		return super.getSqlMapClientTemplate().delete("ZgTorderPlanbom.deleteZG_T_ORDER_PLANBOM1", id);
+	}
+	
 	public Page findByPageRequest(PageRequest pageRequest) {
 		((Map)pageRequest.getFilters()).put("BM_CLASS_ID", ZgTorderPlanbom.BM_CLASS_ID);
 		return pageQuery("ZgTorderPlanbom.pageSelect",pageRequest);

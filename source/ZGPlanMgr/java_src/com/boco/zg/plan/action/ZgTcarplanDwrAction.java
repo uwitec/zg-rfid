@@ -222,11 +222,6 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 	 */
 	public String checkForSubmitCarPlan(String objcetJOSNs,String carPlanId){
 		
-		//判断是否在下载sap数据
-		String downLoadPlant=getZgTcarplanExBo().getSapDataDownLoadPlant(carPlanId);
-		if(!StringHelper.isEmpty(downLoadPlant)){
-			return downLoadPlant+"生产厂正在下载排序或排产数据，不能进行领料操作，请稍后再试";
-		}
 		
 		ZgTcarplan zgTcarplan = (ZgTcarplan)getZgTcarplanExBo().getById(carPlanId);
 		if(null!=zgTcarplan){
@@ -275,15 +270,19 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 			
 		}
 		
+		String planboms="";
 		for (int i = 0; i < bomList.size(); i++) {//检查数量是否超过需求数量
 			JSONObject jsonObj=jsonArray.getJSONObject(i);
 			Map bomMap=bomList.get(i);
 			
 			
 			String orderPlanbomId = IbatisDAOHelper.getStringValue(bomMap,"orderPlanbomId");
+			
 			Long carPlanNum=Long.parseLong(IbatisDAOHelper.getStringValue(bomMap,"carPlanNum"));
 			aufnr=IbatisDAOHelper.getStringValue(bomMap,"aufnr");
 			idnrk=IbatisDAOHelper.getStringValue(bomMap,"idnrk");
+			
+			planboms=planboms+orderPlanbomId+"','";
 			
 			num = getZgTcarbomExBo().checkForBomCarNum(orderPlanbomId,carPlanNum);
 			
@@ -296,7 +295,11 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 			return "订单号-"+aufnr+"  BOM-"+idnrk+"  组件领取数量超出总需求数量:"+(num*(-1))+"，请确认!"; 
 		}
 		
-		return "OK";
+		if(planboms.length()>0){
+			planboms=planboms.substring(0,planboms.length()-3);
+		}
+		
+		return getZgTcarplanExBo().checkOrderLock(planboms);
 		
 		
 	}
