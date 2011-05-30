@@ -275,7 +275,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	public List<Map> getBomListByBomIds(String bomCuids,String operatorId) {
 		bomCuids=bomCuids.replace(",", "','");
 		StringBuffer sql = new StringBuffer();
-		sql.append("select * from ( select null as cuid,    ORDERBOM.ZDTYL,orderbom.ORDER_ID,");
+		sql.append("select * from ( select distinct null as cuid,    ORDERBOM.ZDTYL,orderbom.ORDER_ID,");
 		sql.append("orderbom.cuid order_bom_id,");
 		sql.append("orderbom.idnrk,");
 		sql.append(" orderbom.maktx2,");
@@ -290,7 +290,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		sql.append("bom.carnum carCount");
 		sql.append(" from zg_t_order_planbom planbom, zg_t_orderbom orderbom, zg_t_bom bom");
 		sql.append(" where planbom.order_bom_id = orderbom.cuid and  planbom.car_num-nvl(planbom.plan_num,0)>0 ");
-		sql.append("   and bom.idnrk = orderbom.idnrk   and bom.lgort=orderbom.lgort   and bom.matkl=orderbom.matkl ");
+		sql.append("   and bom.idnrk = orderbom.idnrk   ");
 		sql.append(" and orderbom.cuid in ('"+bomCuids+"') ) w where w.order_bom_id not in(");
 		sql.append(" select carbom.order_bom_id from zg_t_carplan plan,zg_t_carbom carbom       where plan.car_user='"+operatorId+"' ");
 		sql.append("     and plan.car_state='0'        and plan.cuid=carbom.car_plan_id   )");
@@ -730,19 +730,25 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		}
 		
 		StringBuffer sql=new StringBuffer();
-		sql.append("select distinct t.aufnr,t.arbpl from zg_t_orderbom t  where t.cuid in ('"+ordreBOmIds+"') ");
+		sql.append("select distinct t.aufnr,t.arbpl,od.kdauf,od.kdpos ,od.maktx1 from zg_t_orderbom t ,zg_t_order od where t.order_id=od.cuid and  t.cuid in ('"+ordreBOmIds+"') ");
 		String aufnrs="";
 		List<Map> list= ((ZgTcarplanDao)this.getEntityDao()).findDynQuery(sql.toString());
 		
-		String[] aufnrArbpl1={"",""};
+		String[] aufnrArbpl1={"","","","",""};
 		
 		for (Map obj:list) {
 			aufnrArbpl1[0]=aufnrArbpl1[0]+IbatisDAOHelper.getStringValue(obj, "AUFNR")+",";
 			aufnrArbpl1[1]=aufnrArbpl1[1]+IbatisDAOHelper.getStringValue(obj, "ARBPL")+",";
+			aufnrArbpl1[2]=aufnrArbpl1[2]+IbatisDAOHelper.getStringValue(obj, "KDAUF")+",";
+			aufnrArbpl1[3]=aufnrArbpl1[1]+IbatisDAOHelper.getStringValue(obj, "KDPOS")+",";
+			aufnrArbpl1[4]=aufnrArbpl1[1]+IbatisDAOHelper.getStringValue(obj, "MAKTX1")+",";
 		}
 		if(aufnrArbpl1[0].length()>0){
 			aufnrArbpl1[0]=aufnrArbpl1[0].substring(0,aufnrArbpl1[0].length()-1);
 			aufnrArbpl1[1]=aufnrArbpl1[1].substring(0,aufnrArbpl1[1].length()-1);
+			aufnrArbpl1[2]=aufnrArbpl1[0].substring(0,aufnrArbpl1[0].length()-1);
+			aufnrArbpl1[3]=aufnrArbpl1[1].substring(0,aufnrArbpl1[1].length()-1);
+			aufnrArbpl1[4]=aufnrArbpl1[0].substring(0,aufnrArbpl1[0].length()-1);
 		}
 		
 		
