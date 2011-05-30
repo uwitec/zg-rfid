@@ -8,40 +8,23 @@ package com.boco.zg.materiel.base.action;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import javacommon.base.BaseStruts2Action;
 import javacommon.base.service.IVmModelBo;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import cn.org.rapid_framework.beanutils.BeanUtils;
+import cn.org.rapid_framework.page.Page;
+import cn.org.rapid_framework.page.PageRequest;
+import cn.org.rapid_framework.web.util.HttpUtils;
 
 import com.boco.frame.meta.base.model.TmdEnumevalue;
 import com.boco.frame.sys.base.model.ZgMateriel;
-import com.opensymphony.xwork2.Preparable;
-import com.opensymphony.xwork2.ModelDriven;
-import com.sun.mail.handlers.message_rfc822;
-
-import java.util.*;
-
-import javacommon.base.*;
-import javacommon.util.*;
-import javacommon.base.model.*;
-
-import cn.org.rapid_framework.util.*;
-import cn.org.rapid_framework.web.util.*;
-import cn.org.rapid_framework.page.*;
-import cn.org.rapid_framework.page.impl.*;
-import cn.org.rapid_framework.beanutils.BeanUtils;
-
-import com.boco.zg.materiel.base.model.*;
-import com.boco.zg.materiel.base.dao.*;
-import com.boco.zg.materiel.base.service.*;
+import com.boco.zg.materiel.base.service.ZgMaterielBo;
 import com.boco.zg.virtualorg.base.model.ZgMaterrielVirtualorg;
 import com.boco.zg.virtualorg.base.service.ZgTvirtualorgBo;
+import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.Preparable;
 
 /**
  * @author 吴俊璋
