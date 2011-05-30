@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FwMenu">
+    <typeAlias alias="fwMenu" type="com.boco.frame.sys.base.model.FwMenu"/>
+	<resultMap id="fwMenuResult" class="fwMenu">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="parentMenuId" column="t0_PARENT_MENU_ID"/>
+		<result property="parentMenuId_related.value" column="t0_0_1_t0_LABEL_CN"/>
+		<result property="parentMenuId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="url" column="t0_URL"/>
+		<result property="displayOrder" column="t0_DISPLAY_ORDER"/>
+		<result property="seq" column="t0_SEQ"/>
+		<result property="levelNum" column="t0_LEVEL_NUM"/>
+		<result property="type" column="t0_TYPE"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_LABEL_CN,
+		    t0_0_1.t0_LABEL_CN as t0_0_1_t0_LABEL_CN,
+	        'FW_MENU' as t0_0_1_BD,
+	        m.t0_PARENT_MENU_ID,
+	        m.t0_URL,
+	        m.t0_DISPLAY_ORDER,
+	        m.t0_SEQ,
+	        m.t0_LEVEL_NUM,
+	        m.t0_TYPE
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like '%'||'$labelCn$'||'%'
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="parentMenuId">
+	       			m.t0_PARENT_MENU_ID like #parentMenuId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="url">
+	       			m.t0_URL like #url#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="displayOrder">
+	       			m.t0_DISPLAY_ORDER = #displayOrder#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="seq">
+	       			m.t0_SEQ like #seq#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="levelNum">
+	       			m.t0_LEVEL_NUM = #levelNum#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="type">
+	       			m.t0_TYPE like #type#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertFW_MENU" parameterClass="fwMenu">
+    <![CDATA[
+        INSERT INTO
+        FW_MENU (
+        	CUID ,
+        	LABEL_CN ,
+        	PARENT_MENU_ID ,
+        	URL ,
+        	DISPLAY_ORDER ,
+        	SEQ ,
+        	LEVEL_NUM ,
+        	TYPE 
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#parentMenuId# ,
+        	#url# ,
+        	#displayOrder# ,
+        	#seq# ||#cuid#||'.',
+        	#levelNum# ,
+        	#type# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateFW_MENU" parameterClass="fwMenu">
+    <![CDATA[
+        UPDATE FW_MENU SET
+	        LABEL_CN = #labelCn# ,
+	        PARENT_MENU_ID = #parentMenuId# ,
+	        URL = #url# ,
+	        DISPLAY_ORDER = #displayOrder# ,
+	        SEQ = #seq# ,
+	        LEVEL_NUM = #levelNum# ,
+	        TYPE = #type# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteFW_MENU" parameterClass="java.lang.String">
+		delete from FW_MENU 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="fwMenuResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        		t0.URL as t0_URL,
+	        		t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        		t0.SEQ as t0_SEQ,
+	        		t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        		t0.TYPE as t0_TYPE
+	        from 
+	        FW_MENU t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        	t0.URL as t0_URL,
+	        	t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.TYPE as t0_TYPE
+	        	 from
+		        FW_MENU t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_PARENT_MENU_ID 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="fwMenuResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        		t0.URL as t0_URL,
+	        		t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        		t0.SEQ as t0_SEQ,
+	        		t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        		t0.TYPE as t0_TYPE
+	        from 
+	        FW_MENU t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        	t0.URL as t0_URL,
+	        	t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.TYPE as t0_TYPE
+	        	 from
+		        FW_MENU t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_PARENT_MENU_ID 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        		t0.URL as t0_URL,
+	        		t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        		t0.SEQ as t0_SEQ,
+	        		t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        		t0.TYPE as t0_TYPE
+	        from 
+	        FW_MENU t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        	t0.URL as t0_URL,
+	        	t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.TYPE as t0_TYPE
+	        	 from
+		        FW_MENU t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_PARENT_MENU_ID 
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="fwMenuResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        		t0.URL as t0_URL,
+	        		t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        		t0.SEQ as t0_SEQ,
+	        		t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        		t0.TYPE as t0_TYPE
+	        from 
+	        FW_MENU t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        	t0.URL as t0_URL,
+	        	t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.TYPE as t0_TYPE
+	        	 from
+		        FW_MENU t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_PARENT_MENU_ID 
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="fwMenuResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        		t0.URL as t0_URL,
+	        		t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        		t0.SEQ as t0_SEQ,
+	        		t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        		t0.TYPE as t0_TYPE
+	        from 
+	        FW_MENU t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_MENU_ID as t0_PARENT_MENU_ID,
+	        	t0.URL as t0_URL,
+	        	t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.TYPE as t0_TYPE
+	        	 from
+		        FW_MENU t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_PARENT_MENU_ID 
+        ]]>
+    </select>
+    
+</sqlMap>

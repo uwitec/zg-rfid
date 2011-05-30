@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="LgortReport">
+
+<sql id="dynamicWhere">
+	    <dynamic prepend="">
+       		<isNotEmpty prepend="AND" property="date_start">
+	       			 carbom.car_date>=to_date('$date_start$','yyyy-mm-dd hh24:mi:ss') 
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="date_end">
+	       			to_date('$date_end$','yyyy-mm-dd hh24:mi:ss') >= carbom.car_date
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="aufnr">
+	       		  zto.aufnr like '%'||'$aufnr$'||'%'
+       		</isNotEmpty> 
+       		<isNotEmpty prepend="AND" property="matnr">
+       			  zto.matnr like '%'||'$matnr$'||'%'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="plant">
+       			task.plant='$plant$'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="arbpl">
+	       		  task.arbpl like '%'||'$arbpl$'||'%'
+       		</isNotEmpty> 
+       			<isNotEmpty prepend="AND" property="idnrk">
+	       		  orderbom.idnrk like '%'||'$idnrk$'||'%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty prepend="AND" property="suppliers">
+	       		  sup.lifnr_name like '%'||'$suppliers$'||'%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty prepend="AND" property="lgort">
+	       		  orderbom.lgort like '%'||'$lgort$'||'%'
+       		</isNotEmpty> 
+       		
+	    </dynamic>	
+	</sql>
+
+	<select id="pageSelect" resultClass="java.util.HashMap">
+		     
+	    <![CDATA[	select zto.aufnr,
+	       zto.matnr,
+	       zto.maktx1,
+	        plan.plant||'('||emu.orgname||')' plant,
+	       zto.arbpl,
+	       orderbom.idnrk,
+	       orderbom.maktx2,
+	       orderbom.sortf,
+	       orderbom.lgort,
+	       sup.lifnr,
+	          case when  nvl(sup.car_num,0)=0 then carbom.real_num else nvl(sup.car_num,0) end as real_num,
+	       planbom.car_num,
+	       sup.lifnr_name,
+	       carplan.car_user,
+	       op.label_cn car_user_name,
+	       to_char(carplan.create_date,'yyyy-MM-dd hh24:mi:ss') create_date,
+	       to_char(carbom.car_date,'yyyy-MM-dd hh24:mi:ss') car_date,
+	       carplan.storage_user_id,
+	       op1.label_cn storage_user_name,
+	       sup.batchno,
+           sup.zrzqd,zto.kdauf,zto.KDPOS
+	  from zg_t_carbom           carbom,
+	       zg_t_carplan          carplan,
+	       zg_t_order            zto,
+	       zg_t_orderbom         orderbom,
+	       zg_t_order_planbom    planbom,
+	       zg_t_carbom_suppliers sup,
+	       fw_operator op,
+	       fw_operator op1,
+            
+              t_plant_enumevalue emu,
+               zg_t_order_plan plan,
+               
+               zg_t_order_task task,
+               zg_t_order_taskbom taskbom
+	 where  plan.cuid=planbom.order_plan_id
+         and plan.plant=emu.plantid
+         and op.cuid = carplan.car_user
+	   and op1.cuid = carbom.storage_user_id
+	   and carbom.car_plan_id = carplan.cuid
+	   and carbom.order_task_id=task.cuid
+     and task.order_id = zto.cuid
+	   and carbom.taskbom_id=taskbom.cuid
+     and taskbom.order_bom_id = orderbom.cuid
+	   and taskbom.order_task_id = carbom.order_task_id
+	   and planbom.cuid = carbom.order_planbom_id
+	   and sup.car_bom_id(+) = carbom.cuid
+	     and (sup.car_num > 0 or sup.car_num  is null)
+	     and zto.order_state<>'-1' 
+	   and carbom.storage_user_id is not null
+	    and carplan.order_plan_type <>'3'  
+	  ]]>
+	    <include refid="dynamicWhere"/>
+
+
+	</select>   
+	
+	  <select id="count" resultClass="long">
+		 <![CDATA[  	select count(1)
+	  from zg_t_carbom           carbom,
+	       zg_t_carplan          carplan,
+	       zg_t_order            zto,
+	       zg_t_orderbom         orderbom,
+	       zg_t_order_planbom    planbom,
+	       zg_t_carbom_suppliers sup,
+	       fw_operator op,
+	       fw_operator op1,
+            
+              t_plant_enumevalue emu,
+               zg_t_order_plan plan,
+               
+               zg_t_order_task task,
+               zg_t_order_taskbom taskbom
+	 where  plan.cuid=planbom.order_plan_id
+         and plan.plant=emu.plantid
+         and op.cuid = carplan.car_user
+	   and op1.cuid = carbom.storage_user_id
+	   and carbom.car_plan_id = carplan.cuid
+	   and carbom.order_task_id=task.cuid
+     and task.order_id = zto.cuid
+	   and carbom.taskbom_id=taskbom.cuid
+     and taskbom.order_bom_id = orderbom.cuid
+	   and taskbom.order_task_id = carbom.order_task_id
+	   and planbom.cuid = carbom.order_planbom_id
+	   and sup.car_bom_id(+) = carbom.cuid
+	     and (sup.car_num > 0 or sup.car_num  is null)
+	     and zto.order_state<>'-1' 
+	   and carbom.storage_user_id is not null
+	    and carplan.order_plan_type <>'3'  
+	         ]]>
+	    <include refid="dynamicWhere"/>
+
+	  </select>
+</sqlMap>

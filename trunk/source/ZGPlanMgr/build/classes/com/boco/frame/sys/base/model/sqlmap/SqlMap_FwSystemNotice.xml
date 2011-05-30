@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FwSystemNotice">
+    <typeAlias alias="fwSystemNotice" type="com.boco.frame.sys.base.model.FwSystemNotice"/>
+	<resultMap id="fwSystemNoticeResult" class="fwSystemNotice">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="content" column="t0_CONTENT"/>
+		<result property="createId" column="t0_CREATE_ID"/>
+		<result property="createId_related.value" column="t0_0_1_t0_LABEL_CN"/>
+		<result property="createId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="createDate" column="t0_CREATE_DATE"/>
+		<result property="title" column="t0_TITLE"/>
+		<result property="state" column="t0_STATE"/>
+		<result property="modifyId" column="t0_modify_id"/>
+		<result property="lastModifyDate" column="t0_last_modify_date"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_CONTENT,
+		    t0_0_1.t0_LABEL_CN as t0_0_1_t0_LABEL_CN,
+	        'FW_EMPLOYEE' as t0_0_1_BD,
+	        m.t0_CREATE_ID,
+	        m.t0_CREATE_DATE,
+	        m.t0_TITLE,
+	        m.t0_STATE,
+	        m.t0_modify_id,
+	        m.t0_last_modify_date
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="content">
+	       			m.t0_CONTENT like '%'||'$content$'||'%'
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="createId">
+	       			m.t0_CREATE_ID like #createId#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="createDate_start">
+       			<![CDATA[m.t0_CREATE_DATE >= to_date(#createDate_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="createDate_end">
+       			<![CDATA[m.t0_CREATE_DATE <= to_date(#createDate_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="title">
+	       			m.t0_TITLE like '%'||'$title$'||'%'
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="state">
+	       			m.t0_STATE like #state#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertFW_SYSTEM_NOTICE" parameterClass="fwSystemNotice">
+    <![CDATA[
+        INSERT INTO
+        FW_SYSTEM_NOTICE (
+        	CUID ,
+        	CONTENT ,
+        	CREATE_ID ,
+        	CREATE_DATE ,
+        	TITLE ,
+        	STATE 
+        ) VALUES (
+        	#cuid# ,
+        	#content# ,
+        	#createId# ,
+        	#createDate# ,
+        	#title# ,
+        	#state# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateFW_SYSTEM_NOTICE" parameterClass="fwSystemNotice">
+    <![CDATA[
+        UPDATE FW_SYSTEM_NOTICE SET
+	        CONTENT = #content# ,
+	        CREATE_ID = #createId# ,
+	        CREATE_DATE = #createDate# ,
+	        TITLE = #title# ,
+	        STATE = #state# ,
+	        modify_id = #modifyId# ,
+	        LAST_MODIFY_DATE = #lastModifyDate# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteFW_SYSTEM_NOTICE" parameterClass="java.lang.String">
+		delete from FW_SYSTEM_NOTICE 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="fwSystemNoticeResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.CONTENT as t0_CONTENT,
+	        		t0.CREATE_ID as t0_CREATE_ID,
+	        		t0.CREATE_DATE as t0_CREATE_DATE,
+	        		t0.TITLE as t0_TITLE,
+	        		t0.STATE as t0_STATE,
+	        		t0.modify_id  as t0_modify_id,
+	        		t0.last_modify_date as t0_last_modify_date
+	        from 
+	        FW_SYSTEM_NOTICE t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.USER_ID as t0_USER_ID,
+	        	t0.PASSWORD as t0_PASSWORD,
+	        	t0.CREATE_TIME as t0_CREATE_TIME,
+	        	t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        	t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        	t0.STATUS as t0_STATUS,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID,
+	        	t0.RFIDCODE as t0_RFIDCODE
+	        	 from
+		        FW_OPERATOR t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_CREATE_ID 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="fwSystemNoticeResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.CONTENT as t0_CONTENT,
+	        		t0.CREATE_ID as t0_CREATE_ID,
+	        		t0.CREATE_DATE as t0_CREATE_DATE,
+	        		t0.TITLE as t0_TITLE,
+	        		t0.STATE as t0_STATE,
+	        		t0.modify_id  as t0_modify_id,
+	        		t0.last_modify_date as t0_last_modify_date
+	        from 
+	        FW_SYSTEM_NOTICE t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.USER_ID as t0_USER_ID,
+	        	t0.PASSWORD as t0_PASSWORD,
+	        	t0.CREATE_TIME as t0_CREATE_TIME,
+	        	t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        	t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        	t0.STATUS as t0_STATUS,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID,
+	        	t0.RFIDCODE as t0_RFIDCODE
+	        	 from
+		        FW_OPERATOR t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_CREATE_ID 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.CONTENT as t0_CONTENT,
+	        		t0.CREATE_ID as t0_CREATE_ID,
+	        		t0.CREATE_DATE as t0_CREATE_DATE,
+	        		t0.TITLE as t0_TITLE,
+	        		t0.STATE as t0_STATE,
+	        		t0.modify_id  as t0_modify_id,
+	        		t0.last_modify_date as t0_last_modify_date
+	        from 
+	        FW_SYSTEM_NOTICE t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.USER_ID as t0_USER_ID,
+	        	t0.PASSWORD as t0_PASSWORD,
+	        	t0.CREATE_TIME as t0_CREATE_TIME,
+	        	t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        	t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        	t0.STATUS as t0_STATUS,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID,
+	        	t0.RFIDCODE as t0_RFIDCODE
+	        	 from
+		        FW_OPERATOR t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_CREATE_ID 
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="fwSystemNoticeResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.CONTENT as t0_CONTENT,
+	        		t0.CREATE_ID as t0_CREATE_ID,
+	        		t0.CREATE_DATE as t0_CREATE_DATE,
+	        		t0.TITLE as t0_TITLE,
+	        		t0.STATE as t0_STATE,
+	        		t0.modify_id  as t0_modify_id,
+	        		t0.last_modify_date as t0_last_modify_date
+	        from 
+	        FW_SYSTEM_NOTICE t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.USER_ID as t0_USER_ID,
+	        	t0.PASSWORD as t0_PASSWORD,
+	        	t0.CREATE_TIME as t0_CREATE_TIME,
+	        	t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        	t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        	t0.STATUS as t0_STATUS,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID,
+	        	t0.RFIDCODE as t0_RFIDCODE
+	        	 from
+		        FW_OPERATOR t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_CREATE_ID 
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="fwSystemNoticeResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.CONTENT as t0_CONTENT,
+	        		t0.CREATE_ID as t0_CREATE_ID,
+	        		t0.CREATE_DATE as t0_CREATE_DATE,
+	        		t0.TITLE as t0_TITLE,
+	        		t0.STATE as t0_STATE,
+	        		t0.modify_id  as t0_modify_id,
+	        		t0.last_modify_date as t0_last_modify_date
+	        from 
+	        FW_SYSTEM_NOTICE t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.USER_ID as t0_USER_ID,
+	        	t0.PASSWORD as t0_PASSWORD,
+	        	t0.CREATE_TIME as t0_CREATE_TIME,
+	        	t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        	t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        	t0.STATUS as t0_STATUS,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID,
+	        	t0.RFIDCODE as t0_RFIDCODE
+	        	 from
+		        FW_OPERATOR t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_CREATE_ID 
+        ]]>
+    </select>
+    
+    <select id="getListByOperatorId" resultMap="fwSystemNoticeResult">
+		 select 	t0.CUID as t0_CUID,
+	        		t0.CONTENT as t0_CONTENT,
+	        		null as t0_0_1_t0_LABEL_CN,
+	        		null as t0_0_1_BD,
+	        		t0.CREATE_ID as t0_CREATE_ID,
+	        		t0.CREATE_DATE as t0_CREATE_DATE,
+	        		t0.TITLE as t0_TITLE,
+	        		t0.STATE as t0_STATE,
+	        		t0.modify_id  as t0_modify_id,
+	        		t0.last_modify_date as t0_last_modify_date
+		  from fw_system_notice t0
+		 where t0.state = '0'
+		   and not exists (select 1
+		          from fw_system_notice_user_log log
+		         where log.notice_id = t0.cuid
+		           and log.user_id = '$operatorId$')  and rownum=1
+    </select>
+    
+</sqlMap>

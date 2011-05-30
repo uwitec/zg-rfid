@@ -1,0 +1,1541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTorder">
+    <typeAlias alias="zgTorder" type="com.boco.zg.plan.base.model.ZgTorder"/>
+	<resultMap id="zgTorderResult" class="zgTorder">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="aufnr" column="t0_AUFNR"/>
+		<result property="orderState" column="t0_ORDER_STATE"/>
+		<result property="publish_num" column="t0_publish_num"/>
+		
+		<result property="submitUser" column="t0_SUBMIT_USER"/>
+		<result property="submitUser_related.value" column="t0_0_1_t1_LABEL_CN"/>
+		<result property="submitUser_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="submitDate" column="t0_SUBMIT_DATE"/>
+		<result property="mandt" column="t0_MANDT"/>
+		<result property="pxdat" column="t0_PXDAT"/>
+		<result property="plant" column="t0_PLANT"/>
+		<result property="mipos" column="t0_MIPOS"/>
+		<result property="pcdat" column="t0_PCDAT"/>
+		<result property="arbpl" column="t0_ARBPL"/>
+		<result property="arbpl1" column="t0_ARBPL1"/>
+		<result property="matnr" column="t0_MATNR"/>
+		<result property="kdauf" column="t0_KDAUF"/>
+		<result property="kdpos" column="t0_KDPOS"/>
+		<result property="kdtxt" column="t0_KDTXT"/>
+		<result property="zckpp" column="t0_ZCKPP"/>
+		<result property="maktx2" column="t0_MAKTX2"/>
+		<result property="maktx1" column="t0_MAKTX1"/>
+		<result property="zzcks" column="t0_ZZCKS"/>
+		<result property="atwrt2" column="t0_ATWRT2"/>
+		<result property="psmng" column="t0_PSMNG"/>
+		<result property="pmenge" column="t0_PMENGE"/>
+		<result property="ztxt02" column="t0_ZTXT02"/>
+		<result property="zdblc" column="t0_ZDBLC"/>
+		<result property="brgew2" column="t0_BRGEW2"/>
+		<result property="crdat" column="t0_CRDAT"/>
+		<result property="cputm" column="t0_CPUTM"/>
+		<result property="crnam" column="t0_CRNAM"/>
+		<result property="crnam_related.value" column="t0_1_2_t1_LABEL_CN"/>
+		<result property="crnam_related.relatedBmClassId" column="t0_1_2_BD"/>
+		<result property="mrnam" column="t0_MRNAM"/>
+		<result property="zmuze" column="t0_ZMUZE"/>
+		<result property="mname" column="t0_MNAME"/>
+		<result property="mname_related.value" column="t0_2_3_t1_LABEL_CN"/>
+		<result property="mname_related.relatedBmClassId" column="t0_2_3_BD"/>
+		<result property="fbdat" column="t0_FBDAT"/>
+		<result property="fbuze" column="t0_FBUZE"/>
+		<result property="fname" column="t0_FNAME"/>
+		<result property="fname_related.value" column="t0_3_4_t1_LABEL_CN"/>
+		<result property="fname_related.relatedBmClassId" column="t0_3_4_BD"/>
+		<result property="pflag" column="t0_PFLAG"/> 
+		<result property="to_Org_lableCN" column="to_Org_lableCN"/> 
+		<result property="psbh" column="t0_psbh"/> 
+		<result property="freeZe" column="t0_freeze"/> 
+    </resultMap>
+    
+    <resultMap id="zgTorderResultBase" class="zgTorder">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="aufnr" column="t0_AUFNR"/>
+		<result property="orderState" column="t0_ORDER_STATE"/>
+		<result property="publish_num" column="t0_publish_num"/>
+		<result property="submitUser" column="t0_SUBMIT_USER"/>
+		<result property="submitDate" column="t0_SUBMIT_DATE"/>
+		<result property="mandt" column="t0_MANDT"/>
+		<result property="pxdat" column="t0_PXDAT"/>
+		<result property="plant" column="t0_PLANT"/>
+		<result property="mipos" column="t0_MIPOS"/>
+		<result property="pcdat" column="t0_PCDAT"/>
+		<result property="arbpl" column="t0_ARBPL"/>
+		<result property="arbpl1" column="t0_ARBPL1"/>
+		<result property="matnr" column="t0_MATNR"/>
+		<result property="kdauf" column="t0_KDAUF"/>
+		<result property="kdpos" column="t0_KDPOS"/>
+		<result property="kdtxt" column="t0_KDTXT"/>
+		<result property="zckpp" column="t0_ZCKPP"/>
+		<result property="maktx2" column="t0_MAKTX2"/>
+		<result property="maktx1" column="t0_MAKTX1"/>
+		<result property="zzcks" column="t0_ZZCKS"/>
+		<result property="atwrt2" column="t0_ATWRT2"/>
+		<result property="psmng" column="t0_PSMNG"/>
+		<result property="pmenge" column="t0_PMENGE"/>
+		<result property="ztxt02" column="t0_ZTXT02"/>
+		<result property="zdblc" column="t0_ZDBLC"/>
+		<result property="brgew2" column="t0_BRGEW2"/>
+		<result property="crdat" column="t0_CRDAT"/>
+		<result property="cputm" column="t0_CPUTM"/>
+		<result property="crnam" column="t0_CRNAM"/>
+		<result property="mrnam" column="t0_MRNAM"/>
+		<result property="zmuze" column="t0_ZMUZE"/>
+		<result property="mname" column="t0_MNAME"/>
+		<result property="fbdat" column="t0_FBDAT"/>
+		<result property="fbuze" column="t0_FBUZE"/>
+		<result property="fname" column="t0_FNAME"/>
+		<result property="pflag" column="t0_PFLAG"/> 
+		<result property="psbh" column="t0_psbh"/> 
+		<result property="freeZe" column="t0_freeze"/> 
+		<result property="taskId" column="t0_taskid"/> 
+		<result property="poskey" column="t0_poskey"/> 
+		
+		
+		
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_LABEL_CN,
+	        m.t0_AUFNR,
+	        m.t0_ORDER_STATE,
+	        m.t0_publish_num,
+		    t0_0_1.t1_LABEL_CN as t0_0_1_t1_LABEL_CN,
+	        'FW_EMPLOYEE' as t0_0_1_BD,
+	        m.t0_SUBMIT_USER,
+	        m.t0_SUBMIT_DATE,
+	        m.t0_MANDT,
+	        m.t0_PXDAT,
+	        m.t0_PLANT,
+	        m.t0_MIPOS,
+	        m.t0_PCDAT,
+	        m.t0_ARBPL,
+	        m.t0_MATNR,
+	        m.t0_KDAUF,
+	        m.t0_KDPOS,
+	        m.t0_KDTXT,
+	        m.t0_ZCKPP,
+	        m.t0_MAKTX2,
+	        m.t0_MAKTX1,
+	        m.t0_ZZCKS,
+	        m.t0_ATWRT2,
+	        m.t0_PSMNG,
+	        m.t0_PMENGE,
+	        m.t0_ZTXT02,
+	        m.t0_ZDBLC,
+	        m.t0_BRGEW2,
+	        m.t0_CRDAT,
+	        m.t0_CPUTM,
+		    t0_1_2.t1_LABEL_CN as t0_1_2_t1_LABEL_CN,
+	        'FW_EMPLOYEE' as t0_1_2_BD,
+	        m.t0_CRNAM,
+	        m.t0_MRNAM,
+	        m.t0_ZMUZE,
+		    t0_2_3.t1_LABEL_CN as t0_2_3_t1_LABEL_CN,
+	        'FW_EMPLOYEE' as t0_2_3_BD,
+	        m.t0_MNAME,
+	        m.t0_FBDAT,
+	        m.t0_FBUZE,
+		    t0_3_4.t1_LABEL_CN as t0_3_4_t1_LABEL_CN,
+	        'FW_EMPLOYEE' as t0_3_4_BD,
+	        m.t0_FNAME,
+	        t0_PFLAG,
+	        to_Org_lableCN,
+	        t0_psbh,
+	        t0_freeze,
+	        t0_ARBPL1
+	    ]]>
+	</sql>
+	
+	 <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumnsBase">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_LABEL_CN,
+	        m.t0_AUFNR,
+	        m.t0_ORDER_STATE,
+	        m.t0_publish_num,
+	        m.t0_SUBMIT_USER,
+	        m.t0_SUBMIT_DATE,
+	        m.t0_MANDT,
+	        m.t0_PXDAT,
+	        m.t0_PLANT,
+	        m.t0_MIPOS,
+	        m.t0_PCDAT,
+	        m.t0_ARBPL,
+	        m.t0_MATNR,
+	        m.t0_KDAUF,
+	        m.t0_KDPOS,
+	        m.t0_KDTXT,
+	        m.t0_ZCKPP,
+	        m.t0_MAKTX2,
+	        m.t0_MAKTX1,
+	        m.t0_ZZCKS,
+	        m.t0_ATWRT2,
+	        m.t0_PSMNG,
+	        m.t0_PMENGE,
+	        m.t0_ZTXT02,
+	        m.t0_ZDBLC,
+	        m.t0_BRGEW2,
+	        m.t0_CRDAT,
+	        m.t0_CPUTM,
+	        m.t0_CRNAM,
+	        m.t0_MRNAM,
+	        m.t0_ZMUZE,
+	        m.t0_MNAME,
+	        m.t0_FBDAT,
+	        m.t0_FBUZE,
+	        m.t0_FNAME,
+	        t0_PFLAG,
+	        to_Org_lableCN,
+	        t0_psbh,
+	        t0_freeze,
+	        t0_ARBPL1,
+	        t0_taskid,
+	        t0_poskey
+	    ]]>
+	</sql>
+	
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_aufnr like '%'||'$labelCn$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="aufnr">
+	       			m.t0_AUFNR like #aufnr#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="orderState">
+	       			m.t0_ORDER_STATE = #orderState#
+       		</isNotEmpty>    
+       		<!-- 生产订单处理状态 -->
+       		 <isEqual prepend="AND" property="publishState" compareValue = "0">
+					<![CDATA[ nvl( m.t0_publish_num,0) < m.t0_PMENGE]]>
+      		 </isEqual>
+       		 <isEqual prepend="AND" property="publishState" compareValue = "4">
+       				<![CDATA[ nvl( m.t0_publish_num,0)= m.t0_PMENGE]]>
+       		</isEqual>
+		    <isNotEmpty prepend="AND" property="submitUser">
+	       			m.t0_SUBMIT_USER like #submitUser#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="submitDate_start">
+       			<![CDATA[m.t0_SUBMIT_DATE >= to_date(#submitDate_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="submitDate_end">
+       			<![CDATA[m.t0_SUBMIT_DATE <= to_date(#submitDate_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="mandt">
+	       			m.t0_MANDT like #mandt#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="pxdat_start">
+       			<![CDATA[(m.t0_PXDAT >= to_date(#pxdat_start#,'yyyy-mm-dd HH24:mi:ss') or m.t0_PXDAT is null) ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="pxdat_end">
+       			<![CDATA[(m.t0_PXDAT <= to_date(#pxdat_end#,'yyyy-mm-dd HH24:mi:ss') or m.t0_PXDAT is null) ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="plant">
+	       			m.t0_PLANT like '%'||'$plant$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="mipos">
+	       			m.t0_MIPOS like #mipos#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="pcdat_start">
+       			<![CDATA[m.t0_PCDAT >= to_date(#pcdat_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="pcdat_end">
+       			<![CDATA[m.t0_PCDAT <= to_date(#pcdat_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="arbpl">
+	       			m.t0_ARBPL like '%'||'$arbpl$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="matnr">
+	       			m.t0_MATNR like '%'||'$matnr$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="kdauf">
+	       			m.t0_KDAUF like '%'||'$kdauf$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="kdpos">
+	       			m.t0_KDPOS = #kdpos#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="kdtxt">
+	       			m.t0_KDTXT like #kdtxt#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zckpp">
+	       			m.t0_ZCKPP like #zckpp#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="maktx2">
+	       			m.t0_MAKTX2 like '%'||'$maktx2$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="maktx1">
+	       			m.t0_MAKTX1 like '%'||'$maktx1$'||'%' 
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zzcks">
+	       			m.t0_ZZCKS like #zzcks#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="atwrt2">
+	       			m.t0_ATWRT2 like #atwrt2#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="psmng">
+	       			m.t0_PSMNG = #psmng#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="pmenge">
+	       			m.t0_PMENGE = #pmenge#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="ztxt02">
+	       			m.t0_ZTXT02 like #ztxt02#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zdblc">
+	       			m.t0_ZDBLC like #zdblc#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="brgew2">
+	       			m.t0_BRGEW2 like #brgew2#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="crdat_start">
+       			<![CDATA[m.t0_CRDAT >= to_date(#crdat_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="crdat_end">
+       			<![CDATA[m.t0_CRDAT <= to_date(#crdat_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="cputm_start">
+       			<![CDATA[m.t0_CPUTM >= to_date(#cputm_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="cputm_end">
+       			<![CDATA[m.t0_CPUTM <= to_date(#cputm_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="crnam">
+	       			m.t0_CRNAM like #crnam#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="mrnam_start">
+       			<![CDATA[m.t0_MRNAM >= to_date(#mrnam_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="mrnam_end">
+       			<![CDATA[m.t0_MRNAM <= to_date(#mrnam_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="zmuze_start">
+       			<![CDATA[m.t0_ZMUZE >= to_date(#zmuze_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="zmuze_end">
+       			<![CDATA[m.t0_ZMUZE <= to_date(#zmuze_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="mname">
+	       			m.t0_MNAME like #mname#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="fbdat_start">
+       			<![CDATA[m.t0_FBDAT >= to_date(#fbdat_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="fbdat_end">
+       			<![CDATA[m.t0_FBDAT <= to_date(#fbdat_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="fbuze_start">
+       			<![CDATA[m.t0_FBUZE >= to_date(#fbuze_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="fbuze_end">
+       			<![CDATA[m.t0_FBUZE <= to_date(#fbuze_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="fname">
+	       			m.t0_FNAME like #fname#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="pflag">
+	       			decode(m.t0_PFLAG,'X','X','C') like #pflag#
+       		</isNotEmpty>    
+       		
+       		 <isNotEmpty prepend="AND" property="bomMove">
+	       			m.t0_ORDER_STATE in ('8','9','-1')
+       		</isNotEmpty>   
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertZG_T_ORDER" parameterClass="zgTorder">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_ORDER (
+        	CUID ,
+        	LABEL_CN ,
+        	AUFNR ,
+        	ORDER_STATE ,
+        	SUBMIT_USER ,
+        	SUBMIT_DATE ,
+        	MANDT ,
+        	PXDAT ,
+        	PLANT ,
+        	MIPOS ,
+        	PCDAT ,
+        	ARBPL ,
+        	MATNR ,
+        	KDAUF ,
+        	KDPOS ,
+        	KDTXT ,
+        	ZCKPP ,
+        	MAKTX2 ,
+        	MAKTX1 ,
+        	ZZCKS ,
+        	ATWRT2 ,
+        	PSMNG ,
+        	PMENGE ,
+        	ZTXT02 ,
+        	ZDBLC ,
+        	BRGEW2 ,
+        	CRDAT ,
+        	CPUTM ,
+        	CRNAM ,
+        	MRNAM ,
+        	ZMUZE ,
+        	MNAME ,
+        	FBDAT ,
+        	FBUZE ,
+        	FNAME ,
+        	PFLAG ,
+        	psbh,
+        	freeZe
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#aufnr# ,
+        	#orderState# ,
+        	#submitUser# ,
+        	#submitDate# ,
+        	#mandt# ,
+        	#pxdat# ,
+        	#plant# ,
+        	#mipos# ,
+        	#pcdat# ,
+        	#arbpl# ,
+        	#matnr# ,
+        	#kdauf# ,
+        	#kdpos# ,
+        	#kdtxt# ,
+        	#zckpp# ,
+        	#maktx2# ,
+        	#maktx1# ,
+        	#zzcks# ,
+        	#atwrt2# ,
+        	#psmng# ,
+        	#pmenge# ,
+        	#ztxt02# ,
+        	#zdblc# ,
+        	#brgew2# ,
+        	#crdat# ,
+        	#cputm# ,
+        	#crnam# ,
+        	#mrnam# ,
+        	#zmuze# ,
+        	#mname# ,
+        	#fbdat# ,
+        	#fbuze# ,
+        	#fname# ,
+        	#pflag# ,
+        	#psbh#,
+        	#freeZe#
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateZG_T_ORDER" parameterClass="zgTorder">
+    <![CDATA[
+        UPDATE ZG_T_ORDER SET
+	        LABEL_CN = #labelCn# ,
+	        AUFNR = #aufnr# ,
+	        ORDER_STATE = #orderState# ,
+	        SUBMIT_USER = #submitUser# ,
+	        SUBMIT_DATE = #submitDate# ,
+	        MANDT = #mandt# ,
+	        PXDAT = #pxdat# ,
+	        PLANT = #plant# ,
+	        MIPOS = #mipos# ,
+	        PCDAT = #pcdat# ,
+	        ARBPL = #arbpl# ,
+	        MATNR = #matnr# ,
+	        KDAUF = #kdauf# ,
+	        KDPOS = #kdpos# ,
+	        KDTXT = #kdtxt# ,
+	        ZCKPP = #zckpp# ,
+	        MAKTX2 = #maktx2# ,
+	        MAKTX1 = #maktx1# ,
+	        ZZCKS = #zzcks# ,
+	        ATWRT2 = #atwrt2# ,
+	        PSMNG = #psmng# ,
+	        PMENGE = #pmenge# ,
+	        ZTXT02 = #ztxt02# ,
+	        ZDBLC = #zdblc# ,
+	        BRGEW2 = #brgew2# ,
+	        CRDAT = #crdat# ,
+	        CPUTM = #cputm# ,
+	        CRNAM = #crnam# ,
+	        MRNAM = #mrnam# ,
+	        ZMUZE = #zmuze# ,
+	        MNAME = #mname# ,
+	        FBDAT = #fbdat# ,
+	        FBUZE = #fbuze# ,
+	        FNAME = #fname# ,
+	        PFLAG = #pflag# ,
+	        psbh = #psbh#,
+	        freeZe = #freeZe#
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteZG_T_ORDER" parameterClass="java.lang.String">
+		delete from ZG_T_ORDER 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="zgTorderResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ORDER_STATE as t0_ORDER_STATE,
+	        		t0.publish_num as t0_publish_num,
+	        		t0.SUBMIT_USER as t0_SUBMIT_USER,
+	        		t0.SUBMIT_DATE as t0_SUBMIT_DATE,
+	        		t0.MANDT as t0_MANDT,
+	        		t0.PXDAT as t0_PXDAT,
+	        		 WMSYS.WM_CONCAT(task.PLANT) t0_PLANT,
+	        		t0.MIPOS as t0_MIPOS,
+	        		t0.PCDAT as t0_PCDAT,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.KDAUF as t0_KDAUF,
+	        		t0.KDPOS as t0_KDPOS,
+	        		t0.KDTXT as t0_KDTXT,
+	        		t0.ZCKPP as t0_ZCKPP,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.ZZCKS as t0_ZZCKS,
+	        		t0.ATWRT2 as t0_ATWRT2,
+	        		t0.PSMNG as t0_PSMNG,
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.ZTXT02 as t0_ZTXT02,
+	        		t0.ZDBLC as t0_ZDBLC,
+	        		t0.BRGEW2 as t0_BRGEW2,
+	        		t0.CRDAT as t0_CRDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.CRNAM as t0_CRNAM,
+	        		t0.MRNAM as t0_MRNAM,
+	        		t0.ZMUZE as t0_ZMUZE,
+	        		t0.MNAME as t0_MNAME,
+	        		t0.FBDAT as t0_FBDAT,
+	        		t0.FBUZE as t0_FBUZE,
+	        		t0.FNAME as t0_FNAME,
+	        		t0.PFLAG as t0_PFLAG,
+	        		null as to_Org_lableCN,
+	        		t0.psbh as t0_psbh,
+	        		t0.freeze as t0_freeze,
+	        		t0.ARBPL1 as t0_ARBPL1
+	        from 
+	        ZG_T_ORDER t0,zg_t_order_task task
+	        
+	         where  t0.cuid=task.order_id
+                   group by 
+                   
+                   t0.CUID ,
+                       t0.LABEL_CN ,
+                       t0.AUFNR ,
+                       t0.ORDER_STATE ,
+                       t0.publish_num ,
+                       t0.SUBMIT_USER ,
+                       t0.SUBMIT_DATE ,
+                       t0.MANDT,
+                       t0.PXDAT ,
+                       t0.PLANT ,
+                       t0.MIPOS ,
+                       t0.PCDAT,
+                       t0.ARBPL ,
+                       t0.MATNR,
+                       t0.kdauf,
+                       t0.KDPOS,
+                       t0.KDTXT,
+                       t0.ZCKPP ,
+                       t0.MAKTX2 ,
+                       t0.MAKTX1 ,
+                       t0.ZZCKS,
+                       t0.ATWRT2,
+                       t0.PSMNG ,
+                       t0.PMENGE,
+                       t0.ZTXT02 ,
+                       t0.ZDBLC ,
+                       t0.BRGEW2 ,
+                       t0.CRDAT ,
+                       t0.CPUTM ,
+                       t0.CRNAM ,
+                       t0.MRNAM ,
+                       t0.ZMUZE ,
+                       t0.MNAME ,
+                       t0.FBDAT,
+                       t0.FBUZE ,
+                       t0.FNAME ,
+                       t0.PFLAG,
+                       t0.ARBPL1 ,
+                    
+                       t0.psbh ,
+                       t0.freeze 
+ ) m
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_SUBMIT_USER 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_CRNAM 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_3 on t0_2_3.t0_CUID = m.t0_MNAME 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_3_4 on t0_3_4.t0_CUID = m.t0_FNAME 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="getByTaskId" resultMap="zgTorderResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		task.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ORDER_STATE as t0_ORDER_STATE,
+	        		t0.publish_num as t0_publish_num,
+	        		t0.SUBMIT_USER as t0_SUBMIT_USER,
+	        		t0.SUBMIT_DATE as t0_SUBMIT_DATE,
+	        		t0.MANDT as t0_MANDT,
+	        		task.px_date as t0_PXDAT,
+	        		task.PLANT as t0_PLANT,
+	        		t0.MIPOS as t0_MIPOS,
+	        		t0.PCDAT as t0_PCDAT,
+	        		task.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.KDAUF as t0_KDAUF,
+	        		t0.KDPOS as t0_KDPOS,
+	        		t0.KDTXT as t0_KDTXT,
+	        		t0.ZCKPP as t0_ZCKPP,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.ZZCKS as t0_ZZCKS,
+	        		t0.ATWRT2 as t0_ATWRT2,
+	        		t0.PSMNG as t0_PSMNG,
+	        		task.PMENGE as t0_PMENGE,
+	        		t0.ZTXT02 as t0_ZTXT02,
+	        		t0.ZDBLC as t0_ZDBLC,
+	        		t0.BRGEW2 as t0_BRGEW2,
+	        		t0.CRDAT as t0_CRDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.CRNAM as t0_CRNAM,
+	        		t0.MRNAM as t0_MRNAM,
+	        		t0.ZMUZE as t0_ZMUZE,
+	        		t0.MNAME as t0_MNAME,
+	        		t0.FBDAT as t0_FBDAT,
+	        		t0.FBUZE as t0_FBUZE,
+	        		t0.FNAME as t0_FNAME,
+	        		t0.PFLAG as t0_PFLAG,
+	        		null as to_Org_lableCN,
+	        		t0.psbh as t0_psbh,
+	        		t0.freeze as t0_freeze,
+	        		t0.ARBPL1 as t0_ARBPL1
+	        from 
+	        ZG_T_ORDER t0,zg_t_order_task task
+	        where t0.cuid=task.order_id
+ ) m
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_SUBMIT_USER 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_CRNAM 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_3 on t0_2_3.t0_CUID = m.t0_MNAME 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_3_4 on t0_3_4.t0_CUID = m.t0_FNAME 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    
+    <select id="findByProperty" resultMap="zgTorderResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ORDER_STATE as t0_ORDER_STATE,
+	        		t0.publish_num as t0_publish_num,
+	        		t0.SUBMIT_USER as t0_SUBMIT_USER,
+	        		t0.SUBMIT_DATE as t0_SUBMIT_DATE,
+	        		t0.MANDT as t0_MANDT,
+	        		t0.PXDAT as t0_PXDAT,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.MIPOS as t0_MIPOS,
+	        		t0.PCDAT as t0_PCDAT,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.KDAUF as t0_KDAUF,
+	        		t0.KDPOS as t0_KDPOS,
+	        		t0.KDTXT as t0_KDTXT,
+	        		t0.ZCKPP as t0_ZCKPP,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.ZZCKS as t0_ZZCKS,
+	        		t0.ATWRT2 as t0_ATWRT2,
+	        		t0.PSMNG as t0_PSMNG,
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.ZTXT02 as t0_ZTXT02,
+	        		t0.ZDBLC as t0_ZDBLC,
+	        		t0.BRGEW2 as t0_BRGEW2,
+	        		t0.CRDAT as t0_CRDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.CRNAM as t0_CRNAM,
+	        		t0.MRNAM as t0_MRNAM,
+	        		t0.ZMUZE as t0_ZMUZE,
+	        		t0.MNAME as t0_MNAME,
+	        		t0.FBDAT as t0_FBDAT,
+	        		t0.FBUZE as t0_FBUZE,
+	        		t0.FNAME as t0_FNAME,
+	        		t0.PFLAG as t0_PFLAG,
+	        		null as to_Org_lableCN,
+	        		t0.psbh as t0_psbh,
+	        		t0.freeze as t0_freeze,
+	        		t0.ARBPL1 as t0_ARBPL1
+	        from 
+	        ZG_T_ORDER t0
+ ) m
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_SUBMIT_USER 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_CRNAM 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_3 on t0_2_3.t0_CUID = m.t0_MNAME 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_3_4 on t0_3_4.t0_CUID = m.t0_FNAME 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ORDER_STATE as t0_ORDER_STATE,
+	        		t0.publish_num as t0_publish_num,
+	        		t0.SUBMIT_USER as t0_SUBMIT_USER,
+	        		t0.SUBMIT_DATE as t0_SUBMIT_DATE,
+	        		t0.MANDT as t0_MANDT,
+	        		t0.PXDAT as t0_PXDAT,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.MIPOS as t0_MIPOS,
+	        		t0.PCDAT as t0_PCDAT,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.KDAUF as t0_KDAUF,
+	        		t0.KDPOS as t0_KDPOS,
+	        		t0.KDTXT as t0_KDTXT,
+	        		t0.ZCKPP as t0_ZCKPP,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.ZZCKS as t0_ZZCKS,
+	        		t0.ATWRT2 as t0_ATWRT2,
+	        		t0.PSMNG as t0_PSMNG,
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.ZTXT02 as t0_ZTXT02,
+	        		t0.ZDBLC as t0_ZDBLC,
+	        		t0.BRGEW2 as t0_BRGEW2,
+	        		t0.CRDAT as t0_CRDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.CRNAM as t0_CRNAM,
+	        		t0.MRNAM as t0_MRNAM,
+	        		t0.ZMUZE as t0_ZMUZE,
+	        		t0.MNAME as t0_MNAME,
+	        		t0.FBDAT as t0_FBDAT,
+	        		t0.FBUZE as t0_FBUZE,
+	        		t0.FNAME as t0_FNAME,
+	        		t0.PFLAG as t0_PFLAG,
+	        		null as to_Org_lableCN,
+	        		t0.psbh as t0_psbh,
+	        		t0.freeze as t0_freeze,
+	        		t0.ARBPL1 as t0_ARBPL1
+          from 
+          ZG_T_ORDER t0 ,fw_organization fw ]]> 
+          <isNotEqual property="operatorId" compareValue="0">
+          	<![CDATA[ ,FW_ORGANIZATION_MANAGER fom ]]>
+          </isNotEqual>
+         <![CDATA[ where t0.arbpl=fw.cuid(+) ]]>
+         		<isNotEqual property="operatorId" compareValue="0">
+	          		<![CDATA[ and fom.org_id(+) = t0.ARBPL
+	          		and fom.EMPLOYEE_ID=#operatorId# ]]>
+          		</isNotEqual>
+ <![CDATA[ ) m
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_SUBMIT_USER 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_CRNAM 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_3 on t0_2_3.t0_CUID = m.t0_MNAME 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_3_4 on t0_3_4.t0_CUID = m.t0_FNAME 
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTorderResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ORDER_STATE as t0_ORDER_STATE,
+	        		nvl(t0.publish_num,0) as t0_publish_num, 
+	        		t0.SUBMIT_USER as t0_SUBMIT_USER,
+	        		t0.SUBMIT_DATE as t0_SUBMIT_DATE,
+	        		t0.MANDT as t0_MANDT,
+	        		t0.PXDAT as t0_PXDAT,
+	        		WMSYS.WM_CONCAT(task.PLANT) t0_PLANT,
+	        		t0.MIPOS as t0_MIPOS,
+	        		t0.PCDAT as t0_PCDAT,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.KDAUF as t0_KDAUF,
+	        		t0.KDPOS as t0_KDPOS,
+	        		t0.KDTXT as t0_KDTXT,
+	        		t0.ZCKPP as t0_ZCKPP,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.ZZCKS as t0_ZZCKS,
+	        		t0.ATWRT2 as t0_ATWRT2,
+	        		t0.PSMNG as t0_PSMNG,
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.ZTXT02 as t0_ZTXT02,
+	        		t0.ZDBLC as t0_ZDBLC,
+	        		t0.BRGEW2 as t0_BRGEW2,
+	        		t0.CRDAT as t0_CRDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.CRNAM as t0_CRNAM,
+	        		t0.MRNAM as t0_MRNAM,
+	        		t0.ZMUZE as t0_ZMUZE,
+	        		t0.MNAME as t0_MNAME,
+	        		t0.FBDAT as t0_FBDAT,
+	        		t0.FBUZE as t0_FBUZE,
+	        		t0.FNAME as t0_FNAME,
+	        		t0.PFLAG as t0_PFLAG,
+	        		t0.ARBPL1 as t0_ARBPL1,
+	       fw.label_cn as to_Org_lableCN,
+	       t0.psbh as t0_psbh,
+	       t0.freeze as t0_freeze
+          from 
+          ZG_T_ORDER t0,fw_organization fw,zg_t_order_task task ]]> 
+          <isNotEqual property="operatorId" compareValue="0">
+          	<![CDATA[ ,FW_ORGANIZATION_MANAGER fom ]]>
+          </isNotEqual>
+         <![CDATA[ where t0.arbpl=fw.cuid(+) and t0.order_state<>'-1' ]]>
+         		<isNotEqual property="operatorId" compareValue="0">
+	          		<![CDATA[ and fom.org_id(+) = t0.ARBPL
+	          		and fom.EMPLOYEE_ID=#operatorId# ]]>
+          		</isNotEqual>
+          		 and t0.cuid=task.order_id
+          		 group by 
+                   
+                   t0.CUID ,
+                       t0.LABEL_CN ,
+                       t0.AUFNR ,
+                       t0.ORDER_STATE ,
+                       t0.publish_num ,
+                       t0.SUBMIT_USER ,
+                       t0.SUBMIT_DATE ,
+                       t0.MANDT,
+                       t0.PXDAT ,
+                       t0.PLANT ,
+                       t0.MIPOS ,
+                       t0.PCDAT,
+                       t0.ARBPL ,
+                       t0.MATNR,
+                       t0.kdauf,
+                       t0.KDPOS,
+                       t0.KDTXT,
+                       t0.ZCKPP ,
+                       t0.MAKTX2 ,
+                       t0.MAKTX1 ,
+                       t0.ZZCKS,
+                       t0.ATWRT2,
+                       t0.PSMNG ,
+                       t0.PMENGE,
+                       t0.ZTXT02 ,
+                       t0.ZDBLC ,
+                       t0.BRGEW2 ,
+                       t0.CRDAT ,
+                       t0.CPUTM ,
+                       t0.CRNAM ,
+                       t0.MRNAM ,
+                       t0.ZMUZE ,
+                       t0.MNAME ,
+                       t0.FBDAT,
+                       t0.FBUZE ,
+                       t0.FNAME ,
+                       t0.PFLAG,
+                       t0.ARBPL1 ,
+                       fw.label_cn,
+                       t0.psbh ,
+                       t0.freeze 
+ <![CDATA[ ) m
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_SUBMIT_USER 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_CRNAM 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_3 on t0_2_3.t0_CUID = m.t0_MNAME 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_3_4 on t0_3_4.t0_CUID = m.t0_FNAME 
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="zgTorderResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ORDER_STATE as t0_ORDER_STATE,
+	        		t0.publish_num as t0_publish_num,
+	        		t0.SUBMIT_USER as t0_SUBMIT_USER,
+	        		t0.SUBMIT_DATE as t0_SUBMIT_DATE,
+	        		t0.MANDT as t0_MANDT,
+	        		t0.PXDAT as t0_PXDAT,
+	        		t0.PLANT as t0_PLANT,
+	        		t0.MIPOS as t0_MIPOS,
+	        		t0.PCDAT as t0_PCDAT,
+	        		t0.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.KDAUF as t0_KDAUF,
+	        		t0.KDPOS as t0_KDPOS,
+	        		t0.KDTXT as t0_KDTXT,
+	        		t0.ZCKPP as t0_ZCKPP,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.ZZCKS as t0_ZZCKS,
+	        		t0.ATWRT2 as t0_ATWRT2,
+	        		t0.PSMNG as t0_PSMNG,
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.ZTXT02 as t0_ZTXT02,
+	        		t0.ZDBLC as t0_ZDBLC,
+	        		t0.BRGEW2 as t0_BRGEW2,
+	        		t0.CRDAT as t0_CRDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.CRNAM as t0_CRNAM,
+	        		t0.MRNAM as t0_MRNAM,
+	        		t0.ZMUZE as t0_ZMUZE,
+	        		t0.MNAME as t0_MNAME,
+	        		t0.FBDAT as t0_FBDAT,
+	        		t0.FBUZE as t0_FBUZE,
+	        		t0.FNAME as t0_FNAME,
+	        		null as to_Org_lableCN,
+	        		t0.psbh as t0_psbh,
+	        		t0.freeze as t0_freeze,
+	        		t0.ARBPL1 as t0_ARBPL1
+	        from 
+	        ZG_T_ORDER t0
+ ) m
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_SUBMIT_USER 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_CRNAM 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_3 on t0_2_3.t0_CUID = m.t0_MNAME 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_3_4 on t0_3_4.t0_CUID = m.t0_FNAME 
+        ]]>
+    </select>
+    
+    <select id="getOrderListByAufnrPlant" resultMap="zgTorderResultBase">
+	    select <include refid="commonColumnsBase"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.AUFNR as t0_AUFNR,
+	        		t0.ORDER_STATE as t0_ORDER_STATE,
+	        		t0.publish_num as t0_publish_num,
+	        		t0.SUBMIT_USER as t0_SUBMIT_USER,
+	        		t0.SUBMIT_DATE as t0_SUBMIT_DATE,
+	        		t0.MANDT as t0_MANDT,
+	        		task.PX_DATE as t0_PXDAT,
+	        		task.PLANT as t0_PLANT,
+	        		t0.MIPOS as t0_MIPOS,
+	        		t0.PCDAT as t0_PCDAT,
+	        		task.ARBPL as t0_ARBPL,
+	        		t0.MATNR as t0_MATNR,
+	        		t0.KDAUF as t0_KDAUF,
+	        		t0.KDPOS as t0_KDPOS,
+	        		t0.KDTXT as t0_KDTXT,
+	        		t0.ZCKPP as t0_ZCKPP,
+	        		t0.MAKTX2 as t0_MAKTX2,
+	        		t0.MAKTX1 as t0_MAKTX1,
+	        		t0.ZZCKS as t0_ZZCKS,
+	        		t0.ATWRT2 as t0_ATWRT2,
+	        		t0.PSMNG as t0_PSMNG,
+	        		t0.PMENGE as t0_PMENGE,
+	        		t0.ZTXT02 as t0_ZTXT02,
+	        		t0.ZDBLC as t0_ZDBLC,
+	        		t0.BRGEW2 as t0_BRGEW2,
+	        		t0.CRDAT as t0_CRDAT,
+	        		t0.CPUTM as t0_CPUTM,
+	        		t0.CRNAM as t0_CRNAM,
+	        		t0.MRNAM as t0_MRNAM,
+	        		t0.ZMUZE as t0_ZMUZE,
+	        		t0.MNAME as t0_MNAME,
+	        		t0.FBDAT as t0_FBDAT,
+	        		t0.FBUZE as t0_FBUZE,
+	        		t0.FNAME as t0_FNAME,
+	        		t0.PFLAG as t0_PFLAG,
+	        		null as to_Org_lableCN,
+	        		t0.psbh as t0_psbh,
+	        		t0.freeze as t0_freeze,
+	        		t0.ARBPL1 as t0_ARBPL1,
+	        		task.cuid as t0_taskid,
+	        		task.poskey as t0_poskey
+	        from 
+	        ZG_T_ORDER t0,zg_t_order_task task
+	        where t0.cuid=task.order_id
+	        and t0.aufnr='$aufnr$'
+	        and task.plant='$plant$'
+	        and task.flag<>'-1'
+ ) m
+        ]]>
+    </select>
+    
+</sqlMap>

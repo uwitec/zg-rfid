@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+	<!-- HEWQ
+		2种定时器 
+		1．秒（0–59）
+		2．分钟（0–59）
+		3．小时（0–23）
+		4．月份中的日期（1–31）
+		5．月份（1–12或JAN–DEC）
+		6．星期中的日期（1–7或SUN–SAT）
+		7．年份（1970–2099）
+		表达式意义0 0 6 * * ?
+		0 0 10,14,16 * * ?每天上午10点，下午2点和下午4点
+		0 0,15,30,45 * 1-10 * ?每月前10天每隔15分钟
+		30 0 0 1 1 ? 2012在2012年1月1日午夜过30秒时
+		0 0 8-5 ? * MON-FRI每个工作日的工作时间
+		
+	-->
+
+		<bean id="sapService"
+		class="sap.service.SapService">
+
+	  </bean>
+
+	<bean id="sapSynBomJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<!--<ref bean="exampleJob" />-->
+			<ref bean="sapService" />
+		</property>
+		<property name="targetMethod">
+			<value>processSynBom</value>
+		</property>
+	</bean>
+
+
+	<bean id="sapSynBomJobTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<!-- see the example of method invoking job above -->
+			<ref bean="sapSynBomJob" />
+		</property>
+		 <property name="cronExpression">
+		 <!-- 每天23点59分触发 -->
+            <value>0 0 02 * * ?</value>
+        </property>
+	</bean>
+
+
+	<!-- 启动工作
+	<bean
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="sapSynBomJobTrigger" />
+			</list>
+		</property>
+		<property name="quartzProperties">
+			<props>
+				<prop key="org.quartz.jobStore.class">
+					org.quartz.simpl.RAMJobStore
+				</prop>
+			</props>
+		</property>
+	</bean>-->
+</beans>
