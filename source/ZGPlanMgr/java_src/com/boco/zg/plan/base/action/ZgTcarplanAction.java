@@ -668,58 +668,72 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		
 		
 		
-		//获取相就在的供应商信息
-		if(newBomList.size()>0){
-			String aufnrs="";
-			String idnrks ="";
-			for(Map bom:newBomList){
-				aufnrs=aufnrs+bom.get("AUFNR").toString()+"','";
-				idnrks=idnrks+bom.get("IDNRK").toString()+"','";
-			}
-			
-			aufnrs=aufnrs.substring(0,aufnrs.length()-3);
-			idnrks=idnrks.substring(0,idnrks.length()-3);	
-			
-			//获取供应商信息
-			List<ZgTcarbomSuppliers> suppliersLst=zgTorderSuppliersBo.getBomSuppliersListByAufnrIdnrk(aufnrs,idnrks);
-			
-			for(Map bom:newBomList){
-				List<ZgTcarbomSuppliers> tempList=new ArrayList<ZgTcarbomSuppliers>();
-				String aufnr=bom.get("AUFNR").toString();
-				String idnrk=bom.get("IDNRK").toString();
-				for(ZgTcarbomSuppliers sup:suppliersLst){
-					if(aufnr.equals(sup.getAufnr())&&idnrk.equals(sup.getIdnrk())){
-						tempList.add(sup);
-					}
-				}
-				
-				if(tempList.size()==1){//只有一个供应商，则默认该供应商数量和领料数量一样
-					tempList.get(0).setCarNum(bom.get("MAX_VALUE")==null?0l:Long.parseLong(bom.get("CAR_PLAN_NUM").toString()));
-				}
-				bom.put("subList", tempList);
-			}
-			
-		}
+	
 
 		Long carEdNum=0l;//已装车数量
-		if(bomList.size()==0){//原来装车bom为空时，则计算目前新添加的bom的装车数量
-			for(Map bom:newBomList){
-				Long carCount=Long.parseLong(bom.get("CARCOUNT").toString());//每车可以装车 的数量
-				Long maxValue=Long.parseLong(bom.get("MAX_VALUE").toString());//该物料目前可以装车的数量
-
-				if(carCount-(maxValue+carEdNum)>=0){
-					bom.put("CAR_PLAN_NUM", maxValue);
-					carEdNum=carEdNum+maxValue;
-				}else if(carCount-carEdNum>0) {
-					bom.put("CAR_PLAN_NUM", carCount-carEdNum);
-					carEdNum=carEdNum+carCount-carEdNum;
-				}
-				
-				
+		//if(bomList.size()==0){//原来装车bom为空时，则计算目前新添加的bom的装车数量
+		for(Map bom:newBomList){
+//			if(bomCuids.contains(IbatisDAOHelper.getStringValue(bom, "ORDER_BOM_ID"))){//只计算本次点击的bom默认装车数量
+//				Long carCount=Long.parseLong(bom.get("CARCOUNT").toString());//每车可以装车 的数量
+//				Long maxValue=Long.parseLong(bom.get("MAX_VALUE").toString());//该物料目前可以装车的数量
+//				if(carCount-(maxValue+carEdNum)>=0){
+//					bom.put("CAR_PLAN_NUM", maxValue);
+//					carEdNum=carEdNum+maxValue;
+//				}else if(carCount-carEdNum>0) {
+//					bom.put("CAR_PLAN_NUM", carCount-carEdNum);
+//					carEdNum=carEdNum+carCount-carEdNum;
+//				}
+//			}
+			
+			//modify by wengqin 20110516 0903 所有物料默认装车规格装车数量
+			Long carCount=Long.parseLong(bom.get("CARCOUNT").toString());//每车可以装车 的数量
+			Long maxValue=Long.parseLong(bom.get("MAX_VALUE").toString());//该物料目前可以装车的数量
+			if(maxValue<=carCount){
+				bom.put("CAR_PLAN_NUM", maxValue);
+			}else {
+				bom.put("CAR_PLAN_NUM", carCount);
 			}
-		}else {
-			carPlanId=bomList.get(0).get("CAR_PLAN_ID").toString();
+			
 		}
+	//}
+		
+	if(bomList.size()>0) {
+		carPlanId=bomList.get(0).get("CAR_PLAN_ID").toString();
+	}
+	
+	
+	//获取相就在的供应商信息
+	if(newBomList.size()>0){
+		String aufnrs="";
+		String idnrks ="";
+		for(Map bom:newBomList){
+			aufnrs=aufnrs+bom.get("AUFNR").toString()+"','";
+			idnrks=idnrks+bom.get("IDNRK").toString()+"','";
+		}
+		
+		aufnrs=aufnrs.substring(0,aufnrs.length()-3);
+		idnrks=idnrks.substring(0,idnrks.length()-3);	
+		
+		//获取供应商信息
+		List<ZgTcarbomSuppliers> suppliersLst=zgTorderSuppliersBo.getBomSuppliersListByAufnrIdnrk(aufnrs,idnrks);
+		
+		for(Map bom:newBomList){
+			List<ZgTcarbomSuppliers> tempList=new ArrayList<ZgTcarbomSuppliers>();
+			String aufnr=bom.get("AUFNR").toString();
+			String idnrk=bom.get("IDNRK").toString();
+			for(ZgTcarbomSuppliers sup:suppliersLst){
+				if(aufnr.equals(sup.getAufnr())&&idnrk.equals(sup.getIdnrk())){
+					tempList.add(sup);
+				}
+			}
+			
+			if(tempList.size()==1){//只有一个供应商，则默认该供应商数量和领料数量一样
+				tempList.get(0).setCarNum(bom.get("MAX_VALUE")==null?0l:Long.parseLong(bom.get("CAR_PLAN_NUM").toString()));
+			}
+			bom.put("subList", tempList);
+		}
+		
+	}
 //		getRequest().setAttribute("carPlanId", carPlanId);
 		
 		for(Map bom:newBomList){
