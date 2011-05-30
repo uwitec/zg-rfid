@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTgroupOrderPlan">
+
+    <typeAlias alias="zgTgroupOrderPlan" type="com.boco.zg.plan.base.model.ZgTgroupOrderPlan"/>
+
+    <resultMap id="zgTgroupOrderPlanResult" class="zgTgroupOrderPlan">
+        <result property="cuid" column="CUID"/>
+        <result property="groupId" column="GROUP_ID"/>
+        <result property="groupId_labelCn" column="GROUP_ID_LABEL_CN"/>
+        <result property="orderPlanId" column="ORDER_PLAN_ID"/>
+        <result property="orderPlanId_labelCn" column="ORDER_PLAN_ID_LABEL_CN"/>
+    </resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+        	t.CUID,
+        	t_2_2.LABEl_CN as GROUP_ID_LABEL_CN,
+        	t.GROUP_ID,
+        	t_1_1.LABEl_CN as ORDER_PLAN_ID_LABEL_CN,
+        	t.ORDER_PLAN_ID
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+		    		$sqlQueryString$ 
+		    </isNotEmpty>
+       		<isNotEmpty prepend="AND" property="cuid">
+	       			t.CUID like #cuid#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="groupId">
+	       			t.GROUP_ID like #groupId#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="orderPlanId">
+	       			t.ORDER_PLAN_ID like #orderPlanId#
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insert" parameterClass="zgTgroupOrderPlan">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_GROUP_ORDER_PLAN (
+        	CUID ,
+        	GROUP_ID ,
+        	ORDER_PLAN_ID 
+        ) VALUES (
+        	#cuid# ,
+        	#groupId# ,
+        	#orderPlanId# 
+        )
+    ]]>
+    <!--
+    mysql:		type="post" SELECT  select last_insert_id()
+    sqlserver:	type="post" SELECT  @@identity  AS  ID
+    oracle:		type="pre" 	SELECT  sequenceName.nextval AS ID FROM DUAL
+    DB2:		type="pre"	values nextval for sequenceName
+    -->
+		<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+            select sys_guid() as id FROM DUAL
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterClass="zgTgroupOrderPlan">
+    <![CDATA[
+        UPDATE ZG_T_GROUP_ORDER_PLAN SET
+	        GROUP_ID = #groupId# ,
+	        ORDER_PLAN_ID = #orderPlanId# 
+        WHERE 
+	        CUID = #cuid# 
+    ]]>
+    </update>
+    <delete id="delete" parameterClass="java.lang.String">
+    <![CDATA[
+        delete from ZG_T_GROUP_ORDER_PLAN where
+        CUID = #cuid# 
+    ]]>
+    </delete>
+    
+    <delete id="deleteByProperty">
+    <![CDATA[
+        delete from ZG_T_GROUP_ORDER_PLAN t
+    ]]>
+    	<include refid="dynamicWhere"/>
+    </delete>
+    
+    <select id="getById" resultMap="zgTgroupOrderPlanResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from ZG_T_GROUP_ORDER_PLAN t
+	        left join ZG_T_ORDER_PLAN_GROUP t_2_2 on t_2_2.CUID = t.GROUP_ID 
+	        left join ZG_T_ORDER_PLAN t_1_1 on t_1_1.CUID = t.ORDER_PLAN_ID 
+	        where 
+		        t.CUID = #cuid# 
+	    ]]>
+    </select>
+	 
+    <select id="count" resultClass="long">
+    <![CDATA[
+        select count(*) from ZG_T_GROUP_ORDER_PLAN t
+    ]]>
+		<include refid="dynamicWhere"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTgroupOrderPlanResult">
+    	select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from ZG_T_GROUP_ORDER_PLAN t
+	    ]]>
+	        left join ZG_T_ORDER_PLAN_GROUP t_2_2 on t_2_2.CUID = t.GROUP_ID 
+	        left join ZG_T_ORDER_PLAN t_1_1 on t_1_1.CUID = t.ORDER_PLAN_ID 
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findByProperty" resultMap="zgTgroupOrderPlanResult">
+    	select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from ZG_T_GROUP_ORDER_PLAN t
+	    ]]>
+	        	left join ZG_T_ORDER_PLAN_GROUP t_2_2 on t_2_2.CUID = t.GROUP_ID 
+	        	left join ZG_T_ORDER_PLAN t_1_1 on t_1_1.CUID = t.ORDER_PLAN_ID 
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+
+	
+	<select id="findAll" resultMap="zgTgroupOrderPlanResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ZG_T_GROUP_ORDER_PLAN t
+	    ]]>
+	        left join ZG_T_ORDER_PLAN_GROUP t_2_2 on t_2_2.CUID = t.GROUP_ID 
+	        left join ZG_T_ORDER_PLAN t_1_1 on t_1_1.CUID = t.ORDER_PLAN_ID 
+    </select>
+    
+     <delete id="deleteGroupRelationByGroupId">
+        delete from ZG_T_GROUP_ORDER_PLAN t where t.group_id='$cuid$'
+    </delete>
+    
+    <select id="findOrderNOListByGroupIds" resultClass="java.util.HashMap">
+		select task.*,oup.order_plan_id  from zg_t_group_order_plan oup,
+		zg_t_order_plan plan,zg_t_order_task task
+		where oup.group_id in 
+		<iterate property="groupIds" conjunction="," open="(" close=")" >
+		      		 #groupIds[]#
+		 </iterate>
+		and oup.order_plan_id=plan.cuid
+		and plan.order_task_id=task.cuid
+    </select>
+</sqlMap>

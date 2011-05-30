@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+
+  <!--物料组管理导入的模板-->
+  <template id="importBomCar" name="中文名" defaultCommand="import">
+    <command id="import" sheetName="Sheet1" errInfo="导入失败">
+      <!--对模板中的列进行描述
+      	
+      -->
+      <cols>
+        <col id="idnrk" name="BOM编码" datatype="string" desc=""></col>
+        <col id="label_cn" name="仓库" datatype="string" desc="">
+          <!--如果要进行列的验证在这里扩展-->
+          <valid></valid>
+        </col>
+        <col id="materiel_name" name="物料组" datatype="string" desc=""></col>
+        <col id="maktx" name="BOM名称" datatype="string" desc=""></col>
+        <col id="msehl" name="单位" datatype="string" desc=""></col>
+        <col id="carid" name="车型名称" datatype="string" desc=""></col>
+        <col id="carnum" name="装载数量" datatype="string" desc=""></col>
+      </cols>
+      <!--设置对应的Sql语句-->
+      <sqls defaultsql="insert">
+      	<!-- 设置sql相关信息 -->
+        <sql id="insert">
+          <!-- SQL内容 -->
+          <content>
+	          <![CDATA[ update zg_t_bom b set b.car_id=
+	          (select c.cuid from zg_carinfo c where c.label_cn='#carid#' and rownum=1) 
+	          ,b.carnum='#carnum#' where b.idnrk='#idnrk#']]>
+          </content>
+          <!-- 动态sql条件 -->
+          <dynamic>
+          </dynamic>
+        </sql>
+      </sqls>
+    </command>
+  </template>
+  
+  
+  <!-- 未设置物料组的物料 -->
+  <template id="importtMatklSelfData" name="按物料组导出物料" defaultCommand="import">
+    <command id="import" sheetName="Sheet1" errInfo="导入失败">
+      <!--对模板中的列进行描述    	
+      -->
+      <cols>
+        <col id="idnrk" name="物料" datatype="string" desc=""></col>
+        <col id="maktx" name="物料描述" datatype="string" desc="">
+          <!--如果要进行列的验证在这里扩展-->
+          <valid></valid>
+        </col>
+        <col id="lgort" name="库位" datatype="string" desc=""></col>
+         <col id="label_cn" name="仓储地点描述" datatype="string" desc=""></col>
+        <col id="matkl" name="物料组" datatype="string" desc=""></col>
+        <col id="materiel_name" name="物料组描述" datatype="string" desc=""></col>
+        <col id="matkl_self" name="新物料组" datatype="string" desc=""></col>
+      </cols>
+	       <!--设置对应的Sql语句-->
+	      <sqls defaultsql="insert">
+	      	<!-- 设置sql相关信息 -->
+	        <sql id="insert">
+	          <!-- SQL内容 -->
+	          <content>
+		          <![CDATA[ 
+		         	 update zg_t_orderbom t set t.matkl_self='#matkl_self#' where t.idnrk='#idnrk#'
+		          ]]>
+	          </content>
+	          <!-- 动态sql条件 -->
+	          <dynamic>
+	          </dynamic>
+	        </sql>
+	      </sqls>
+    </command>
+  </template>
+  
+
+ <!--物料组管理导出的模板-->
+  <template id="exportBomCar" name="导出物料组" defaultCommand="import">
+    <command id="import" sheetName="Sheet1" errInfo="导入失败">
+      <!--对模板中的列进行描述    	
+      -->
+      <cols>
+        <col id="idnrk" name="BOM编码" datatype="string" desc=""></col>
+        <col id="label_cn" name="仓库" datatype="string" desc="">
+          <!--如果要进行列的验证在这里扩展-->
+          <valid></valid>
+        </col>
+        <col id="materiel_name" name="物料组" datatype="string" desc=""></col>
+        <col id="maktx" name="BOM名称" datatype="string" desc=""></col>
+        <col id="msehl" name="单位" datatype="string" desc=""></col>
+        <col id="carid" name="车型名称" datatype="string" desc=""></col>
+        <col id="carnum" name="装载数量" datatype="string" desc=""></col>
+      </cols>
+      <!--设置对应的Sql语句-->
+      <sqls defaultsql="export">
+        <sql id="export">
+          <content>
+          <![CDATA[
+               select b.idnrk,
+                 o.label_cn,
+                 m.materiel_name,
+                 b.maktx,
+                 b.msehl,
+                 c.label_cn carid,
+                 b.carnum
+               from ZG_MATERIEL m, FW_ORGANIZATION o, ZG_T_BOM b, ZG_CarInfo c
+               where o.cuid = m.lgort
+                 and m.lgort = b.lgort
+                 and m.id = b.matkl
+                 and b.CAR_ID = c.cuid(+)
+          ]]>
+          </content>
+          <dynamic>
+          	<isNotEmpty id="idnrk">
+          	  and b.idnrk like '%#idnrk#%'
+          	</isNotEmpty>
+            <isEmpty id="parentOrgId">
+              and ('#orgId#' is null or b.lgort=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid='#orgId#'))
+            </isEmpty>
+            <isNotEmpty id="parentOrgId">
+              and b.lgort=(select distinct zmt.id from ZG_MATERIEL zmt where zmt.cuid='#parentOrgId#')
+		    			and m.cuid='#orgId#'
+            </isNotEmpty>
+            <isEmpty id="carid">
+              and b.car_id is not null
+            </isEmpty>
+            <isNotEmpty id="carid">
+              and b.car_id is null
+            </isNotEmpty>
+        </dynamic>
+        </sql>
+      </sqls>
+    </command>
+  </template>
+  
+  
+  <!--BOM车型管理导出的模板-->
+  <template id="exportOrderBom" name="按物料组导出物料" defaultCommand="export">
+    <command id="exportcommand" sheetName="Sheet1" errInfo="导入失败">
+      <!--对模板中的列进行描述    	
+      -->
+      <cols>
+        <col id="idnrk" name="BOM编码" datatype="string" desc=""></col>
+        <col id="label_cn" name="仓库" datatype="string" desc="">
+          <!--如果要进行列的验证在这里扩展-->
+          <valid></valid>
+        </col>
+        <col id="materiel_name" name="物料组" datatype="string" desc=""></col>
+        <col id="maktx" name="BOM名称" datatype="string" desc=""></col>
+        <col id="msehl" name="单位" datatype="string" desc=""></col>
+        <col id="carName" name="车型名称" datatype="string" desc=""></col>
+        <col id="carNum" name="装载数量" datatype="string" desc=""></col>
+      </cols>
+      <!--设置对应的Sql语句-->
+      <sqls defaultsql="export">
+        <sql id="export">
+          <content>
+          <![CDATA[
+           select distinct bom.idnrk,
+                bom.lgort　,--仓库编号
+                org.label_cn label_cn,--仓库名称
+                bom.matkl,--物料组编号　
+                mat.materiel_name materiel_name,--物料组名称　
+                bom.maktx maktx,--bom名称
+                bom.msehl, --单位
+                null as carName,
+                null as carNum
+          from zg_t_orderbom t,zg_t_order zto,zg_t_bom bom, fw_organization org, zg_materiel mat
+         where  t.idnrk = bom.idnrk
+           and bom.lgort = org.cuid(+)
+           and bom.matkl = mat.id
+           and (bom.car_id is null or  bom.carnum is null)
+           and zto.cuid=t.order_id
+           order by  bom.lgort,bom.matkl
+          ]]>
+          </content>
+          
+        </sql>
+      </sqls>
+    </command>
+  </template>
+  
+  
+  
+  
+  
+  
+  <!-- 未设置物料组的物料 -->
+  <template id="exportNotMatklSelfBom" name="按物料组导出物料" defaultCommand="export">
+    <command id="exportcommand" sheetName="Sheet1" errInfo="导入失败">
+      <!--对模板中的列进行描述    	
+      -->
+      <cols>
+        <col id="idnrk" name="物料" datatype="string" desc=""></col>
+        <col id="maktx" name="物料描述" datatype="string" desc="">
+          <!--如果要进行列的验证在这里扩展-->
+          <valid></valid>
+        </col>
+        <col id="lgort" name="库位" datatype="string" desc=""></col>
+         <col id="label_cn" name="仓储地点描述" datatype="string" desc=""></col>
+        <col id="matkl" name="物料组" datatype="string" desc=""></col>
+        <col id="materiel_name" name="物料组描述" datatype="string" desc=""></col>
+        <col id="matkl_self" name="新物料组" datatype="string" desc=""></col>
+      </cols>
+      <!--设置对应的Sql语句-->
+      <sqls defaultsql="export">
+        <sql id="export">
+          <content>
+          <![CDATA[
+                 select distinct t.idnrk,
+                           t.lgort,
+                           org.label_cn label_cn,
+                           t.maktx,
+                           t.msehl,
+                            t.matkl,
+                           mat.materiel_name,
+                           t.matkl_self
+             from zg_t_bom t, fw_organization org, zg_materiel mat
+            where t.matkl_self is null
+              and t.lgort = org.cuid(+)
+              and mat.id = t.matkl
+          ]]>
+          </content>
+          
+        </sql>
+      </sqls>
+    </command>
+  </template>
+  
+  
+  
+  <!-- 临时配置导入 -->
+   <template id="importTemp" name="中文名" defaultCommand="import">
+    <command id="import" sheetName="Sheet1" errInfo="导入失败">
+      <!--对模板中的列进行描述
+      	
+      -->
+      <cols>
+        <col id="idnrk" name="物料" datatype="string" desc=""></col>
+        <col id="lgort" name="库位" datatype="string" desc="">
+          <!--如果要进行列的验证在这里扩展-->
+          <valid></valid>
+        </col>
+        <col id="dbc" name="大板车" datatype="string" desc=""></col>
+        <col id="xbc" name="小板车" datatype="string" desc=""></col>
+        <col id="smbc" name="双面板车" datatype="string" desc=""></col>
+        <col id="xtc" name="小推车" datatype="string" desc=""></col>
+        <col id="wlgc" name="物料挂车" datatype="string" desc=""></col>
+        <col id="dtb" name="地台板" datatype="string" desc=""></col>
+      
+        <col id="yjc" name="压机车" datatype="string" desc=""></col>
+        <col id="tpc" name="托盘车" datatype="string" desc=""></col>
+        <col id="dtc" name="底托车" datatype="string" desc=""></col>
+        <col id="djzjc" name="电机支架车" datatype="string" desc=""></col>
+      </cols>
+      <!--设置对应的Sql语句-->
+      <sqls defaultsql="insert">
+      	<!-- 设置sql相关信息 -->
+        <sql id="insert">
+          <!-- SQL内容 -->
+          <content>
+	          <![CDATA[ update zg_t_bom b set b.car_id=(select CASE WHEN '#dbc#' is not null THEN '37'
+					when '#xbc#' is not null then '38'
+					when '#smbc#' is not null then '4'
+					when '#xtc#' is not null then '61'
+					when '#wlgc#' is not null then '34'
+					when '#dtb#' is not null then 'A825A63D02D548CC9A03E57CFCC714C9'
+					when '#yjc#' is not null then '46'
+					when '#tpc#' is not null then '41'
+					when '#dtc#' is not null then '56'
+					when '#djzjc#' is not null then '57'
+					ELSE '' END CASE from dual)
+					,b.carnum=(select CASE WHEN '#dbc#' is not null then '#dbc#'
+					when '#xbc#'is not null then  '#xbc#'
+					when '#smbc#' is not null then '#smbc#'
+					when '#xtc#' is not null then '#xtc#'
+					when '#wlgc#' is not null then '#wlgc#'
+					when '#dtb#' is not null then '#dtb#'
+					when '#yjc#' is not null then '#yjc#'
+					when '#tpc#' is not null then '#tpc#'
+					when '#dtc#' is not null then '#dtc#'
+					when '#djzjc#' is not null then '#djzjc#'
+					ELSE '' END CASE from dual )
+					where b.idnrk='#idnrk#'  and b.type='1']]>
+          </content>
+          <!-- 动态sql条件 -->
+          <dynamic>
+          </dynamic>
+        </sql>
+      </sqls>
+    </command>
+  </template>
+  
+  <!-- 导出BOM出仓汇总统计报表 -->
+  <template id="lgortReportStatExport" name="导出BOM出仓统计报表" defaultCommand="import">
+    <command id="import" sheetName="Sheet1" errInfo="导入失败">
+      <!--对模板中的列进行描述    	
+      -->
+      <cols>
+        <col id="aufnr" name="生产订单号" datatype="string" desc=""></col>
+        <col id="matnr" name="产品编码" datatype="string" desc="">
+          <!--如果要进行列的验证在这里扩展-->
+          <valid></valid>
+        </col>
+        <col id="maktx1" name="产品型号" datatype="string" desc=""></col>
+         <col id="kdauf" name="销售订单号" datatype="string" desc=""></col>
+        <col id="kdpos" name="销售订单项目编号 " datatype="string" desc=""></col>
+        <col id="plant" name="领料部门" datatype="string" desc=""></col>
+        <col id="arbpl" name="领料线体" datatype="string" desc=""></col>
+        
+        <col id="idnrk" name="物料编码" datatype="string" desc=""></col>
+        <col id="maktx2" name="物料描述" datatype="string" desc=""></col>
+        <col id="sortf" name="包装方式" datatype="string" desc=""></col>
+        <col id="lgort" name="发料仓库" datatype="string" desc=""></col>
+        <col id="car_num" name="生产批量" datatype="string" desc=""></col>
+        <col id="complete_num" name="领料数量" datatype="string" desc=""></col>
+        <col id="lifnr" name="供应商代码" datatype="string" desc=""></col>
+        <col id="lifnr_name" name="供应商" datatype="string" desc=""></col>
+      </cols>
+      <!--设置对应的Sql语句-->
+      <sqls defaultsql="export">
+        <sql id="export">
+        <content>
+          <![CDATA[
+           select zto.aufnr,
+               zto.matnr,
+               zto.maktx1,
+               task.plant||'('||emu.orgname||')' plant,
+               task.arbpl,
+               orderbom.idnrk,
+               orderbom.maktx2,
+               orderbom.sortf,
+               orderbom.lgort,
+               sup.lifnr,
+                 case when sum(nvl(sup.car_num, 0))=0 then sum(carbom.real_num) else sum(nvl(sup.car_num, 0)) end as complete_num,
+               sum(taskbom.menge) car_num,
+               sup.lifnr_name,
+               zto.kdauf,
+               zto.KDPOS
+            from zg_t_carbom           carbom,
+               zg_t_carplan          carplan,
+               zg_t_order            zto,
+               zg_t_orderbom         orderbom,
+               zg_t_order_planbom    planbom,
+               zg_t_carbom_suppliers sup,
+               t_plant_enumevalue    emu,
+               zg_t_order_plan       plan,
+               
+               zg_t_order_task task,
+               zg_t_order_taskbom taskbom
+               
+               
+         where plan.cuid = planbom.order_plan_id
+           and task.plant = emu.plantid
+           and carbom.car_plan_id = carplan.cuid
+           and carbom.order_task_id=task.cuid
+           and task.order_id = zto.cuid
+           and carbom.taskbom_id = taskbom.cuid
+           and taskbom.order_bom_id=orderbom.cuid
+           and taskbom.order_task_id = carbom.order_task_id
+           and planbom.cuid = carbom.order_planbom_id
+           and sup.car_bom_id = carbom.cuid
+           and carbom.storage_user_id is not null
+           and carplan.order_plan_type <> '3'
+           and (sup.car_num > 0 or sup.car_num is null)   ]]>
+	   </content>
+          <dynamic>
+          	<isNotEmpty id="date_start">
+	       			AND carbom.car_date>=to_date('#date_start#','yyyy-mm-dd hh24:mi:ss') 
+       		</isNotEmpty>  
+       		<isNotEmpty id="date_end">
+	       			AND to_date('#date_end#','yyyy-mm-dd hh24:mi:ss') >= carbom.car_date
+       		</isNotEmpty>  
+       		<isNotEmpty id="aufnr">
+	       		 AND zto.aufnr like  '%#aufnr#%'
+       		</isNotEmpty> 
+       		<isNotEmpty id="matnr">
+       			 AND zto.matnr like  '%#matnr#%'
+       		</isNotEmpty>   
+       		
+       			<isNotEmpty id="plant">
+       			  and task.plant='#plant#'
+       		</isNotEmpty> 
+       		
+       		
+       		<isNotEmpty id="arbpl">
+	       		AND  task.arbpl like   '%#arbpl#%'
+       		</isNotEmpty> 
+       			<isNotEmpty id="idnrk">
+	       		AND  orderbom.idnrk like  '%#idnrk#%' 
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty id="suppliers">
+	       		AND  sup.lifnr_name like  '%#suppliers#%' 
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty id="lgort">
+	       		AND  orderbom.lgort like  '%#lgort#%' 
+       		</isNotEmpty> 
+       		<isEmpty id="null">
+       		group by zto.aufnr,
+	          zto.matnr,
+	          zto.maktx1,
+	          task.plant,
+	          task.arbpl,
+	          orderbom.idnrk,
+	          orderbom.maktx2,
+	          orderbom.sortf,
+	          orderbom.lgort,
+	          sup.lifnr,plan.plant,
+	          sup.lifnr_name ,emu.orgname, zto.kdauf,zto.KDPOS
+       		</isEmpty>
+        </dynamic>
+        <content>
+           
+        </content>
+        </sql>
+      </sqls>
+    </command>
+  </template>
+  
+  <!-- 导出BOM出仓报表 -->
+  <template id="lgortReportExport" name="导出BOM出仓报表" defaultCommand="import">
+    <command id="import" sheetName="Sheet1" errInfo="导入失败">
+      <!--对模板中的列进行描述    	
+      -->
+      <cols>
+        <col id="aufnr" name="生产订单号" datatype="string" desc=""></col>
+        <col id="matnr" name="产品编码" datatype="string" desc="">
+          <!--如果要进行列的验证在这里扩展-->
+          <valid></valid>
+        </col>
+        <col id="kdauf" name="销售订单号" datatype="string" desc=""></col>
+        <col id="kdpos" name="销售订单项目编号 " datatype="string" desc=""></col>
+        <col id="maktx1" name="产品型号" datatype="string" desc=""></col>
+        <col id="plant" name="领料部门" datatype="string" desc=""></col>
+        <col id="arbpl" name="领料线体" datatype="string" desc=""></col>
+        
+        <col id="idnrk" name="物料编码" datatype="string" desc=""></col>
+        <col id="maktx2" name="物料描述" datatype="string" desc=""></col>
+        <col id="sortf" name="包装方式" datatype="string" desc=""></col>
+        <col id="lgort" name="发料仓库" datatype="string" desc=""></col>
+        <col id="car_num" name="生产批量" datatype="string" desc=""></col>
+        <col id="real_num" name="领料数量" datatype="string" desc=""></col>
+        <col id="lifnr" name="供应商代码" datatype="string" desc=""></col>
+        <col id="lifnr_name" name="供应商" datatype="string" desc=""></col>
+        
+         <col id="car_user_name" name="领料员" datatype="string" desc=""></col>
+        <col id="create_date" name="领料刷卡时间" datatype="string" desc=""></col>
+        <col id="storage_user_name" name="仓管员" datatype="string" desc=""></col>
+        <col id="car_date" name="确认刷卡时间" datatype="string" desc=""></col>
+        <col id="batchno" name="批次" datatype="string" desc=""></col>
+        <col id="zrzqd" name="认证清单" datatype="string" desc=""></col>
+      </cols>
+      <!--设置对应的Sql语句-->
+      <sqls defaultsql="export">
+        <sql id="export">
+        <content>
+          <![CDATA[
+           select zto.aufnr,
+	       zto.matnr,
+	       zto.maktx1,
+	        plan.plant||'('||emu.orgname||')' plant,
+	       zto.arbpl,
+	       orderbom.idnrk,
+	       orderbom.maktx2,
+	       orderbom.sortf,
+	       orderbom.lgort,
+	       sup.lifnr,
+	          case when  nvl(sup.car_num,0)=0 then carbom.real_num else nvl(sup.car_num,0) end as real_num,
+	       planbom.car_num,
+	       sup.lifnr_name,
+	       carplan.car_user,
+	       op.label_cn car_user_name,
+	       to_char(carplan.create_date,'yyyy-MM-dd hh24:mi:ss') create_date,
+	       to_char(carbom.car_date,'yyyy-MM-dd hh24:mi:ss') car_date,
+	       carplan.storage_user_id,
+	       op1.label_cn storage_user_name,
+	       sup.batchno,
+           sup.zrzqd,zto.kdauf,zto.KDPOS
+	  from zg_t_carbom           carbom,
+	       zg_t_carplan          carplan,
+	       zg_t_order            zto,
+	       zg_t_orderbom         orderbom,
+	       zg_t_order_planbom    planbom,
+	       zg_t_carbom_suppliers sup,
+	       fw_operator op,
+	       fw_operator op1,
+            
+              t_plant_enumevalue emu,
+               zg_t_order_plan plan,
+               
+               zg_t_order_task task,
+               zg_t_order_taskbom taskbom
+	 where  plan.cuid=planbom.order_plan_id
+         and plan.plant=emu.plantid
+         and op.cuid = carplan.car_user
+	   and op1.cuid = carbom.storage_user_id
+	   and carbom.car_plan_id = carplan.cuid
+	   and carbom.order_task_id=task.cuid
+     and task.order_id = zto.cuid
+	   and carbom.taskbom_id=taskbom.cuid
+     and taskbom.order_bom_id = orderbom.cuid
+	   and taskbom.order_task_id = carbom.order_task_id
+	   and planbom.cuid = carbom.order_planbom_id
+	   and sup.car_bom_id(+) = carbom.cuid
+	     and (sup.car_num > 0 or sup.car_num  is null)
+	     and zto.order_state<>'-1' 
+	   and carbom.storage_user_id is not null
+	    and carplan.order_plan_type <>'3'   
+	      ]]>
+	    </content>
+          <dynamic>
+       		<isNotEmpty id="date_start">
+	       		and	 carbom.car_date>=to_date('#date_start#','yyyy-mm-dd hh24:mi:ss') 
+       		</isNotEmpty>  
+       		<isNotEmpty id="date_end">
+	       		and	to_date('#date_end#','yyyy-mm-dd hh24:mi:ss') >= carbom.car_date
+       		</isNotEmpty>  
+       		<isNotEmpty id="aufnr">
+	       		and  zto.aufnr like '%#aufnr#%'
+	       	</isNotEmpty>
+         	<isNotEmpty id="matnr">
+       			 and zto.matnr like  '%#matnr#%'
+       		</isNotEmpty>   
+       		<isNotEmpty id="plant">
+       			and task.plant='#plant#' 
+       		</isNotEmpty>  
+       		<isNotEmpty id="arbpl">
+	       		and  task.arbpl like '%#arbpl#%'
+       		</isNotEmpty> 
+       			<isNotEmpty id="idnrk">
+	       		and  orderbom.idnrk like   '%#idnrk#%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty id="suppliers">
+	       		and  sup.lifnr_name like  '%#suppliers#%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty id="lgort">
+	       		and  orderbom.lgort like   '%#lgort#%'
+       		</isNotEmpty> 
+       		
+	    </dynamic>	
+        <content>
+           
+        </content>
+        </sql>
+      </sqls>
+    </command>
+  </template>
+  
+   <!-- 批量领料导出BOM出仓汇总报表 -->
+  <template id="lgortReportBatchStatExport" name="批量领料导出BOM出仓汇总报表" defaultCommand="import">
+    <command id="import" sheetName="Sheet1" errInfo="导入失败">
+      <!--对模板中的列进行描述    	
+      -->
+      <cols>
+        <col id="deptName" name="领料部门" datatype="string" desc=""></col>
+        <col id="idnrk" name="物料编码" datatype="string" desc=""></col>
+        <col id="maktx" name="物料描述" datatype="string" desc=""></col>
+        <col id="lgort" name="发料仓库编号" datatype="string" desc=""></col>
+        <col id="logName" name="发料仓库" datatype="string" desc=""></col>
+        <col id="car_num" name="生产批量" datatype="string" desc=""></col>
+        <col id="complete_num" name="领料数量" datatype="string" desc=""></col>
+        <col id="lifnr" name="供应商代码" datatype="string" desc=""></col>
+        <col id="lifnr_name" name="供应商" datatype="string" desc=""></col>
+         
+        
+      </cols>
+      <!--设置对应的Sql语句-->
+      <sqls defaultsql="export">
+        <sql id="export">
+        <content>
+          <![CDATA[
+            select   
+         bom.idnrk,
+         bom.maktx,
+         bom.lgort,
+         org1.label_cn logName,
+         sup.lifnr,
+       sum(nvl(sup.car_num,0)) complete_num,
+         sum(planbom.car_num) car_num,
+         sup.lifnr_name,
+         org.label_cn deptName
+    from zg_t_carbom           carbom,
+         zg_t_carplan          carplan,
+         zg_t_order_planbom    planbom,
+         zg_t_carbom_suppliers sup,
+         zg_t_bom bom,
+         fw_employee em,
+         fw_organization org,
+         fw_organization org1
+   where
+     org1.cuid=bom.lgort
+    and carbom.car_plan_id = carplan.cuid
+   	 and em.cuid=carplan.car_user
+   	and em.org_id=org.cuid
+    and planbom.bom_id=bom.cuid
+
+     and planbom.cuid = carbom.order_planbom_id
+     and sup.car_bom_id = carbom.cuid
+      and sup.car_num>0
+     and carplan.car_state='8'
+     and carplan.order_plan_type ='3'  ]]>
+	   </content>
+          <dynamic>
+          	<isNotEmpty id="date_start">
+	       		and carplan.car_date>=to_date('#date_start#','yyyy-mm-dd hh24:mi:ss') 
+       		</isNotEmpty>  
+       		<isNotEmpty id="date_end">
+	       		and	to_date('#date_end#','yyyy-mm-dd hh24:mi:ss') >= carplan.car_date
+       		</isNotEmpty>  
+       		<isNotEmpty id="aufnr">
+	       		and  zto.aufnr like '%#aufnr#%'
+       		</isNotEmpty> 
+       		<isNotEmpty id="matnr">
+       			and  zto.matnr like '%#matnr#%'
+       		</isNotEmpty>   
+       		<isNotEmpty id="orgId">
+				and em.org_id='#orgId#'       		
+ 			</isNotEmpty>
+       		
+       		<isNotEmpty id="arbpl">
+	       		and	  zto.arbpl like '%#arbpl#%'
+       		</isNotEmpty> 
+       			<isNotEmpty id="idnrk">
+	       		and  bom.idnrk like  '%#idnrk#%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty id="suppliers">
+	       		and  sup.lifnr_name like  '%#suppliers#%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty id="lgort">
+	       		and  bom.lgort like '%#lgort#%'
+       		</isNotEmpty> 
+       		
+       		 <isEmpty id="null">
+       		 group by  bom.idnrk,
+		         bom.maktx,
+		         bom.lgort,
+		         sup.lifnr,
+		         sup.lifnr_name,org.label_cn,
+		         org1.label_cn
+       		</isEmpty>
+        </dynamic>
+        <content>
+           
+        </content>
+        </sql>
+      </sqls>
+    </command>
+  </template>
+  
+   <!-- 批料领料出仓报表 -->
+  <template id="lgortReportBatchExport" name="批料领料出仓报表" defaultCommand="import">
+    <command id="import" sheetName="Sheet1" errInfo="导入失败">
+      <!--对模板中的列进行描述    	
+      -->
+      <cols>
+        <col id="deptName" name="领料部门" datatype="string" desc=""></col>
+        
+        <col id="idnrk" name="物料编码" datatype="string" desc=""></col>
+        <col id="maktx" name="物料描述" datatype="string" desc=""></col>
+        <col id="lgort" name="发料仓库编号" datatype="string" desc=""></col>
+        <col id="lgortName" name="发料仓库" datatype="string" desc=""></col>
+        <col id="car_num" name="生产批量" datatype="string" desc=""></col>
+        <col id="complete_num" name="领料数量" datatype="string" desc=""></col>
+        <col id="lifnr" name="供应商代码" datatype="string" desc=""></col>
+        <col id="lifnr_name" name="供应商" datatype="string" desc=""></col>
+        
+         <col id="car_user_name" name="领料员" datatype="string" desc=""></col>
+        <col id="create_date" name="领料刷卡时间" datatype="string" desc=""></col>
+        <col id="storage_user_name" name="仓管员" datatype="string" desc=""></col>
+        <col id="car_date" name="确认刷卡时间" datatype="string" desc=""></col>
+        <col id="batchno" name="批次" datatype="string" desc=""></col>
+        <col id="zrzqd" name="认证清单" datatype="string" desc=""></col>
+      </cols>
+      <!--设置对应的Sql语句-->
+      <sqls defaultsql="export">
+        <sql id="export">
+        <content>
+          <![CDATA[
+            select   
+         bom.idnrk,
+         bom.maktx,
+         bom.lgort,
+         org1.label_cn lgortName,
+         sup.lifnr,
+         sup.car_num complete_num,
+         planbom.car_num,
+         sup.lifnr_name,
+         carplan.car_user,
+         op.label_cn car_user_name,
+         to_char(carplan.create_date,'yyyy-MM-dd hh24:mi:ss') create_date,
+	       to_char(carplan.car_date,'yyyy-MM-dd hh24:mi:ss') car_date,
+	       carplan.storage_user_id,
+	       op1.label_cn storage_user_name,
+         org.label_cn deptName,
+         sup.batchno,
+         sup.zrzqd
+    from zg_t_carbom           carbom,
+         zg_t_carplan          carplan,
+         zg_t_order_planbom    planbom,
+         zg_t_carbom_suppliers sup,
+         zg_t_bom bom,
+          fw_operator op,
+         fw_operator op1,
+         fw_employee em,
+         fw_organization org,
+          fw_organization org1
+   where org1.cuid=bom.lgort
+     and op.cuid = carplan.car_user
+      and em.cuid=carplan.car_user
+     and org.cuid=em.org_id
+     and op1.cuid = carplan.storage_user_id
+     and carbom.car_plan_id = carplan.cuid
+    and planbom.bom_id=bom.cuid
+
+     and planbom.cuid = carbom.order_planbom_id
+     and sup.car_bom_id = carbom.cuid
+         and sup.car_num>0
+     and carplan.car_state='8'
+     and carplan.order_plan_type ='3'  ]]>
+	   </content>
+          <dynamic>
+          	<isNotEmpty id="date_start">
+	       			and carplan.car_date>=to_date('#date_start#','yyyy-mm-dd hh24:mi:ss') 
+       		</isNotEmpty>  
+       		<isNotEmpty id="date_end">
+	       		and	to_date('#date_end#','yyyy-mm-dd hh24:mi:ss')+1 >= carplan.car_date
+       		</isNotEmpty>  
+       		<isNotEmpty id="aufnr">
+	       		and  zto.aufnr like '%#aufnr#%'
+       		</isNotEmpty> 
+       		<isNotEmpty id="matnr">
+       			and  zto.matnr like '%#matnr#%'
+       		</isNotEmpty>   
+       		<isNotEmpty id="orgId">
+				and		 em.org_id='#orgId#'       		
+ 			</isNotEmpty>
+       		
+       		<isNotEmpty id="arbpl">
+	       		and  zto.arbpl like '%#arbpl#%'
+       		</isNotEmpty> 
+       			<isNotEmpty id="idnrk">
+	       		and  bom.idnrk like '%#idnrk#%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty id="suppliers">
+	       		and  sup.lifnr_name like '%#suppliers#%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty id="lgort">
+	       		and  bom.lgort like '%#lgort#%'
+       		</isNotEmpty> 
+        </dynamic>
+        <content>
+           
+        </content>
+        </sql>
+      </sqls>
+    </command>
+  </template>
+
+</templates>

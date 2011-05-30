@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTstorageCancle">
+    <typeAlias alias="zgTstorageCancle" type="com.boco.zg.storage.base.model.ZgTstorageCancle"/>
+	<resultMap id="zgTstorageCancleResult" class="zgTstorageCancle">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="deptId" column="t0_DEPT_ID"/>
+		<result property="deptId_related.value" column="t0_0_1_t0_LABEL_CN"/>
+		<result property="deptId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="creatorId" column="t0_CREATOR_ID"/>
+		<result property="creatorId_related.value" column="t0_1_1_t0_LABEL_CN"/>
+		<result property="creatorId_related.relatedBmClassId" column="t0_1_1_BD"/>
+		<result property="zbz" column="t0_ZBZ"/>
+		<result property="state" column="t0_STATE"/>
+		<result property="createDate" column="t0_CREATE_DATE"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_LABEL_CN,
+		    t0_0_1.t0_LABEL_CN as t0_0_1_t0_LABEL_CN,
+	        'FW_ORGANIZATION' as t0_0_1_BD,
+	        m.t0_DEPT_ID,
+		    t0_1_1.t0_LABEL_CN as t0_1_1_t0_LABEL_CN,
+	        'FW_EMPLOYEE' as t0_1_1_BD,
+	        m.t0_CREATOR_ID,
+	        m.t0_ZBZ,
+	        m.t0_STATE,
+	        m.t0_CREATE_DATE
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="deptId">
+	       			m.t0_DEPT_ID like #deptId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="creatorId">
+	       			m.t0_CREATOR_ID like #creatorId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zbz">
+	       			m.t0_ZBZ like #zbz#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="state">
+	       			m.t0_STATE = #state#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="createDate_start">
+       			<![CDATA[m.t0_CREATE_DATE >= to_date(#createDate_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="createDate_end">
+       			<![CDATA[m.t0_CREATE_DATE <= to_date(#createDate_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEqual property="operatorId" compareValue="0" prepend="AND">
+       		  t0_creator_id=#operatorId#
+       		</isNotEqual>
+       		<isNotEmpty prepend="AND" property="productType">
+       			<![CDATA[m.t0_PRODUCT_TYPE= #productType#]]>
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertZG_T_STORAGE_CANCLE" parameterClass="zgTstorageCancle">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_STORAGE_CANCLE (
+        	CUID ,
+        	LABEL_CN ,
+        	DEPT_ID ,
+        	CREATOR_ID ,
+        	ZBZ ,
+        	STATE ,
+        	CREATE_DATE ,
+        	PRODUCT_TYPE
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#deptId# ,
+        	#creatorId# ,
+        	#zbz# ,
+        	#state# ,
+        	#createDate# ,
+        	#productType#
+        )
+    ]]>
+    </insert>
+    
+    <update id="updateZG_T_STORAGE_CANCLE" parameterClass="zgTstorageCancle">
+    <![CDATA[
+        UPDATE ZG_T_STORAGE_CANCLE SET
+	        LABEL_CN = #labelCn# ,
+	        DEPT_ID = #deptId# ,
+	        CREATOR_ID = #creatorId# ,
+	        ZBZ = #zbz# ,
+	        STATE = #state# ,
+	        CREATE_DATE = #createDate# ,
+	        PRODUCT_TYPE=#productType#
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteZG_T_STORAGE_CANCLE" parameterClass="java.lang.String">
+		delete from ZG_T_STORAGE_CANCLE 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="zgTstorageCancleResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.DEPT_ID as t0_DEPT_ID,
+	        		t0.CREATOR_ID as t0_CREATOR_ID,
+	        		t0.ZBZ as t0_ZBZ,
+	        		t0.STATE as t0_STATE,
+	        		t0.CREATE_DATE as t0_CREATE_DATE
+	        from 
+	        ZG_T_STORAGE_CANCLE t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_DEPT_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.USER_ID as t0_USER_ID,
+	        	t0.PASSWORD as t0_PASSWORD,
+	        	t0.CREATE_TIME as t0_CREATE_TIME,
+	        	t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        	t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        	t0.STATUS as t0_STATUS,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_OPERATOR t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_CREATOR_ID 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="zgTstorageCancleResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.DEPT_ID as t0_DEPT_ID,
+	        		t0.CREATOR_ID as t0_CREATOR_ID,
+	        		t0.ZBZ as t0_ZBZ,
+	        		t0.STATE as t0_STATE,
+	        		t0.CREATE_DATE as t0_CREATE_DATE,
+	        		    t0.PRODUCT_TYPE as t0_PRODUCT_TYPE
+	        from 
+	        ZG_T_STORAGE_CANCLE t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_DEPT_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.USER_ID as t0_USER_ID,
+	        	t0.PASSWORD as t0_PASSWORD,
+	        	t0.CREATE_TIME as t0_CREATE_TIME,
+	        	t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        	t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        	t0.STATUS as t0_STATUS,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_OPERATOR t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_CREATOR_ID 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.DEPT_ID as t0_DEPT_ID,
+	        		t0.CREATOR_ID as t0_CREATOR_ID,
+	        		t0.ZBZ as t0_ZBZ,
+	        		t0.STATE as t0_STATE,
+	        		t0.CREATE_DATE as t0_CREATE_DATE,
+	        		 t0.PRODUCT_TYPE as t0_PRODUCT_TYPE
+	        from 
+	        ZG_T_STORAGE_CANCLE t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_DEPT_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.USER_ID as t0_USER_ID,
+	        	t0.PASSWORD as t0_PASSWORD,
+	        	t0.CREATE_TIME as t0_CREATE_TIME,
+	        	t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        	t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        	t0.STATUS as t0_STATUS,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_OPERATOR t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_CREATOR_ID 
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTstorageCancleResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.DEPT_ID as t0_DEPT_ID,
+	        		t0.CREATOR_ID as t0_CREATOR_ID,
+	        		t0.ZBZ as t0_ZBZ,
+	        		t0.STATE as t0_STATE,
+	        		t0.CREATE_DATE as t0_CREATE_DATE,
+	        		t0.PRODUCT_TYPE as t0_PRODUCT_TYPE
+	        from 
+	        ZG_T_STORAGE_CANCLE t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_DEPT_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.USER_ID as t0_USER_ID,
+	        	t0.PASSWORD as t0_PASSWORD,
+	        	t0.CREATE_TIME as t0_CREATE_TIME,
+	        	t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        	t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        	t0.STATUS as t0_STATUS,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_OPERATOR t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_CREATOR_ID 
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="zgTstorageCancleResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.DEPT_ID as t0_DEPT_ID,
+	        		t0.CREATOR_ID as t0_CREATOR_ID,
+	        		t0.ZBZ as t0_ZBZ,
+	        		t0.STATE as t0_STATE,
+	        		t0.CREATE_DATE as t0_CREATE_DATE,
+	        		 t0.PRODUCT_TYPE as t0_PRODUCT_TYPE
+	        from 
+	        ZG_T_STORAGE_CANCLE t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_DEPT_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.USER_ID as t0_USER_ID,
+	        	t0.PASSWORD as t0_PASSWORD,
+	        	t0.CREATE_TIME as t0_CREATE_TIME,
+	        	t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        	t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        	t0.STATUS as t0_STATUS,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_OPERATOR t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_CREATOR_ID 
+        ]]>
+    </select>
+    
+</sqlMap>

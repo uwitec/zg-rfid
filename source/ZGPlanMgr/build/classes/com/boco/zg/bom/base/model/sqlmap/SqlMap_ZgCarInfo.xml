@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgCarInfo">
+
+    <typeAlias alias="zgCarInfo" type="com.boco.zg.bom.base.model.ZgCarInfo"/>
+
+    <resultMap id="zgCarInfoResult" class="zgCarInfo">
+        <result property="cuid" column="CUID"/>
+        <result property="code" column="CODE"/>
+        <result property="labelCn" column="LABEL_CN"/>
+        <result property="description" column="DESCRIPTION"/>
+    </resultMap>
+    
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+        	t.CUID,
+        	t.CODE,
+        	t.LABEL_CN,
+        	t.DESCRIPTION
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+		    		$sqlQueryString$ 
+		    </isNotEmpty>
+       		<isNotEmpty prepend="AND" property="cuid">
+	       			t.CUID like #cuid#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="code">
+	       			t.CODE like   #code#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="labelCn">
+	       			t.LABEL_CN like '%'||#labelCn#||'%'
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="description">
+	       			t.DESCRIPTION like #description#
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insert" parameterClass="zgCarInfo">
+    <![CDATA[
+        INSERT INTO
+        ZG_CARINFO (
+        	CUID ,
+        	CODE ,
+        	LABEL_CN ,
+        	DESCRIPTION 
+        ) VALUES (
+        	#cuid# ,
+        	#code# ,
+        	#labelCn# ,
+        	#description# 
+        )
+    ]]>
+    <!--
+    mysql:		type="post" SELECT  select last_insert_id()
+    sqlserver:	type="post" SELECT  @@identity  AS  ID
+    oracle:		type="pre" 	SELECT  sequenceName.nextval AS ID FROM DUAL
+    DB2:		type="pre"	values nextval for sequenceName
+    -->
+		<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+            select sys_guid() as id FROM DUAL
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterClass="zgCarInfo">
+    <![CDATA[
+        UPDATE ZG_CARINFO 
+        SET
+	       	CODE = #code# ,
+        	LABEL_CN = #labelCn# ,
+        	DESCRIPTION = #description# 
+        WHERE 
+	        CUID = #cuid# 
+    ]]>
+    </update>
+    <delete id="delete" parameterClass="java.lang.String">
+    <![CDATA[
+        delete from ZG_CARINFO where
+        CUID = #cuid# 
+    ]]>
+    </delete>
+    
+    <delete id="deleteByProperty">
+    <![CDATA[
+        delete from ZG_CARINFO t
+    ]]>
+    	<include refid="dynamicWhere"/>
+    </delete>
+    
+    <select id="getById" resultMap="zgCarInfoResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from ZG_CARINFO t
+	        where 
+		        t.CUID = #cuid# 
+	    ]]>
+    </select>
+	 
+    <select id="count" resultClass="long">
+    <![CDATA[
+        select count(*) from ZG_CARINFO t
+    ]]>
+		<include refid="dynamicWhere"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgCarInfoResult">
+		select <include refid="commonColumns"/> 
+		    <![CDATA[
+		        from ZG_CARINFO t
+		    ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findByProperty" resultMap="zgCarInfoResult">
+    	select <include refid="commonColumns"/>
+	    <![CDATA[
+	        from ZG_CARINFO t
+	    ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+
+	
+	<select id="findAll" resultMap="zgCarInfoResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ZG_CARINFO t
+	    ]]>
+    </select>
+    <select id="findCarList" resultMap="zgCarInfoResult">
+    	select <include refid="commonColumns"/>
+    	<![CDATA[ from zg_carinfo t
+    	
+    	]]>
+    	<include refid="dynamicWhere"/>
+    </select>
+    
+</sqlMap>

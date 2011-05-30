@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FwDictionary">
+    <typeAlias alias="fwDictionary" type="com.boco.frame.sys.base.model.FwDictionary"/>
+	<resultMap id="fwDictionaryResult" class="fwDictionary">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="dictBusinessId" column="t0_DICT_BUSINESS_ID"/>
+		<result property="dictBusinessId_related.value" column="t0_0_1_t0_LABEL_CN"/>
+		<result property="dictBusinessId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="value" column="t0_VALUE"/>
+		<result property="label" column="t0_LABEL"/>
+		<result property="displayOrder" column="t0_DISPLAY_ORDER"/>
+		<result property="extend" column="t0_EXTEND"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+		    t0_0_1.t0_LABEL_CN as t0_0_1_t0_LABEL_CN,
+	        'FW_DICT_BUSINESS' as t0_0_1_BD,
+	        m.t0_DICT_BUSINESS_ID,
+	        m.t0_LABEL_CN,
+	        m.t0_VALUE,
+	        m.t0_LABEL,
+	        m.t0_DISPLAY_ORDER,
+	        m.t0_EXTEND
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="dictBusinessId">
+	       			m.t0_DICT_BUSINESS_ID like #dictBusinessId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="value">
+	       			m.t0_VALUE like #value#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="label">
+	       			m.t0_LABEL like #label#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="displayOrder">
+	       			m.t0_DISPLAY_ORDER = #displayOrder#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="extend">
+	       			m.t0_EXTEND like #extend#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertFW_DICTIONARY" parameterClass="fwDictionary">
+    <![CDATA[
+        INSERT INTO
+        FW_DICTIONARY (
+        	CUID ,
+        	DICT_BUSINESS_ID ,
+        	LABEL_CN ,
+        	VALUE ,
+        	LABEL ,
+        	DISPLAY_ORDER ,
+        	EXTEND 
+        ) VALUES (
+        	#cuid# ,
+        	#dictBusinessId# ,
+        	#labelCn# ,
+        	#value# ,
+        	#label# ,
+        	#displayOrder# ,
+        	#extend# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateFW_DICTIONARY" parameterClass="fwDictionary">
+    <![CDATA[
+        UPDATE FW_DICTIONARY SET
+	        DICT_BUSINESS_ID = #dictBusinessId# ,
+	        LABEL_CN = #labelCn# ,
+	        VALUE = #value# ,
+	        LABEL = #label# ,
+	        DISPLAY_ORDER = #displayOrder# ,
+	        EXTEND = #extend# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteFW_DICTIONARY" parameterClass="java.lang.String">
+		delete from FW_DICTIONARY 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="fwDictionaryResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.DICT_BUSINESS_ID as t0_DICT_BUSINESS_ID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.VALUE as t0_VALUE,
+	        		t0.LABEL as t0_LABEL,
+	        		t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        		t0.EXTEND as t0_EXTEND
+	        from 
+	        FW_DICTIONARY t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.NOTE as t0_NOTE
+	        	 from
+		        FW_DICT_BUSINESS t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_DICT_BUSINESS_ID 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="fwDictionaryResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.DICT_BUSINESS_ID as t0_DICT_BUSINESS_ID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.VALUE as t0_VALUE,
+	        		t0.LABEL as t0_LABEL,
+	        		t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        		t0.EXTEND as t0_EXTEND
+	        from 
+	        FW_DICTIONARY t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.NOTE as t0_NOTE
+	        	 from
+		        FW_DICT_BUSINESS t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_DICT_BUSINESS_ID 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.DICT_BUSINESS_ID as t0_DICT_BUSINESS_ID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.VALUE as t0_VALUE,
+	        		t0.LABEL as t0_LABEL,
+	        		t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        		t0.EXTEND as t0_EXTEND
+	        from 
+	        FW_DICTIONARY t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.NOTE as t0_NOTE
+	        	 from
+		        FW_DICT_BUSINESS t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_DICT_BUSINESS_ID 
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="fwDictionaryResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.DICT_BUSINESS_ID as t0_DICT_BUSINESS_ID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.VALUE as t0_VALUE,
+	        		t0.LABEL as t0_LABEL,
+	        		t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        		t0.EXTEND as t0_EXTEND
+	        from 
+	        FW_DICTIONARY t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.NOTE as t0_NOTE
+	        	 from
+		        FW_DICT_BUSINESS t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_DICT_BUSINESS_ID 
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="fwDictionaryResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.DICT_BUSINESS_ID as t0_DICT_BUSINESS_ID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.VALUE as t0_VALUE,
+	        		t0.LABEL as t0_LABEL,
+	        		t0.DISPLAY_ORDER as t0_DISPLAY_ORDER,
+	        		t0.EXTEND as t0_EXTEND
+	        from 
+	        FW_DICTIONARY t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.NOTE as t0_NOTE
+	        	 from
+		        FW_DICT_BUSINESS t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_DICT_BUSINESS_ID 
+        ]]>
+    </select>
+    
+</sqlMap>
