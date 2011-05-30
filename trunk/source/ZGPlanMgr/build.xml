@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="RFID" default="fabu" basedir=".">
+<property name="build" value="${basedir}/build" />
+<property name="build.class" value="${build}/classes"/>
+<property name="src" value="${basedir}/java_src" />
+<property name="webRoot" value="${basedir}/web"/>
+<property name="webxml" value="${webRoot}/WEB-INF/web.xml"/>
+<property name="lib" value="${basedir}\web\WEB-INF\lib\*.jar;
+${basedir}\web\WEB-INF\lib\antlr-3.0.1.jar;
+${basedir}\web\WEB-INF\lib\aopalliance.jar;
+${basedir}\web\WEB-INF\lib\aspectjrt.jar;
+${basedir}\web\WEB-INF\lib\aspectjweaver.jar;
+${basedir}\web\WEB-INF\lib\atomikos-util.jar;
+${basedir}\web\WEB-INF\lib\cglib-nodep-2.1_3.jar;
+${basedir}\web\WEB-INF\lib\commons-beanutils.jar;
+${basedir}\web\WEB-INF\lib\commons-codec-1.3.jar;
+${basedir}\web\WEB-INF\lib\commons-collections.jar;
+${basedir}\web\WEB-INF\lib\commons-dbcp.jar;
+${basedir}\web\WEB-INF\lib\commons-digester.jar;
+${basedir}\web\WEB-INF\lib\commons-fileupload.jar;
+${basedir}\web\WEB-INF\lib\commons-io.jar;
+${basedir}\web\WEB-INF\lib\commons-lang.jar;
+${basedir}\web\WEB-INF\lib\commons-logging-1.1.jar;
+${basedir}\web\WEB-INF\lib\commons-net-1.4.0.jar;
+${basedir}\web\WEB-INF\lib\commons-pool.jar;
+${basedir}\web\WEB-INF\lib\commons-validator.jar;
+${basedir}\web\WEB-INF\lib\dbunit-2.4.2.jar;
+${basedir}\web\WEB-INF\lib\dom4j-1.6.1.jar;
+${basedir}\web\WEB-INF\lib\dwr.jar;
+${basedir}\web\WEB-INF\lib\ehcache-1.2.1.jar;
+${basedir}\web\WEB-INF\lib\extremecomponents-1.0.1.jar;
+${basedir}\web\WEB-INF\lib\extremecomponentsEXT.jar;
+${basedir}\web\WEB-INF\lib\ezmorph-1.0.6.jar;
+${basedir}\web\WEB-INF\lib\fabric3-transform-0.4.jar;
+${basedir}\web\WEB-INF\lib\framework-gt-grid1.0.jar;
+${basedir}\web\WEB-INF\lib\freemarker.jar;
+${basedir}\web\WEB-INF\lib\ibatis-2.3.4.726.jar;
+${basedir}\web\WEB-INF\lib\jakarta-oro.jar;
+${basedir}\web\WEB-INF\lib\json-lib-2.2.3-jdk15-javadoc.jar;
+${basedir}\web\WEB-INF\lib\json-lib-2.2.3-jdk15.jar;
+${basedir}\web\WEB-INF\lib\json-lib-2.4-jdk15.jar;
+${basedir}\web\WEB-INF\lib\json-lib-ext-spring-1.0.2.jar;
+${basedir}\web\WEB-INF\lib\jta.jar;
+${basedir}\web\WEB-INF\lib\junit-4.4.jar;
+${basedir}\web\WEB-INF\lib\jxl.jar;
+${basedir}\web\WEB-INF\lib\log4j-1.2.15.jar;
+${basedir}\web\WEB-INF\lib\mail.jar;
+${basedir}\web\WEB-INF\lib\ognl-2.7.3.jar;
+${basedir}\web\WEB-INF\lib\ojdbc14-10.2.0.2.0.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.aop-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.asm-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.aspects-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.beans-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.context-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.context.support-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.core-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.expression-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.instrument-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.instrument.tomcat-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.jdbc-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.jms-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.orm-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.oxm-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.test-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.transaction-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.web-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.web.portlet-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.web.servlet-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\org.springframework.web.struts-3.0.0.RELEASE.jar;
+${basedir}\web\WEB-INF\lib\oscache-2.0.2.jar;
+${basedir}\web\WEB-INF\lib\oscache-2.3.1.jar;
+${basedir}\web\WEB-INF\lib\poi-2.5.1.jar;
+${basedir}\web\WEB-INF\lib\pz-frame-1.0.jar;
+${basedir}\web\WEB-INF\lib\quartz-1.6.0.jar;
+${basedir}\web\WEB-INF\lib\rapid-framework-v3.0.1.0.jar;
+${basedir}\web\WEB-INF\lib\sapjco.jar;
+${basedir}\web\WEB-INF\lib\sapjco3.jar;
+${basedir}\web\WEB-INF\lib\servlet-api.jar;
+${basedir}\web\WEB-INF\lib\slf4j-api-1.5.2.jar;
+${basedir}\web\WEB-INF\lib\slf4j-log4j12-1.5.2.jar;
+${basedir}\web\WEB-INF\lib\sqljdbc.jar;
+${basedir}\web\WEB-INF\lib\standard.jar;
+${basedir}\web\WEB-INF\lib\struts2-core-2.1.8.jar;
+${basedir}\web\WEB-INF\lib\struts2-spring-plugin-2.1.8.jar;
+${basedir}\web\WEB-INF\lib\transactions-api.jar;
+${basedir}\web\WEB-INF\lib\transactions-jdbc-deprecated.jar;
+${basedir}\web\WEB-INF\lib\transactions-jdbc.jar;
+${basedir}\web\WEB-INF\lib\transactions-jta.jar;
+${basedir}\web\WEB-INF\lib\transactions.jar;
+${basedir}\web\WEB-INF\lib\xsqlbuilder.jar;
+${basedir}\web\WEB-INF\lib\xwork-core-2.1.6.jar;
+"/>
+
+<property name="lib1" value="${basedir}\web\WEB-INF\lib"/>
+<property name="webserver" value="C:\webapps"/>
+<!--删除任务-->
+<target name="clean" description="删除">
+   <echo message="删除目录"/>
+   <delete dir="${build}" />
+</target>
+<target name="init" description="创建目录" depends="clean">
+  
+   <echo message="创建目录--以执行"/>
+   <mkdir dir="${build.class}" />
+</target>
+<!--编译java源文件-->
+<target name="compile" description="编译文件" depends="init">
+   <echo message="编译文件"/>
+   <javac  encoding="utf-8"   srcdir="${src}" destdir="${build.class}" classpath="${lib}"/>
+   <copy todir="${build.class}">            <fileset dir="${basedir}/resources"/> </copy>
+   <copy todir="${build.class}">            <fileset dir="${src}"><include name="**/*.xml"/></fileset></copy>
+</target>
+<target name="generwar" depends="compile">
+   <war destfile="${build}/${ant.project.name}.war" webxml="${webxml}">
+    <fileset dir="web" >
+    <include name="**/*"/>
+    </fileset>
+    <lib dir="${lib1}">
+     <include name="*.jar"/>
+    </lib>
+    <classes dir="${build.class}"/>
+   </war>
+</target>
+     <target name="deleteWar" description="删除服务器上的war"> 
+     <delete dir="${build}/${ant.project.name}.war"/> 
+   </target>
+<target name="fabu" depends="deleteWar,generwar" description="发布">
+   <copy file="${build}/${ant.project.name}.war" todir="${webserver}">
+   </copy>
+</target>
+
+</project>
+
