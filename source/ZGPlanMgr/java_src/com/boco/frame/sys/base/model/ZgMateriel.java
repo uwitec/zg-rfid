@@ -1,32 +1,10 @@
 package com.boco.frame.sys.base.model;
 
-import java.util.List;
-
-import javacommon.base.service.IVmModelBo;
+import javacommon.base.BaseEntity;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
-import cn.org.rapid_framework.util.ApplicationContextHolder;
-
-import com.boco.frame.meta.base.model.TmdEnumevalue;
-
-import java.util.*;
-
-import javacommon.base.*;
-import javacommon.util.*;
-import javacommon.base.model.*;
-
-import cn.org.rapid_framework.util.*;
-import cn.org.rapid_framework.web.util.*;
-import cn.org.rapid_framework.page.*;
-import cn.org.rapid_framework.page.impl.*;
-import cn.org.rapid_framework.beanutils.BeanUtils;
-
-import com.boco.zg.materiel.base.model.*;
-import com.boco.zg.materiel.base.dao.*;
-import com.boco.zg.materiel.base.service.*;
 
 public class ZgMateriel extends BaseEntity {
 
