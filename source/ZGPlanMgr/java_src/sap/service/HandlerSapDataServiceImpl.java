@@ -1,43 +1,26 @@
 package sap.service;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javacommon.base.dao.BaseDao;
-import javacommon.util.StringHelper;
 
-import org.apache.commons.collections.Bag;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.directwebremoting.dwrp.Batch;
 import org.springframework.stereotype.Component;
 
 import sap.SapBusiService;
-import sap.model.SapResult;
-import sun.util.logging.resources.logging;
 import cn.org.rapid_framework.util.ApplicationContextHolder;
 
 import com.boco.frame.meta.dao.IbatisDAOHelper;
-import com.boco.zg.plan.base.dao.ZgTorderPlanbomDao;
-import com.boco.zg.plan.base.model.ZgTback;
-import com.boco.zg.plan.base.model.ZgTbackBom;
-import com.boco.zg.plan.base.model.ZgTbackBomTemp;
 import com.boco.zg.plan.base.model.ZgTorder;
 import com.boco.zg.plan.base.model.ZgTorderPlan;
-import com.boco.zg.plan.base.model.ZgTorderPlanbom;
 import com.boco.zg.plan.base.model.ZgTorderTask;
-import com.boco.zg.plan.base.model.ZgTorderTaskbom;
 import com.boco.zg.plan.base.model.ZgTorderTemp;
-import com.boco.zg.plan.base.model.ZgTorderbom;
-import com.boco.zg.plan.base.model.ZgTorderbomTempAll;
-import com.boco.zg.plan.base.service.ZgTbackBo;
 import com.boco.zg.plan.base.service.ZgTbackBomBo;
 import com.boco.zg.plan.base.service.ZgTbackBomTempBo;
 import com.boco.zg.plan.base.service.ZgTorderBo;
@@ -47,12 +30,10 @@ import com.boco.zg.plan.base.service.ZgTorderTaskBo;
 import com.boco.zg.plan.base.service.ZgTorderTaskbomBo;
 import com.boco.zg.plan.base.service.ZgTorderTempBo;
 import com.boco.zg.plan.base.service.ZgTorderbomBo;
-import com.boco.zg.plan.base.service.ZgTorderbomTempAllBo;
 import com.boco.zg.plan.service.ZgTorderExBo;
 import com.boco.zg.plan.service.ZgTorderbomExBo;
 import com.boco.zg.util.Constants;
 import com.boco.zg.util.TimeFormatHelper;
-import com.boco.zg.util.Constants.sorft;
 import com.sap.conn.jco.JCoTable;
 
 @Component
