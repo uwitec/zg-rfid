@@ -6,27 +6,21 @@
 
 package com.boco.zg.materiel.base.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javacommon.base.BaseManager;
+import javacommon.base.EntityDao;
+
 import org.springframework.stereotype.Component;
 
 import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 
-import java.util.*;
-
-import javacommon.base.*;
-import javacommon.util.*;
-import javacommon.base.model.*;
-
-import cn.org.rapid_framework.util.*;
-import cn.org.rapid_framework.web.util.*;
-import cn.org.rapid_framework.page.*;
-import cn.org.rapid_framework.page.impl.*;
-import cn.org.rapid_framework.beanutils.BeanUtils;
-
 import com.boco.frame.sys.base.model.ZgMateriel;
-import com.boco.zg.materiel.base.model.*;
-import com.boco.zg.materiel.base.dao.*;
-import com.boco.zg.materiel.base.service.*;
+import com.boco.zg.materiel.base.dao.ZgMaterielDao;
+import com.boco.zg.materiel.base.dao.ZgMaterielExDao;
 import com.boco.zg.virtualorg.base.dao.ZgMaterrielVirtualorgDao;
 import com.boco.zg.virtualorg.base.model.ZgMaterrielVirtualorg;
 
