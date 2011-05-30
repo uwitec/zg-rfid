@@ -538,7 +538,8 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
                bom.carnum carCount,
                orderbom.zbz,
                taskbom.cuid taskbom_id,
-                 taskbom.order_task_id as orderTaskId
+                 taskbom.order_task_id as orderTaskId,
+                 zto.aufnr,zto.arbpl,zto.kdauf,zto.kdpos,zto.maktx1
 		  from 
 		    <isNotEqual property="operatorId" compareValue="0"> 
 		  zg_t_virtualorg_employee emp,
@@ -717,7 +718,8 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
                bom.carnum carCount,
                  orderbom.zbz,
                  taskbom.cuid as taskbom_id,
-                 taskbom.order_task_id as orderTaskId
+                 taskbom.order_task_id as orderTaskId,
+                 zto.aufnr,zto.arbpl,zto.kdauf,zto.kdpos,zto.maktx1
 		  from 
 		    <isNotEqual property="operatorId" compareValue="0"> 
 		  zg_t_virtualorg_employee emp,
