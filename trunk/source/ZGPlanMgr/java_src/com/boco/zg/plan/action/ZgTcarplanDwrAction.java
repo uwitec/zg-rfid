@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import javacommon.base.BaseDwrAction;
+import javacommon.util.StringHelper;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,6 +34,7 @@ import com.boco.zg.plan.service.ZgTcarbomExBo;
 import com.boco.zg.plan.service.ZgTcarplanExBo;
 import com.boco.zg.util.Constants;
 import com.boco.zg.util.TimeFormatHelper;
+import com.sun.xml.internal.ws.message.StringHeader;
 
 @SuppressWarnings("unchecked")
 public class ZgTcarplanDwrAction extends BaseDwrAction {
@@ -220,6 +222,12 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 	 * @return
 	 */
 	public String checkForSubmitCarPlan(String objcetJOSNs,String carPlanId){
+		
+		//判断是否在下载sap数据
+		String downLoadPlant=getZgTcarplanExBo().getSapDataDownLoadPlant(carPlanId);
+		if(!StringHelper.isEmpty(downLoadPlant)){
+			return downLoadPlant+"生产厂正在下载排序或排产数据，不能进行领料操作，请稍后再试";
+		}
 		
 		ZgTcarplan zgTcarplan = (ZgTcarplan)getZgTcarplanExBo().getById(carPlanId);
 		if(null!=zgTcarplan){
