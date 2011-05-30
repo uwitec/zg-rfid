@@ -472,10 +472,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		<!--    and morg.matkl = mat.id -->
 		<!--   and mat.id = bom.matkl_self
 		   and mat.lgort = orderbom.lgort --> 
-		    and mat.id in (select tm.id
-                    from zg_materiel tm
-                   start with tm.id = morg.matkl
-                  connect by prior  tm.cuid=tm.parent_id)
+		    and mat.id in ('$carMatkls$')
    			and mat.id=orderbom.matkl_self
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
@@ -534,7 +531,8 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
                0 as car_plan_num,
                planbom.car_num - nvl(planbom.plan_num, 0) max_value,
                bom.carnum carCount,
-               orderbom.zbz
+               orderbom.zbz,
+                zto.aufnr,zto.arbpl,zto.kdauf,zto.kdpos,zto.maktx1
 		  from 
 		    <isNotEqual property="operatorId" compareValue="0"> 
 		  zg_t_virtualorg_employee emp,
@@ -557,10 +555,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		<!--    and morg.matkl = mat.id
 		   and mat.id = bom.matkl_self
 		   and mat.lgort = orderbom.lgort -->
-		    and mat.id in (select tm.id
-                    from zg_materiel tm
-                   start with tm.id = morg.matkl
-                  connect by prior  tm.cuid=tm.parent_id)
+		     and mat.id in ('$carMatkls$')
    			and mat.id=orderbom.matkl_self
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
@@ -640,7 +635,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 			 and ma.advance='1'
 			 and fworg.cuid=orderbom.lgort
 		  and car.cuid=bom.car_id
-		  and planbom.car_num-nvl(planbom.plan_num,0)>0
+		  and planbom.car_num-nvl(planbom.plan_num,0)>=0
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
@@ -648,10 +643,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		
 		  and mat.id = bom.matkl_self
 		  and mat.lgort = orderbom.lgort -->
-		    and mat.id in (select tm.id
-                    from zg_materiel tm
-                   start with tm.id = morg.matkl
-                  connect by prior  tm.cuid=tm.parent_id)
+		    and mat.id in ('$carMatkls$')
   			 and mat.id=orderbom.matkl_self
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
@@ -708,7 +700,8 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
                0 as car_plan_num,
                planbom.car_num - nvl(planbom.plan_num, 0) max_value,
                bom.carnum carCount,
-                 orderbom.zbz
+                 orderbom.zbz,
+                  zto.aufnr,zto.arbpl,zto.kdauf,zto.kdpos,zto.maktx1
 		  from 
 		    <isNotEqual property="operatorId" compareValue="0"> 
 		  zg_t_virtualorg_employee emp,
@@ -736,10 +729,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		 <!--  and morg.matkl = mat.id
 		    and mat.id = bom.matkl_self
 		   and mat.lgort = orderbom.lgort -->
-		     and mat.id in (select tm.id
-                    from zg_materiel tm
-                   start with tm.id = morg.matkl
-                  connect by prior  tm.cuid=tm.parent_id)
+		       and mat.id in ('$carMatkls$')
    			and mat.id=orderbom.matkl_self
 		    and vorg.org_id=plan.plant 
 		   </isNotEqual>
