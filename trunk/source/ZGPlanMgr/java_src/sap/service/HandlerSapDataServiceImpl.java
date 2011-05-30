@@ -18,12 +18,14 @@ import cn.org.rapid_framework.util.ApplicationContextHolder;
 
 import com.boco.frame.meta.dao.IbatisDAOHelper;
 import com.boco.zg.plan.base.model.ZgTorder;
+import com.boco.zg.plan.base.model.ZgTorderLock;
 import com.boco.zg.plan.base.model.ZgTorderPlan;
 import com.boco.zg.plan.base.model.ZgTorderTask;
 import com.boco.zg.plan.base.model.ZgTorderTemp;
 import com.boco.zg.plan.base.service.ZgTbackBomBo;
 import com.boco.zg.plan.base.service.ZgTbackBomTempBo;
 import com.boco.zg.plan.base.service.ZgTorderBo;
+import com.boco.zg.plan.base.service.ZgTorderLockBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanbomBo;
 import com.boco.zg.plan.base.service.ZgTorderTaskBo;
@@ -349,6 +351,12 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		}
 		return plant;
 	}
+	
+	public ZgTorderLockBo getZgTorderLockBo(){
+		return (ZgTorderLockBo) ApplicationContextHolder
+		.getBean("zgTorderLockBo");
+	}
+
 
 	/**
 	 *如果订单已经开始领料，则设置删除标志，做退料处理
@@ -359,6 +367,8 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		if(log.isInfoEnabled()){
 			log.info("线程号："+batchNo+"enter the method deleteNotExistOrder");
 		}
+		
+		ZgTorderLock zgTorderLock=getZgTorderLockBo().getById("DEL");
 		for(Map orderMap:notExistOrderList){
 			
 			String orderId=orderMap.get("ORDER_ID").toString();
@@ -366,6 +376,10 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			String aufnr=orderMap.get("AUFNR").toString();
 			String arbpl=orderMap.get("ARBPL").toString();
 			String taskId=orderMap.get("TASK_ID").toString();
+			
+			//订单加锁，同步不允许领料
+			zgTorderLock.setAufnr(aufnr);
+			getZgTorderLockBo().update(zgTorderLock);
 			
 			if(log.isInfoEnabled()){
 				log.info("线程号："+batchNo+" 开始删除订单"+aufnr+"-"+arbpl+"-"+plant+" task_id:"+taskId);
@@ -408,6 +422,10 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 				}
 				
 			}
+			
+			//订单解锁
+			zgTorderLock.setAufnr("");
+			getZgTorderLockBo().update(zgTorderLock);
 			
 		}
 		if(log.isInfoEnabled()){

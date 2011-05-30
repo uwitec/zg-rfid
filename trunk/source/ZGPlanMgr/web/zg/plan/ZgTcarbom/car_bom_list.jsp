@@ -279,6 +279,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 								<input type="hidden" name="carbomList[${num}].lgort" id="carbomList[${num}].lgort" value="${pageRequest.filters.lgort }"/>
 								<input type="hidden" name="carbomList[${num}].cuid" id="carbomList[${num}].lgort" value="${obj.CUID }"/>
 								<input type="hidden" name="carbomList[${num}].carId" id="carbomList[${num}].lgort" value="${pageRequest.filters.carId }"/>
+								<input type="hidden" name="carbomList[${num}].idnrk" id="carbomList[${num}].idnrk" value="${obj.IDNRK}"/>
 								<input type="hidden" name="carbomList[${num}].taskBomId" id="carbomList[${num}].lgort" value="${obj.TASKBOM_ID }"/>
 								<input type="hidden" name="carbomList[${num}].orderPlanbomId" id="carbomList[${num}].lgort" value="${obj.ORDER_PLANBOM_ID }"/>
 								<input type="hidden" name="carbomList[${num}].orderTaskId" id="carbomList[${num}].lgort" value="${obj.ORDERTASKID}"/>

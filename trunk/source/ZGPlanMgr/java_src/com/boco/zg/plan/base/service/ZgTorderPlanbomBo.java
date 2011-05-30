@@ -50,6 +50,10 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 		zgTorderPlanbomDao.deleteById(id);
 	}
 	
+	public int removeById1(java.lang.String id) {
+		return zgTorderPlanbomDao.deleteById1(id);
+	}
+	
 	public List<ZgTorderPlanbom> findByRequest(PageRequest pageRequest) {
 		return zgTorderPlanbomDao.findByRequest(pageRequest);
 	}

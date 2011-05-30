@@ -824,4 +824,23 @@ String[] aufnrArbpl1={"","","","",""};
 		return null;
 		
 	}
+
+
+	/**
+	 * @param planboms
+	 */
+	public String checkOrderLock(String planboms) {
+		StringBuffer sqlBuffer=new StringBuffer();
+		
+		sqlBuffer.append("select t.aufnr  from zg_t_order_lock t, zg_t_order_planbom planbom, zg_t_order_task task ");
+		sqlBuffer.append(" where planbom.order_task_id = task.cuid   and task.aufnr = t.aufnr ");
+		sqlBuffer.append("   and planbom.cuid in ('"+planboms+"')");
+		
+		List<Map> list= ((ZgTcarplanDao)this.getEntityDao()).findDynQuery(sqlBuffer.toString());
+		
+		if(list.size()>0){
+			return IbatisDAOHelper.getStringValue(list.get(0), "AUFNR")+"  订单正在从sap系统中下载数据，请稍后再试!";
+		}
+		return "OK";
+	}
 }

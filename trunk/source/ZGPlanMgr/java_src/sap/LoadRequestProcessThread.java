@@ -34,7 +34,9 @@ import cn.org.rapid_framework.util.ApplicationContextHolder;
 import com.boco.frame.meta.dao.IbatisDAOHelper;
 import com.boco.frame.sys.base.model.TsysIfaceLog;
 import com.boco.frame.sys.base.service.TsysIfaceLogBo;
+import com.boco.zg.plan.base.model.ZgTorderLock;
 import com.boco.zg.plan.base.model.ZgTorderTemp;
+import com.boco.zg.plan.base.service.ZgTorderLockBo;
 import com.boco.zg.plan.base.service.ZgTorderTempBo;
 import com.boco.zg.plan.service.ZgTorderExBo;
 import com.boco.zg.util.CommonUtils;
@@ -82,6 +84,11 @@ public class LoadRequestProcessThread implements Runnable {
 	public ZgTorderTempBo getZgTorderTempBo(){
 		return (ZgTorderTempBo) ApplicationContextHolder
 		.getBean("zgTorderTempBo");
+	}
+	
+	public ZgTorderLockBo getZgTorderLockBo(){
+		return (ZgTorderLockBo) ApplicationContextHolder
+		.getBean("zgTorderLockBo");
 	}
 
 	public void run() {
@@ -282,6 +289,8 @@ public class LoadRequestProcessThread implements Runnable {
 					handlerSapDataService.getSynBomDataByOrderPlanId(data,synTable,synBomList,batchNo);
 				}
 				
+				getSapBusiService().parseData(synTable, function.getName(), "",batchNo);
+				
 				status= transactionManager.getTransaction(def); 
 
 				 try {//本次同步的装车计划标识为已同步    用jdbc来控制事务
@@ -336,11 +345,34 @@ public class LoadRequestProcessThread implements Runnable {
 		
 	}
 
+	private SapBusiService getSapBusiService(){
+		return (SapBusiService) ApplicationContextHolder
+		.getBean("sapBusiService");
+	}
+
 	/**
 	 * 更新供应商数据
+	 * @throws Exception 
 	 */
-	private void handleSuppliersData() {
-		getHandlerSapDataService().handleSuppliersData(batchNo);
+	private void handleSuppliersData() throws Exception {
+		
+		ZgTorderLock zgTorderLock=getZgTorderLockBo().getById("SUP");
+		//订单加锁，同步不允许领料
+		zgTorderLock.setAufnr("ALL");
+		getZgTorderLockBo().update(zgTorderLock);
+		
+		try {
+			getHandlerSapDataService().handleSuppliersData(batchNo);
+		} catch (Exception e) {
+			log.error(batchNo+"  :",e);
+			throw e;
+		}finally{
+			//订单解锁
+			zgTorderLock.setAufnr("");
+			getZgTorderLockBo().update(zgTorderLock);
+		} 
+		
+	
 	}
 
 	/**
@@ -463,11 +495,28 @@ public class LoadRequestProcessThread implements Runnable {
 			orderTemp.setBatchNo(batchNo+"");
 			List<ZgTorderTemp> list=getZgTorderTempBo().findByProperty(orderTemp);
 			
+			ZgTorderLock zgTorderLock=getZgTorderLockBo().getById("PC");
+			
 			for (ZgTorderTemp temp:list) {
 				synchronized (pcOrderLock) {
 					String aufnr=temp.getAufnr();
 					
-					handlerSapDataService.doProdessPcOrder(batchNo,temp);
+					//订单加锁，同步不允许领料
+					zgTorderLock.setAufnr(aufnr);
+					getZgTorderLockBo().update(zgTorderLock);
+					
+					try {
+						handlerSapDataService.doProdessPcOrder(batchNo,temp);
+					} catch (Exception e) {
+						log.error(batchNo+"  :",e);
+						throw e;
+					}finally{
+						//订单解锁
+						zgTorderLock.setAufnr("");
+						getZgTorderLockBo().update(zgTorderLock);
+					}
+					
+					
 					
 					
 				}
@@ -509,7 +558,6 @@ public class LoadRequestProcessThread implements Runnable {
         		2、订单只过来一条，如果之前有两条订单数据，则做订单合并处理，同时之前已经领料的做自动移单处理
         		3、订单过来两条，如果之前只有一条订单数据，做订单拆分处理，同时做自动移单处理
 	 */
-	@SuppressWarnings("unchecked")
 	private void handlerPxData() {	
 		if(log.isInfoEnabled()){
 			log.info("enter the method handlerPxData 线程:"+batchNo);
@@ -538,16 +586,33 @@ public class LoadRequestProcessThread implements Runnable {
 				log.info("线程:"+batchNo+" 日期："+pxDateStr+" 共找到"+orderMapList.size()+"个订单");
 			}
 			
+			ZgTorderLock zgTorderLock=getZgTorderLockBo().getById("PX");
+			
 			synchronized (orderLock) {//同步锁orderLock
 				//循环逐条处理
 				for(Map map:orderMapList){
 					String aufnr=IbatisDAOHelper.getStringValue(map, "AUFNR", "").trim();
 					String plant=IbatisDAOHelper.getStringValue(map, "PLANT","");
 					Long orderCou=IbatisDAOHelper.getLongValue(map, "COU");
-					if(aufnr.equals("1000020172")){
-						System.out.println("");
+					
+					//订单加锁，同步不允许领料
+					zgTorderLock.setAufnr(aufnr);
+					getZgTorderLockBo().update(zgTorderLock);
+					
+					try {
+						handlerSapDataService.doProdessPxOrder(batchNo,aufnr,plant,pxDateStr,orderCou);
+					} catch (Exception e) {
+						log.error(batchNo+"  :",e);
+						throw e;
+					}finally{
+						//订单解锁
+						zgTorderLock.setAufnr("");
+						getZgTorderLockBo().update(zgTorderLock);
 					}
-					handlerSapDataService.doProdessPxOrder(batchNo,aufnr,plant,pxDateStr,orderCou);
+					
+					
+					
+					
 				}
 			}
 			//生成计划领料

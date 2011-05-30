@@ -252,6 +252,11 @@
 		 where CUID = #cuid#
 	</delete>
 	
+	<delete id="deleteZG_T_ORDER_PLANBOM1" parameterClass="java.lang.String">
+		delete from ZG_T_ORDER_PLANBOM  t
+		 where CUID = #cuid#  and nvl(t.plan_num,0)=0
+	</delete>
+	
 	
 	<select id="getWaitBackBomListByAufnrIdnrk" resultMap="zgTorderPlanbomResult">
 	    select   m.t0_CUID,

@@ -181,9 +181,14 @@ public class HandlerOrderServiceImpl {
 				ZgTorderPlanbom planbom=getZgTorderPlanbomBo().getPlanBomByTaskIdPlanTypeTaskBomId(taskbom.getOrderTaskId(),Constants.NEEDPLANSORTF,taskbom.getCuid());
 				if(planbom==null||planbom.getPlanNum()==0l){//领料计划bom为空或做计划的数据为0 直接删除  taskbom
 					if(planbom!=null){
-						getZgTorderPlanbomBo().removeById(planbom.getCuid());
+						int row=getZgTorderPlanbomBo().removeById1(planbom.getCuid());
+						if(row>0){
+							getZgTorderTaskbomBo().removeById(taskbom.getCuid());
+						}
+					}else {
+						getZgTorderTaskbomBo().removeById(taskbom.getCuid());
 					}
-					getZgTorderTaskbomBo().removeById(taskbom.getCuid());
+					
 				}else {//已经做了装车计划，则生成相应的退料数据
 					flag=false;
 					
