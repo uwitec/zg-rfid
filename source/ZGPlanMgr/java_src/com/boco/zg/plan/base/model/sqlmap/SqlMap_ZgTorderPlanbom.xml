@@ -116,15 +116,6 @@
 		    <isNotEmpty prepend="AND" property="state">
 	       			m.t0_STATE = #state#
        		</isNotEmpty>    
-		    <isNotEmpty prepend="AND" property="completeNum">
-	       			m.t0_COMPLETE_NUM = #completeNum#
-       		</isNotEmpty>    
-		    <isNotEmpty prepend="AND" property="carNum">
-	       			m.t0_CAR_NUM = #carNum#
-       		</isNotEmpty>
-       		<isNotEmpty prepend="AND" property="planNum">
-	       			m.t0_PLAN_NUM = #planNum#
-       		</isNotEmpty>  
        		<isNotEmpty prepend="AND" property="bomId">
 	       			m.t0_BOM_ID = #bomId#
        		</isNotEmpty>     

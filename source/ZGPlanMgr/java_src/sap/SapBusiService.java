@@ -46,7 +46,8 @@ public class SapBusiService {
 		functionMap.add("ZSTFC_CONNECTION_RFID_03");
 		functionMap.add("ZSTFC_CONNECTION_RFID_04");
 		functionMap.add("ZSTFC_CONNECTION_RFID_05");
-		functionMap.add("ZSTFC_CONNECTION_RFID_06");
+//		functionMap.add("ZSTFC_CONNECTION_RFID_06");
+		functionMap.add("ZRFC_RFIDAUFNR_DATA");//订单信息接口
 		// "ZSTFC_CONNECTION_RFID_01" 排序
 		// "ZSTFC_CONNECTION_RFID_02" 排产
 		// "ZSTFC_CONNECTION_RFID_03" 批量领料物料
@@ -167,6 +168,7 @@ public class SapBusiService {
 			this.parseDataXls(table, function.getName(), input,batchNo);
 			this.parseData(table, function.getName(), input,batchNo);
 		}
+		System.out.println("");
 	}
 	
 	public static void parseDataXls(JCoTable table, String functionName,
@@ -244,13 +246,13 @@ public class SapBusiService {
 			flag = true;
 			tableName = "ZG_T_SYN_BOM_TEMP";
 		}
-		if(table.getMetaData().getName().equals("IPLANT")){
+		if(table.getMetaData().getName().equals("ZPLANT_S")){
 			flag = true;
 			tableName = "ZG_T_ORDER_PLANT_TEMP";
 		}
-		if(table.getMetaData().getName().equals("FZRFIDMESG")){
+		if(table.getMetaData().getName().equals("ZAUFNRF")){//领料订单排序日期状态等信息回传
 			flag = true;
-			tableName = "ZG_T_SYN_CAR_BOM_TEMP";
+			tableName = "ZG_T_ORDER_TEMP_SYN";
 		}
 		
 		Map<String,String> keyMap = getKeyMap(tableName);

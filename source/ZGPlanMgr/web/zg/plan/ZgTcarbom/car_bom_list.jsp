@@ -124,12 +124,37 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 		
 	  function printScreen(block)
       {        
+      
+      		var items=document.getElementsByName("items");
+			var result=false;
+			for(var i=0;i<items.length;i++){
+				if(items[i].checked==true){
+					result=true;
+					break;
+				}
+			}
+			if(!result){
+				alert('请选择要领料的物料！');
+				return;
+			}		
+      
 	        var value = document.all.block.innerHTML;
+	        var preText="";
+	        var num=0;
+	        for(var i=0;i<items.length;i++){
+				if(items[i].checked==true){
+					var bomText=document.getElementById(num+"_bom_print").innerHTML;
+				//	alert(bomText);
+					preText=preText+bomText;
+					num++;
+				}
+			}
+			
 	        var printdetail = window.open("","printDetail","");
 	        printdetail.document.open();
 	        printdetail.document.write("<HTML><head></head><BODY onload='window.print();window.close();'>"); 
 	        printdetail.document.write("<PRE>"); 
-	        printdetail.document.write(value); 
+	        printdetail.document.write(preText); 
 	        printdetail.document.write("</PRE>");
 	        printdetail.document.close("</BODY></HTML>");
       }
@@ -186,17 +211,14 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 <body>
 
 <div id="block" style="display:none">
-			<table>
-				<tr>
-					<td style="font-size: 10px; word-break: break-all; width: 185px;">
-						<font style="font-size: 10px;font-weight: bold">
-							装车编号:${pageRequest.filters.carPlanId }<br />
-							
-							<br /><br /> </font>
+							<c:set var="num1" value="0"></c:set>
 						<c:forEach items="${bomList}" var="obj" varStatus="n" >
 							<c:if test="${empty obj.STORAGE_USER_ID}">
-							<font style="font-size: 10px;"> 
-								订单号:${obj.AUFNR}<br />
+							<div id="${num1}_bom_print">
+								<div>
+								<span style="font-size: 10px; word-break: break-all; width: 185px;">
+									<font style="font-size: 10px;"> 
+								装车编号:${pageRequest.filters.carPlanId }
 								生产线：${obj.ARBPL}<br />
 								仓库编号：${pageRequest.filters.lgort} <br />
 								仓库名称：${pageRequest.filters.lgortName }<br />
@@ -207,13 +229,15 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 								
 								物料描述:${obj.MAKTX2}<br /> 
 								大小量纲:${obj.ZBZ} <br />
-								领取数量:<span id="carPlaNum${n.count-1 }">${obj.CAR_PLAN_NUM}</span>
+									领取数量:<span id="carPlaNum${num1}">${obj.CAR_PLAN_NUM}</span>
 								 <br /> <br /> </font>
+								 </span>
+								 </div>
+						    </div>
+								 <c:set var="num1" value="${num1+1}"></c:set>
 						</c:if>
 						</c:forEach>
-					</td>
-				</tr>
-			</table>
+				
 		</div>
 		<div class="noprint">
      

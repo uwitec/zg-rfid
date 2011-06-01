@@ -545,7 +545,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 	 */
 	public void generateCarPlan() throws IOException{
 		OperatorInfo operatorInfo=(OperatorInfo) getSession().getAttribute("operatorInfo");
-		zgTcarplanExBo.generateCarPlan(carbomList,operatorInfo);
+		zgTcarplanExBo.generateCarPlan(items,carbomList,operatorInfo);
 		rendHtml("window.returnValue='OK';window.close()");
 	}
 	

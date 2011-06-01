@@ -127,12 +127,17 @@ public class LoadRequestProcessThread implements Runnable {
 			
 			// 领料数据回传sap接口
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_05")) {
-				this.handlerSynOrderBOM();
+//				this.handlerSynOrderBOM();//TODO 实际部署时放开
 			}
 			
 			// 退料接口
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_06")) {
 				this.handlerBackBOM();
+			}
+			
+			//订单排序状态信息回传接口
+			if(functionName.equals("ZRFC_RFIDAUFNR_DATA")){
+				this.handlerOrderInfoSyn();
 			}
 
 			
@@ -149,6 +154,16 @@ public class LoadRequestProcessThread implements Runnable {
 	}
 	
 	
+
+	/**
+	 * 
+	 */
+	private void handlerOrderInfoSyn() {
+		HandlerSapDataService handlerSapDataService = getHandlerSapDataService();
+		
+		JCoTable synTable = (JCoTable) function.getTableParameterList().getTable("UZAUFNRF");
+		handlerSapDataService.handlerOrderInfoSyn(synTable,batchNo);
+	}
 
 	/**
 	 * 
@@ -289,7 +304,6 @@ public class LoadRequestProcessThread implements Runnable {
 					handlerSapDataService.getSynBomDataByOrderPlanId(data,synTable,synBomList,batchNo);
 				}
 				
-				getSapBusiService().parseData(synTable, function.getName(), "",batchNo);
 				
 				status= transactionManager.getTransaction(def); 
 
