@@ -16,9 +16,9 @@
 	<bean id="xlsExportBo" class="com.boco.frame.excel.xlsexp.service.XlsExportBo">
 		<property name="tempFolderPath" value="${temp.folder.path}"/>
 	</bean>
- 	<!-- <bean id="SapService" class="sap.ServiceInitMain" init-method="startServers">
+ 	 <bean id="SapService" class="sap.ServiceInitMain" init-method="startServers">
 	  
-	</bean>  --> 
+	</bean>  
 	
 	<!-- 配置导入导出的bean -->
 	<bean id="xlsImport" class="com.boco.frame.excel.ExcuteHelper">

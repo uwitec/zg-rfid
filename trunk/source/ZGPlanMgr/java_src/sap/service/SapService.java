@@ -20,7 +20,7 @@ public class SapService {
 	
 	public void processSynBom(){
 		int batchNo=getBaseDao().getSeq("SEQ_BATCH_NO");
-		getSapClient().businessHandler("5", "",batchNo);
+		getSapClient().businessHandler("5", "",batchNo,"");
 		
 		//oracle数据库备份
 		BatFileRun.runbat(Config.getString("oracleDbBackPath"));

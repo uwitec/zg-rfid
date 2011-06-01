@@ -114,6 +114,11 @@ public interface HandlerSapDataService {
 	 */
 	void doProdessPcOrder(int batchNo, ZgTorderTemp temp);
 
+	/**
+	 * @param batchNo
+	 */
+	void handlerOrderInfoSyn(JCoTable synTable,int batchNo);
+
 
 
 	

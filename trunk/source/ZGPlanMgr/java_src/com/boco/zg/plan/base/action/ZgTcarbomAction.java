@@ -551,7 +551,7 @@ public class ZgTcarbomAction extends BaseStruts2Action implements Preparable,Mod
 	public void submitStorePlan() throws IOException{
 		String storageUserId=getRequest().getParameter("storageUserId");
 //		zgTcarplanExBo.updateCarPlanStorageUserId(carPlanId, storageUserId);
-		zgTcarbomExBo.updateCarboms(carbomList,true);
+		zgTcarbomExBo.updateCarboms("",carbomList,true);
 		zgTcarbomExBo.updateZgtcarPlanState(carbomList.get(0).getCarPlanId(),Constants.CarPlanStatus.SUBMIT.value(),Calendar.getInstance().getTime(),storageUserId);
 
 		zgTcarplanExBo.storagePlanSubmitById(carPlanId,"","ALL");
@@ -565,7 +565,7 @@ public class ZgTcarbomAction extends BaseStruts2Action implements Preparable,Mod
 	public void saveStorePlan() throws IOException{
 		String storageUserId=getRequest().getParameter("storageUserId");
 		zgTcarplanExBo.updateCarPlanStorageUserId(carPlanId, storageUserId);
-		zgTcarbomExBo.updateCarboms(carbomList,true);
+		zgTcarbomExBo.updateCarboms("",carbomList,true);
 		zgTcarbomExBo.updateZgtcarPlanState(carbomList.get(0).getCarPlanId(),Constants.CarPlanStatus.SAVE.value(),null,null);
 		rendHtml("if(parent.doQuery)parent.doQuery()");
 	}
@@ -578,7 +578,7 @@ public class ZgTcarbomAction extends BaseStruts2Action implements Preparable,Mod
 	public void saveStorePlanForBatch() throws IOException{
 		String storageUserId=getRequest().getParameter("storageUserId");
 		zgTcarplanExBo.updateCarPlanStorageUserId(carPlanId, storageUserId);
-		zgTcarbomExBo.updateCarboms(carbomList,true);
+		zgTcarbomExBo.updateCarboms("",carbomList,true);
 		zgTcarbomExBo.updateZgtcarPlanState(carbomList.get(0).getCarPlanId(),Constants.CarPlanStatus.SAVE.value(),null,null);
 
 		rendHtml("if(parent.doQuery)parent.doQuery()");
@@ -593,13 +593,13 @@ public class ZgTcarbomAction extends BaseStruts2Action implements Preparable,Mod
 	public void submitStorePlanForBatch() throws IOException{
 		String storageUserId=getRequest().getParameter("storageUserId");
 //		zgTcarplanExBo.updateCarPlanStorageUserId(carPlanId, storageUserId);
-		zgTcarbomExBo.updateCarboms(carbomList,true);
+		zgTcarbomExBo.updateCarboms("",carbomList,true);
 		zgTcarplanExBo.carPlanSubmit(carPlanId);
 		zgTcarbomExBo.updateZgtcarPlanState(carbomList.get(0).getCarPlanId(),Constants.CarPlanStatus.SUBMIT.value(),Calendar.getInstance().getTime(),storageUserId);
 		
 		//同步领料bom到sap
 		int batchNo=this.zgTcarbomBo.getSeq("SEQ_BATCH_NO");
-		getSapClient().businessHandler("5", carbomList.get(0).getCarPlanId(),batchNo);
+		getSapClient().businessHandler("5", carbomList.get(0).getCarPlanId(),batchNo,"");
 		
 		rendHtml("if(parent.doQuery)parent.doQuery()");
 	//	return SUCCESS;

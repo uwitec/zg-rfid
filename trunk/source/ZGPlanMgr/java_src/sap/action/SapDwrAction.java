@@ -39,9 +39,9 @@ public class SapDwrAction extends BaseDwrAction {
 	}
 	
 	
-	public String loadSapData(String dataType,String date,int batchNo) {
+	public String loadSapData(String dataType,String date,int batchNo,String orderplant) {
 		date=date.replace("-", "");
-		getSapClient().businessHandler(dataType, date,batchNo);
+		getSapClient().businessHandler(dataType, date,batchNo,orderplant);
 		return "已启动接口获取数据，编号："+batchNo+"，具体结果请查看日志列表";
 	}
 	

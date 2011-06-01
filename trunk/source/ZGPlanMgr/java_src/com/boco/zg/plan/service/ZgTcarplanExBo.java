@@ -369,8 +369,20 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 * @param carbomList
 	 * @param operatorInfo
 	 */
-	public void generateCarPlan(List<ZgTcarbomEx> carbomList,OperatorInfo operatorInfo) {
+	public void generateCarPlan(String[] items,List<ZgTcarbomEx> carbomList,OperatorInfo operatorInfo) {
 			int num=0;
+			
+			
+			//<!--modify by wengqin 2011/05/12 同一个装车计划分多次刷卡，选哪个物料刷哪些物料的装车数量- 如果领料计划的物料没有刷卡完，则不计算领料进度
+			String orderPlanBomIds="";
+			for(String item:items){
+				Hashtable params = HttpUtils.parseQueryString(item);
+				orderPlanBomIds=orderPlanBomIds+"'"+params.get("orderPlanbomId")+"',";
+			}
+			if(orderPlanBomIds.length()>0){
+				orderPlanBomIds=orderPlanBomIds.substring(0,orderPlanBomIds.length()-1);
+			}
+			//-->
 			
 			List<ZgTcarbomEx> editList=new ArrayList<ZgTcarbomEx>();
 			List<ZgTcarbomEx> newList=new ArrayList<ZgTcarbomEx>();
@@ -402,9 +414,17 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 				}
 
 				if(StringHelper.isEmpty(bom.getCuid())){
-					newList.add(bom);
+					if(orderPlanBomIds.contains(bom.getOrderPlanbomId())){
+						newList.add(bom);
+					}
+					
 				}else {
-					editList.add(bom);
+					if(!orderPlanBomIds.contains(bom.getOrderPlanbomId())){
+						deleteBom(bom.getCuid(),bom.getOrderPlanbomId());
+					}else {
+						editList.add(bom);
+					}
+					
 				}
 			}
 			zgTcarbomExBo.saveEditCarPlan(editList, Constants.CarPlanStatus.NEW.value());
@@ -505,14 +525,16 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 				}
 					
 				if(StringHelper.isEmpty(bom.getCuid())){
-					newList.add(bom);
+					if(orderPlanBomIds.contains(bom.getOrderPlanbomId())){
+						newList.add(bom);
+					}
 				}
 			}
 			
 			//1 先可在新追加的bom到zgtcarbom表
 			zgTcarbomExBo.saveNewCarPlan(newList, Constants.CarPlanStatus.SUBMIT.value());
 			//2 更新carbom表的数量 
-			zgTcarbomExBo.updateCarboms(carbomList,false);
+			zgTcarbomExBo.updateCarboms(orderPlanBomIds,carbomList,false);
 			//3 设定仓管员
 //			updateCarPlanStorageUserId(carPlanId, storageUserId);
 			//4 更新planbom表的数量及carplan表的状态 及仓管员信息
@@ -568,7 +590,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 			
 			if(state.equals(Constants.OrderPlanStatus.FINISHED.value())){//领料计划完成　则回传sap接口
 				int batchNo=this.zgTcarplanDao.getSeq("SEQ_BATCH_NO");
-				getSapClient().businessHandler("5", plan.getCuid(),batchNo);
+				getSapClient().businessHandler("5", plan.getCuid(),batchNo,"");
 			}
 			
 		}
@@ -616,7 +638,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 			
 			//回传领料进度
 			int batchNo=this.zgTcarplanDao.getSeq("SEQ_BATCH_NO");
-			getSapClient().businessHandler("5", "C:"+carPlanId,batchNo);
+			getSapClient().businessHandler("5", "C:"+carPlanId,batchNo,"");
 			
 		return "";
 	}

@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javacommon.base.dao.BaseDao;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 import cn.org.rapid_framework.util.ApplicationContextHolder;
@@ -40,6 +42,8 @@ import com.boco.zg.util.Constants;
 @Component
 public class HandlerOrderServiceImpl {
 	public BaseDao baseDao;
+	
+	private static final Log log=LogFactory.getLog(HandlerOrderServiceImpl.class);
 	
 	public static Map<String, String> plantSortfMap=null;
 	
@@ -128,6 +132,13 @@ public class HandlerOrderServiceImpl {
 		//查询修改物料标识为2
 //		List<ZgTorderbomTempAll> editBomList=getZgTorderbomTempAllBo().getBomListByBatchNoAufnrArbplPlantFlag(batchNo,aufnr,order.getArbpl(),plant,Constants.EDIT);
 		
+		if(log.isInfoEnabled()){
+			log.info("线程："+batchNo+" enter the method doPxEditBomData aufnr:"+aufnr+" pxdateStr:"+plant+" 共找到:"+editBomList.size()+" 条BOM修改记录分别为：");
+			for(ZgTorderbomTempAll bomTemp:editBomList){
+				log.info("线程："+batchNo+":"+bomTemp.getIdnrk()+"  "+bomTemp.getPosnr());
+			}
+		}
+		
 		for(ZgTorderbomTempAll tempBom:editBomList){
 			tempBom.setOrderId(order.getCuid());
 			
@@ -164,6 +175,13 @@ public class HandlerOrderServiceImpl {
 	 */
 	public int doPxDelBomData(int batchNo, String aufnr, String plant,ZgTorder order) {//测试
 		List<ZgTorderbom> delBomList=getZgTorderbomBo().getBomListByBatchNoAufnrArbplPlant(batchNo,aufnr,order.getArbpl(),plant);
+		
+		if(log.isInfoEnabled()){
+			log.info("线程："+batchNo+" enter the method doPxDelBomData aufnr:"+aufnr+" pxdateStr:"+plant+" 共找到:"+delBomList.size()+" 条BOM删除记录分别为：");
+			for(ZgTorderbom bomTemp:delBomList){
+				log.info("线程："+batchNo+":"+bomTemp.getIdnrk()+"  "+bomTemp.getPosnr());
+			}
+		}
 		
 		for(ZgTorderbom tempBom:delBomList){
 			tempBom.setOrderId(order.getCuid());
@@ -244,6 +262,13 @@ public class HandlerOrderServiceImpl {
 		//设置新增物料标识为1
 		List<ZgTorderbomTempAll> addBomList=	getZgTorderbomTempAllBo().getForAddBomList(batchNo,aufnr,order.getArbpl(),plant,Constants.ADD);
 		
+		if(log.isInfoEnabled()){
+			log.info("线程："+batchNo+" enter the method doPxAddBomData aufnr:"+aufnr+" pxdateStr:"+plant+" 共找到:"+addBomList.size()+" 条BOM新增加记录分别为：");
+			for(ZgTorderbomTempAll bomTemp:addBomList){
+				log.info("线程："+batchNo+":"+bomTemp.getIdnrk()+"  "+bomTemp.getPosnr());
+			}
+		}
+		
 		//获取新增加的BOM物料 并设置新增物料标识为1
 //		List<ZgTorderbomTempAll> addBomList=getZgTorderbomTempAllBo().getBomListByBatchNoAufnrArbplPlantFlag(batchNo,aufnr,order.getArbpl(),plant,Constants.ADD);
 		
@@ -277,6 +302,13 @@ public class HandlerOrderServiceImpl {
 	
 		//设置新增物料标识为1
 		List<ZgTorderbomTempAll> addBomList=	getZgTorderbomTempAllBo().getForAddBomList(batchNo,aufnr,"","",Constants.ADD);
+		
+		if(log.isInfoEnabled()){
+			log.info("线程："+batchNo+" enter the method doChangeAddBomData aufnr:"+aufnr+"orderId:"+orderId+" 共找到:"+addBomList.size()+" 条BOM新增加记录分别为：");
+			for(ZgTorderbomTempAll bomTemp:addBomList){
+				log.info("线程："+batchNo+":"+bomTemp.getIdnrk()+"  "+bomTemp.getPosnr());
+			}
+		}
 		
 		//获取新增加的BOM物料 并设置新增物料标识为1
 //		List<ZgTorderbomTempAll> addBomList=getZgTorderbomTempAllBo().getBomListByBatchNoAufnrArbplPlantFlag(batchNo,aufnr,order.getArbpl(),plant,Constants.ADD);
@@ -439,6 +471,13 @@ public class HandlerOrderServiceImpl {
 	public int doPcEditBomData(int batchNo, String aufnr,String orderId) {
 		//获取信息修改过的bom
 		List<ZgTorderbomTempAll> editBomList=getZgTorderbomTempAllBo().getForPcEditBomList(batchNo,aufnr,Constants.EDIT);
+		
+		if(log.isInfoEnabled()){
+			log.info("线程："+batchNo+" enter the method doPcEditBomData aufnr:"+aufnr+"orderId:"+orderId+" 共找到:"+editBomList.size()+" 条BOM修改记录分别为：");
+			for(ZgTorderbomTempAll bomTemp:editBomList){
+				log.info("线程："+batchNo+":"+bomTemp.getIdnrk()+"  "+bomTemp.getPosnr());
+			}
+		}
 		//查询修改物料标识为2
 //		List<ZgTorderbomTempAll> editBomList=getZgTorderbomTempAllBo().getBomListByBatchNoAufnrArbplPlantFlag(batchNo,aufnr,order.getArbpl(),plant,Constants.EDIT);
 		

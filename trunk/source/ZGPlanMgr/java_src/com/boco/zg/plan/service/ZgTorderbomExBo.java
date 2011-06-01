@@ -298,7 +298,7 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 		
 		if(state.equals(Constants.OrderPlanStatus.FINISHED.value())){//领料计划完成　则回传sap接口
 			int batchNo=this.zgTcarplanDao.getSeq("SEQ_BATCH_NO");
-			getSapClient().businessHandler("5", sourcePlan.getCuid(),batchNo);
+			getSapClient().businessHandler("5", sourcePlan.getCuid(),batchNo,"");
 		}
 	}
 	

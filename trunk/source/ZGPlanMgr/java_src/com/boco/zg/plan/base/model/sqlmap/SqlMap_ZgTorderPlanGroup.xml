@@ -469,7 +469,7 @@
 				       zg_t_group_order_plan gop,
 				       zg_t_order_plan       op,
 				       zg_t_order            tor ,
-				        Zg_t_Order_Aide task ]]>
+				        Zg_t_Order_task task ]]>
 				         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
 				    <![CDATA[ where      t.cuid = gop.group_id
                    and gop.order_plan_id = op.cuid

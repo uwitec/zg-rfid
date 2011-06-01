@@ -247,6 +247,42 @@
        update zg_t_carplan t set t.syn='1' where t.cuid in ('$carPlanIds$')
     ]]>
     </update>
+    
+    <select id="OrderInfoSynByBatchNo" resultClass="java.util.HashMap">
+		  select distinct task.aufnr,
+       task.arbpl,
+       task.plant,
+       task.px_date PXDAT,
+       od.FREEZE,
+       org.extend2 DQDAT
+  from zg_t_order_task task, fw_organization org, zg_t_order od,ZG_T_ORDER_TEMP_SYN synod
+ where task.plant = org.cuid
+   and task.order_id = od.cuid
+   and task.aufnr=synod.aufnr
+   and task.plant=synod.plant
+   and synod.batch_no='$batchNo$'
+
+	</select>
+	
+	    <insert id="insertOrderInfoSynByBatchNo" parameterClass="java.util.HashMap">
+	    
+insert into ZG_T_ORDER_TEMP_SYN(aufnr,Arbpl,Plant,Pxdat,Freeze,Dqdat,Type)
+
+		  select distinct task.aufnr,
+       task.arbpl,
+       task.plant,
+       task.px_date PXDAT,
+       od.FREEZE,
+       org.extend2 DQDAT,'2'
+  from zg_t_order_task task, fw_organization org, zg_t_order od,ZG_T_ORDER_TEMP_SYN synod
+ where task.plant = org.cuid
+   and task.order_id = od.cuid
+   and task.aufnr=synod.aufnr
+   and task.plant=synod.plant
+   and synod.batch_no='$batchNo$'
+
+	</insert>
+	
 	
 	
 	

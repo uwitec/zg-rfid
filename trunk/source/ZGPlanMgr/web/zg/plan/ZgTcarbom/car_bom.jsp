@@ -42,14 +42,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		
 		function generateCarPlan(obj){
 			butsetDisable(true);
-			var form=document.frames['listFrame'].document.getElementById("carList");
 			
+			var items = document.frames('listFrame').document.getElementsByName("items");
+			
+			var flag = false;
+			for(var i = 0; i < items.length;i++) {
+				if(items[i].checked) {
+					flag=true;
+					break;
+				}
+			}
+			if(flag==false){
+				alert("请选择要领料的物料！");
+				butsetDisable(false);
+				return;
+			}
+			
+			var form=document.frames['listFrame'].document.getElementById("carList");
 				if(null==form){
 					form=document.frames['listFrame'].document.getElementById("carList");
 				}
 				form.action="${ctx}/zg/plan/ZgTcarplan/generateCarPlan.do";
 				form.submit();
-		
 		}
 		
 		function cancleCarPlan(obj){

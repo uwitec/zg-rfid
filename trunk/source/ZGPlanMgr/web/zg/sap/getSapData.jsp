@@ -26,6 +26,7 @@
 		function loadData(){
 			//DWREngine.setAsync(false);
 			var dataValue="";
+			var dataValue1="";
 			if($("#dateType").val()=='3'){
 				if($("#aufnr").val()==''){
 					alert("订单不能为空!");
@@ -41,11 +42,17 @@
 				}
 				dataValue=$("#date").val();
 			}
+			
+			dataValue1=$("#plant").val()+"";
+			if(dataValue1==null||dataValue1=='null'){
+				dataValue1="C01,C02,C04,C05,C07,C08";
+			}
 		
 			$("#submitButton").attr("disabled",true);
 			SapDwrAction.getBatchNo(function(batchNo){
 				alert("已启动接口获取数据，编号："+batchNo+"，具体结果请查看日志列表");
-				SapDwrAction.loadSapData($("#dateType").val(),dataValue,batchNo,function(data){
+			//	dataValue=orderplant+"sdf";
+				SapDwrAction.loadSapData($("#dateType").val(),dataValue,batchNo,dataValue1,function(data){
 				});
 			});
 		
@@ -60,16 +67,29 @@
 				document.getElementById("td2").style.display="none";
 				document.getElementById("td3").style.display="";
 				document.getElementById("td4").style.display="";
+				document.getElementById("td5").style.display="none";
+				document.getElementById("td6").style.display="none";
 			}else if($("#dateType").val()=='5'){
 				document.getElementById("td1").style.display="none";
 				document.getElementById("td2").style.display="none";
 				document.getElementById("td3").style.display="none";
 				document.getElementById("td4").style.display="none";
+				document.getElementById("td5").style.display="none";
+				document.getElementById("td6").style.display="none";
+			}else if($("#dateType").val()=='2'){
+				document.getElementById("td1").style.display="";
+				document.getElementById("td2").style.display="";
+				document.getElementById("td3").style.display="none";
+				document.getElementById("td4").style.display="none";
+				document.getElementById("td5").style.display="";
+				document.getElementById("td6").style.display="";
 			}else{
 				document.getElementById("td1").style.display="";
 				document.getElementById("td2").style.display="";
 				document.getElementById("td3").style.display="none";
 				document.getElementById("td4").style.display="none";
+				document.getElementById("td5").style.display="none";
+				document.getElementById("td6").style.display="none";
 			}
 		}
 	</script>
@@ -103,6 +123,19 @@
 					</td>
 					<td width="180px" id="td4" style="display:none">
 						<input type="text"  name="aufnr"  id="aufnr" size="20" maxlength="40" />
+					</td>
+						<td width="80px" class="label" id="td5" style="display:none">
+						生产厂：
+					</td>
+					<td width="180px" id="td6" style="display:none"   >
+						<select id="plant" name="plant"  size="4"  multiple  >
+							<option value="C01">C01</option>
+							<option value="C02">C02</option>
+							<option value="C04">C04</option>
+							<option value="C05">C05</option>
+							<option value="C07">C07</option>
+							<option value="C08">C08</option>
+						</select>
 					</td>
 					<td align="left" class="toolbar">
 						<div class="toolbar" style="position:relative;left:0" >

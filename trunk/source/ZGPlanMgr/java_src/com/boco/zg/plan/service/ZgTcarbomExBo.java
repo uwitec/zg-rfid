@@ -42,6 +42,8 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 	
 	private ZgTcarbomExDao zgTcarbomExDao;
 	
+	private ZgTcarplanExBo zgTcarplanExBo;
+	
 	private ZgTcarbomSuppliersBo zgTcarbomSuppliersBo;
 	
 	private ZgTorderbomExDao zgTorderbomExDao;
@@ -186,9 +188,17 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 	 * @param carbomList
 	 * @param isPlanNumChange 计划领料数量是否需要改变（针对订单领料：领料计划保存时，计划领料数量需要改变，领料计划确认提交时，不需要改变）
 	 */
-	public void updateCarboms(List<ZgTcarbomEx> carbomList,boolean isPlanNumChange) {
+	public void updateCarboms(String orderPlanBomIds,List<ZgTcarbomEx> carbomList,boolean isPlanNumChange) {
 		if(carbomList != null && carbomList.size()>0) {
+			
 			for(ZgTcarbomEx bom : carbomList) {
+				if(StringHelper.isEmpty(bom.getCuid())) continue ;
+				
+				if((!StringHelper.isEmpty(orderPlanBomIds))&&(!orderPlanBomIds.contains(bom.getOrderPlanbomId()))){
+					zgTcarplanExBo.deleteBom(bom.getCuid(), bom.getOrderPlanbomId());
+					continue;
+				}
+				
 				if(null!=bom){
 					String cuid = bom.getCuid();
 					ZgTcarbom newbom = this.getById(cuid);
@@ -568,5 +578,19 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 		sqlBuffer.append("select * from zg_t_carbom t where t.car_plan_id='"+carPlanId+"' and t.storage_user_id is null");
 		List<Map> list=((ZgTcarbomDao)this.getEntityDao()).findDynQuery(sqlBuffer.toString());
 		return list.size()==0;
+	}
+
+	/**
+	 * @return the zgTcarplanExBo
+	 */
+	public ZgTcarplanExBo getZgTcarplanExBo() {
+		return zgTcarplanExBo;
+	}
+
+	/**
+	 * @param zgTcarplanExBo the zgTcarplanExBo to set
+	 */
+	public void setZgTcarplanExBo(ZgTcarplanExBo zgTcarplanExBo) {
+		this.zgTcarplanExBo = zgTcarplanExBo;
 	}
 }

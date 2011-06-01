@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import cn.org.rapid_framework.util.ApplicationContextHolder;
 
+import com.boco.frame.meta.dao.IbatisDAOHelper;
 import com.boco.frame.sys.base.model.TsysIfaceLog;
 import com.boco.frame.sys.base.service.TsysIfaceLogBo;
 import com.boco.zg.util.Constants;
@@ -53,7 +54,7 @@ public class SapClient extends Object {
 	private SapBusiService sapBusiService = (SapBusiService)ApplicationContextHolder.getBean("sapBusiService");
 
 	
-	public void businessHandler(String dataType,String data,int batchNo) {
+	public void businessHandler(String dataType,String data,int batchNo,String plant) {
 		
 //		this.batchNo = batchNo;
 		
@@ -67,7 +68,7 @@ public class SapClient extends Object {
 			}else if ("2".equals(dataType)) {//排序
 				functionName="ZSTFC_CONNECTION_RFID_01";
 				tsysIfaceLog = sapBusiService.beforeInvokeDeal(functionName,batchNo);
-				getOrderDataByDate(data,batchNo,functionName);
+				getOrderDataByDate(data,batchNo,functionName,plant);
 			}else if("3".equals(dataType)) {//订单调整
 				functionName="ZSTFC_CONNECTION_RFID_04";
 				tsysIfaceLog = sapBusiService.beforeInvokeDeal(functionName,batchNo);
@@ -165,11 +166,21 @@ public class SapClient extends Object {
 	 * @param date
 	 * @throws Exception 
 	 */
-	public void getOrderDataByDate(String date,int batchNo,String functionName) throws Exception {
+	public void getOrderDataByDate(String date,int batchNo,String functionName,String plant) throws Exception {
 		JCoDestination destination = JCoDestinationManager.getDestination(ABAP_AS_POOLED);
         JCoFunction function = destination.getRepository().getFunction("ZRFC_GET_PXDAT");
     	JCoParameterList input = function.getImportParameterList();
 		input.setValue("PXDAT",date);
+		
+		JCoTable iPlantTable = (JCoTable) function.getTableParameterList().getTable("IPLANT");
+		
+		String[] plantArr=plant.split(",");
+		for(int i=0;i<plantArr.length;i++){
+			parseDataToTable(iPlantTable,i,plantArr[i]);
+		}
+		
+//		sapBusiService.parseData(iPlantTable,functionName,date,batchNo);
+		
         if(function == null)
             throw new RuntimeException("ZRFC_GET_PXDAT not found in SAP.");
         try
@@ -178,6 +189,7 @@ public class SapClient extends Object {
             Map<String,JCoTable> map = this.getTables(function);
     		for(JCoTable table:map.values()){
 //    			sapBusiService.parseDataXls(table, functionName, "",batchNo);
+    			System.out.println("");
     			sapBusiService.parseData(table,functionName,date,batchNo);
     		}
         }
@@ -187,6 +199,22 @@ public class SapClient extends Object {
 			log.error("getProduceDataByDate方法错误，批次--"+batchNo+":",e);
 			throw e;
         }
+	}
+	
+	private void parseDataToTable(JCoTable table,  int num,String plant) {
+		try {
+			
+			table.appendRow();
+	        //定位到第0行
+			table.setRow(num);
+			//设定该行对应变量
+//			synTable.setValue("MIPOS",mipos );
+			table.setValue( "PLANT",plant);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	//	synTable.setValue("POSNR",posnr);
 	}
 	
 	/**
@@ -257,6 +285,13 @@ public class SapClient extends Object {
 		map.put("ZLLXM2", function.getTableParameterList().getTable("ZLLXM2"));
 		map.put("ZGYS", function.getTableParameterList().getTable("ZGYS"));
 		map.put("RETURN", function.getTableParameterList().getTable("RETURN"));
+		try {
+			map.put("IPLANT", function.getTableParameterList().getTable("IPLANT"));
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 		return map;
 	}
 	
