@@ -81,8 +81,9 @@
 			alert("请输入实际移单数量");
 			return;
 		}
-		DWREngine.setAsync(false);
-		ZgTorderbomDwrAction.bomMove(jsonStr,sourceOrderId,targetOrderId,function(data){
+		if (confirm('确定执行[移单]操作?')){
+			DWREngine.setAsync(false);
+			ZgTorderbomDwrAction.bomMove(jsonStr,sourceOrderId,targetOrderId,function(data){
 				if(data=='OK'){
 					result = true;
 					alert('操作成功!')
@@ -93,7 +94,9 @@
 					alert(data+"数量不符合移单规则，请确认!");
 					result = false;
 				}
-		});
+			});
+		}
+		
 	}
 	
 	function buildupSubmitParams(){
