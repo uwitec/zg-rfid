@@ -120,7 +120,7 @@
 								<input type="hidden" name="bomList[${n.count-1}].orderId" id="bomList[${n.count-1}].orderId" value="${obj.ORDER_ID }"/>
 								<input type="hidden" name="bomList[${n.count-1}].posnr" id="bomList[${n.count-1}].posnr" value="${obj.POSNR }"/>
 								<input type="text" maxValue="${maxValue}" oldValue="0" maxlength="13"
-								 onchange="checkMoveNum(this,'${n.count-1}')" size="8" name="bomList[${n.count-1}].moveNum"
+								 onkeyup="checkMoveNum(this,'${n.count-1}')" size="8" name="bomList[${n.count-1}].moveNum"
 								 id="bomList[${n.count-1}].moveNum" />
 							</td>
 						</tr>
