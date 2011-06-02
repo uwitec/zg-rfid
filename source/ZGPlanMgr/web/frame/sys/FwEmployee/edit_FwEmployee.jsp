@@ -112,6 +112,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 		}
 	}
+	
+	function changeUserLogin(){
+		var form=document.getElementById("changeUserLoginForm");
+	document.getElementById("changeUserLoginForm").submit();
+	window
+			
+	//	alert(document.forms[0].id);
+	}
 	</script>
 </head>
 <body  onload="setInterval('scroll()',1000),initLoad()">
@@ -151,5 +159,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 			
 </form>
+			<c:if test="${code=='code'}">
+			<form action="${ctx}/Login/login.do" method="post" id="changeUserLoginForm"  target="_blank">
+　              		  <input id = "loginForm.userId" type = "hidden" name="loginForm.userId" type="text" value="${model.userId}"/>
+　              			  <input id = "loginForm.password" type = "hidden" name="loginForm.password" type="text" value="${model.password}"/>
+        		<input type = "hidden" id = "loginType"  name ="loginType" value = "name"/>
+        		<input type="button" onclick="changeUserLogin()" name="btnLogin" value="切换该角色"/>
+    		</form>	
+    </c:if>
 </body>
 </html>
