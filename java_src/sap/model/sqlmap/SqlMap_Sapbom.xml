@@ -231,18 +231,56 @@
     </update>
     
      <select id="OrderInfoSynByBatchNo" resultClass="java.util.HashMap">
-		  select distinct task.aufnr,
-       task.arbpl,
-       task.plant,
-       task.px_date PXDAT,
-       od.FREEZE,
-       org.extend2 DQDAT
-  from zg_t_order_task task, fw_organization org, zg_t_order od,ZG_T_ORDER_TEMP_SYN synod
- where task.plant = org.cuid
-   and task.order_id = od.cuid
-   and task.aufnr=synod.aufnr
-   and task.plant=synod.plant
-   and synod.batch_no='$batchNo$'
+		select distinct od.aufnr,
+                od.arbpl,
+                aide.plant,
+                aide.px_date PXDAT,
+                od.FREEZE,
+                org.extend2 DQDAT,
+                synod.batch_no
+  from zg_t_order_aide     aide,
+       fw_organization     org,
+       zg_t_order          od,
+       ZG_T_ORDER_TEMP_SYN synod
+ where aide.plant = org.cuid
+   and aide.order_id = od.cuid
+   and od.aufnr = synod.aufnr
+   and aide.plant = synod.plant
+   and synod.batch_no ='$batchNo$'
+union
+select distinct od.aufnr,
+                od.arbpl,
+                aide.plant,
+                aide.px_date PXDAT,
+                od.FREEZE,
+                org.extend2 DQDAT,
+                synod.batch_no
+  from zg_t_order_aide     aide,
+       fw_organization     org,
+       zg_t_order          od,
+       ZG_T_ORDER_TEMP_SYN synod
+ where aide.plant = org.cuid
+   and aide.order_id = od.cuid
+   and od.aufnr = synod.aufnr
+   and synod.batch_no = '$batchNo$'
+   and synod.aufnr in (select sy.aufnr
+                         from ZG_T_ORDER_TEMP_SYN sy
+                        where sy.batch_no ='$batchNo$'
+                       minus
+                       
+                        (select od.aufnr
+                        
+                          from zg_t_order_aide     aide,
+                               fw_organization     org,
+                               zg_t_order          od,
+                               ZG_T_ORDER_TEMP_SYN synod
+                         where aide.plant = org.cuid
+                           and aide.order_id = od.cuid
+                           and od.aufnr = synod.aufnr
+                           and aide.plant = synod.plant
+                           and synod.batch_no = '$batchNo$'))
+
+
 
 	</select>
 	
@@ -250,18 +288,54 @@
 	    
 insert into ZG_T_ORDER_TEMP_SYN(aufnr,Arbpl,Plant,Pxdat,Freeze,Dqdat,Type,batch_no)
 
-		  select distinct task.aufnr,
-       task.arbpl,
-       task.plant,
-       task.px_date PXDAT,
-       od.FREEZE,
-       org.extend2 DQDAT,'2','$batchNo$'
-  from zg_t_order_task task, fw_organization org, zg_t_order od,ZG_T_ORDER_TEMP_SYN synod
- where task.plant = org.cuid
-   and task.order_id = od.cuid
-   and task.aufnr=synod.aufnr
-   and task.plant=synod.plant
-   and synod.batch_no='$batchNo$'
+		 		select distinct od.aufnr,
+                od.arbpl,
+                aide.plant,
+                aide.px_date PXDAT,
+                od.FREEZE,
+                org.extend2 DQDAT,
+               '2' as dtype,'$batchNo$' as batchno
+  from zg_t_order_aide     aide,
+       fw_organization     org,
+       zg_t_order          od,
+       ZG_T_ORDER_TEMP_SYN synod
+ where aide.plant = org.cuid
+   and aide.order_id = od.cuid
+   and od.aufnr = synod.aufnr
+   and aide.plant = synod.plant
+   and synod.batch_no ='$batchNo$'
+union
+select distinct od.aufnr,
+                od.arbpl,
+                aide.plant,
+                aide.px_date PXDAT,
+                od.FREEZE,
+                org.extend2 DQDAT,
+               '2' as dtype,'$batchNo$' as batchno
+  from zg_t_order_aide     aide,
+       fw_organization     org,
+       zg_t_order          od,
+       ZG_T_ORDER_TEMP_SYN synod
+ where aide.plant = org.cuid
+   and aide.order_id = od.cuid
+   and od.aufnr = synod.aufnr
+   and synod.batch_no = '$batchNo$'
+   and synod.aufnr in (select sy.aufnr
+                         from ZG_T_ORDER_TEMP_SYN sy
+                        where sy.batch_no ='$batchNo$'
+                       minus
+                       
+                        (select od.aufnr
+                        
+                          from zg_t_order_aide     aide,
+                               fw_organization     org,
+                               zg_t_order          od,
+                               ZG_T_ORDER_TEMP_SYN synod
+                         where aide.plant = org.cuid
+                           and aide.order_id = od.cuid
+                           and od.aufnr = synod.aufnr
+                           and aide.plant = synod.plant
+                           and synod.batch_no = '$batchNo$'))
 
 	</insert>
 	
