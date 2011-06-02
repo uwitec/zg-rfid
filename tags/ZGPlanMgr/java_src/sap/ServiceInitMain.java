@@ -127,6 +127,8 @@ public class ServiceInitMain
         factory.registerHandler("ZSTFC_CONNECTION_RFID_05", stfcConnectionHandler);//领料回传接口 
         factory.registerHandler("ZSTFC_CONNECTION_RFID_06", stfcConnectionHandler);//退料接口 
         
+        factory.registerHandler("ZRFC_RFIDAUFNR_DATA", stfcConnectionHandler);//订单信息回传
+        
         server.setCallHandlerFactory(factory);
         
         server.start();

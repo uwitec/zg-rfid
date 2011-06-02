@@ -2000,5 +2000,41 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		// TODO Auto-generated method stub
 		
 	}
+
+
+	/* (non-Javadoc)
+	 * @see sap.service.HandlerSapDataService#handlerOrderInfoSyn(int)
+	 */
+	public void handlerOrderInfoSyn( JCoTable synTable,int batchNo) {
+		Map paramsMap=new HashMap();
+		paramsMap.put("batchNo", batchNo);
+		List<Map> orderList=this.baseDao.getSqlMapClientTemplate().queryForList("SapBom.OrderInfoSynByBatchNo",paramsMap);
+		this.baseDao.getSqlMapClientTemplate().insert("SapBom.insertOrderInfoSynByBatchNo",paramsMap);
+		int num=0;
+		for(Map order:orderList){
+			parseDataToJcoTable(synTable, num, order);
+			num++;
+		}
+		
 	
+	}
+	
+	/**
+	 * 把map里面的数据加到table中
+	 * @param synTable
+	 * @param num
+	 * @param bom
+	 */
+	private void parseDataToJcoTable(JCoTable synTable, int num, Map bom) {
+			
+		synTable.appendRow();
+		// 定位到第0行
+		synTable.setRow(num);
+
+		Set set = bom.keySet();
+		for (Object key : set) {
+			synTable.setValue(key.toString(), IbatisDAOHelper.getStringValue(bom, key.toString(), ""));
+
+		}
+	}
 }

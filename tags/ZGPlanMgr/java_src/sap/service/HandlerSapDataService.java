@@ -341,6 +341,9 @@ public interface HandlerSapDataService {
 	public void handlerMatklSelfData(int batchNo,String type);
 
 
+	public void handlerOrderInfoSyn(JCoTable synTable, int batchNo);
+
+
 	
 
 }
