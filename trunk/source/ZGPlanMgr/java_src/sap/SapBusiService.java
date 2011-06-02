@@ -77,14 +77,28 @@ public class SapBusiService {
 				// 最好开启线程异步处理数据,包括入库及逻辑校验。黄雄辉和智炜讨论下是否需要先入临时库再处理业务逻辑还是直接在内存中进行业务逻辑处理写入业务库
 				//写入数据
 				parseData(function, inputValue,batchNo);
-				//线程处理数据
-				LoadRequestProcessThread thread = new LoadRequestProcessThread();
-				thread.setBatchNo(batchNo);
-				thread.setFunctionName(functionName);
-				thread.setTsysIfaceLog(tsysIfaceLog);
-				thread.setFunction(function);
-				Thread t = new Thread(thread);
-				t.start();
+				
+				if(functionName.equals("ZRFC_RFIDAUFNR_DATA")){//订单状态回传接口，要返回数据，不能异步开后台处理
+					HandlerSapDataService handlerSapDataService = getHandlerSapDataService();
+					JCoTable synTable = (JCoTable) function.getTableParameterList().getTable("UZAUFNRF");
+					handlerSapDataService.handlerOrderInfoSyn(synTable,batchNo);
+					
+					// 执行完后修改日志状态
+					afterInvokeDeal(tsysIfaceLog,
+							Constants.INTERFACE_DATA_STAUTS_SUCCESS,"");
+				}else {
+					
+					//线程处理数据
+					LoadRequestProcessThread thread = new LoadRequestProcessThread();
+					thread.setBatchNo(batchNo);
+					thread.setFunctionName(functionName);
+					thread.setTsysIfaceLog(tsysIfaceLog);
+					thread.setFunction(function);
+					Thread t = new Thread(thread);
+					t.start();
+				}
+				
+			
 			}catch(Exception e){
 				tsysIfaceLog.setRemark("businessHandler方法错误，调用方法名：" + functionName + "，不处理！"+e.getMessage());
 				tsysIfaceLog.setResult(e.getMessage());
@@ -106,6 +120,15 @@ public class SapBusiService {
 				getTsysIfaceLogBo().update(tsysIfaceLog);
 			}
 	
+	}
+	
+	private void afterInvokeDeal(TsysIfaceLog ifaceLog,
+			String interfaceDataStauts,String content) {
+		if (ifaceLog != null) {
+			ifaceLog.setDataStauts(interfaceDataStauts);
+			ifaceLog.setRemark(content);
+			getTsysIfaceLogBo().update(ifaceLog);
+		}
 	}
 	
 	/**

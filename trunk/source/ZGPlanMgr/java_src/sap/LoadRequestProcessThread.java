@@ -159,10 +159,10 @@ public class LoadRequestProcessThread implements Runnable {
 	 * 
 	 */
 	private void handlerOrderInfoSyn() {
-		HandlerSapDataService handlerSapDataService = getHandlerSapDataService();
-		
-		JCoTable synTable = (JCoTable) function.getTableParameterList().getTable("UZAUFNRF");
-		handlerSapDataService.handlerOrderInfoSyn(synTable,batchNo);
+//		HandlerSapDataService handlerSapDataService = getHandlerSapDataService();
+//		
+//		JCoTable synTable = (JCoTable) function.getTableParameterList().getTable("UZAUFNRF");
+//		handlerSapDataService.handlerOrderInfoSyn(synTable,batchNo);
 	}
 
 	/**
