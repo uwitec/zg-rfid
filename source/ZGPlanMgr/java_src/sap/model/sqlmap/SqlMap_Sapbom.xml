@@ -266,14 +266,14 @@
 	
 	    <insert id="insertOrderInfoSynByBatchNo" parameterClass="java.util.HashMap">
 	    
-insert into ZG_T_ORDER_TEMP_SYN(aufnr,Arbpl,Plant,Pxdat,Freeze,Dqdat,Type)
+insert into ZG_T_ORDER_TEMP_SYN(aufnr,Arbpl,Plant,Pxdat,Freeze,Dqdat,Type,batch_no)
 
 		  select distinct task.aufnr,
        task.arbpl,
        task.plant,
        task.px_date PXDAT,
        od.FREEZE,
-       org.extend2 DQDAT,'2'
+       org.extend2 DQDAT,'2','$batchNo$'
   from zg_t_order_task task, fw_organization org, zg_t_order od,ZG_T_ORDER_TEMP_SYN synod
  where task.plant = org.cuid
    and task.order_id = od.cuid
