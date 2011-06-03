@@ -106,9 +106,15 @@
        		<isNotEmpty prepend="AND" property="pxdat_end">
        			<![CDATA[m.t0_PXDAT <= to_date(#pxdat_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
        		</isNotEmpty>
-		    <isNotEmpty prepend="AND" property="plant">
-	       			m.t0_PLANT like #plant#
-       		</isNotEmpty>    
+       		
+       		  <isEqual prepend="AND" property="plant" compareValue = "null">
+					  m.t0_PLANT  is null
+      		 </isEqual>
+	        <isNotEmpty  property="plant">
+	          	<isNotEqual prepend="AND" property="plant" compareValue = "null">
+						m.t0_PLANT ='$plant$'
+      			 </isNotEqual>
+       		</isNotEmpty>
 		    <isNotEmpty prepend="AND" property="mipos">
 	       			m.t0_MIPOS like #mipos#
        		</isNotEmpty>    

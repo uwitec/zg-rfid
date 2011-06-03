@@ -1531,9 +1531,19 @@
 	        from 
 	        ZG_T_ORDER t0,zg_t_order_task task
 	        where t0.cuid=task.order_id
-	        and t0.aufnr='$aufnr$'
-	        and task.plant='$plant$'
-	        and task.flag<>'-1'
+	        and t0.aufnr='$aufnr$'  ]]>
+	        
+	         <isEqual prepend="AND" property="plant" compareValue = "null">
+					  task.plant is null
+      		 </isEqual>
+	        <isNotEmpty  property="plant">
+	          	<isNotEqual prepend="AND" property="plant" compareValue = "null">
+						task.plant='$plant$'
+      			 </isNotEqual>
+       		</isNotEmpty>
+       		
+	       
+	<![CDATA[        and task.flag<>'-1'
  ) m
         ]]>
     </select>
