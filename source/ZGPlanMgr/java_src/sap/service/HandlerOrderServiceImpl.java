@@ -488,4 +488,33 @@ public class HandlerOrderServiceImpl {
 		return editBomList.size();
 	}
 
+	/**
+	 * @param batchNo
+	 * @param aufnr
+	 * @param plant
+	 * @param orderId
+	 * @return
+	 */
+	public int doBgAddBomData(int batchNo, String aufnr, String plant,String orderId) {
+		//对比bom新增或是插入
+		
+		//设置新增物料标识为1
+		List<ZgTorderbomTempAll> addBomList=	getZgTorderbomTempAllBo().getForAddBomList(batchNo,aufnr,"",plant,Constants.ADD);
+		
+		if(log.isInfoEnabled()){
+			log.info("线程："+batchNo+" enter the method doPxAddBomData aufnr:"+aufnr+" pxdateStr:"+plant+" 共找到:"+addBomList.size()+" 条BOM新增加记录分别为：");
+			for(ZgTorderbomTempAll bomTemp:addBomList){
+				log.info("线程："+batchNo+":"+bomTemp.getIdnrk()+"  "+bomTemp.getPosnr());
+			}
+		}
+		
+		
+		for(ZgTorderbomTempAll bomTemp:addBomList){
+			//插入orderbom
+			bomTemp.setOrderId(orderId);
+			String orderBomId=getZgTorderbomTempAllBo().saveOrderBom(bomTemp).toString();
+		}
+		return addBomList.size();
+	}
+
 }

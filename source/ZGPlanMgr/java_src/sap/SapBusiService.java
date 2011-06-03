@@ -140,6 +140,7 @@ public class SapBusiService {
 		TsysIfaceLog tsysIfaceLog = new TsysIfaceLog();
 		tsysIfaceLog.setMethodName(functionName);
 		tsysIfaceLog.setDataStauts(Constants.INTERFACE_DATA_STAUTS_INIT);
+		tsysIfaceLog.setRemark("处理中");
 		tsysIfaceLog.setSerCaller(Constants.SER_CALLER);
 		tsysIfaceLog.setBatchNo(""+batchNo);
 		tsysIfaceLog.setCallTime(Calendar.getInstance().getTime());
