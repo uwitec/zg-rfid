@@ -76,7 +76,7 @@ for(SortInfo si:list){
 						
 							<td>${obj.dataStauts}</td>
 							<td>
-							<fmt:formatDate value="${obj.callTime}" pattern="yyyy-MM-dd  HH:MM:ss" />
+							<fmt:formatDate value="${obj.callTime}" pattern="yyyy-MM-dd  HH:mm:ss" />
 							</td>
 							<td>${obj.remark}</td>
 						</tr>

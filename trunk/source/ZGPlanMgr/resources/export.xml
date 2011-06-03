@@ -310,6 +310,7 @@
         
         <col id="idnrk" name="物料编码" datatype="string" desc=""></col>
         <col id="maktx2" name="物料描述" datatype="string" desc=""></col>
+         <col id="posnr" name="项目编号" datatype="string" desc=""></col>
         <col id="sortf" name="包装方式" datatype="string" desc=""></col>
         <col id="lgort" name="发料仓库" datatype="string" desc=""></col>
         <col id="car_num" name="生产批量" datatype="string" desc=""></col>
@@ -336,7 +337,8 @@
                sum(taskbom.menge) car_num,
                sup.lifnr_name,
                zto.kdauf,
-               zto.KDPOS
+               zto.KDPOS ,
+               orderbom.posnr
             from zg_t_carbom           carbom,
                zg_t_carplan          carplan,
                zg_t_order            zto,
@@ -348,8 +350,7 @@
                
                zg_t_order_task task,
                zg_t_order_taskbom taskbom
-               
-               
+              
          where plan.cuid = planbom.order_plan_id
            and task.plant = emu.plantid
            and carbom.car_plan_id = carplan.cuid
@@ -359,7 +360,7 @@
            and taskbom.order_bom_id=orderbom.cuid
            and taskbom.order_task_id = carbom.order_task_id
            and planbom.cuid = carbom.order_planbom_id
-           and sup.car_bom_id = carbom.cuid
+           and sup.car_bom_id(+) = carbom.cuid
            and carbom.storage_user_id is not null
            and carplan.order_plan_type <> '3'
            and (sup.car_num > 0 or sup.car_num is null)   ]]>
@@ -438,6 +439,7 @@
         
         <col id="idnrk" name="物料编码" datatype="string" desc=""></col>
         <col id="maktx2" name="物料描述" datatype="string" desc=""></col>
+        <col id="posnr" name="项目编号" datatype="string" desc=""></col>
         <col id="sortf" name="包装方式" datatype="string" desc=""></col>
         <col id="lgort" name="发料仓库" datatype="string" desc=""></col>
         <col id="car_num" name="生产批量" datatype="string" desc=""></col>
@@ -477,7 +479,8 @@
 	       carplan.storage_user_id,
 	       op1.label_cn storage_user_name,
 	       sup.batchno,
-           sup.zrzqd,zto.kdauf,zto.KDPOS
+           sup.zrzqd,zto.kdauf,zto.KDPOS,       
+               orderbom.posnr
 	  from zg_t_carbom           carbom,
 	       zg_t_carplan          carplan,
 	       zg_t_order            zto,
