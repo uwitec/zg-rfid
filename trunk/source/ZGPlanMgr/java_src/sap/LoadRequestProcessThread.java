@@ -67,10 +67,11 @@ public class LoadRequestProcessThread implements Runnable {
 	private JCoFunction function;
 	
 	
-	private static Object synLock=new Object();
-	private static Object planLock=new Object();
-	private static Object orderLock=new Object();
+	public static Object synLock=new Object();
+	public static Object planLock=new Object();
+	public static Object orderLock=new Object();
 	public static Object pcOrderLock=new Object();
+	public static Object planBGLock=new Object();
 	
 	private SapClient getSapClient() {
 		return (SapClient)ApplicationContextHolder.getBean("sapClient");
@@ -403,7 +404,7 @@ public class LoadRequestProcessThread implements Runnable {
 		handlerSapDataService.handleBatchBomByBo(batchNo);
 	
 		afterInvokeDeal(tsysIfaceLog,
-				Constants.INTERFACE_DATA_STAUTS_SUCCESS,"");
+				Constants.INTERFACE_DATA_STAUTS_SUCCESS,"处理成功");
 	} catch (Exception e) {
 		tsysIfaceLog.setRemark("handlerBatchData方法错误，批次--"+batchNo+":");
 		tsysIfaceLog.setResult(e.getMessage());
@@ -422,58 +423,87 @@ public class LoadRequestProcessThread implements Runnable {
 			// 更新关系
 			HandlerSapDataService handlerSapDataService = getHandlerSapDataService();
 			handlerSapDataService.updateRelation(batchNo);
-			String aufnr = "";
-			ZgTorderTemp zgTorderTemp=new ZgTorderTemp();
-			zgTorderTemp.setBatchNo(batchNo+"");
-			List<ZgTorderTemp> list=getZgTorderTempBo().findByProperty(zgTorderTemp);
-			if(list==null || list.size()==0){
-				log.warn("变更数据中没有任何订单！,批次--"+batchNo);
-				throw new SapServiceException("变更数据中没有任何订单！");
-			}else if(list.size()>1){
-				log.warn("变更数据中有多个订单！,批次--"+batchNo);
-				throw new SapServiceException("变更数据中有多个订单！");
-			}else{
-				aufnr = list.get(0).getAufnr();
-//				String arbpl=IbatisDAOHelper.getStringValue(list.get(0), "ARBPL", "").trim();
-//				List<Map> listOrder = this.getBaseDao().queryBySql("select cuid,AUFNR,t.plant,t.pflag from zg_t_order t where t.AUFNR='"+aufnr+"' and arbpl= '"+arbpl+"'");
-				List<Map> listOrder = this.getBaseDao().queryBySql("select cuid,AUFNR,t.plant,t.pflag,t.arbpl from zg_t_order t where t.AUFNR='"+aufnr+"'");
-				if(listOrder==null || listOrder.size()==0){
-					log.warn("变更数据中的订单在生产库中找不到对应的记录！,批次--"+batchNo+"  订单--"+aufnr);
-					throw new SapServiceException("变更数据中的订单在生产库中找不到对应的记录！");
-				}
-				
-				handlerSapDataService.doProdessChangeOrder(batchNo,aufnr,list.get(0));
-//				for(Map order:listOrder){
-					
-//					handlerSapDataService.doProdessPxOrder(batchNo,aufnr,plant,pxDateStr,orderCou);
-//					
-//					String arbpl=IbatisDAOHelper.getStringValue(order, "ARBPL", "").trim();
-//					// 比对
-//					CompareSapDataService service = getCompareSapDataService();
-//					
-//					//清空操作类型 
-//					service.deleteOperatorTypeByBatchNo(batchNo);
-//					
-//					service.compareBomDataByBatchNoAndAufnr(batchNo,aufnr,arbpl,Constants.PxType.BG.value());
-//					// 比对完后处理数据
-//					
-//					Map<String, Object> map=listOrder.get(0);
-//					String plant=IbatisDAOHelper.getStringValue(map, "PLANT", "").trim();
-//					String pflag=IbatisDAOHelper.getStringValue(map, "PFLAG","").trim(); 
-					
-//					handlerSapDataService.doUpdateOrder(aufnr,arbpl, batchNo, pflag, plant);
-//					handlerSapDataService.doUpdateChange(batchNo,aufnr,arbpl,Constants.PxType.BG.value());
-//					
-//					//变更接口处理订单状态
-//					handlerSapDataService.doProcessOrderState(batchNo,aufnr,arbpl);
-					
-//				}
-				
-				
+			//读取本次要处理的订单
+			List<Map> orderMapList=this.getBaseDao().queryBySql("select temp.aufnr ,temp.pxdat,temp.plant,count(1) cou from zg_t_order_temp temp where temp.batch_no = '"+batchNo+"' group by temp.aufnr,temp.pxdat,temp.plant");
+			
+			if(orderMapList.size()==0) return;//记录为0条，直接返回
+			
+			//可在本次传递的参数(排序日期)
+			String aufnr=orderMapList.get(0).get("AUFNR").toString();
+			saveParamsForSapLog(tsysIfaceLog,aufnr);
+			
+			
+			if(log.isInfoEnabled()){
+				log.info("线程:"+batchNo+" 订单："+aufnr+" 共找到"+orderMapList.size()+"个订单");
 			}
+			
+			ZgTorderLock zgTorderLock=getZgTorderLockBo().getById("BG");
+			String plant="";
+			synchronized (orderLock) {//同步锁orderLock
+				//循环逐条处理
+				for(Map map:orderMapList){
+					aufnr=IbatisDAOHelper.getStringValue(map, "AUFNR", "").trim();
+					plant=IbatisDAOHelper.getStringValue(map, "PLANT","");
+					Long orderCou=IbatisDAOHelper.getLongValue(map, "COU");
+					
+					//订单加锁，同步不允许领料
+					zgTorderLock.setAufnr(aufnr);
+					getZgTorderLockBo().update(zgTorderLock);
+					
+					try {
+						handlerSapDataService.doProdessPxOrder(batchNo,aufnr,plant,"",orderCou);
+					} catch (Exception e) {
+						log.error(batchNo+"  :",e);
+						throw e;
+					}finally{
+						//订单解锁
+						zgTorderLock.setAufnr("");
+						getZgTorderLockBo().update(zgTorderLock);
+					}
+					
+					
+					
+					
+				}
+			}
+			
+			if(!StringHelper.isEmpty(plant)){
+				//生成计划领料
+				synchronized (planBGLock) {//同步锁
+					if(log.isInfoEnabled()){
+						log.info("线程:"+batchNo+" 开始生成领料计划");
+					}
+					handlerSapDataService.generateCarPlan(batchNo);
+				}
+			}
+			
+//			String aufnr = "";
+//			ZgTorderTemp zgTorderTemp=new ZgTorderTemp();
+//			zgTorderTemp.setBatchNo(batchNo+"");
+//			List<ZgTorderTemp> list=getZgTorderTempBo().findByProperty(zgTorderTemp);
+//			if(list==null || list.size()==0){
+//				log.warn("变更数据中没有任何订单！,批次--"+batchNo);
+//				throw new SapServiceException("变更数据中没有任何订单！");
+//			}else if(list.size()>1){
+//				log.warn("变更数据中有多个订单！,批次--"+batchNo);
+//				throw new SapServiceException("变更数据中有多个订单！");
+//			}else{
+//				aufnr = list.get(0).getAufnr();
+////				String arbpl=IbatisDAOHelper.getStringValue(list.get(0), "ARBPL", "").trim();
+////				List<Map> listOrder = this.getBaseDao().queryBySql("select cuid,AUFNR,t.plant,t.pflag from zg_t_order t where t.AUFNR='"+aufnr+"' and arbpl= '"+arbpl+"'");
+//				List<Map> listOrder = this.getBaseDao().queryBySql("select cuid,AUFNR,t.plant,t.pflag,t.arbpl from zg_t_order t where t.AUFNR='"+aufnr+"'");
+//				if(listOrder==null || listOrder.size()==0){
+//					log.warn("变更数据中的订单在生产库中找不到对应的记录！,批次--"+batchNo+"  订单--"+aufnr);
+//					throw new SapServiceException("变更数据中的订单在生产库中找不到对应的记录！");
+//				}
+//				
+//				handlerSapDataService.doProdessChangeOrder(batchNo,aufnr,list.get(0));
+//				
+//				
+//			}
 			// 执行完后修改日志状态
 			afterInvokeDeal(tsysIfaceLog,
-					Constants.INTERFACE_DATA_STAUTS_SUCCESS,"");
+					Constants.INTERFACE_DATA_STAUTS_SUCCESS,"处理成功");
 		} catch (SapServiceException ex) {
 			tsysIfaceLog.setRemark("数据异常--"+batchNo+ex.getMessage());
 			tsysIfaceLog.setDataStauts(Constants.INTERFACE_DATA_STAUTS_EXP);
@@ -538,7 +568,7 @@ public class LoadRequestProcessThread implements Runnable {
 			
 			// 执行完后修改日志状态
 			afterInvokeDeal(tsysIfaceLog,
-					Constants.INTERFACE_DATA_STAUTS_SUCCESS,"");
+					Constants.INTERFACE_DATA_STAUTS_SUCCESS,"处理成功");
 		} catch (Exception e) {
 			tsysIfaceLog.setRemark("handlerPcData方法错误，批次--"+batchNo+":"+e.getMessage());
 			tsysIfaceLog.setDataStauts(Constants.INTERFACE_DATA_STAUTS_FAILURE);
@@ -645,7 +675,7 @@ public class LoadRequestProcessThread implements Runnable {
 			// 处理数据完后删除临时表的数据
 			// 执行完后修改日志状态
 			afterInvokeDeal(tsysIfaceLog,
-					Constants.INTERFACE_DATA_STAUTS_SUCCESS,"");
+					Constants.INTERFACE_DATA_STAUTS_SUCCESS,"处理成功");
 		} catch (Exception e) {
 			tsysIfaceLog.setRemark("handlerPxData方法出错,批次："+batchNo);
 			tsysIfaceLog.setDataStauts(Constants.INTERFACE_DATA_STAUTS_FAILURE);

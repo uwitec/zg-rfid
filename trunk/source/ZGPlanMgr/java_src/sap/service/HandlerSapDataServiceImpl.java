@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javacommon.base.dao.BaseDao;
+import javacommon.util.StringHelper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -226,14 +227,10 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 
 	
 	public static void main(String[] args) {
-		Date date=new Date();
-		StringBuffer sql=new StringBuffer();
-		sql.append(" select t.cuid order_id,task.cuid task_id,task.plant,task.arbpl from zg_t_order t ,zg_t_order_task task            ");
-		sql.append(" where t.cuid=task.order_id                                 ");
-		sql.append("   and to_char(task.px_date,'yyyy-MM-dd') = '"+TimeFormatHelper.getFormatDate(date, TimeFormatHelper.DATE_FORMAT)+"'                   ");
-		sql.append("and not exists(select 1 from zg_t_order_temp temp where temp.batch_no = "+123                        );
-		sql.append("      and temp.aufnr=t.aufnr and temp.plant=task.plant)  and task.task_state<>'-1'                   ");
-		System.out.println(sql.toString());
+		StringBuffer sqlBuffer=new StringBuffer();
+		sqlBuffer.append("update zg_t_orderbom t set t.matkl_self=(select bom.matkl_self from zg_t_bom bom where t.idnrk=bom.idnrk and rownum=1) ");
+		sqlBuffer.append(" where exists (select * from zg_t_order_task task where to_char(task.px_date,'yyyy-mm-dd')='2011-02-26' and t.order_id=task.order_id)");
+		System.out.println(sqlBuffer.toString());
 	}
 	
 
@@ -596,6 +593,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			String lltyp=IbatisDAOHelper.getStringValue(bom, "LLTYP");
 			String mipos=IbatisDAOHelper.getStringValue(bom,"MIPOS");
 			String kdauf=IbatisDAOHelper.getStringValue(bom,"KDAUF");
+			String posnr=IbatisDAOHelper.getStringValue(bom,"POSNR");
 			//String posnr=IbatisDAOHelper.getStringValue(bom,"POSNR");
 			
 			synTable.appendRow();
@@ -622,6 +620,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			synTable.setValue("SORTF",sortf);
 			synTable.setValue("LGORT",lgort);
 			synTable.setValue("LLTYP",lltyp);
+			synTable.setValue("POSNR",posnr);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -710,7 +709,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			}else {//排序和变更接口 则更新当天的排序数据
 				sqlBuffer=new StringBuffer();
 				sqlBuffer.append("update zg_t_orderbom t set t.matkl_self=(select bom.matkl_self from zg_t_bom bom where t.idnrk=bom.idnrk and rownum=1) ");
-				sqlBuffer.append(" where exists (select * from zg_t_order_aide aide where to_char(aide.px_date,'yyyy-mm-dd')='"+pxDatStr+"' and t.order_id=aide.order_id)");
+				sqlBuffer.append(" where exists (select * from zg_t_order_task task where to_char(task.px_date,'yyyy-mm-dd')='"+pxDatStr+"' and t.order_id=task.order_id)");
 				this.baseDao.executeSql(sqlBuffer.toString());
 			}
 			
@@ -743,6 +742,8 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			log.info("线程："+batchNo+" enter the method doProdessPxOrder aufnr:"+aufnr+" pxdateStr:"+pxDateStr+" count:"+sapCou);
 		}
 		
+		plant=StringHelper.isEmpty(plant)?"null":plant;
+		
 		HandlerOrderServiceImpl handlerOrderServiceImpl=getHandlerOrderServiceImpl();
 		//查询RFID系统中的订单信息
 		List<ZgTorder> rfidOrderList = getHandlerOrderServiceImpl().getRfidOrderListByAufnrPlant(aufnr,plant);
@@ -753,6 +754,11 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		//===================处理订单排产数据的插入 ,处理没有过来排产数据直接过来排序数据的那种 及更新order信息====
 		String orderId=getHandlerOrderServiceImpl().doProcessPcdate(batchNo, aufnr, rfidOrderList, sapOrderList);
 		//=============================================================================
+		
+		if(plant.equals("null")&&rfidOrderList.size()==0){//工单变更接口 工厂为空 刚只插入orderbom表
+			//处理新增物料 处理
+			int addRow=getHandlerOrderServiceImpl().doBgAddBomData(batchNo, aufnr, "", orderId);
+		}
 		
 		//===================处理订单排序的插入==========================================
 		String sortf=getPlantSortfMap().get(plant);
