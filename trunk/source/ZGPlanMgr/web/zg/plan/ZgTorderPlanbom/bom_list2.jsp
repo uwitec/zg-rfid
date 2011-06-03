@@ -451,7 +451,7 @@ body,html {
 											</td>
 											<c:if test="${fn:length(orderbom.value)>1}">
 												<td align="left">
-													&nbsp;&nbsp;&nbsp;&nbsp;${obj.idnrk}SSS
+													&nbsp;&nbsp;&nbsp;&nbsp;${obj.idnrk}
 												</td>
 												<td>
 												</td>

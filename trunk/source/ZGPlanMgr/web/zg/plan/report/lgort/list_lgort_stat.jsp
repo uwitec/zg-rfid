@@ -77,7 +77,9 @@ for(SortInfo si:list){
 							<td class="tableHeader">领料部门<%=map.get("ec_image_t0_MAKTX2")==null?"":map.get("ec_image_t0_MAKTX2")%></td>
 							<td class="tableHeader">领料线体<%=map.get("ec_image_t0_KDAUF")==null?"":map.get("ec_image_t0_KDAUF")%></td>
 							<td class="tableHeader">物料编码<%=map.get("ec_image_t0_PLANT")==null?"":map.get("ec_image_t0_PLANT")%></td>
+							
 							<td class="tableHeader">物料描述<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
+							<td class="tableHeader">项目编号<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
 							<td class="tableHeader">包装方式<%=map.get("ec_image_t0_PMENGE")==null?"":map.get("ec_image_t0_PMENGE")%></td>
 							<td class="tableHeader">发料仓库<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
 							<td class="tableHeader">生产批量<%=map.get("ec_image_t0_MAKTX1")==null?"":map.get("ec_image_t0_MAKTX1")%></td>
@@ -94,6 +96,7 @@ for(SortInfo si:list){
 							<td>${obj.AUFNR}</td>
 							<td>${obj.MATNR}</td>
 							<td>${obj.MAKTX1}</td>
+								<td>${obj.POSNR}</td>
 							<td>${obj.KDAUF}</td>
 							<td>${obj.KDPOS}</td>
 							<td align="center">${obj.PLANT }
