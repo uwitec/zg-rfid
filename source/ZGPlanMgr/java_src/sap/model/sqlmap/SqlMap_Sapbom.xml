@@ -22,7 +22,8 @@
 		       orderbom.sortf,
 		       orderbom.lgort,
 		       WMSYS.WM_CONCAT(carplan.cuid) carplancuid,
-		       'A' as LLTYP
+		       'A' as LLTYP,
+		       orderbom.posnr
 		  from zg_t_order            zto,
 		       zg_t_orderbom         orderbom,
 		       zg_t_carplan          carplan,
@@ -62,7 +63,7 @@
 		       orderbom.sortf,
 		       orderbom.lgort,
             	zto.MIPOS,
-           		zto.KDAUF            ]]>
+           		zto.KDAUF   ,orderbom.posnr         ]]>
 	</select>
 	
 	<select id="getSynSapOrderBomByOrderPlanId" resultClass="java.util.HashMap">
@@ -84,7 +85,7 @@
 		       orderbom.sortf,
 		       orderbom.lgort,
 		       WMSYS.WM_CONCAT(carplan.cuid) carplancuid,
-		        'A' as LLTYP
+		        'A' as LLTYP,orderbom.posnr
 		  from zg_t_order            zto,
 		       zg_t_orderbom         orderbom,
 		       zg_t_carplan          carplan,
@@ -125,7 +126,7 @@
 		       orderbom.sortf,
 		       orderbom.lgort,
 		        zto.MIPOS,
-           		zto.KDAUF      ]]>
+           		zto.KDAUF  ,orderbom.posnr    ]]>
 	</select>
 	
 	<select id="getSynSapOrderBomByCarPlanId" resultClass="java.util.HashMap">
@@ -147,7 +148,7 @@
 		       orderbom.sortf,
 		       orderbom.lgort,
 		       WMSYS.WM_CONCAT(carplan.cuid) carplancuid,
-		        'A' as LLTYP
+		        'A' as LLTYP,orderbom.posnr
 		  from zg_t_order            zto,
 		       zg_t_orderbom         orderbom,
 		       zg_t_carplan          carplan,
@@ -187,7 +188,7 @@
 		       orderbom.sortf,
 		       orderbom.lgort,
 		        zto.MIPOS,
-           		zto.KDAUF     ]]>
+           		zto.KDAUF,orderbom.posnr     ]]>
 	</select>
 	
 	
@@ -210,7 +211,7 @@
 		       null as sortf,
 		       bom.lgort,
 		       WMSYS.WM_CONCAT(carplan.cuid) carplancuid,
-		       'P' as LLTYP
+		       'P' as LLTYP,null as posnr
 		       
 		  from zg_t_bom bom,
 		       zg_t_carplan          carplan,
