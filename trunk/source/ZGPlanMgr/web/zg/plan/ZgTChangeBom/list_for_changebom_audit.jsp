@@ -86,6 +86,7 @@
 							<td class="tableHeader" >创建时间</td>
 							<td class="tableHeader" >创建人</td>
 							<td class="tableHeader"  >创建人部门</td>
+						<td class="tableHeader"  >单据类型<%=map.get("ec_image_STATE")==null?"":map.get("ec_image_STATE")%></td>
 							<td class="tableHeader"  >状态</td>
 
 								</tr>
@@ -118,6 +119,15 @@
 										<td align="center">
 											${obj.ORGNAME}
 										</td>
+											<td align="center">
+										<c:choose>
+								            <c:when test="${obj.PLAN_TYPE=='CHANGE'}">换料</c:when>
+								            <c:when test="${obj.PLAN_TYPE=='BACK'}">退料</c:when>
+								            <c:when test="${obj.PLAN_TYPE=='RENEW'}">补领料</c:when>
+										</c:choose>
+											
+											
+										</td>
 										<td align="center">
 										<c:choose>
 										 <c:when test="${obj.STATE=='-4'}">待品质部审核</c:when>
@@ -128,7 +138,7 @@
 								    </c:forEach> 
 								
 								<tr>
-									<td colspan="10">
+									<td colspan="11">
 										<%@include file="/frame/default/ux/pagebar.jsp" %>
 									</td>
 								</tr>

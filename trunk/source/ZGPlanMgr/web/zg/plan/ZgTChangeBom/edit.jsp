@@ -101,9 +101,11 @@
 		
 		
 		function addStorage(){
+			butsetDisable(true);
 			var items=document.frames('listFrame').document.getElementsByName("items");
 			if(items.length<=0){
 				alert('请添加物料');
+					butsetDisable(false);
 				return;
 			}
 			var buildupSubmitParams=document.frames('listFrame').buildupSubmitParams();
@@ -115,6 +117,7 @@
 					form.submit();
 				}else {
 					alert("系统繁忙，请稍后再试");
+						butsetDisable(fasle);
 				}
 			});
 			
@@ -122,20 +125,24 @@
 		}
 		
 		function submitStorage(){
+			butsetDisable(true);
 			var items=document.frames('listFrame').document.getElementsByName("items");
 			if(items.length<=0){
 				alert('请添加物料');
+					butsetDisable(fasle);
 				return;
 			}
 			for(var i=0;i<items.length;i++){
 			wait_back_num=document.frames('listFrame').document.getElementById('WAIT_BACK_NUM_'+i).value;
 			if(wait_back_num==0){
 			    alert('换料数量为0，请更改');
+			    	butsetDisable(false);
 				return;
 			}
 			}
 			if(wait_back_num==0){
 			    alert('换料数量为0，请更改');
+			    	butsetDisable(false);
 				return;
 			}
 			var buildupSubmitParams=document.frames('listFrame').buildupSubmitParams();
@@ -147,8 +154,19 @@
 					form.submit();
 				}else {
 					alert("系统繁忙，请稍后再试");
+						butsetDisable(false);
 				}
 			});
+		}
+		
+			function butsetDisable(state){
+			var btns=document.getElementsByName("submitBtn");
+			if(btns!=null){
+				for(var v=0;v<btns.length;v++){
+					btns[v].disabled = state;
+				}
+			}
+			
 		}
 	</script>
 	</head>
@@ -165,12 +183,12 @@
 
 							<div class="button" style="text-align: left;">
 							  <c:if test="${model.state =='-8'}">
-								<a href="javascript:addStorage()"><span><img src="<%=iconPath%>/icon_tool_049.gif" />保存</span></a>
+								<a href="javascript:addStorage()"  name="submitBtn" ><span><img src="<%=iconPath%>/icon_tool_049.gif" />保存</span></a>
 								</c:if>
 								<c:if test="${model.state =='-7'||model.state =='-8'}">
-								<a href="javascript:submitStorage()"><span><img src="<%=iconPath%>/true.gif" />提交</span></a>
+								<a href="javascript:submitStorage()"  name="submitBtn" ><span><img src="<%=iconPath%>/true.gif" />提交</span></a>
 								</c:if>
-								<a href="javascript:if(parent.doQuery)parent.doQuery()"><span><img src="<%=iconPath%>/ico_007.gif" />返回</span></a>
+								<a href="javascript:if(parent.doQuery)parent.doQuery()"  name="submitBtn" ><span><img src="<%=iconPath%>/ico_007.gif" />返回</span></a>
 							</div>
 						</td>
 					</tr>
@@ -186,7 +204,8 @@
 								style="cursor: pointer" title="高级查询" alt="" id="img_1"
 								border="0" onclick="changeV('1')" />
 									<c:if test="${model.planType=='CHANGE'}">换料申请单</c:if>
-								<c:if test="${model.planType=='BACK'}">退料申请单</c:if>：${model.cuid}
+								<c:if test="${model.planType=='BACK'}">退料申请单</c:if>
+								<c:if test="${model.planType=='RENEW'}">退料申请单</c:if>：${model.cuid}
 						</td>
 					</tr>
 				</thead>
@@ -201,48 +220,57 @@
 							</table>
 						</td>
 					</tr>
-					<tr>
+					
+							<tr>
 						<th>
 							单据日期：
 						</th>
+						<td width="15%">
 						
-						<td width="15%" >
-								
-								<fmt:formatDate value="${model.create_date}" pattern="yyyy-MM-dd HH:mm:ss" />
-									<input type="hidden" id="planType" name="planType"  value="${ model.planType}"/>
+									<fmt:formatDate value="${model.create_date}" pattern="yyyy-MM-dd HH:mm:ss" />
+						<input type="hidden" id="planType" name="planType"  value="${ model.planType}"/>
 							</td>
-						
-						<th>
+			<th>
 							订单号：
 						</th>
-						<td width="10%">
-							${model.orderId_related.value}
-							<input type="hidden" id="orderId_value" name="orderId" value="${model.orderId }"/>
+						<td width="15%">
+							${model.orderTaskId_related.value}
+							<input type="hidden" id="orderId_value" name="orderTaskId" value="${model.orderTaskId }"/>
 						</td>
 						<th>
 							物料等级：
 						</th>
-						<td width="5%">
+						<td width="12%">
 						
 							<input type="hidden" id="extend1"  name="extend1" value="${model.extend1}"/>
 							${model.extend1}
 						</td>
+						</tr>
+						<tr>	
 						<th>
-							线体：
+							生产厂：
 						</th>
 						<td width="5%">
-						
-							<input type="hidden" id="plant"  name="plant" value="${model.plant}"/>
-							${model.plant}
+						${model.plant}
+						<input type="hidden"  readonly="true" name="plant" id="plant" value="${model.plant}"/>
+						</td>
+						<th>
+							生产线：
+						</th>
+						<td width="5%">
+						${orderTask.arbpl}
+						<input type="hidden"  readonly="true" name="arbpl" id="arbpl" value="${orderTask.arbpl}"/>
 						</td>
 
-						 <th>
-								录单人:
-							</th>
-							<td width="15%">
-								${model.userId_related.value}
-							
-							</td>
+						<th>
+							录单人：
+						</th>
+						<td width="15%">
+							${operatorInfo.userName}
+							<input type="hidden" id="userId" name="userId"
+								value="${model.userId}" />
+						</td>
+
 					</tr>
 				</tbody>
 			</table>

@@ -237,11 +237,23 @@
 									<td class="tableHeader">
 										备料库存
 									</td>
-									<td class="tableHeader">
-										<c:if test="${planType=='CHANGE'}">换料数量</c:if>
-										<c:if test="${planType=='BACK'}">退料数量</c:if>
-										<c:if test="${planType=='RENEW'}">补领料数量</c:if>
-									</td>
+									
+										<c:if test="${planType=='CHANGE'}">
+										<td class="tableHeader">需领料数量</td>
+										<td class="tableHeader">已领料数量</td>
+										<td class="tableHeader">待退料数量</td>
+										<td class="tableHeader">已退料数量</td>
+										
+										
+										</c:if>
+										<c:if test="${planType=='BACK'}">
+										<td class="tableHeader">待退料数量</td>
+										<td class="tableHeader">已退料数量</td>
+										</c:if>
+										<c:if test="${planType=='RENEW'}">
+										<td class="tableHeader">需领料数量</td>
+										<td class="tableHeader">已领料数量</td>
+										</c:if>
 								</tr>
 							</thead>
 							<tbody>
@@ -277,29 +289,22 @@
 										  ${obj.STORAGE_NUM}
 										 </td>
 										
-										<td>
-										    <c:choose>
-								            	<c:when test="${model.state=='-7'||model.state=='-8'||empty model.state}">
-								            	<c:if test="${planType=='CHANGE'}">
-								            		<input type="text" name="bomList.waitBackNum" value="${obj.WAIT_BACK_NUM}" id="WAIT_BACK_NUM_${num}" maxValue="${obj.STORAGE_NUM}" maxLength="13" size="8" 	onchange="checkWait_back_num(this,'${obj.WAIT_BACK_NUM}')" />
-													<input type="hidden" name="bomList.cuid"value="${obj.CUID}" />
-								            	</c:if>
-												<c:if test="${planType=='BACK'}">
-													<input type="text" name="bomList.waitBackNum" value="${obj.WAIT_BACK_NUM}" id="WAIT_BACK_NUM_${num}" maxValue="${obj.STORAGE_NUM}" maxLength="13" size="8" 	onchange="checkWait_back_num(this,'${obj.WAIT_BACK_NUM}')" />
-													<input type="hidden" name="bomList.cuid"value="${obj.CUID}" />
-												</c:if>
-												<c:if test="${planType=='RENEW'}">
-													<input type="text" name="bomList.waitBackNum" value="${obj.CAR_NUM}" id="WAIT_BACK_NUM_${num}"  maxLength="13" size="8" 	onchange="checkWait_back_num(this,'${obj.CAR_NUM}')" />
-													<input type="hidden" name="bomList.cuid"value="${obj.CUID}" />
-												</c:if>
-								            	
-								            	</c:when>
-								       
-								            	<c:otherwise> 
-								               		 ${obj.WAIT_BACK_NUM}
-												</c:otherwise>
-							               </c:choose>
-										</td>
+											<c:if test="${planType=='CHANGE'}">
+										<td>	${obj.CAR_NUM}</td>
+										<td>	${obj.COMPLETE_NUM}</td>
+										<td>	${obj.WAIT_BACK_NUM}</td>
+										<td>	${obj.BACK_NUM}</td>
+										
+										
+										</c:if>
+										<c:if test="${planType=='BACK'}">
+											<td>	${obj.WAIT_BACK_NUM}</td>
+											<td>	${obj.BACK_NUM}</td>
+										</c:if>
+										<c:if test="${planType=='RENEW'}">
+											<td>	${obj.CAR_NUM}</td>
+											<td>	${obj.COMPLETE_NUM}</td>
+										</c:if>
 									
 										</tr>
 											<c:set var="num" value="${num+1}"></c:set>

@@ -161,6 +161,10 @@ String expandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 		
 		function addPlan(){
 			var type=$("#s_type").val();
+			if(type==''){
+				alert('请选择单据类型');
+				return;
+			}
 			targetFrame('${ctx }/zg/plan/ZgTBomManager/createForChange.do?type='+type);
 		}
 	</script>
@@ -184,8 +188,10 @@ String expandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 					<td width="80px" class="label">单据类型：</td>
 					<td  width="80px">
 						<select name="s_type" id="s_type" >
+						<option value="">	全部</option>
 						    <option value="CHANGE">	换料</option>
 							<option value="BACK" >退料</option>
+							<option value="RENEW" >补领料</option>
 						</select>
 					</td>
 					<td width="80px" class="label">
@@ -215,10 +221,42 @@ String expandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 					<option value="-6">待厂领导审核</option>
 					<option value="-4">待品质部审核</option>
 					<option value="0">审核完成</option>
+					<option value="4">领料中</option>
+					<option value="8">领料完成（待退料）</option>
+					<option value="9">领料退料完成</option>
 				</select>
 					</td>
 						<td class="label" width="80px">生产订单：</td>
 						<td><input type="text" size="20" name="s_aufnr"/></td>
+						<td class="label">生产厂：</td>
+					<td>
+					<select name="s_plant">
+					<option value="">全部</option>
+						<c:forEach items="${plantList}" var="item">
+							<option value="${item.PLANTID }">${item.PLANTID }</option>
+						</c:forEach>
+					</select>
+					</td>
+				</tr>
+				
+				<tr>
+				
+					<td width="80px" class="label">生产线：</td>
+					<td width="80px">
+						<select name="s_arbpl">
+					<option value="">全部</option>
+					<c:forEach items="${arbplList}" var="item">
+						<option value="${item.cuid }">${item.cuid }</option>
+					</c:forEach>
+					</select>
+					</td>
+						<td width="80px" class="label">
+					</td>
+					<td width="120px">
+					</td>
+					<td width="80px" class="label"></td>
+					<td width="120px">
+					</td>
 				</tr>
 					
 			</tbody>

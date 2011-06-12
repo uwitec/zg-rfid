@@ -158,10 +158,9 @@
 								            <c:when test="${obj.STATE=='-7'}">厂领导审核退回</c:when>
 								            <c:when test="${obj.STATE=='-6'}">待厂领导审核</c:when>
 								            <c:when test="${obj.STATE=='-4'}">待品质部审核</c:when>
-								             <c:when test="${obj.STATE=='0'}">审核完成</c:when>
 								            <c:when test="${obj.STATE=='4'}">领料中</c:when>
-								             <c:when test="${obj.STATE=='8'}">领料完成（待退料）</c:when>
-								            <c:when test="${obj.STATE=='9'}">领料退料完成</c:when>
+								            <c:when test="${obj.STATE=='9'}">领料完成</c:when>
+								            <c:otherwise>审核完成</c:otherwise>
 							</c:choose>
 											
 											
@@ -172,7 +171,7 @@
 								</c:forEach> 
 								
 								<tr>
-									<td colspan="12">
+									<td colspan="10">
 										<%@include file="/frame/default/ux/pagebar.jsp" %>
 									</td>
 								</tr>

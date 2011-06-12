@@ -108,9 +108,11 @@
 		
 		
 		function saveChangeOrder(){
+			butsetDisable(true);
 			var items=document.frames('listFrame').document.getElementsByName("items");
 			if(items.length<=0){
 				alert('请添加物料');
+				butsetDisable(false);
 				return;
 			}
 			var buildupSubmitParams=document.frames('listFrame').buildupSubmitParams();
@@ -122,10 +124,22 @@
 					form.submit();
 				}else {
 					alert("系统繁忙，请稍后再试");
+					butsetDisable(false);
 				}
 			});
 
 		}
+		
+		function butsetDisable(state){
+			var btns=document.getElementsByName("submitBtn");
+			if(btns!=null){
+				for(var v=0;v<btns.length;v++){
+					btns[v].disabled = state;
+				}
+			}
+			
+		}
+		
 		function selectOrderArbpl(){
 		  var items=document.frames('listFrame').document.getElementsByName("items");
 			
@@ -139,6 +153,7 @@
 				var aufnr =	returnValue.aufnr;
 				var arbpl = returnValue.arbpl;
 				var arbplName =	returnValue.arbplName;
+				var plant = returnValue.plant;
 				
 				if(orderID!=$("#orderId_value").val()){
 					//$("form:first").submit();
@@ -146,7 +161,9 @@
 				
 				$("#orderId_label").val(aufnr);
 				$("#orderId_value").val(orderID);
-				generatePlantSelect(orderID);
+				$("#plant").val(plant);
+				$("#arbpl").val(arbpl);
+				//generatePlantSelect(orderID);
 			   }
 			}else{
 		    if(items.length<=0){
@@ -158,6 +175,7 @@
 				var aufnr =	returnValue.aufnr;
 				var arbpl = returnValue.arbpl;
 				var arbplName =	returnValue.arbplName;
+				var plant = returnValue.plant;
 				
 				if(orderID!=$("#orderId_value").val()){
 					//$("form:first").submit();
@@ -165,7 +183,9 @@
 				
 				$("#orderId_label").val(aufnr);
 				$("#orderId_value").val(orderID);
-				generatePlantSelect(orderID);
+					$("#plant").val(plant);
+				$("#arbpl").val(arbpl);
+			//	generatePlantSelect(orderID);
 			   }
 			}else{
 				alert("请先删除当前订单号下的物料，再进行该操作");
@@ -192,9 +212,11 @@
 	    
 	  }
 		function submitChangeOrder(){
+			butsetDisable(true);
 			var items=document.frames('listFrame').document.getElementsByName("items");
 			if(items.length<=0){
 				alert('请添加物料');
+				butsetDisable(false);
 				return;
 			}
 			//alert(items.length);
@@ -202,8 +224,9 @@
 				
 				wait_back_num=document.frames('listFrame').document.getElementById('WAIT_BACK_NUM_'+i).value;
 				if(wait_back_num==0){
-			    alert('换料数量为0，请更改');
-				return;
+			    	alert('换料数量为0，请更改');
+			    	butsetDisable(false);
+					return;
 			     }
 			}
 			
@@ -217,6 +240,7 @@
 					form.submit();
 				}else {
 					alert("系统繁忙，请稍后再试");
+					butsetDisable(false);
 				}
 			});
 		}
@@ -234,9 +258,9 @@
 						<td class="formToolbar">
 
 							<div class="button" style="text-align: left;">
-								<a href="javascript:saveChangeOrder()"><span><img src="<%=iconPath%>/icon_tool_049.gif" />保存</span></a>
-								<a href="javascript:submitChangeOrder()"><span><img src="<%=iconPath%>/true.gif" />提交</span></a>
-								<a href="javascript:if(parent.doQuery)parent.doQuery()"><span><img src="<%=iconPath%>/ico_007.gif" />返回</span></a>
+								<a href="javascript:saveChangeOrder()"  name="submitBtn" ><span><img src="<%=iconPath%>/icon_tool_049.gif" />保存</span></a>
+								<a href="javascript:submitChangeOrder()"  name="submitBtn" ><span><img src="<%=iconPath%>/true.gif" />提交</span></a>
+								<a href="javascript:if(parent.doQuery)parent.doQuery()"  name="submitBtn" ><span><img src="<%=iconPath%>/ico_007.gif" />返回</span></a>
 							</div>
 						</td>
 					</tr>
@@ -247,12 +271,13 @@
 				style="border-top: 1px solid #A8CFEB; margin-top: 3px;">
 				<thead>
 					<tr>
-						<td class="title" colspan="10">
+						<td class="title" colspan="12">
 							<img src="${ctx }/resources/images/frame/ico_noexpand.gif"
 								style="cursor: pointer" title="" alt="" id="img_1"
 								border="0" onclick="changeV('1')" />
 								<c:if test="${model.planType=='CHANGE'}">换料申请单</c:if>
 								<c:if test="${model.planType=='BACK'}">退料申请单</c:if>
+								<c:if test="${model.planType=='RENEW'}">补领料申请</c:if>
 								
 						</td>
 					</tr>
@@ -286,7 +311,7 @@
 								readonly="true" id="orderId_label" name="orderId_label"
 								columnNameLower="orderId" bmClassId="FW_ORGANIZATION"
 								column="m.t0_LABEL_CN"  value=""/>
-							<input type="hidden" id="orderId_value" name="orderId" />
+							<input type="hidden" id="orderId_value" name="orderTaskId" />
 							<input type="hidden" id="planType" name="planType"  value="${ model.planType}"/>
 						</td>
 						<th>
@@ -302,15 +327,20 @@
 							
 						</td>
 						
+						
+						</tr>
+						<tr>	
 						<th>
-							线体：
+							生产厂：
 						</th>
-						<td width="5%" onclick="selectectend1()">
-					
-							<select name="plant" id="plant" >
-								<option value="">请选择</option>
-							</select>
-							
+						<td width="5%">
+						<input type="text"  readonly="true" name="plant" id="plant"/>
+						</td>
+						<th>
+							生产线：
+						</th>
+						<td width="5%">
+						<input type="text"  readonly="true" name="arbpl" id="arbpl"/>
 						</td>
 
 						<th>

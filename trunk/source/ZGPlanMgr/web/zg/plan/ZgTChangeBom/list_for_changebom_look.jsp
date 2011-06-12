@@ -80,7 +80,7 @@
 		        
 		   }
 		   document.forms[0].target="_self";
-			document.forms[0].action="${ctx}/zg/plan/ZgTBomManager/examineOrderPlan.do?submitType="+num+"&rejectOpinionText="+rejectOpinionText+"&id="+cuid;
+			document.forms[0].action="${ctx}/zg/plan/ZgTBomManager/examineOrderPlan.do?submitType="+num+"&rejectOpinionText="+rejectOpinionText+"&id="+cuid+"&planType=${model.planType}";
 			
 			document.forms[0].submit();
 		}
@@ -172,7 +172,8 @@
 								style="cursor: pointer" title="高级查询" alt="" id="img_1"
 								border="0" onclick="changeV('1')" />
 									<c:if test="${model.planType=='CHANGE'}">换料申请单</c:if>
-								<c:if test="${model.planType=='BACK'}">退料申请单</c:if>：${model.cuid}
+								<c:if test="${model.planType=='BACK'}">退料申请单</c:if>
+								<c:if test="${model.planType=='RENEW'}">补领料申请单</c:if>：${model.cuid}
 						</td>
 					</tr>
 				</thead>
@@ -200,8 +201,8 @@
 							订单号：
 						</th>
 						<td width="15%">
-							${model.orderId_related.value}
-							<input type="hidden" id="orderId_value" name="orderId" value="${model.orderId }"/>
+							${model.orderTaskId_related.value}
+							<input type="hidden" id="orderId_value" name="orderTaskId" value="${model.orderTaskId }"/>
 						</td>
 						<th>
 							物料等级：
@@ -211,23 +212,32 @@
 							<input type="hidden" id="extend1"  name="extend1" value="${model.extend1}"/>
 							${model.extend1}
 						</td>
+						</tr>
+						<tr>	
 						<th>
-							线体：
+							生产厂：
 						</th>
 						<td width="5%">
-						
-							<input type="hidden" id="plant"  name="plant" value="${model.plant}"/>
-							${model.plant}
+						${model.plant}
+						<input type="hidden"  readonly="true" name="plant" id="plant" value="${model.plant}"/>
+						</td>
+						<th>
+							生产线：
+						</th>
+						<td width="5%">
+						${orderTask.arbpl}
+						<input type="hidden"  readonly="true" name="arbpl" id="arbpl" value="${orderTask.arbpl}"/>
 						</td>
 
-						 <th>
-								录单人:
-							</th>
-							<td width="15%">
-								${model.userId_related.value}
-							
-							</td>
-							
+						<th>
+							录单人：
+						</th>
+						<td width="15%">
+							${operatorInfo.userName}
+							<input type="hidden" id="userId" name="userId"
+								value="${model.userId}" />
+						</td>
+
 					</tr>
 				</tbody>
 			</table>
