@@ -271,8 +271,7 @@ public class ZgTorderPlanExDao extends BaseIbatisDao<ZgTorderPlanEx,java.lang.St
 	 * @param plant
 	 * @return
 	 */
-	public List<ZgTorderPlanEx> findZgTorderPlanList(String planType,String pcDate,String operatorId,String arbpl,String plant,String psbhChange) {
-		Map params=new HashMap();
+	public List<ZgTorderPlanEx> findZgTorderPlanList(String planType,String pcDate,String operatorId,String arbpl,String plant,String psbhChange,Map params) {
 		params.put("planType", planType);
 		params.put("pxDate", pcDate);
 		params.put("operatorId", operatorId);
@@ -291,8 +290,7 @@ public class ZgTorderPlanExDao extends BaseIbatisDao<ZgTorderPlanEx,java.lang.St
 	 * @param plant
 	 * @return
 	 */
-	public List<ZgTorderPlanEx> findZgTorderPlanList1(String planType,String pcDate,String operatorId,String arbpl,String plant,String psbhChange) {
-		Map params=new HashMap();
+	public List<ZgTorderPlanEx> findZgTorderPlanList1(String planType,String pcDate,String operatorId,String arbpl,String plant,String psbhChange,Map params) {
 		params.put("planType", planType);
 		params.put("pxDate", pcDate);
 		params.put("operatorId", operatorId);

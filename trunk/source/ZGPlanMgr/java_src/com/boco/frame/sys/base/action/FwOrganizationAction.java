@@ -6,36 +6,28 @@
 
 package com.boco.frame.sys.base.action;
 
-import javacommon.base.service.IVmModelBo;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import cn.org.rapid_framework.beanutils.BeanUtils;
-
-import com.opensymphony.xwork2.Preparable;
-import com.opensymphony.xwork2.ModelDriven;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
-import javacommon.base.*;
-import javacommon.util.*;
-import javacommon.base.model.*;
+import javacommon.base.BaseStruts2Action;
+import javacommon.base.model.RelatedModel;
+import javacommon.base.service.IVmModelBo;
+import cn.org.rapid_framework.page.Page;
+import cn.org.rapid_framework.page.PageRequest;
+import cn.org.rapid_framework.web.util.HttpUtils;
 
-import cn.org.rapid_framework.util.*;
-import cn.org.rapid_framework.web.util.*;
-import cn.org.rapid_framework.page.*;
-import cn.org.rapid_framework.page.impl.*;
-import cn.org.rapid_framework.beanutils.BeanUtils;
-
-import com.boco.frame.login.pojo.OperatorInfo;
-import com.boco.frame.meta.service.FwOrganizationExBo;
-import com.boco.frame.sys.base.model.*;
-import com.boco.frame.sys.base.dao.*;
-import com.boco.frame.sys.base.service.*;
+import com.boco.frame.sys.base.model.FwOperatorLog;
+import com.boco.frame.sys.base.model.FwOrganization;
+import com.boco.frame.sys.base.model.FwOrganizationManager;
+import com.boco.frame.sys.base.service.FwOperatorLogBo;
+import com.boco.frame.sys.base.service.FwOrganizationBo;
+import com.boco.frame.sys.service.FwOrganizationExBo;
+import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.Preparable;
 
 
 /**

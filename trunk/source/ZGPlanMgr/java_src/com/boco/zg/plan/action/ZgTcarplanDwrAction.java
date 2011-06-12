@@ -34,6 +34,7 @@ import com.boco.zg.plan.service.ZgTcarbomExBo;
 import com.boco.zg.plan.service.ZgTcarplanExBo;
 import com.boco.zg.util.Constants;
 import com.boco.zg.util.TimeFormatHelper;
+import com.fins.gt.common.Const;
 
 @SuppressWarnings("unchecked")
 public class ZgTcarplanDwrAction extends BaseDwrAction {
@@ -220,7 +221,7 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 	 * 	判断该装车计划是否已经提交 主要是校验bom状态是否有改变
 	 * @return
 	 */
-	public String checkForSubmitCarPlan(String objcetJOSNs,String carPlanId){
+	public String checkForSubmitCarPlan(String objcetJOSNs,String carPlanId,String planType){
 		
 		
 		ZgTcarplan zgTcarplan = (ZgTcarplan)getZgTcarplanExBo().getById(carPlanId);
@@ -284,7 +285,12 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 			
 			planboms=planboms+orderPlanbomId+"','";
 			
-			num = getZgTcarbomExBo().checkForBomCarNum(orderPlanbomId,carPlanNum);
+			if(Constants.OrderPlanType.BACK.value().equals(planType)){
+				num = getZgTcarbomExBo().checkForBomCarNumForBack(orderPlanbomId,carPlanNum);
+			}else {
+				num = getZgTcarbomExBo().checkForBomCarNum(orderPlanbomId,carPlanNum);
+			}
+			
 			
 			if(num<0){//领料数量超过需求数量
 				break;
@@ -292,7 +298,11 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 		}
 		
 		if(num<0){
-			return "订单号-"+aufnr+"  BOM-"+idnrk+"  组件领取数量超出总需求数量:"+(num*(-1))+"，请确认!"; 
+			if(Constants.OrderPlanType.BACK.value().equals(planType)){
+				return "订单号-"+aufnr+"  BOM-"+idnrk+"  组件退料数量超出待退料数量:"+(num*(-1))+"，请确认!";
+			}else {
+				return "订单号-"+aufnr+"  BOM-"+idnrk+"  组件领取数量超出总需求数量:"+(num*(-1))+"，请确认!";			}
+			 
 		}
 		
 		if(planboms.length()>0){
@@ -303,6 +313,8 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 		
 		
 	}
+	
+	
 	
 	/**
 	 *(乐观锁)批量领料计划保存，提交时校验

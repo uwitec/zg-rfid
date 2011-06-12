@@ -7,17 +7,11 @@
 package com.boco.frame.sys.base.action;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import javacommon.base.BaseDwrAction;
 import cn.org.rapid_framework.util.ApplicationContextHolder;
 
-import com.boco.frame.meta.service.FwOrganizationExBo;
-import com.boco.frame.sys.base.model.FwEmployee;
-import com.boco.frame.sys.base.model.FwOperator;
-import com.boco.frame.sys.base.service.FwEmployeeBo;
-import com.boco.frame.sys.service.FwOperatorExBo;
+import com.boco.frame.sys.service.FwOrganizationExBo;
 import com.boco.zg.util.TimeFormatHelper;
 
 /**

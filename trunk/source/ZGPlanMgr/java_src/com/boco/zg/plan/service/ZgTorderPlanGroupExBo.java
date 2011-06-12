@@ -18,6 +18,7 @@ import com.boco.zg.plan.base.model.ZgTorderPlan;
 import com.boco.zg.plan.base.model.ZgTorderPlanGroup;
 import com.boco.zg.plan.base.service.ZgTorderPlanBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanGroupBo;
+import com.boco.zg.plan.dao.ZgTorderPlanExDao;
 import com.boco.zg.plan.dao.ZgTorderPlanGroupExDao;
 import com.boco.zg.util.Constants;
 import com.boco.zg.util.TimeFormatHelper;
@@ -121,7 +122,7 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 		zgTorderPlanGroup.setState(state);
 		double percent=getPercent(cuid);
 		if(percent>=1){//领料为100%,但是领料状态没有完成，是因为有一些领的工艺规则没有配置完全,设置领料进度为99%
-			if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())){
+			if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())&&!state.equals(Constants.OrderPlanStatus.SUBMIT.value())){
 				percent=0.99;
 			}
 		}
@@ -205,7 +206,7 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 				temPlanGroup.setState(state);
 				double percent=getPercent(cuid);
 				if(percent>=1){//领料为100%,但是领料状态没有完成，是因为有一些领的工艺规则没有配置完全,设置领料进度为99%
-					if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())){
+					if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())&&!state.equals(Constants.OrderPlanStatus.SUBMIT.value())){
 						percent=0.99;
 					}
 				}
@@ -236,7 +237,12 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 		paramsMap.put("pxDate",  TimeFormatHelper.getFormatDate(pxDate, TimeFormatHelper.DATE_FORMAT));
 		paramsMap.put("plant", plant);
 		paramsMap.put("carMatkls", matkls);
-		return zgTorderPlanGroupExDao.getPlanGroupList(paramsMap);
+		if(Constants.OrderPlanType.BACK.value().equals(orderPlanType)){
+			return zgTorderPlanGroupExDao.getPlanGroupList1(paramsMap);
+		}else {
+			return zgTorderPlanGroupExDao.getPlanGroupList(paramsMap);
+		}
+		
 	}
 
 	/**
@@ -266,6 +272,41 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 		sql.append(" and plan.cuid=gop.order_plan_id ");
 		sql.append(" and nvl(planbom.complete_num,0)<planbom.car_num");
 		sql.append(" and planbom.car_num>'0' ");
+		sql.append(" and gop.group_id = '"+groupId+"'");
+		List<Map> list=((ZgTorderPlanGroupExDao)this.getEntityDao()).findDynQuery(sql.toString());
+		
+		if(list.size()==0){//领料已经完成，检查是否有退料
+			sql=new StringBuffer();
+			sql.append("select planbom.* ");
+			sql.append(" from zg_t_order_plan plan, zg_t_order_planbom planbom,zg_t_group_order_plan gop");
+			sql.append(" where plan.cuid = planbom.order_plan_id");
+			sql.append(" and plan.cuid=gop.order_plan_id ");
+			sql.append(" and gop.group_id = '"+groupId+"'");
+			sql.append(" and planbom.wait_back_num>0 ");
+			List<Map> backList=((ZgTorderPlanGroupExDao)this.getEntityDao()).findDynQuery(sql.toString());
+			if(backList.size()>0){
+				return Constants.OrderPlanStatus.SUBMIT.value();
+			}else {
+				return Constants.OrderPlanStatus.FINISHED.value();
+			}
+			
+		}
+		
+		
+		return Integer.parseInt(group.getState())>=0?Constants.OrderPlanStatus.SAVE.value():group.getState() ;
+	}
+	
+	public String getStateBack(String groupId) {
+		ZgTorderPlanGroup group=zgTorderPlanGroupBo.getById(groupId);
+		if(Constants.OrderPlanStatus.PLAN.value().equals(group.getState())){
+			return group.getState();
+		}
+		StringBuffer sql=new StringBuffer();
+		sql.append("select planbom.* ");
+		sql.append(" from zg_t_order_plan plan, zg_t_order_planbom planbom,zg_t_group_order_plan gop");
+		sql.append(" where plan.cuid = planbom.order_plan_id");
+		sql.append(" and plan.cuid=gop.order_plan_id ");
+		sql.append(" and nvl(planbom.wait_back_num,0)>0");
 		sql.append(" and gop.group_id = '"+groupId+"'");
 		List<Map> list=((ZgTorderPlanGroupExDao)this.getEntityDao()).findDynQuery(sql.toString());
 		return list.size()==0?Constants.OrderPlanStatus.FINISHED.value():(group.getState().equals(Constants.OrderPlanStatus.FINISHED.value())?Constants.OrderPlanStatus.SAVE.value():group.getState()) ;

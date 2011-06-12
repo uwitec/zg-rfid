@@ -272,7 +272,7 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 		group.setState(state);
 		double percent=zgTorderPlanGroupExBo.getPercent(group.getCuid());
 		if(percent>=1){//领料为100%,但是领料状态没有完成，是因为有一些领的工艺规则没有配置完全,设置领料进度为99%
-			if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())){
+			if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())&&!state.equals(Constants.OrderPlanStatus.SUBMIT.value())){
 				percent=0.99;
 			}
 		}
@@ -289,7 +289,7 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 		sourcePlan.setState(state);
 		double percent=zgTorderPlanExBo.getPercent(sourcePlan.getCuid());
 		if(percent>=1){//领料为100%,但是领料状态没有完成，是因为有一些领的工艺规则没有配置完全,设置领料进度为99%
-			if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())){
+			if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())&&!state.equals(Constants.OrderPlanStatus.SUBMIT.value())){
 				percent=0.99;
 			}
 		}
@@ -495,6 +495,21 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 			return zgTorderbomExDao.getBomListByGroupIdAdvance(pageRequest);
 		}else {
 			return zgTorderbomExDao.getBomListByGroupId(pageRequest);
+		}
+		
+	}
+	
+	/**
+	 * 根据定单分组查找其bom组件
+	 * @param pageRequest
+	 * @return
+	 */
+	public List<Map> getBomListByGroupId1(PageRequest<Map> pageRequest) {
+		//查询该订单是否是提前领料
+		if("1".equals(IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "advance", ""))){//提前领料，只查找提前领的bom
+			return zgTorderbomExDao.getBomListByGroupIdAdvance1(pageRequest);
+		}else {
+			return zgTorderbomExDao.getBomListByGroupId1(pageRequest);
 		}
 		
 	}
@@ -728,7 +743,7 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 			plan.setState(state);
 			double percent=zgTorderPlanExBo.getPercent(plan.getCuid());
 			if(percent>=1){//领料为100%,但是领料状态没有完成，是因为有一些领的工艺规则没有配置完全,设置领料进度为99%
-				if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())){
+				if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())&&!state.equals(Constants.OrderPlanStatus.SUBMIT.value())){
 					percent=0.99;
 				}
 			}

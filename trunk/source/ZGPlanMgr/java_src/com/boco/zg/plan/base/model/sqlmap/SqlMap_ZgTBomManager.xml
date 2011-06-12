@@ -25,28 +25,42 @@
        		</isNotEmpty>   
 		    <isNotEmpty prepend="AND" property="aufnr">
 	       			AUFNR like '%$aufnr$%'
-       		</isNotEmpty>    
+       		</isNotEmpty>  
+       		   <isNotEmpty prepend="AND" property="plant">
+	       			plant = '$plant$'
+       		</isNotEmpty>   
+       		   <isNotEmpty prepend="AND" property="arbpl">
+	       			arbpl='$arbpl$'
+       		</isNotEmpty>     
 		   
-       		   <isNotEmpty prepend="AND" property="type">
+       		  <isNotEmpty prepend="AND" property="type">
 	       			plan_type = #type#
        		</isNotEmpty> 
+       		 <isEmpty prepend="AND" property="type">
+	       			plan_type  in ('CHANGE','BACK','RENEW')
+       		</isEmpty> 
 	    </dynamic>	
 	</sql>
 	
     
     <select id="pageOrderPlanForChange_count" resultClass="long">
-          select count(1) from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , od.aufnr, emp.label_cn createName, org.label_cn orgName
+          select count(1) from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , task.aufnr, emp.label_cn createName, org.label_cn orgName
 		 from zg_t_order_plan t,
-		       zg_t_order      od,
+		       zg_t_order_task      task,
 		       fw_operator     emp,
 		       fw_organization org,
            fw_employee     emo
-		 where t.plan_type = #type#
-		   and t.order_id = od.cuid
+		 where t.order_task_id = task.cuid
 		   and t.user_id = emp.cuid
 		   and emo.cuid=emp.cuid
            and emo.org_id=org.cuid(+)
-          
+          	<isNotEmpty property="type">
+			 and t.plan_type = #type#
+			</isNotEmpty>
+			
+			 <isEmpty property="type">
+			 and t.plan_type in ('CHANGE','BACK','RENEW')
+			</isEmpty>
           
              <isNotEqual property="operatorId" compareValue="0">
             
@@ -64,17 +78,28 @@
     	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
     -->
     <select id="pageOrderPlanForChange" resultClass="java.util.HashMap">
-		    select * from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , od.aufnr, emp.label_cn createName, org.label_cn orgName
+		    select * from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mi:ss') createDate ,   task.aufnr,
+               task.arbpl,emp.label_cn createName, org.label_cn orgName
 		 from zg_t_order_plan t,
-		       zg_t_order      od,
+		       zg_t_order_task      task,
 		       fw_operator     emp,
 		       fw_organization org,
            fw_employee     emo
-		 where t.plan_type = #type#
-		   and t.order_id = od.cuid
+		 where 
+		 
+		
+		    t.order_task_id = task.cuid
 		   and t.user_id = emp.cuid
 		   and emo.cuid=emp.cuid
            and emo.org_id=org.cuid(+)
+           
+           	<isNotEmpty property="type">
+			 and t.plan_type = #type#
+			</isNotEmpty>
+			
+			 <isEmpty property="type">
+			 and t.plan_type in ('CHANGE','BACK','RENEW')
+			</isEmpty>
           
           
              <isNotEqual property="operatorId" compareValue="0">
@@ -90,18 +115,23 @@
     </select>
     
      <select id="pageOrderPlanForChange1_count" resultClass="long">
-           select count(1) from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , od.aufnr, emp.label_cn createName, org.label_cn orgName
+            select count(1) from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , task.aufnr,task.arbpl, emp.label_cn createName, org.label_cn orgName
 		 from zg_t_order_plan t,
-		       zg_t_order      od,
+		       zg_t_order_task      task,
 		       fw_operator     emp,
 		       fw_organization org,
            fw_employee     emo
-		 where t.plan_type = #type#
-		   and t.order_id = od.cuid
+		 where  t.order_task_id = task.cuid
 		   and t.user_id = emp.cuid
 		   and emo.cuid=emp.cuid
            and emo.org_id=org.cuid(+)
-          
+          	<isNotEmpty property="type">
+			 and t.plan_type = #type#
+			</isNotEmpty>
+			
+			 <isEmpty property="type">
+			 and t.plan_type in ('CHANGE','BACK','RENEW')
+			</isEmpty>
           
             
            <isEqual property="roleId" compareValue="A">
@@ -118,7 +148,10 @@
 	    		<![CDATA[
 	    			and t.extend1 in('C')
 	    		]]>
-		    	</isEqual>
+		    	</isEqual> <isEmpty prepend="AND" property="roleId">
+	       			1=2
+       			</isEmpty> 
+		    	
        )
 		<include refid="dynamicWhere"/>
 		<dynamic prepend="ORDER BY">
@@ -127,18 +160,23 @@
     </select>
     
       <select id="pageOrderPlanForChange1" resultClass="java.util.HashMap">
-		    select * from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , od.aufnr, emp.label_cn createName, org.label_cn orgName
+		    select * from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , task.aufnr,task.arbpl, emp.label_cn createName, org.label_cn orgName
 		 from zg_t_order_plan t,
-		       zg_t_order      od,
+		       zg_t_order_task      task,
 		       fw_operator     emp,
 		       fw_organization org,
            fw_employee     emo
-		 where t.plan_type = #type#
-		   and t.order_id = od.cuid
+		 where  t.order_task_id = task.cuid
 		   and t.user_id = emp.cuid
 		   and emo.cuid=emp.cuid
            and emo.org_id=org.cuid(+)
-          
+          	<isNotEmpty property="type">
+			 and t.plan_type = #type#
+			</isNotEmpty>
+			
+			 <isEmpty property="type">
+			 and t.plan_type in ('CHANGE','BACK','RENEW')
+			</isEmpty>
           
             
            <isEqual property="roleId" compareValue="A">
@@ -155,7 +193,65 @@
 	    		<![CDATA[
 	    			and t.extend1 in('C')
 	    		]]>
-		    	</isEqual>
+		    </isEqual>
+		    <isEmpty prepend="AND" property="roleId">
+	       			1=2
+       		</isEmpty> 
+       )
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+     <select id="pageOrderPlanForChange2_count" resultClass="long">
+            select count(1) from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , task.aufnr,task.arbpl, emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
+		       zg_t_order_task      task,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where  t.order_task_id = task.cuid
+		   and t.user_id = emp.cuid
+		   and emo.cuid=emp.cuid
+           and emo.org_id=org.cuid(+)
+          	<isNotEmpty property="type">
+			 and t.plan_type = #type#
+			</isNotEmpty>
+			
+			 <isEmpty property="type">
+			 and t.plan_type in ('CHANGE','BACK','RENEW')
+			</isEmpty>
+          
+            
+		    	
+       )
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+      <select id="pageOrderPlanForChange2" resultClass="java.util.HashMap">
+		    select * from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , task.aufnr,task.arbpl, emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
+		       zg_t_order_task      task,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where  t.order_task_id = task.cuid
+		   and t.user_id = emp.cuid
+		   and emo.cuid=emp.cuid
+           and emo.org_id=org.cuid(+)
+          	<isNotEmpty property="type">
+			 and t.plan_type = #type#
+			</isNotEmpty>
+			
+			 <isEmpty property="type">
+			 and t.plan_type in ('CHANGE','BACK','RENEW')
+			</isEmpty>
+          
+            
        )
 		<include refid="dynamicWhere"/>
 		<dynamic prepend="ORDER BY">

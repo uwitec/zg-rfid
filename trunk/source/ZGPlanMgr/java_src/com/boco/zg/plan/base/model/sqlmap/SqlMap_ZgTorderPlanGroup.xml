@@ -86,6 +86,11 @@
        		 <isNotEmpty prepend="AND" property="pxDate">
        		 	to_date('$pxDate$', 'yyyy-MM-dd')>	trunc(px_date)
        		</isNotEmpty>
+       			 <isNotEmpty prepend="AND" property="aufnr">
+       		   instr(t0_LABEL_CN,'$aufnr$',1,1)>0
+       		</isNotEmpty>
+       		
+       		
 	    </dynamic>	
 	</sql>
 	
@@ -140,6 +145,9 @@
        		</isNotEmpty>  
        		 <isNotEmpty prepend="AND" property="pxDate">
        		 		trunc(px_date)=  to_date('$pxDate$', 'yyyy-MM-dd')
+       		</isNotEmpty>
+       		 <isNotEmpty prepend="AND" property="aufnr">
+       		   instr(t0_LABEL_CN,'$aufnr$',1,1)>0
        		</isNotEmpty>
 	    </dynamic>	
 	</sql>

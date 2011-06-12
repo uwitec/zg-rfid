@@ -391,6 +391,34 @@ public class ZgTorderPlan extends BaseEntity {
 		this.orderTaskId = orderTaskId;
 	}
 
+	/**
+	 * @return the orderTaskId_related
+	 */
+	public RelatedModel getOrderTaskId_related() {
+		return orderTaskId_related;
+	}
+
+	/**
+	 * @param orderTaskId_related the orderTaskId_related to set
+	 */
+	public void setOrderTaskId_related(RelatedModel orderTaskId_related) {
+		this.orderTaskId_related = orderTaskId_related;
+	}
+
+	/**
+	 * @return the orderTaskId_labelCn
+	 */
+	public java.lang.String getOrderTaskId_labelCn() {
+		return orderTaskId_labelCn;
+	}
+
+	/**
+	 * @param orderTaskId_labelCn the orderTaskId_labelCn to set
+	 */
+	public void setOrderTaskId_labelCn(java.lang.String orderTaskId_labelCn) {
+		this.orderTaskId_labelCn = orderTaskId_labelCn;
+	}
+
 
 
 }

@@ -44,6 +44,7 @@ import cn.org.rapid_framework.util.MapAndObject;
 import com.boco.zg.plan.base.model.ZgTbackBom;
 import com.boco.zg.plan.model.ZgTorderbomEx;
 import com.boco.zg.storage.model.ZgTstoragebomEx;
+import com.boco.zg.util.Constants;
 import com.boco.frame.sys.base.model.FwOrganization;
 import com.boco.frame.sys.base.model.Province;
 
@@ -75,6 +76,10 @@ public class ZgTBomManagerDao extends BaseIbatisDao<ZgTorderPlan,java.lang.Strin
 	public Page pageOrderPlanForChange1(PageRequest<Map> pageRequest) {
 		return pageQuery("ZgTBomManager.pageOrderPlanForChange1","ZgTBomManager.pageOrderPlanForChange1_count",pageRequest);
 	}
+	
+	public Page pageOrderPlanForChange2(PageRequest<Map> pageRequest) {
+		return pageQuery("ZgTBomManager.pageOrderPlanForChange2","ZgTBomManager.pageOrderPlanForChange2_count",pageRequest);
+	}
 
 	/**
 	 * 根据单据编号查找其bom列表
@@ -102,13 +107,22 @@ public class ZgTBomManagerDao extends BaseIbatisDao<ZgTorderPlan,java.lang.Strin
 	 * @param pageRequest
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Map> findBomlListByOrderId(PageRequest<Map> pageRequest) {
-		return getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findBomlListByOrderId",pageRequest.getFilters());
+		String planType=pageRequest.getFilters().get("planType").toString();
+		if(Constants.OrderPlanType.RENEW.value().equals(planType)){
+			return getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findBomlListByOrderId1",pageRequest.getFilters());
+		}else {
+			return getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findBomlListByOrderId",pageRequest.getFilters());
+		}
+		
 	}
 	
 	
    public String getRoleCuidByUserId(String userId){
-	  List list=getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findRoleCuid", userId);
+	  Map params=new HashMap();
+	  params.put("userId", userId);
+	  List list=getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findRoleCuid", params);
 	    
 	  if(list.size() >= 1) {
 			return list.get(0).toString();

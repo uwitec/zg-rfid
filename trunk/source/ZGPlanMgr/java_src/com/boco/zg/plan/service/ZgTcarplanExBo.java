@@ -123,7 +123,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 *   @param orderPlanBomIds 本次需要确认领料的物料
 	 *   返回值：该装车计划是否已经全部物料领完
 	 */
-	public boolean storagePlanSubmitById(String carPlanId,String storageUserId,String orderPlanBomIds) {
+	public boolean storagePlanSubmitById(String carPlanId,String storageUserId,String orderPlanBomIds,String planType) {
 		ZgTcarplan zgTcarplan = zgTcarplanBo.getById(carPlanId);
 		ZgTcarbom param = new ZgTcarbom();
 		param.setCarPlanId(zgTcarplan.getCuid());
@@ -132,24 +132,43 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		boolean flag=true;
 		for(ZgTcarbom carbom : carbomList) {
 			String orderPlanbomId = carbom.getOrderPlanbomId();
-			
 			if(orderPlanBomIds.contains(orderPlanbomId)||orderPlanBomIds.equals("ALL")){//选哪个物料刷哪些物料的装车数量
 				ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(orderPlanbomId);
 				Long carNum = planbom.getCarNum()==null?new Long(0):planbom.getCarNum();
 				Long planNum = planbom.getPlanNum()==null?new Long(0):planbom.getPlanNum();
 				Long completeNum = planbom.getCompleteNum()==null?new Long(0):planbom.getCompleteNum();
+				Long waitBackNum=planbom.getWaitBackNum()==null?new Long(0):planbom.getWaitBackNum();
+				Long backNum=planbom.getBackNum()==null?new Long(0):planbom.getBackNum();
 				
-				Long realNum = carbom.getRealNum()==null?new Long(0):carbom.getRealNum();
-				Long cPlanNum = carbom.getPlanNum()==null?new Long(0):carbom.getPlanNum();
-				planNum = planNum - (cPlanNum - realNum);
-				completeNum = completeNum + realNum;
-				planbom.setPlanNum(planNum);
-				planbom.setCompleteNum(completeNum);
-				planbom.setStorageNum(planbom.getStorageNum()+realNum);
-				if(carNum <= completeNum) {
-					planbom.setState(Constants.CarPlanStatus.DONE.value());
+				if(Constants.OrderPlanType.BACK.value().equals(planType)){//退料的更新退料数量
+					Long realNum = carbom.getRealNum()==null?new Long(0):carbom.getRealNum();
+					Long cPlanNum = carbom.getPlanNum()==null?new Long(0):carbom.getPlanNum();
+					waitBackNum=waitBackNum-realNum;
+					backNum=backNum+realNum;
+					planbom.setWaitBackNum(waitBackNum);
+					planbom.setBackNum(backNum);
+					planbom.setStorageNum(planbom.getStorageNum()-realNum);
+					
+					
+					if(carNum <= completeNum) {
+						planbom.setState(Constants.CarPlanStatus.DONE.value());
+					}
+					zgTorderPlanbomBo.update(planbom);
+				}else {//其他的更新　领料数量
+					Long realNum = carbom.getRealNum()==null?new Long(0):carbom.getRealNum();
+					Long cPlanNum = carbom.getPlanNum()==null?new Long(0):carbom.getPlanNum();
+					planNum = planNum - (cPlanNum - realNum);
+					completeNum = completeNum + realNum;
+					planbom.setPlanNum(planNum);
+					planbom.setCompleteNum(completeNum);
+					planbom.setStorageNum(planbom.getStorageNum()+realNum);
+					if(carNum <= completeNum) {
+						planbom.setState(Constants.CarPlanStatus.DONE.value());
+					}
+					zgTorderPlanbomBo.update(planbom);;
 				}
-				zgTorderPlanbomBo.update(planbom);
+				
+				
 				
 				//更新仓库管理员
 				carbom.setStorageUserId(storageUserId);
@@ -242,13 +261,20 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		sql.append(" 	carbom.car_plan_id,");   //修改数据时需要参数
 		sql.append(" 	orderbom.aufnr,");
 		sql.append(" 	orderbom.zdtyl,");
-		sql.append(" 	planbom.car_num,");//呈现：需求数量
+		sql.append(" 	taskbom.menge car_num,");//呈现：需求数量
 		sql.append(" 	nvl(planbom.plan_num,0) plan_num,");
-		sql.append(" 	nvl(planbom.complete_num,0)complete_num,");//呈现：完成数量
+		sql.append(" 	nvl(planbom.complete_num,0) complete_num,");//呈现：完成数量
+		sql.append(" 	nvl(planbom.wait_back_num,0) wait_back_num,");//呈现：完成数量
+		sql.append(" 	nvl(planbom.back_num,0) back_num,");
 		sql.append(" 	carbom.plan_num car_plan_num,");//呈现：计划领取数量
-		sql.append("	decode(sign(planbom.car_num - planbom.complete_num), -1, 0,  ");
-		sql.append("	 decode(sign((planbom.car_num - planbom.complete_num) - (nvl(planbom.car_num, 0) -  nvl(planbom.plan_num, 0) + carbom.plan_num)),");
-		sql.append("	 -1, planbom.car_num - planbom.complete_num,  nvl(planbom.car_num, 0) - nvl(planbom.plan_num, 0) +  carbom.plan_num)   ) max_value,");//呈现：本次需求数量
+		if(Constants.OrderPlanType.BACK.value().equals(planType)){
+			sql.append(" 	nvl(planbom.wait_back_num,0) max_value,");
+		}else {
+			sql.append("	decode(sign(planbom.car_num - planbom.complete_num), -1, 0,  ");
+			sql.append("	 decode(sign((planbom.car_num - planbom.complete_num) - (nvl(planbom.car_num, 0) -  nvl(planbom.plan_num, 0) + carbom.plan_num)),");
+			sql.append("	 -1, planbom.car_num - planbom.complete_num,  nvl(planbom.car_num, 0) - nvl(planbom.plan_num, 0) +  carbom.plan_num)   ) max_value,");//呈现：本次需求数量
+		}
+		
 		sql.append("     bom.carnum carCount,orderbom.zbz,carbom.storage_user_id, od.aufnr,  od.arbpl,     od.kdauf,     od.kdpos,  od.maktx1 ");
 		sql.append(" from zg_t_carplan       car, ");
 		sql.append("	zg_t_carbom        carbom, ");
@@ -281,7 +307,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		sql.append(" orderbom.maktx2,");
 		sql.append("planbom.cuid as order_planbom_id,");
 		sql.append("null as car_plan_id,");
-		sql.append(" planbom.car_num,");
+		sql.append(" 	taskbom.menge car_num,");//呈现：需求数量
 		sql.append("nvl(planbom.plan_num,0) plan_num,");
 		sql.append("nvl(planbom.complete_num,0) complete_num,");
 		sql.append("0 as car_plan_num,");
@@ -289,6 +315,49 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		sql.append("bom.carnum carCount,taskbom.cuid taskbom_id,taskbom.order_task_id orderTaskId, od.aufnr,  od.arbpl,     od.kdauf,     od.kdpos,  od.maktx1");
 		sql.append(" from zg_t_order_planbom planbom, zg_t_orderbom orderbom, zg_t_bom bom,zg_t_order_taskbom taskbom,zg_t_order od ");
 		sql.append(" where orderbom.order_id=od.cuid and  planbom.taskbom_id=taskbom.cuid         and taskbom.order_bom_id=orderbom.cuid and  planbom.car_num-nvl(planbom.plan_num,0)>0 ");
+		sql.append("   and bom.idnrk = orderbom.idnrk    ");
+		sql.append(" and taskbom.cuid in ('"+bomCuids+"') ) w where w.taskbom_id not in(");
+		sql.append(" select carbom.taskbom_id from zg_t_carplan plan,zg_t_carbom carbom       where plan.car_user='"+operatorId+"' ");
+		sql.append("     and plan.car_state='0'        and plan.cuid=carbom.car_plan_id   )");
+
+		
+		return ((ZgTcarplanDao)this.getEntityDao()).findDynQuery(sql.toString());
+	}
+	
+	/**
+	 * 根据bom编号获取 bom信息列表 
+	 * @param bomCuids
+	 * @return
+	 */
+	public List<Map> getBomListByBomIds1(String bomCuids,String operatorId,String planType) {
+		bomCuids=bomCuids.replace(",", "','");
+		StringBuffer sql = new StringBuffer();
+		sql.append("select * from ( select distinct null as cuid,    ORDERBOM.ZDTYL,orderbom.ORDER_ID,");
+		sql.append("orderbom.cuid order_bom_id,");
+		sql.append("orderbom.idnrk,");
+		sql.append(" orderbom.maktx2,");
+		sql.append("planbom.cuid as order_planbom_id,");
+		sql.append("null as car_plan_id,");
+		sql.append(" 	taskbom.menge car_num,");//呈现：需求数量
+		sql.append("nvl(planbom.plan_num,0) plan_num,");
+		sql.append("nvl(planbom.complete_num,0) complete_num,");
+		sql.append(" 	nvl(planbom.wait_back_num,0) wait_back_num,");//呈现：完成数量
+		sql.append(" 	nvl(planbom.back_num,0) back_num,");
+		sql.append("0 as car_plan_num,");
+		if(Constants.OrderPlanType.BACK.value().equals(planType)){
+			sql.append(" 	nvl(planbom.wait_back_num,0) max_value,");
+		}else {
+			sql.append(" planbom.car_num-nvl(planbom.plan_num,0)   max_value,");
+		}
+		sql.append("bom.carnum carCount,taskbom.cuid taskbom_id,taskbom.order_task_id orderTaskId, od.aufnr,  od.arbpl,     od.kdauf,     od.kdpos,  od.maktx1");
+		sql.append(" from zg_t_order_planbom planbom, zg_t_orderbom orderbom, zg_t_bom bom,zg_t_order_taskbom taskbom,zg_t_order od ");
+		sql.append(" where orderbom.order_id=od.cuid and  planbom.taskbom_id=taskbom.cuid         and taskbom.order_bom_id=orderbom.cuid " );
+		if(Constants.OrderPlanType.BACK.value().equals(planType)){
+			sql.append(" and nvl(planbom.wait_back_num,0)>0 ");
+		}else {
+			sql.append(" and  planbom.car_num-nvl(planbom.plan_num,0)>0 ");
+		}
+				
 		sql.append("   and bom.idnrk = orderbom.idnrk    ");
 		sql.append(" and taskbom.cuid in ('"+bomCuids+"') ) w where w.taskbom_id not in(");
 		sql.append(" select carbom.taskbom_id from zg_t_carplan plan,zg_t_carbom carbom       where plan.car_user='"+operatorId+"' ");
@@ -369,7 +438,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 * @param carbomList
 	 * @param operatorInfo
 	 */
-	public void generateCarPlan(String[] items,List<ZgTcarbomEx> carbomList,OperatorInfo operatorInfo) {
+	public void generateCarPlan(String[] items,List<ZgTcarbomEx> carbomList,OperatorInfo operatorInfo,String planType) {
 			int num=0;
 			
 			
@@ -398,7 +467,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 						zgTcarplan.setCreateUserId(operatorInfo.getOperatorId());
 						zgTcarplan.setCreateDate(Calendar.getInstance().getTime());
 						zgTcarplan.setCarState(Constants.CarPlanStatus.NEW.value());
-						zgTcarplan.setOrderPlanType(bom.getPlanType());
+						zgTcarplan.setOrderPlanType(planType);
 						zgTcarplan.setType(Constants.CarPlanType.STOREGETDATA.value());
 						zgTcarplan.setCarUser(operatorInfo.getOperatorId());
 						zgTcarplan.setCarId(bom.getCarId());
@@ -427,8 +496,8 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 					
 				}
 			}
-			zgTcarbomExBo.saveEditCarPlan(editList, Constants.CarPlanStatus.NEW.value());
-			zgTcarbomExBo.saveNewCarPlan(newList, Constants.CarPlanStatus.SUBMIT.value());
+			zgTcarbomExBo.saveEditCarPlan(editList, Constants.CarPlanStatus.NEW.value(),planType);
+			zgTcarbomExBo.saveNewCarPlan(newList, Constants.CarPlanStatus.SUBMIT.value(),planType);
 			
 			//改变
 		
@@ -481,7 +550,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 * @param operatorInfo
 	 * @param storageUserId 仓管员id
 	 */
-	public String  confirmCarPlan(String[] items,List<ZgTcarbomEx> carbomList,OperatorInfo operatorInfo,String storageUserId) {
+	public String  confirmCarPlan(String[] items,List<ZgTcarbomEx> carbomList,OperatorInfo operatorInfo,String storageUserId,String planType) {
 		String result="noTurn";
 		
 		//<!--modify by wengqin 2011/05/12 同一个装车计划分多次刷卡，选哪个物料刷哪些物料的装车数量- 如果领料计划的物料没有刷卡完，则不计算领料进度
@@ -513,7 +582,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 						zgTcarplan.setCreateDate(Calendar.getInstance().getTime());
 						zgTcarplan.setCarDate(Calendar.getInstance().getTime());
 						zgTcarplan.setCarState(Constants.CarPlanStatus.NEW.value());
-						zgTcarplan.setOrderPlanType(bom.getPlanType());
+						zgTcarplan.setOrderPlanType(planType);
 						zgTcarplan.setType(Constants.CarPlanType.STOREGETDATA.value());
 						zgTcarplan.setCarUser(operatorInfo.getOperatorId());
 						zgTcarplan.setCarId(bom.getCarId());
@@ -532,16 +601,21 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 			}
 			
 			//1 先可在新追加的bom到zgtcarbom表
-			zgTcarbomExBo.saveNewCarPlan(newList, Constants.CarPlanStatus.SUBMIT.value());
+			zgTcarbomExBo.saveNewCarPlan(newList, Constants.CarPlanStatus.SUBMIT.value(),planType);
 			//2 更新carbom表的数量 
 			zgTcarbomExBo.updateCarboms(orderPlanBomIds,carbomList,false);
 			//3 设定仓管员
 //			updateCarPlanStorageUserId(carPlanId, storageUserId);
 			//4 更新planbom表的数量及carplan表的状态 及仓管员信息
-			boolean isCarPlanFinished=storagePlanSubmitById(carPlanId,storageUserId,orderPlanBomIds);
+			boolean isCarPlanFinished=storagePlanSubmitById(carPlanId,storageUserId,orderPlanBomIds,planType);
 			
 			if(isCarPlanFinished){//该装车计划已经领完，则进行相应的状态变化，计划进度
-				result = doProcessPlanByCarPlanId(carPlanId);
+				if(Constants.OrderPlanType.BACK.value().equals(planType)){
+					result = doProcessPlanByCarPlanId1(carPlanId,planType);
+				}else {
+					result = doProcessPlanByCarPlanId(carPlanId);
+				}
+				
 			}
 			
 			
@@ -575,13 +649,13 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		for(ZgTorderPlan plan:planList){
 			String state=zgTorderPlanExBo.getState(plan.getCuid());
 			plan.setState(state);
-			if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())){
-				plan.setState(Constants.OrderPlanStatus.SAVE.value());
-			}
+//			if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())){
+//				plan.setState(Constants.OrderPlanStatus.SAVE.value());
+//			}
 		
 			double percent=zgTorderPlanExBo.getPercent(plan.getCuid());
 			if(percent>=1){//领料为100%,但是领料状态没有完成，是因为有一些领的工艺规则没有配置完全,设置领料进度为99%
-				if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())){
+				if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())&&!state.equals(Constants.OrderPlanStatus.SUBMIT.value())){
 					percent=0.99;
 				}
 			}
@@ -597,18 +671,72 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		
 		for(ZgTorderPlanGroup group:planGrouList){
 			String state=zgTorderPlanGroupExBo.getState(group.getCuid());
-			if(!Constants.OrderPlanStatus.FINISHED.value().equals(state)){
-				state=Constants.OrderPlanStatus.SAVE.value();
-			}
+//			if(!Constants.OrderPlanStatus.FINISHED.value().equals(state)){
+//				state=Constants.OrderPlanStatus.SAVE.value();
+//			}
 			group.setState(state);
 			double percent=zgTorderPlanGroupExBo.getPercent(group.getCuid());
 			if(percent>=1){//领料为100%,但是领料状态没有完成，是因为有一些领的工艺规则没有配置完全,设置领料进度为99%
 				result="turn";
-				if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())){
+				if(!state.equals(Constants.OrderPlanStatus.FINISHED.value())&&!state.equals(Constants.OrderPlanStatus.PAUSE.value())&&!state.equals(Constants.OrderPlanStatus.PLAN.value())&&!state.equals(Constants.OrderPlanStatus.SUBMIT.value())){
 					percent=0.99;
 				}
 			}
 			group.setPercent(percent);
+			zgTorderPlanGroupExBo.update(group);
+		}
+		return result;
+	}
+	
+	/**
+	 * 根据装车计划编号计算领料计划进度
+	 * @param result
+	 * @param carPlanId
+	 * @return
+	 */
+	public String doProcessPlanByCarPlanId1( String carPlanId,String planType) {
+		
+		ZgTcarplan zgTcarplan = zgTcarplanBo.getById(carPlanId);
+		if(zgTcarplan==null) return "noTurn";
+		zgTcarplan.setCarState(Constants.CarPlanStatus.SUBMIT.value());
+		zgTcarplan.setCarDate(Calendar.getInstance().getTime());
+		zgTcarplanBo.update(zgTcarplan);
+		
+		String result="noTurn";
+		//获取本次装车计划所涉及的订单
+		List<ZgTorderPlan> planList=zgTorderPlanExBo.getOrderPlanListByCarPlanId(carPlanId);
+		List<ZgTorderPlanGroup> planGrouList=zgTorderPlanGroupExBo.getPlanGroupListByCarPlanId(carPlanId);
+		
+		
+		//5 更新领料计划表的状态及领料进度
+		for(ZgTorderPlan plan:planList){
+			String state="";
+			if(plan.getPlanType().equals(Constants.OrderPlanType.BACK.value())){
+				state=zgTorderPlanExBo.getStateBack(plan.getCuid());
+				plan.setState(state);
+				zgTorderPlanBo.update(plan);
+			}else {
+				state=zgTorderPlanExBo.getState(plan.getCuid());
+				
+			}
+			plan.setState(state);
+			zgTorderPlanBo.update(plan);
+			
+			int batchNo=this.zgTcarplanDao.getSeq("SEQ_BATCH_NO");
+			getSapClient().businessHandler("5", plan.getCuid(),batchNo,"");
+			
+			
+		}
+		
+		for(ZgTorderPlanGroup group:planGrouList){
+			String state="";
+			if(group.getPlanType().equals(Constants.OrderPlanType.BACK.value())){
+				state=zgTorderPlanGroupExBo.getStateBack(group.getCuid());
+			}else {
+				state=zgTorderPlanGroupExBo.getState(group.getCuid());
+				
+			}
+			group.setState(state);
 			zgTorderPlanGroupExBo.update(group);
 		}
 		return result;
