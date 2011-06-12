@@ -9,8 +9,8 @@
 		<result property="labelCn" column="t0_LABEL_CN"/>
 		<result property="taskBomId" column="t0_TASKBOM_ID"/>
 		<result property="orderPlanId" column="t0_ORDER_PLAN_ID"/>
-		<result property="orderBomId_related.value" column="t0_0_1_t0_LABEL_CN"/>
-		<result property="orderBomId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="taskBomId_related.value" column="t0_0_1_t0_LABEL_CN"/>
+		<result property="taskBomId_related.relatedBmClassId" column="t0_0_1_BD"/>
 		<result property="orderTaskId" column="t0_ORDER_tasK_ID"/>
 		<result property="orderTaskId_related.value" column="t0_1_1_t0_AUFNR"/>
 		<result property="orderTaskId_related.relatedBmClassId" column="t0_1_1_BD"/>

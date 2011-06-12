@@ -6,32 +6,23 @@
 
 package com.boco.zg.bom.base.action;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
-import cn.org.rapid_framework.beanutils.BeanUtils;
+import javacommon.base.BaseStruts2Action;
+import cn.org.rapid_framework.page.Page;
+import cn.org.rapid_framework.page.PageRequest;
+import cn.org.rapid_framework.web.util.HttpUtils;
 
-import com.opensymphony.xwork2.Preparable;
-import com.opensymphony.xwork2.ModelDriven;
-
-import java.util.*;
-
-import javacommon.base.*;
-import javacommon.util.*;
-
-import cn.org.rapid_framework.util.*;
-import cn.org.rapid_framework.web.util.*;
-import cn.org.rapid_framework.page.*;
-import cn.org.rapid_framework.page.impl.*;
-
-import com.boco.frame.meta.service.FwOrganizationExBo;
 import com.boco.frame.sys.base.model.FwOrganization;
 import com.boco.frame.sys.base.service.FwMenuBo;
 import com.boco.frame.sys.base.service.FwOrganizationBo;
-import com.boco.zg.bom.base.model.*;
-import com.boco.zg.bom.base.dao.*;
-import com.boco.zg.bom.base.service.*;
+import com.boco.frame.sys.service.FwOrganizationExBo;
+import com.boco.zg.bom.base.model.ZgTbom;
+import com.boco.zg.bom.base.service.ZgTbomManager;
+import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.Preparable;
 
 /**
  * @author badqiu email:badqiu(a)gmail.com

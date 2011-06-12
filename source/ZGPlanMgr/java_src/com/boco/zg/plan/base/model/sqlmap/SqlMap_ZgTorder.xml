@@ -985,19 +985,19 @@
     
     <select id="count" resultClass="long">
         select count(*) from (
-        select <include refid="commonColumns"/>
-        <![CDATA[
-        from ( select 
+        	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
 	        		t0.CUID as t0_CUID,
 	        		t0.LABEL_CN as t0_LABEL_CN,
 	        		t0.AUFNR as t0_AUFNR,
 	        		t0.ORDER_STATE as t0_ORDER_STATE,
-	        		t0.publish_num as t0_publish_num,
+	        		nvl(t0.publish_num,0) as t0_publish_num, 
 	        		t0.SUBMIT_USER as t0_SUBMIT_USER,
 	        		t0.SUBMIT_DATE as t0_SUBMIT_DATE,
 	        		t0.MANDT as t0_MANDT,
 	        		t0.PXDAT as t0_PXDAT,
-	        		t0.PLANT as t0_PLANT,
+	        		WMSYS.WM_CONCAT(task.PLANT) t0_PLANT,
 	        		t0.MIPOS as t0_MIPOS,
 	        		t0.PCDAT as t0_PCDAT,
 	        		t0.ARBPL as t0_ARBPL,
@@ -1025,20 +1025,64 @@
 	        		t0.FBUZE as t0_FBUZE,
 	        		t0.FNAME as t0_FNAME,
 	        		t0.PFLAG as t0_PFLAG,
-	        		null as to_Org_lableCN,
-	        		t0.psbh as t0_psbh,
-	        		t0.freeze as t0_freeze,
-	        		t0.ARBPL1 as t0_ARBPL1
+	        		t0.ARBPL1 as t0_ARBPL1,
+	       fw.label_cn as to_Org_lableCN,
+	       t0.psbh as t0_psbh,
+	       t0.freeze as t0_freeze
           from 
-          ZG_T_ORDER t0 ,fw_organization fw ]]> 
+          ZG_T_ORDER t0,fw_organization fw,zg_t_order_task task ]]> 
           <isNotEqual property="operatorId" compareValue="0">
           	<![CDATA[ ,FW_ORGANIZATION_MANAGER fom ]]>
           </isNotEqual>
-         <![CDATA[ where t0.arbpl=fw.cuid(+) ]]>
+         <![CDATA[ where t0.arbpl=fw.cuid(+) and t0.order_state<>'-1' ]]>
          		<isNotEqual property="operatorId" compareValue="0">
 	          		<![CDATA[ and fom.org_id(+) = t0.ARBPL
 	          		and fom.EMPLOYEE_ID=#operatorId# ]]>
           		</isNotEqual>
+          		 and t0.cuid=task.order_id
+          		 group by 
+                   
+                   t0.CUID ,
+                       t0.LABEL_CN ,
+                       t0.AUFNR ,
+                       t0.ORDER_STATE ,
+                       t0.publish_num ,
+                       t0.SUBMIT_USER ,
+                       t0.SUBMIT_DATE ,
+                       t0.MANDT,
+                       t0.PXDAT ,
+                       t0.PLANT ,
+                       t0.MIPOS ,
+                       t0.PCDAT,
+                       t0.ARBPL ,
+                       t0.MATNR,
+                       t0.kdauf,
+                       t0.KDPOS,
+                       t0.KDTXT,
+                       t0.ZCKPP ,
+                       t0.MAKTX2 ,
+                       t0.MAKTX1 ,
+                       t0.ZZCKS,
+                       t0.ATWRT2,
+                       t0.PSMNG ,
+                       t0.PMENGE,
+                       t0.ZTXT02 ,
+                       t0.ZDBLC ,
+                       t0.BRGEW2 ,
+                       t0.CRDAT ,
+                       t0.CPUTM ,
+                       t0.CRNAM ,
+                       t0.MRNAM ,
+                       t0.ZMUZE ,
+                       t0.MNAME ,
+                       t0.FBDAT,
+                       t0.FBUZE ,
+                       t0.FNAME ,
+                       t0.PFLAG,
+                       t0.ARBPL1 ,
+                       fw.label_cn,
+                       t0.psbh ,
+                       t0.freeze 
  <![CDATA[ ) m
 	        left join  ( select 
 	        	t1.CUID as t1_CUID,
@@ -1132,8 +1176,8 @@
 		    where
 			t1.CUID = t0.CUID 
 	        ) t0_3_4 on t0_3_4.t0_CUID = m.t0_FNAME 
-    	]]>
-		<include refid="dynamicWhere"/> 
+        ]]>
+		<include refid="dynamicWhere"/>
 		)
     </select>
     <!--

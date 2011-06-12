@@ -101,6 +101,156 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		update zg_t_order_plan_group t set t.label_cn='$labelCn$' where t.cuid='$cuid$'
     </update>
     
+    <select id="getPlanGroupList1" resultMap="zgTorderPlanGroupResult">
+     select    * from ((
+		     	select oup.*,min(zto.arbpl) arbpl,min(task.px_date) px_date,'0' as advance
+		  from 
+		  
+		     <isNotEqual property="operatorId" compareValue="0"> 
+		    	zg_t_virtualorg_employee emp,
+		      	zg_t_virtualorg          vorg,
+		        ZG_MATERIEL_VIRTUALORG   morg,
+		        zg_materiel              mat,
+		      </isNotEqual>
+		       zg_t_orderbom            orderbom,
+		       zg_t_order_planbom       planbom,
+		       zg_t_order_plan          plan,
+		       zg_t_group_order_plan    gop,
+		       zg_t_order_plan_group    oup,
+		          zg_t_order zto,
+       zg_t_order_task         task,
+                zg_t_order_taskbom taskbom,
+        zg_t_bom                 bom
+		 where zto.cuid = task.order_id
+            and task.cuid=plan.order_task_id
+		  <isNotEqual property="operatorId" compareValue="0"> 
+		   and vorg.org_id=plan.plant 
+		   and emp.org_id = vorg.cuid
+		   and vorg.cuid = morg.org_id
+		<!--    and morg.matkl = mat.id
+		    and mat.id in   
+		 and mat.id = bom.matkl_self   
+		  and mat.lgort = orderbom.lgort-->
+		    and mat.id in ('$carMatkls$')
+   			and mat.id=orderbom.matkl_self
+		   </isNotEqual>
+		    and bom.idnrk = orderbom.idnrk 
+		     and bom.car_id is not null
+		   and bom.carnum is not null
+		   and planbom.taskbom_id=taskbom.cuid
+            and taskbom.order_bom_id=orderbom.cuid
+		   and planbom.order_plan_id = plan.cuid
+		   and plan.cuid = gop.order_plan_id
+		   and gop.group_id = oup.cuid
+		    <![CDATA[    and task.flag<>'-1' 
+		    and zto.freeze<>'4']]>
+		     
+            and task.plant='$plant$'
+		   
+		      <isNotEqual prepend="AND"  property="planType" compareValue="BACK"> 
+		      	 oup.plan_type = '$planType$'
+		      </isNotEqual>
+		      <isEqual prepend="AND"  property="planType" compareValue="BACK"> 
+		      	 planbom.wait_back_num > 0
+		      </isEqual>
+       		 <isNotEmpty prepend="AND" property="arbpl">
+       	     task.arbpl = '$arbpl$'
+       		</isNotEmpty>
+		   <isNotEqual property="operatorId" compareValue="0"> 
+		  	 and emp.user_id = '$operatorId$'
+		   </isNotEqual>
+		    <isEqual property="planType" compareValue="ABE"> 
+		  	 and zto.freeze='0'
+		   </isEqual>
+		  
+		   <![CDATA[    and TO_NUMBER(oup.state) >=0
+            and TO_NUMBER( plan.state) >=0
+		    and  to_date('$pxDate$','yyyy-MM-dd')>=task.px_date
+	   group by oup.cuid,oup.percent,oup.plan_type,oup.state,oup.psbh,oup.label_cn,oup.indexno
+		
+		    ]]>) union 
+		    (
+		    	select oup.*,min(zto.arbpl) arbpl,min(task.px_date) px_date,'1' as advance
+		  from 
+		  
+		     <isNotEqual property="operatorId" compareValue="0"> 
+		    	zg_t_virtualorg_employee emp,
+		      	zg_t_virtualorg          vorg,
+		        ZG_MATERIEL_VIRTUALORG   morg,
+		         zg_materiel              mat,
+		      </isNotEqual>
+		       zg_t_orderbom            orderbom,
+		       zg_t_order_planbom       planbom,
+		       zg_t_order_plan          plan,
+		       zg_t_group_order_plan    gop,
+		       zg_t_order_plan_group    oup,
+		         zg_t_order zto,
+       			zg_t_order_task         task,
+                zg_t_order_taskbom taskbom,
+       			   zg_t_bom                 bom,
+                zg_materiel              ma
+       			
+		 where 
+		  orderbom.idnrk=bom.idnrk
+		  and ma.id=orderbom.matkl_self
+		   and ma.advance='1'
+		<!--   and bom.matkl_self=ma.id
+		 and bom.lgort=ma.lgort-->
+			 and bom.car_id is not null
+		 and bom.carnum is not null
+		  <isNotEqual property="operatorId" compareValue="0"> 
+		  and vorg.org_id=plan.plant
+		   and emp.org_id = vorg.cuid
+		   and vorg.cuid = morg.org_id
+			<!--    and morg.matkl = ma.id-->
+		    and mat.id in ('$carMatkls$')
+   				and mat.id=orderbom.matkl_self
+		   
+		   </isNotEqual>
+		 and zto.cuid = task.order_id
+            and task.cuid=plan.order_task_id
+		   and planbom.taskbom_id=taskbom.cuid
+            and taskbom.order_bom_id=orderbom.cuid
+		   and planbom.order_plan_id = plan.cuid
+		   and plan.cuid = gop.order_plan_id
+		   and gop.group_id = oup.cuid
+		    <![CDATA[
+		       and zto.order_state<>'-1' 
+		     and planbom.state='0' 
+		     and zto.freeze<>'4' ]]>
+		
+		   and task.plant='$plant$'
+		   
+		     <isNotEqual prepend="AND"  property="planType" compareValue="BACK"> 
+		      	 oup.plan_type = '$planType$'
+		      </isNotEqual>
+		      <isEqual prepend="AND"  property="planType" compareValue="BACK"> 
+		      	 planbom.wait_back_num > 0
+		      </isEqual>
+       		 <isNotEmpty prepend="AND" property="arbpl">
+       	     task.arbpl = '$arbpl$'
+       		</isNotEmpty>
+		   <isNotEqual property="operatorId" compareValue="0"> 
+		  	 and emp.user_id = '$operatorId$'
+		   </isNotEqual>
+		    <isEqual property="planType" compareValue="ABE"> 
+		  	 and zto.freeze='0'
+		   </isEqual>
+		   <![CDATA[     and TO_NUMBER(oup.state) >=0
+            and TO_NUMBER( plan.state) >=0
+		   and  task.px_date>to_date('$pxDate$','yyyy-MM-dd')
+		   
+	   group by oup.cuid,oup.percent,oup.plan_type,oup.state,oup.psbh,oup.label_cn,oup.indexno
+		
+		    ]]>
+		    
+		    )
+		    
+		    )
+		     order by   INDEXNO ,px_date,arbpl, PSBH
+
+    </select>
+    
     <!--今天之前没有领完的订单，今天的订单，今天之后特殊领料的订单 -->
      <select id="getPlanGroupList" resultMap="zgTorderPlanGroupResult">
      select    * from ((
@@ -161,8 +311,8 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		  	 and zto.freeze='0'
 		   </isEqual>
 		  
-		   <![CDATA[  and oup.state in ('0','4')
-		   and   plan.state in ('0','4')
+		   <![CDATA[  and oup.state in ('0','4','8')
+		   and   plan.state in ('0','4','8')
 		      and planbom.state in  ('0','4','8')
 		    and  to_date('$pxDate$','yyyy-MM-dd')>=task.px_date
 	   group by oup.cuid,oup.percent,oup.plan_type,oup.state,oup.psbh,oup.label_cn,oup.indexno
@@ -232,8 +382,8 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		    <isEqual property="planType" compareValue="ABE"> 
 		  	 and zto.freeze='0'
 		   </isEqual>
-		   <![CDATA[   and oup.state in ('0','4')
-		   and  plan.state in ('0','4')
+		   <![CDATA[   and oup.state in ('0','4','8')
+		   and  plan.state in ('0','4','8')
 		      and planbom.state in  ('0','4','8')
 		   and  task.px_date>to_date('$pxDate$','yyyy-MM-dd')
 		   

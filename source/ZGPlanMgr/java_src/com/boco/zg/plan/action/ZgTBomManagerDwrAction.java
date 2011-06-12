@@ -36,10 +36,14 @@ public class ZgTBomManagerDwrAction extends BaseDwrAction {
 			ZgTorderbomEx bom = (ZgTorderbomEx)JSONObject.toBean(jsonObject, ZgTorderbomEx.class);  
 			for (Map temp : sessionBomList) {
 				if(bom.getCuid().equals(temp.get("CUID"))){
-					temp.put("WAIT_BACK_NUM",bom.getWaitBackNum());
-					temp.put("CAR_NUM",bom.getWaitBackNum());
-					temp.put("isModity", true);
-					break;
+					if(bom.getWaitBackNum().equals(Long.parseLong(temp.get("WAIT_BACK_NUM").toString()))){
+					}else {
+						temp.put("WAIT_BACK_NUM",bom.getWaitBackNum());
+						temp.put("CAR_NUM",bom.getWaitBackNum());
+						temp.put("isModity", true);
+						break;
+					}
+					
 				}
 			}
 			

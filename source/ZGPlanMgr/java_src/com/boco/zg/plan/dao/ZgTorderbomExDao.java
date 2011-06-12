@@ -139,6 +139,16 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 		return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByGroupId",pageRequest.getFilters());
 
 	}
+	
+	/**
+	 * 根据定单分组查找其bom组件
+	 * @param pageRequest
+	 * @return
+	 */
+	public  List<Map> getBomListByGroupId1(PageRequest<Map> pageRequest) {
+		return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByGroupId1",pageRequest.getFilters());
+
+	}
 
 	/**
 	 * 根据定单分组查找其bom组件(提前领料)
@@ -149,6 +159,18 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 			PageRequest<Map> pageRequest) {
 		return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByGroupIdAdvance",pageRequest.getFilters());
 	}
+	
+
+	/**
+	 * 根据定单分组查找其bom组件(提前领料)
+	 * @param pageRequest
+	 * @return
+	 */
+	public List<Map> getBomListByGroupIdAdvance1(
+			PageRequest<Map> pageRequest) {
+		return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByGroupIdAdvance1",pageRequest.getFilters());
+	}
+
 
 
 	/**

@@ -95,7 +95,8 @@
 	          orderbom.lgort,
 	          plan.plant,
 	          sup.lifnr,
-	          sup.lifnr_name,orgname, zto.kdauf,zto.KDPOS ]]>
+	          sup.lifnr_name,orgname, zto.kdauf,zto.KDPOS,
+               orderbom.posnr ]]>
 
 	</select>   
 	
@@ -154,7 +155,8 @@
 	          orderbom.lgort,
 	          sup.lifnr,
 	          plan.plant,
-	          sup.lifnr_name,orgname, zto.kdauf,zto.KDPOS ) ]]>
+	          sup.lifnr_name,orgname, zto.kdauf,zto.KDPOS,
+               orderbom.posnr ) ]]>
 
 	  </select>
 </sqlMap>

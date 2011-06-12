@@ -80,7 +80,7 @@ public class Constants {
 		WAITAUDITING("1","待审核"),
 		REJECTAUDITING("2","审核退回"),
 		SAVE("4", "保存"),
-		SUBMIT("8", "已提交"),
+		SUBMIT("8", "已提交/已领料完成（需要退料）"),
 		FINISHED("9", "完成");
 		
 		private String value;
@@ -189,7 +189,7 @@ public class Constants {
 		YHTYPE("ABC", "预焊"),
 		PLTYPE("3", "批量"),
 		ZZTYPE("ABE", "总装"),
-		ADD("4","补领料"),
+		RENEW("RENEW","补领料"),
 		CHANGE("CHANGE","换料"),
 		BACK("BACK","退料");
 

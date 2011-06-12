@@ -31,10 +31,10 @@ import cn.org.rapid_framework.web.util.HttpUtils;
 import com.boco.frame.login.pojo.OperatorInfo;
 import com.boco.frame.meta.base.model.TmdEnumevalue;
 import com.boco.frame.meta.dao.IbatisDAOHelper;
-import com.boco.frame.meta.service.FwOrganizationExBo;
 import com.boco.frame.sys.base.model.FwOrganization;
 import com.boco.frame.sys.base.service.FwEmployeeBo;
 import com.boco.frame.sys.base.service.FwOrganizationBo;
+import com.boco.frame.sys.service.FwOrganizationExBo;
 import com.boco.zg.bom.base.model.ZgTbom;
 import com.boco.zg.bom.base.service.ZgTbomManager;
 import com.boco.zg.plan.base.model.ZgTcarbomSuppliers;
@@ -76,6 +76,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 	protected static final String QUERY_STORAGE_JSP2 = "/zg/plan/ZgTcarplan/query_ZgTcarplan_Storage2.jsp";
 	protected static final String QUERY_STORAGE_JSP1 = "/zg/plan/ZgTcarplan/query_ZgTcarplan_Storage1.jsp";
 	protected static final String LIST_JSP= "/zg/plan/ZgTcarplan/list_ZgTcarplan.jsp";
+	protected static final String LIST_JSP1= "/zg/plan/ZgTcarplan/list_ZgTcarplan1.jsp";
 	protected static final String LIST_STORAGE_JSP= "/zg/plan/ZgTcarplan/list_ZgTcarplan_Storage.jsp";
 	protected static final String LIST_STORAGE_JSP2= "/zg/plan/ZgTcarplan/list_ZgTcarplan_Storage2.jsp";
 	protected static final String CREATE_JSP = "/zg/plan/ZgTcarplan/create_ZgTcarplan.jsp";
@@ -98,8 +99,11 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 	private static final String ARBPLIST = "/zg/plan/ZgTcarplan/arbpl_Menu.jsp";
 
 	private static final String CAR_BOM_LIST = "/zg/plan/ZgTcarbom/car_bom_list.jsp";
+	private static final String CAR_BOM_LIST1 = "/zg/plan/ZgTcarbom/car_bom_list1.jsp";
 		
 	private static final String CAR_BOM = "/zg/plan/ZgTcarbom/car_bom.jsp";
+	
+	private static final String CAR_BOM1 = "/zg/plan/ZgTcarbom/car_bom1.jsp";
 
 	private static final String CAR_BOM_LIST_PRINT = "/zg/plan/ZgTcarbom/car_bom_list_print.jsp";
 
@@ -360,7 +364,13 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		
 		getRequest().setAttribute("resultList", list);
 		getRequest().setAttribute("pageRequest", pageRequest);
-		return LIST_JSP;
+		if(pageRequest.getFilters().get("planType").equals(Constants.OrderPlanType.BACK.value())){
+			return LIST_JSP1;
+		}else {
+			return LIST_JSP;
+		}
+		
+		
 	}
 	
 	/**
@@ -544,19 +554,27 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 	 * @throws IOException 
 	 */
 	public void generateCarPlan() throws IOException{
+		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+		String planType=pageRequest.getFilters().get("planType").toString();
 		OperatorInfo operatorInfo=(OperatorInfo) getSession().getAttribute("operatorInfo");
-		zgTcarplanExBo.generateCarPlan(items,carbomList,operatorInfo);
+		zgTcarplanExBo.generateCarPlan(items,carbomList,operatorInfo,planType);
 		rendHtml("window.returnValue='OK';window.close()");
 	}
+	
 	
 	/**
 	 * 仓库管理员确认装车
 	 * @throws IOException 
 	 */
 	public void confirmCarPlan() throws IOException{
+		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+		String planType=pageRequest.getFilters().get("planType").toString();
 		OperatorInfo operatorInfo=(OperatorInfo) getSession().getAttribute("operatorInfo");
 		String storageUserId=getRequest().getParameter("storageUserId");
-		String result=zgTcarplanExBo.confirmCarPlan(items,carbomList,operatorInfo,storageUserId);
+		String result=zgTcarplanExBo.confirmCarPlan(items,carbomList,operatorInfo,storageUserId,planType);
+		if(Constants.OrderPlanType.BACK.value().equals(planType)){
+			result="turn";
+		}
 		rendHtml("alert('操作成功!');window.returnValue='"+result+"';window.close();");
 	}
 
@@ -637,8 +655,15 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		//1.该领料员原来的装车计划bom列表
 		List<Map> bomList=zgTcarplanExBo.getBomLIstByUserId(planType,getSessionOperatorId(),lgort);
 		
+		
 		//获取本次追加的bom列表 
-		List<Map> newBomList=zgTcarplanExBo.getBomListByBomIds(bomCuids,getSessionOperatorId());
+		List<Map> newBomList=null;
+		if(Constants.OrderPlanType.BACK.value().equals(planType)){
+			newBomList=zgTcarplanExBo.getBomListByBomIds1(bomCuids,getSessionOperatorId(),planType);
+		}else {
+			 newBomList=zgTcarplanExBo.getBomListByBomIds(bomCuids,getSessionOperatorId());
+		}
+		
 		
 		//获取相就在的供应商信息
 		if(bomList.size()>0){
@@ -751,7 +776,12 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		List<ZgTorder> orderList=zgTorderExBo.getOrderInfoListByGroupId(groupId);
 		getRequest().setAttribute("orderList", orderList);
 		getRequest().setAttribute("pageRequest", pageRequest);
-		return CAR_BOM_LIST;
+		if(Constants.OrderPlanType.BACK.value().equals(planType)){
+			return CAR_BOM_LIST1;
+		}else {
+			return CAR_BOM_LIST;
+		}
+		
 	}
 	
 	/**
@@ -811,7 +841,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		for(int i = 0; i < items.length; i++) {
 			Hashtable params = HttpUtils.parseQueryString(items[i]);
 			String carPlanId = (java.lang.String)params.get("id");
-			zgTcarplanExBo.storagePlanSubmitById(carPlanId,"","ALL");
+			zgTcarplanExBo.storagePlanSubmitById(carPlanId,"","ALL","");
 		}
 		promtAndQuery("操作成功");
 	}
@@ -1033,8 +1063,12 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		getRequest().setAttribute("lgortName", lgortName);
 		
 		getRequest().setAttribute("carCode", carCode);
+		if(Constants.OrderPlanType.BACK.value().equals(planType)){
+			return CAR_BOM1;
+		}else {
+			return CAR_BOM;
+		}
 		
-		return CAR_BOM;
 	}
 	
 	/**
@@ -1083,7 +1117,12 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 			String carMatkls=object==null?"null":object.toString();
 			pageRequest.getFilters().put("carMatkls", carMatkls);
 			
-			newBomList=zgTorderbomExBo.getBomListByGroupId(pageRequest);
+			if(Constants.OrderPlanType.BACK.value().equals(planType)){
+				newBomList=zgTorderbomExBo.getBomListByGroupId1(pageRequest);
+			}else {
+				newBomList=zgTorderbomExBo.getBomListByGroupId(pageRequest);
+			}
+			
 			
 		}
 		
@@ -1207,7 +1246,13 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		getRequest().setAttribute("bomList", bomList);
 		pageRequest.getFilters().put("bomCuids", bomCuids);
 		getRequest().setAttribute("pageRequest", pageRequest);
-		return CAR_BOM_LIST;
+		if(Constants.OrderPlanType.BACK.value().equals(planType)){
+			return CAR_BOM_LIST1;
+		}else {
+			return CAR_BOM_LIST;
+		}
+		
+		
 	}
 
 	public List<ZgTcarbomEx> getCarbomList() {

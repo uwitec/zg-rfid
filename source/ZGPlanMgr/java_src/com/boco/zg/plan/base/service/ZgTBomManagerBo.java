@@ -27,7 +27,7 @@ import com.boco.zg.plan.model.ZgTorderbomEx;
 import com.boco.zg.util.Constants;
 
 /**
- * @author 翁钦
+ * @author 熊警
  * @version 1.0
  * @since 1.0
  */
@@ -74,6 +74,10 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 	public Page pageOrderPlanForChange1(PageRequest<Map> pageRequest) {
 		return zgTBomManagerDao.pageOrderPlanForChange1(pageRequest);
 	}
+	
+	public Page pageOrderPlanForChange2(PageRequest<Map> pageRequest) {
+		return zgTBomManagerDao.pageOrderPlanForChange2(pageRequest);
+	}
 
 	/**
 	 * 根据单据编号查找其bom列表
@@ -104,7 +108,7 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 	}
 	
 	
-	public void synSessionBomToDataBase(List<Map> bol,ZgTorderPlan zgTorderPlan) {
+	public void synSessionBomToDataBase(List<Map> bol,ZgTorderPlan zgTorderPlan,String planType) {
 		
 		for (Map obj : bol) {
 			//if(obj.get("isDel")==null){
@@ -115,12 +119,22 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 					
 					zgTorderPlanbom.setOrderPlanId(zgTorderPlan.getCuid());
 					
-					zgTorderPlanbom.setOrderId("");
 					
 				   //zgTorderPlanbom.setCuid(String.valueOf(obj.get("CUID")));
-					zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
-					zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
-					zgTorderPlanbom.setOrderBomId(String.valueOf(obj.get("CUID")));
+					if(Constants.OrderPlanType.RENEW.value().equals(planType)){
+						
+					}else {
+						zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+					}
+					
+					if(Constants.OrderPlanType.BACK.value().equals(planType)){
+						
+					}else {
+						zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+					}
+					
+					zgTorderPlanbom.setTaskBomId(String.valueOf(obj.get("CUID")));
+					zgTorderPlanbom.setOrderTaskId(zgTorderPlan.getOrderTaskId());
 					zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
 					zgTorderPlanbom.setState("0");
 					zgTorderPlanbomBo.save1(zgTorderPlanbom);
@@ -131,14 +145,14 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 		   }
 	
 	/**
-	 * 
+	 * create by 熊警
 	 * @param bol
 	 * @param zgTorderPlan
 	 * @param cuid
 	 * @param waitBackNum
 	 */
 	@SuppressWarnings("unchecked")
-	public void updateOrderPlanBomWaitBackNum(List<Map> bol,ZgTorderPlan zgTorderPlan) {
+	public void updateOrderPlanBomWaitBackNum(List<Map> bol,ZgTorderPlan zgTorderPlan,String planType) {
 		//System.out.print(obj.get("CUID"));
 		for (Map obj : bol) {
 			//System.out.print(obj.get("CUID").toString());
@@ -146,61 +160,86 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 			if(obj.get("isModity")==null||"".equals(obj.get("isModity"))){//空代表从数据库中获取而且没有修改过
 			
 				System.out.print("a");
-			}else if(((Boolean)obj.get("isModity")).booleanValue()==false){//FALSE代表新添加但没有修改
-	            ZgTorderPlanbom zgTorderPlanbom=new ZgTorderPlanbom();
-				
-				zgTorderPlanbom.setOrderPlanId(zgTorderPlan.getCuid());
-				
-				zgTorderPlanbom.setOrderId("");
-				
-				//zgTorderPlanbom.setCuid(String.valueOf(obj.get("CUID")));
-				zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
-				zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
-				zgTorderPlanbom.setOrderBomId(String.valueOf(obj.get("CUID")));
-				zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
-				zgTorderPlanbom.setState("0");
-				zgTorderPlanbomBo.save1(zgTorderPlanbom);
-			}else if(((Boolean)obj.get("isModity")).booleanValue()==true&&obj.get("PBID")!=null){ //代表数据修改过但这个是从数据库中获取
-				if(obj.get("isDel")==null){ //删除为空代表数据库中获取的数据没有删除状态
-					System.out.println("============="+obj.get("PBID").toString()+":"+Long.valueOf(obj.get("WAIT_BACK_NUM").toString()));
+			}
+//			else if(((Boolean)obj.get("isModity")).booleanValue()==false){//FALSE代表新添加但没有修改
+//	            ZgTorderPlanbom zgTorderPlanbom=new ZgTorderPlanbom();
+//				
+//				zgTorderPlanbom.setOrderPlanId(zgTorderPlan.getCuid());
+//				
+//				zgTorderPlanbom.setOrderTaskId(zgTorderPlan.getOrderTaskId());
+//				
+//				//zgTorderPlanbom.setCuid(String.valueOf(obj.get("CUID")));
+//				zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+//				zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+//				zgTorderPlanbom.setTaskBomId(String.valueOf(obj.get("CUID")));
+//				zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
+//				zgTorderPlanbom.setState("0");
+//				zgTorderPlanbomBo.save1(zgTorderPlanbom);
+//			}else 
+			else if(((Boolean)obj.get("isModity")).booleanValue()==true){ //代表数据修改过但这个是从数据库中获取
+				if(obj.get("isDel")==null&&obj.get("PBID")!=null){ //删除为空代表数据库中获取的数据没有删除状态
 					zgTorderPlanbom=(ZgTorderPlanbom)zgTorderPlanbomBo.getById(obj.get("PBID").toString());
-				     zgTorderPlanbom.setWaitBackNum(Long.valueOf(obj.get("WAIT_BACK_NUM").toString()));
-				     zgTorderPlanbom.setCarNum(Long.valueOf(obj.get("WAIT_BACK_NUM").toString()));
-				     zgTorderPlanbomBo.update(zgTorderPlanbom);
+					if(Constants.OrderPlanType.RENEW.value().equals(planType)){//补领料时不需要退料
+						
+					}else {
+						zgTorderPlanbom.setWaitBackNum(Long.valueOf(obj.get("WAIT_BACK_NUM").toString()));
+					}
+					
+					if(Constants.OrderPlanType.BACK.value().equals(planType)){//退料时不需要领料
+						
+					}else {
+						zgTorderPlanbom.setCarNum(Long.valueOf(obj.get("WAIT_BACK_NUM").toString()));
+					}
+				   
+				    
+				 	zgTorderPlanbom.setState("0");
+				    zgTorderPlanbomBo.update(zgTorderPlanbom);
 				}else if(((Boolean)obj.get("isDel")).booleanValue()==true){//删除为TRUE代表数据库中获取的数据有删除状态
-					zgTorderPlanbomBo.removeById(obj.get("PBID").toString());
-				}else if(obj.get("PLANBOMID")==null){  //表示新添加的bom
+					String pbId=obj.get("PBID")==null?"":obj.get("PBID").toString();
+					zgTorderPlanbomBo.removeById(pbId);
+				}else if(obj.get("PBID")==null){  //表示新添加的bom
 					ZgTorderPlanbom zgTorderPlanbom=new ZgTorderPlanbom();
 					
 					zgTorderPlanbom.setOrderPlanId(zgTorderPlan.getCuid());
 					
-					zgTorderPlanbom.setOrderId("");
+					zgTorderPlanbom.setOrderTaskId(zgTorderPlan.getOrderTaskId());
 					
 					//zgTorderPlanbom.setCuid(String.valueOf(obj.get("CUID")));
-					zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
-					zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
-					zgTorderPlanbom.setOrderBomId(String.valueOf(obj.get("CUID")));
+					if(Constants.OrderPlanType.RENEW.value().equals(planType)){//补领料时不需要退料
+						
+					}else {
+						zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+					}
+					
+					if(Constants.OrderPlanType.BACK.value().equals(planType)){//退料时不需要领料
+						
+					}else {
+						zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+					}
+						
+					zgTorderPlanbom.setTaskBomId(String.valueOf(obj.get("CUID")));
 					zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
 					zgTorderPlanbom.setState("0");
 					zgTorderPlanbomBo.save1(zgTorderPlanbom);
 				}
 		  }
 				
-				
-			else{  //新添orderPlanBom
-				ZgTorderPlanbom zgTorderPlanbom=new ZgTorderPlanbom();
-				
-				zgTorderPlanbom.setOrderPlanId(zgTorderPlan.getCuid());
-				
-				zgTorderPlanbom.setOrderId("");
-				
-				//zgTorderPlanbom.setCuid(String.valueOf(obj.get("CUID")));
-				zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
-				zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
-				zgTorderPlanbom.setOrderBomId(String.valueOf(obj.get("CUID")));
-				zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
-				zgTorderPlanbomBo.save1(zgTorderPlanbom);
-			  }
+//				
+//			else{  //新添orderPlanBom
+//				ZgTorderPlanbom zgTorderPlanbom=new ZgTorderPlanbom();
+//				
+//				zgTorderPlanbom.setOrderPlanId(zgTorderPlan.getCuid());
+//				
+//				zgTorderPlanbom.setOrderTaskId(zgTorderPlan.getOrderTaskId());
+//				
+//				//zgTorderPlanbom.setCuid(String.valueOf(obj.get("CUID")));
+//				zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+//				zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+//				zgTorderPlanbom.setTaskBomId(String.valueOf(obj.get("CUID")));
+//				zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
+//				zgTorderPlanbom.setState("0");
+//				zgTorderPlanbomBo.save1(zgTorderPlanbom);
+//			  }
 			
 		}
 	}

@@ -530,23 +530,9 @@ and not exists (select * from zg_t_order_planbom planbom where planbom.order_id=
 		]]>
 	</select>
 	
-	<!-- 获取生产厂 -->
-	<select id="getPlantByOrderId" resultClass="java.util.HashMap">
-		
-	<isNotEqual property="userId" compareValue="0">
-          	select *
-	  from zg_t_order_aide a	  , fw_organization_manager t
-	 where a.plant = t.org_id
-	   and t.employee_id ='$userId$'
-	   and a.order_id = '$orderId$'
-   </isNotEqual>
-   <isEqual property="userId" compareValue="0">
-          select *	  from zg_t_order_aide a	where  a.order_id = '$orderId$'
-   </isEqual>
    
 		
 	
-	</select>
 	<!-- 成品下线更新数据 -->
 	<update id="updateOrderPublishNum" parameterClass="java.util.HashMap">
 		<![CDATA[

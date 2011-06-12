@@ -109,6 +109,10 @@ public class ZgTorderPlanGroupExDao extends ZgTorderPlanGroupDao{
 	public List<ZgTorderPlanGroup> getPlanGroupList(Map paramsMap) {
 		return getSqlMapClientTemplate().queryForList("ZgTorderPlanGroupEx.getPlanGroupList",paramsMap);
 	}
+	
+	public List<ZgTorderPlanGroup> getPlanGroupList1(Map paramsMap) {
+		return getSqlMapClientTemplate().queryForList("ZgTorderPlanGroupEx.getPlanGroupList1",paramsMap);
+	}
 
 
 	/**

@@ -247,7 +247,7 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 	 * @param carbomList
 	 * @param state
 	 */
-	public void saveEditCarPlan(List<ZgTcarbomEx> carbomList, String state) {
+	public void saveEditCarPlan(List<ZgTcarbomEx> carbomList, String state,String planType) {
 		if(carbomList != null && carbomList.size()>0) {
 			String carPlanId = carbomList.get(0).getCarPlanId();
 			ZgTcarplan carplan = zgTcarplanBo.getById(carPlanId);
@@ -255,18 +255,23 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 				String cuid = bom.getCuid();
 				ZgTcarbom oldBom = this.getById(cuid);
 				
-				//修改ZgTorderPlanbom中的bom表记录plan_num=plan_num-(c_plan_num(旧)-c_plan_num(新))  注： c_plan_num为装车计划bom表中的计划装车数量  
-				String orderPlanbomId = bom.getOrderPlanbomId();
-				ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(orderPlanbomId);
-				Long planNum = planbom.getPlanNum()-(oldBom.getPlanNum()-bom.getPlanNum());
-				planbom.setPlanNum(planNum);
-				if(Constants.CarPlanStatus.SUBMIT.value().equals(state)){//提交
-					planbom.setState(Constants.CarPlanStatus.SUBMIT.value());
+				
+				if(Constants.OrderPlanType.BACK.value().equals(planType)){//退料时不用对计划领料数量做相应的变化
+				}else {//
+					//修改ZgTorderPlanbom中的bom表记录plan_num=plan_num-(c_plan_num(旧)-c_plan_num(新))  注： c_plan_num为装车计划bom表中的计划装车数量  
+					String orderPlanbomId = bom.getOrderPlanbomId();
+					ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(orderPlanbomId);
+					Long planNum = planbom.getPlanNum()-(oldBom.getPlanNum()-bom.getPlanNum());
+					planbom.setPlanNum(planNum);
+					if(Constants.CarPlanStatus.SUBMIT.value().equals(state)){//提交
+						planbom.setState(Constants.CarPlanStatus.SUBMIT.value());
+					}
+					zgTorderPlanbomBo.update(planbom);
 				}
-				zgTorderPlanbomBo.update(planbom);
+				
 				
 				//更新carbom表的计划领数量
-				planNum = bom.getPlanNum();
+				Long  planNum = bom.getPlanNum();
 				Long realNum = bom.getRealNum();
 				if(planNum != null) {
 					oldBom.setPlanNum(planNum);
@@ -306,7 +311,7 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 	 * @param carbomList
 	 * @param state
 	 */
-	public void saveNewCarPlan(List<ZgTcarbomEx> carbomList, String state) {
+	public void saveNewCarPlan(List<ZgTcarbomEx> carbomList, String state,String planType) {
 		for(ZgTcarbomEx bom:carbomList) {
 			//仓库
 			ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(bom.getOrderPlanbomId());
@@ -325,10 +330,13 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 				}
 			}
 			
+			if(Constants.OrderPlanType.BACK.value().equals(planType)){
+			}else {
+				//修改orderplanbom表的数量和状态
+				planbom.setPlanNum(planbom.getPlanNum()+bom.getPlanNum());
+				zgTorderPlanbomBo.update(planbom);
+			}
 			
-			//修改orderplanbom表的数量和状态
-			planbom.setPlanNum(planbom.getPlanNum()+bom.getPlanNum());
-			zgTorderPlanbomBo.update(planbom);
 		}
 	}
 	
@@ -435,6 +443,22 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 	public Long checkForBomCarNum(String orderPlanbomId, Long carPlanNum) {
 		StringBuffer sql=new StringBuffer();
 		sql.append("select t.car_num- (nvl(t.complete_num,0)+"+carPlanNum+") num from zg_t_order_planbom t  where t.cuid='"+orderPlanbomId+"'");
+		List<Map> list=((ZgTcarbomDao)this.getEntityDao()).findDynQuery(sql.toString());
+		if(list.size()>0){
+			return Long.parseLong(list.get(0).get("NUM").toString());
+		}
+		return 0l;
+	}
+	
+	/**
+	 * 检查退料数量是否大于待退料数量
+	 * @param orderPlanbomId
+	 * @param carPlanNum
+	 * @return num 为超出的数量
+	 */
+	public Long checkForBomCarNumForBack(String orderPlanbomId, Long carPlanNum) {
+		StringBuffer sql=new StringBuffer();
+		sql.append("select nvl(t.wait_back_num,0)- "+carPlanNum+" num from zg_t_order_planbom t  where t.cuid='"+orderPlanbomId+"'");
 		List<Map> list=((ZgTcarbomDao)this.getEntityDao()).findDynQuery(sql.toString());
 		if(list.size()>0){
 			return Long.parseLong(list.get(0).get("NUM").toString());

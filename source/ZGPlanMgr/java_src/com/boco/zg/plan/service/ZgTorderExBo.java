@@ -420,7 +420,7 @@ public class ZgTorderExBo extends ZgTorderBo {
 		List<ZgTorderPlanGroup> planGrouList=zgTorderPlanGroupExBo.getPlanGroupListByOrderId(orderId);
 		for(ZgTorderPlanGroup group:planGrouList){
 			group.setState(Constants.OrderPlanStatus.FINISHED.value());
-			double percent=zgTorderPlanGroupExBo.getPercent(group.getCuid());
+//			double percent=zgTorderPlanGroupExBo.getPercent(group.getCuid());
 			group.setPercent(1d);
 			zgTorderPlanGroupExBo.update(group);
 		}

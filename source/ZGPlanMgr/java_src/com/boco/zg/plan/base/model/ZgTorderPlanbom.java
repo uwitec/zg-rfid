@@ -84,9 +84,6 @@ public class ZgTorderPlanbom extends BaseEntity {
 	private java.lang.String cuid;
 	private java.lang.String labelCn;
 	private java.lang.String orderPlanId;
-	private java.lang.String orderBomId_labelCn;
-	private RelatedModel orderBomId_related = new RelatedModel("ZG_T_ORDERBOM","CUID","LABEL_CN");
-	private java.lang.String orderBomId;
 	private java.lang.String orderTaskId_labelCn;
 	private RelatedModel orderTaskId_related = new RelatedModel("ZG_T_ORDER","CUID","LABEL_CN");
 	private java.lang.String orderTaskId;
@@ -145,28 +142,6 @@ public class ZgTorderPlanbom extends BaseEntity {
 		this.orderPlanId = orderPlanId;
 	}
 
-	public java.lang.String getOrderBomId_labelCn() {
-		return this.orderBomId_labelCn;
-	}
-	
-	public void setOrderBomId_labelCn(java.lang.String value) {
-		this.orderBomId_labelCn = value;
-	}
-	
-	public RelatedModel getOrderBomId_related() {
-		return this.orderBomId_related;
-	}
-	
-	public void setOrderBomId_related(RelatedModel value) {
-		this.orderBomId_related = value;
-	}
-	public java.lang.String getOrderBomId() {
-		return this.orderBomId;
-	}
-	
-	public void setOrderBomId(java.lang.String value) {
-		this.orderBomId = value;
-	}
 	
 	public java.lang.String getDepartmentId_labelCn() {
 		return this.departmentId_labelCn;
@@ -322,7 +297,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 		return new ToStringBuilder(this)
 			.append("Cuid",getCuid())
 			.append("LabelCn",getLabelCn())
-			.append("OrderBomId",getOrderBomId())
+			.append("OrderBomId",getTaskBomId())
 			.append("OrderId",getOrderTaskId())
 			.append("DepartmentId",getDepartmentId())
 			.append("UserId",getUserId())
@@ -341,7 +316,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 		return new HashCodeBuilder()
 			.append(getCuid())
 			.append(getLabelCn())
-			.append(getOrderBomId())
+			.append(getTaskBomId())
 			.append(getOrderTaskId())
 			.append(getDepartmentId())
 			.append(getUserId())
@@ -363,7 +338,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 		return new EqualsBuilder()
 			.append(getCuid(),other.getCuid())
 			.append(getLabelCn(),other.getLabelCn())
-			.append(getOrderBomId(),other.getOrderBomId())
+			.append(getTaskBomId(),other.getTaskBomId())
 			.append(getOrderTaskId(),other.getOrderTaskId())
 			.append(getDepartmentId(),other.getDepartmentId())
 			.append(getUserId(),other.getUserId())

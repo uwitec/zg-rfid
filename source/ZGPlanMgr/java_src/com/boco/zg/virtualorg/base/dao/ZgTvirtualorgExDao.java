@@ -56,7 +56,7 @@ public class ZgTvirtualorgExDao extends BaseIbatisDao<ZgTvirtualorgEx,java.lang.
 	public List<Map> getPlantListByOperatorId(String operatorId,String orderPlanType) {
 		Map paramsMap=new HashMap();
 		paramsMap.put("operatorId", operatorId);
-		if(!Constants.OrderPlanType.CHANGE.value().equals(orderPlanType)){
+		if(!Constants.OrderPlanType.CHANGE.value().equals(orderPlanType)&&!Constants.OrderPlanType.RENEW.value().equals(orderPlanType)&&!Constants.OrderPlanType.BACK.value().equals(orderPlanType)){
 			paramsMap.put("planType", orderPlanType);
 		}
 		return getSqlMapClientTemplate().queryForList("ZgTvirtualorgEx.getPlantListByOperatorId",paramsMap);

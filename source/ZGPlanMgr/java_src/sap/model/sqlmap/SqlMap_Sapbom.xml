@@ -22,7 +22,7 @@
 		       orderbom.sortf,
 		       orderbom.lgort,
 		       WMSYS.WM_CONCAT(carplan.cuid) carplancuid,
-		       'A' as LLTYP,
+		      decode( carplan.order_plan_type,'ABC','A','ABD','A','ABE','A','BACK','T','CHANGE','H','RENEW','B') LLTYP,
 		       orderbom.posnr
 		  from zg_t_order            zto,
 		       zg_t_orderbom         orderbom,
@@ -63,7 +63,7 @@
 		       orderbom.sortf,
 		       orderbom.lgort,
             	zto.MIPOS,
-           		zto.KDAUF   ,orderbom.posnr         ]]>
+           		zto.KDAUF   ,orderbom.posnr  , carplan.order_plan_type      ]]>
 	</select>
 	
 	<select id="getSynSapOrderBomByOrderPlanId" resultClass="java.util.HashMap">
@@ -85,7 +85,7 @@
 		       orderbom.sortf,
 		       orderbom.lgort,
 		       WMSYS.WM_CONCAT(carplan.cuid) carplancuid,
-		        'A' as LLTYP,orderbom.posnr
+		           decode( carplan.order_plan_type,'ABC','A','ABD','A','ABE','A','BACK','T','CHANGE','H','RENEW','B') LLTYP,orderbom.posnr
 		  from zg_t_order            zto,
 		       zg_t_orderbom         orderbom,
 		       zg_t_carplan          carplan,
@@ -126,7 +126,7 @@
 		       orderbom.sortf,
 		       orderbom.lgort,
 		        zto.MIPOS,
-           		zto.KDAUF  ,orderbom.posnr    ]]>
+           		zto.KDAUF  ,orderbom.posnr,carplan.order_plan_type    ]]>
 	</select>
 	
 	<select id="getSynSapOrderBomByCarPlanId" resultClass="java.util.HashMap">
@@ -148,7 +148,7 @@
 		       orderbom.sortf,
 		       orderbom.lgort,
 		       WMSYS.WM_CONCAT(carplan.cuid) carplancuid,
-		        'A' as LLTYP,orderbom.posnr
+		           decode( carplan.order_plan_type,'ABC','A','ABD','A','ABE','A','BACK','T','CHANGE','H','RENEW','B') LLTYP,orderbom.posnr
 		  from zg_t_order            zto,
 		       zg_t_orderbom         orderbom,
 		       zg_t_carplan          carplan,
@@ -188,7 +188,7 @@
 		       orderbom.sortf,
 		       orderbom.lgort,
 		        zto.MIPOS,
-           		zto.KDAUF,orderbom.posnr     ]]>
+           		zto.KDAUF,orderbom.posnr ,carplan.order_plan_type    ]]>
 	</select>
 	
 	
