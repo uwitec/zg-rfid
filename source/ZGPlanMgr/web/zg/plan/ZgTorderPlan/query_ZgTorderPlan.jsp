@@ -139,6 +139,12 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 		//	window.location="${ctx}/zg/plan/ZgTorderPlan/query.do?type=${pageRequest.filters.planType}&viewModel=${viewModel}&viewDate="+viewDate;
 		}
 		
+		function queryAufnr(){
+			$("#s_aufnr").val($("#aufnr").val());
+		       var form=document.getElementById('form'+curNum);
+		    	form.submit();
+		}
+		
 	</script>
 	
 </head>
@@ -219,7 +225,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
         		领料中：<img src="<%=iconPath%>/ico_ing.gif" alt="" />&nbsp;&nbsp;
         	完成：	<img src="<%=iconPath%>/ico_ok.gif" alt="完成" />&nbsp;&nbsp;
         	冻结：	<img src="<%=iconPath%>/ico_dj.gif" alt="冻结" />
-        	
+        	&nbsp;&nbsp;<input type="text" name="aufnr" style="width:100px"   id="aufnr"/><a href="javascript:queryAufnr()">查询</a>
         </caption>
     </table>
         <div class="tabpage" id="tab">
@@ -241,6 +247,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 			<input type="hidden"  name="s_inSubBmClassIdQuery"  value="${pageRequest.filters.inSubBmClassIdQuery}"/>
 			<input type="hidden" name="s_pxDate" id="s_pxDate" value="<fmt:formatDate value="${date}" pattern="yyyy-MM-dd" />"/>
 			<input type="hidden" name="s_arbpl"   id="s_arbpl" value="${arbpl }"/>
+			<input type="hidden" name="s_aufnr"   id="s_aufnr"/>
 			<input type="hidden" name="s_pxDate${n.count-1 }" id="s_pxDate${n.count-1 }" value="<fmt:formatDate value="${date}" pattern="yyyy-MM-dd" />"/>
 			<input type="hidden" name="viewModel"   id="viewModel"  value="${viewModel }"/>
 			

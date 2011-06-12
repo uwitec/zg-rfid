@@ -98,7 +98,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}
 			}
 			if(flag==false){
-				alert("请选择要领料的物料！");
+				alert("请选择要退料的物料！");
 				return;
 			}
 			
@@ -108,7 +108,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				return;
 			}
 	
-			
+			if(!checkForConfirmCarPlan()){
+				butsetDisable(false);
+				return;
+			}
 			var result = openDialog1("${ctx}/zg/plan/ZgTcarbom/rfid.jsp?lgort=${lgort}",600,280);
 			
 			if(result==undefined){
@@ -122,6 +125,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 			document.frames['listFrame'].document.getElementById('storageUserId').value=result.cuid;
 			var form=document.frames['listFrame'].document.getElementById("carList");
+			
 			form.action="${ctx}/zg/plan/ZgTcarplan/confirmCarPlan.do";
 			form.submit();
 		}
@@ -212,7 +216,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		        	var carNum=document.frames['listFrame'].document.getElementById("carbomList["+i+"].planNum").value*1;
 		        	var idnrk=document.frames['listFrame'].document.getElementById("carbomList["+i+"].idnrk").value;
 		        	if(carNum=='0'){
-		        		alert(idnrk+" 实际装车数量不能为零，请确认！");
+		        		alert(idnrk+" 实际退料数量不能为零，请确认！");
 						return;
 		        	}
 		        	var supItems=document.frames['listFrame'].document.getElementsByName("items"+i);
@@ -226,7 +230,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		        	   carSupNumAll=carSupNumAll+carSupNum*1;
 		        	}
 		        	if(carNum!=carSupNumAll&&supItems.length>0){
-		        		alert( idnrk+" 装车数量与具体供应商数量不相等，请确认！");
+		        		alert( idnrk+" 退料数量与具体供应商数量不相等，请确认！");
 		        		return false;
 		        	}
 		        	}
@@ -259,7 +263,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                         <img src="<%=iconPath%>/ow_hdr_i.gif" border="0"/>
                                     </td>
                                     <td class="ow_hdr_f">
-                                      	装车单详细
+                                      	退料单详细
                                     </td>
                                 </tr>
                             </table>

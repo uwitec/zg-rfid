@@ -215,6 +215,24 @@
  				</c:forEach>
 	        </select>
           </c:when>
+           <c:when test="${orderPlanType=='RENEW'}">补领料领料单
+          	&nbsp;&nbsp;&nbsp;&nbsp;生产厂：
+	         <select name="plant" id="plant" style="width:100px" onChange="plantOnChange(this.value)">
+	       		<c:forEach items="${plantListRENEW}" var="obj">
+	       		 	<c:if test="${obj.ORG_ID!=defaultPlant }"><option value="${ obj.ORG_ID}"   >${ obj.ORG_ID}</option></c:if>
+ 					<c:if test="${obj.ORG_ID==defaultPlant }"><option value="${ obj.ORG_ID}"  selected >${ obj.ORG_ID}</option></c:if>	       		
+ 				</c:forEach>
+	        </select>
+          </c:when>
+           <c:when test="${orderPlanType=='BACK'}">退料单
+          	&nbsp;&nbsp;&nbsp;&nbsp;生产厂：
+	         <select name="plant" id="plant" style="width:100px" onChange="plantOnChange(this.value)">
+	       		<c:forEach items="${plantListBACK}" var="obj">
+	       		 	<c:if test="${obj.ORG_ID!=defaultPlant }"><option value="${ obj.ORG_ID}"   >${ obj.ORG_ID}</option></c:if>
+ 					<c:if test="${obj.ORG_ID==defaultPlant }"><option value="${ obj.ORG_ID}"  selected >${ obj.ORG_ID}</option></c:if>	       		
+ 				</c:forEach>
+	        </select>
+          </c:when>
         </c:choose>
         
       &nbsp;&nbsp;&nbsp;&nbsp;  更多订单: 

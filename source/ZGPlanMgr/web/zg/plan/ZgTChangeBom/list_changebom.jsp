@@ -140,8 +140,9 @@
 									基本单位
 								</td>
 								<td class="tableHeader">
-											<c:if test="${planType=='CHANGE'}">换料数量</c:if>
+								<c:if test="${planType=='CHANGE'}">换料数量</c:if>
 								<c:if test="${planType=='BACK'}">退料数量</c:if>
+								<c:if test="${planType=='RENEW'}">补领料数量</c:if>
 								</td>
 								
 							</tr>
@@ -170,7 +171,10 @@
 										${obj.MSEHL2}
 									</td>
 									<td align="center">
-										${obj.WAIT_BACK_NUM}
+								<c:if test="${planType=='CHANGE'}">${obj.WAIT_BACK_NUM}</c:if>
+								<c:if test="${planType=='BACK'}">${obj.WAIT_BACK_NUM}</c:if>
+								<c:if test="${planType=='RENEW'}">${obj.CAR_NUM}</c:if>
+										
 									</td>
 								
 									</tr>

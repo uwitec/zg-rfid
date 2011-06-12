@@ -52,6 +52,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							物料描述
 						</td>
 						<td class="tableHeader">
+							项目编号
+						</td>
+						<td class="tableHeader">
 							单位
 						</td>
 						<td class="tableHeader">
@@ -68,7 +71,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<tr class="${trcss}" onmouseover="this.style.backgroundColor = '#EBF1FF'"  onmouseout="this.style.backgroundColor = '#FFFFFF'">
 							<td width="3%" >
 							<input type="checkbox"
-								value="orderBomId=${obj.CUID}&orderAufnr=${obj.AUFNR}&arbpl=${obj.ARBPL}&idnrk=${obj.IDNRK}&maktx2=${obj.MAKTX2}&storage_num=${obj.ALL_STORAGE_NUM}" name="items" />
+								value="orderBomId=${obj.CUID}&OBID=${obj.ORDER_BOM_ID }&orderAufnr=${obj.AUFNR}&arbpl=${obj.ARBPL}&idnrk=${obj.IDNRK}&storage_num=${obj.ALL_STORAGE_NUM}" name="items" />
 							</td>
 								
 							<td>
@@ -82,6 +85,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								</td>
 								<td>
 									${obj.MAKTX2}
+								</td>
+									<td>
+									${obj.POSNR}
 								</td>
 								<td>
 									${obj.MSEHL1}

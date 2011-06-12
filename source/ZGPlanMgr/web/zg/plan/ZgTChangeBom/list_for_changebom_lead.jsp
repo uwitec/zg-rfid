@@ -81,10 +81,13 @@
 									</td>
 							<td class="tableHeader"  >单据编码<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
 		                    <td class="tableHeader" >生产订单<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
+		                    <td class="tableHeader" >生产线<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
+		                    <td class="tableHeader" >生产厂<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
 			                <td class="tableHeader" >物料等级<%=map.get("ec_image_CUID")==null?"":map.get("ec_image_CUID")%></td>
 							<td class="tableHeader" >创建时间<%=map.get("ec_image_PLAN_DATE")==null?"":map.get("ec_image_PLAN_DATE")%></td>
 							<td class="tableHeader" >创建人<%=map.get("ec_image_USER_NAME")==null?"":map.get("ec_image_USER_NAME")%></td>
 							<td class="tableHeader"  >创建人部门<%=map.get("ec_image_DEPARTMENT_NAME")==null?"":map.get("ec_image_DEPARTMENT_NAME")%></td>
+							<td class="tableHeader"  >单据类型<%=map.get("ec_image_STATE")==null?"":map.get("ec_image_STATE")%></td>
 							<td class="tableHeader"  >状态<%=map.get("ec_image_STATE")==null?"":map.get("ec_image_STATE")%></td>
 
 								</tr>
@@ -111,6 +114,12 @@
 											${obj.AUFNR}
 										</td>
 										<td align="center">
+											${obj.ARBPL}
+										</td>
+										<td align="center">
+											${obj.PLANT}
+										</td>
+										<td align="center">
 											${obj.EXTEND1}
 											
 										</td>
@@ -123,7 +132,15 @@
 										<td align="center">
 											${obj.ORGNAME}
 										</td>
-										
+											<td align="center">
+										<c:choose>
+								            <c:when test="${obj.PLAN_TYPE=='CHANGE'}">换料</c:when>
+								            <c:when test="${obj.PLAN_TYPE=='BACK'}">退料</c:when>
+								            <c:when test="${obj.PLAN_TYPE=='RENEW'}">补领料</c:when>
+										</c:choose>
+											
+											
+										</td>
 										<td align="center">
 											
 											<c:choose>
@@ -139,7 +156,7 @@
 								</c:forEach> 
 								
 								<tr>
-									<td colspan="10">
+									<td colspan="11">
 										<%@include file="/frame/default/ux/pagebar.jsp" %>
 									</td>
 								</tr>

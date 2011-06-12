@@ -40,11 +40,12 @@
 			
 		}
 			
-		function returnAndClose(orderID,aufnr,arbpl,arbplName){
+		function returnAndClose(orderID,aufnr,arbpl,arbplName,plant){
 			var obj=new Object();
 			obj.orderID=orderID;
 			obj.aufnr=aufnr;
 			obj.arbpl=arbpl;
+			obj.plant=plant;
 			obj.arbplName=arbplName;
 			window.returnValue=obj;
 			window.close();
@@ -72,7 +73,7 @@
 								生产线
 							</td>
 							<td class="tableHeader">
-								物料描述
+								生产厂
 							</td>
 						</tr>
 					</thead>
@@ -80,7 +81,7 @@
 					<c:forEach items="${page.result}"var="obj" varStatus="n">
 							<c:set var="trcss" value="${n.count%2==0?'odd':'even'}" />
 							<tr class="${trcss}"							
-							 title="双击选择" ondblclick="returnAndClose('${obj.orderId}','${obj.aufnr}','${obj.arbpl}','${obj.labelCn}')" onmouseover="this.style.backgroundColor = '#EBF1FF'"  onmouseout="this.style.backgroundColor = '#FFFFFF'">
+							 title="双击选择" ondblclick="returnAndClose('${obj.orderId}','${obj.aufnr}','${obj.arbpl}','${obj.labelCn}','${obj.plant}')" onmouseover="this.style.backgroundColor = '#EBF1FF'"  onmouseout="this.style.backgroundColor = '#FFFFFF'">
 								
 								<td align="center">
 									${obj.aufnr}
@@ -89,7 +90,7 @@
 									${obj.arbpl}
 								</td>
 								<td  align="center">
-									${obj.maktx1}
+									${obj.plant}
 								</td>
 							</tr>
 					</c:forEach>

@@ -155,10 +155,8 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 							 <td class="tableHeader" >物料描述</td>
 							 <td class="tableHeader">订单编码 </td>
 							 <td class="tableHeader">单台用量</td>
-							 <td class="tableHeader">物料需求</td> 
-							 <td class="tableHeader" >已装车数量</td>
-							 <td class="tableHeader" >剩余数量</td>
 							  <td class="tableHeader" >待退料数量</td>
+							  <td class="tableHeader" >已退料数量</td>
 							 <td class="tableHeader" >车型编号</td>
 							  <td class="tableHeader" >车型名称</td>
 							 <td class="tableHeader">库存地点</td>
@@ -180,23 +178,22 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 							</td>
 							
 							<c:set var="mengeAll" value="0"/>
-							<c:set var="carNumAll" value="0"/>
-							
 							<c:set var="completeAll" value="0"/>
 							<c:set var="carCountAll" value="0"/>
 							<c:set var="bomCuid" value=""></c:set>
 							<c:set var="validNum" value="0"></c:set>
+							<c:set var="backNumAll" value="0"></c:set>
 							<c:set var="waitBackNumAll" value="0"></c:set>
 								<c:forEach items="${orderbom.value}" var="obj1" varStatus="m">
-								 	<c:set var="carNumAll" value="${carNumAll + obj1.carNum}"/>
 								 	<c:set var="mengeAll" value="${mengeAll + obj1.menge}"/>
 								 	<c:set var="completeAll" value="${completeAll + obj1.completeNum}"/>
 								 	<c:set var="validNumAll" value="${validNumAll + obj1.validNum}"/>
 								 	<c:set var="carCountAll" value="${carCountAll + obj1.carCount}"/>
-								 		 	<c:set var="waitBackNumAll" value="${waitBackNumAll + obj1.waitBackNum}"/>
+								 	<c:set var="waitBackNumAll" value="${waitBackNumAll + obj1.waitBackNum}"/>
+								 	<c:set var="backNumAll" value="${backNumAll + obj1.backNum}"/>
 								 	<c:set var="bomCuid" value="${bomCuid}${obj1.taskBomId },"></c:set>
 								</c:forEach>
-							<c:set var="percent" value="${completeAll/carNumAll}"></c:set>
+							<c:set var="percent" value="${waitBackNumAll/(waitBackNumAll+backNumAll)}"></c:set>
 							<td>${orderbom.key.idnrk}</td>
 							
 									   
@@ -233,17 +230,10 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 								<c:out value='${obj.zdtyl}'/>
 							</td>
 							<td align="center">
-								<c:out value='${carNumAll}'/>
-							</td>
-							<td align="center">
-								<c:out value='${completeAll}'/>
-							</td>
-							<td align="center">
-								<c:out value='${validNumAll}'/>
-							</td>
-							<td align="center">
 							<c:if test="${waitBackNumAll!=0}"><c:out value='${waitBackNumAll}'/></c:if>
-								
+							</td>
+							<td align="center">
+							<c:if test="${backNumAll!=0}"><c:out value='${backNumAll}'/></c:if>
 							</td>
 							<td align="center">
 								<c:out value='${obj.carCode}'/>
@@ -281,7 +271,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 									<td align="left">${obj.idnrk}</td>
 									<td>
 									
-									<c:if test="${ obj.percent<1&&(obj.carNum-obj.planNum>0)}">
+									<c:if test="${(obj.waitBackNum>0)}">
 									 <a href="javascript:loadCar('${pageRequest.filters.groupId}','${obj.taskBomId }','${obj.carCode }','${obj.carId }','${obj.lgortName}','${obj.lgort }','${obj.aufnr }','${obj.maktx1 }')"><img src="<%=iconPath%>/btn_hd_exit.gif" /><a>
 									</c:if>
 										
@@ -320,13 +310,12 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 						<td align="left">${obj.maktx2}</td>
 						<td align="left">${obj.aufnr}</td>
 						<td align="center">${obj.zdtyl}</td>
-						<td align="center">${obj.carNum}</td>
-						<td align="center">${obj.completeNum}</td>
-							<td align="center">
-								<c:out value='${obj.validNum}'/>
-							</td>
 							<td align="center">
 							<c:if test="${obj.waitBackNum!=0}"><c:out value='${obj.waitBackNum}'/></c:if>
+								
+							</td>
+							<td align="center">
+							<c:if test="${obj.backNum!=0}"><c:out value='${obj.backNum}'/></c:if>
 								
 							</td>
 							<td align="center">
