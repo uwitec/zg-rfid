@@ -314,6 +314,7 @@
         <col id="sortf" name="包装方式" datatype="string" desc=""></col>
         <col id="lgort" name="发料仓库" datatype="string" desc=""></col>
         <col id="car_num" name="生产批量" datatype="string" desc=""></col>
+        <col id="order_plan_type" name="领料方式" datatype="string" desc=""></col>
         <col id="complete_num" name="领料数量" datatype="string" desc=""></col>
         <col id="lifnr" name="供应商代码" datatype="string" desc=""></col>
         <col id="lifnr_name" name="供应商" datatype="string" desc=""></col>
@@ -332,6 +333,7 @@
                orderbom.maktx2,
                orderbom.sortf,
                orderbom.lgort,
+               decode( carplan.order_plan_type,'ABC' ,'正常领料','ABD','正常领料','ABE','正常领料','BACK','退料','CHANGE','换料','RENEW','补领料') order_plan_type,
                sup.lifnr,
                  case when sum(nvl(sup.car_num, 0))=0 then sum(carbom.real_num) else sum(nvl(sup.car_num, 0)) end as complete_num,
                sum(taskbom.menge) car_num,
@@ -394,7 +396,9 @@
        			<isNotEmpty id="suppliers">
 	       		AND  sup.lifnr_name like  '%#suppliers#%' 
        		</isNotEmpty> 
-       		
+       		<isNotEmpty id="planType">
+       			 and  carplan.order_plan_type in ('#planType#')
+       		</isNotEmpty>  
        			<isNotEmpty id="lgort">
 	       		AND  orderbom.lgort like  '%#lgort#%' 
        		</isNotEmpty> 
@@ -409,7 +413,7 @@
 	          orderbom.sortf,
 	          orderbom.lgort,
 	          sup.lifnr,plan.plant,
-	          sup.lifnr_name ,emu.orgname, zto.kdauf,zto.KDPOS
+	          sup.lifnr_name ,emu.orgname, zto.kdauf,zto.KDPOS,orderbom.posnr,carplan.order_plan_type
        		</isEmpty>
         </dynamic>
         <content>
@@ -443,6 +447,7 @@
         <col id="sortf" name="包装方式" datatype="string" desc=""></col>
         <col id="lgort" name="发料仓库" datatype="string" desc=""></col>
         <col id="car_num" name="生产批量" datatype="string" desc=""></col>
+         <col id="order_plan_type" name="领料方式" datatype="string" desc=""></col>
         <col id="real_num" name="领料数量" datatype="string" desc=""></col>
         <col id="lifnr" name="供应商代码" datatype="string" desc=""></col>
         <col id="lifnr_name" name="供应商" datatype="string" desc=""></col>
@@ -469,6 +474,7 @@
 	       orderbom.sortf,
 	       orderbom.lgort,
 	       sup.lifnr,
+	        decode( carplan.order_plan_type,'ABC' ,'正常领料','ABD','正常领料','ABE','正常领料','BACK','退料','CHANGE','换料','RENEW','补领料') order_plan_type,
 	          case when  nvl(sup.car_num,0)=0 then carbom.real_num else nvl(sup.car_num,0) end as real_num,
 	       planbom.car_num,
 	       sup.lifnr_name,
@@ -535,7 +541,9 @@
        			<isNotEmpty id="idnrk">
 	       		and  orderbom.idnrk like   '%#idnrk#%'
        		</isNotEmpty> 
-       		
+       			<isNotEmpty id="planType">
+       			 and  carplan.order_plan_type in('#planType#')
+       		</isNotEmpty>  
        			<isNotEmpty id="suppliers">
 	       		and  sup.lifnr_name like  '%#suppliers#%'
        		</isNotEmpty> 

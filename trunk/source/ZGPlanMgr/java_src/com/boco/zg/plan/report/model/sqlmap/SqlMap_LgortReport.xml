@@ -21,6 +21,9 @@
        		<isNotEmpty prepend="AND" property="plant">
        			task.plant='$plant$'
        		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="planType">
+	       		 carplan.order_plan_type in ('$planType$')
+       		</isNotEmpty> 
        		<isNotEmpty prepend="AND" property="arbpl">
 	       		  task.arbpl like '%'||'$arbpl$'||'%'
        		</isNotEmpty> 
@@ -51,6 +54,7 @@
 	       orderbom.sortf,
 	       orderbom.lgort,
 	       sup.lifnr,
+	       carplan.order_plan_type,
 	          case when  nvl(sup.car_num,0)=0 then carbom.real_num else nvl(sup.car_num,0) end as real_num,
 	       planbom.car_num,
 	       sup.lifnr_name,

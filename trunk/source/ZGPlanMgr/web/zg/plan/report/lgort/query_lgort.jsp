@@ -182,8 +182,17 @@
 			<tr>
 			<td class="label">供应商：</td>
 					<td><input type="text" name="s_suppliers" maxlength="40"/></td>
-					<td class="label"></td>
-					<td></td>
+					<td class="label">领料类型</td>
+					<td>
+					<select name="s_planType">
+					<option value="">全部</option>
+					<option value="ABC','ABD','ABE">正常领料</option>
+					<option value="BACK">退料</option>
+					<option value="CHANGE">换料</option>
+					<option value="RENEW">补料</option>
+					</select>
+					
+					</td>
 					<td class="label"></td>
 					<td></td>
 			</tr>

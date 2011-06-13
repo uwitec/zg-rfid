@@ -22,6 +22,14 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 	<style>
 		body,html {overflow:hidden}
 	</style>
+	<script language="javascript" event="onkeydown" for="document">  
+	<!--
+	if(event.keyCode==13)  
+	{  
+	  document.getElementById("queryBtn").click();  
+	} 
+	-->
+	</script>  
 	<script type="text/javascript">
 		var curNum=0; 
 		var curDate="<fmt:formatDate value='${curDate}' pattern="yyyy-MM-dd" />";
@@ -225,7 +233,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
         		领料中：<img src="<%=iconPath%>/ico_ing.gif" alt="" />&nbsp;&nbsp;
         	完成：	<img src="<%=iconPath%>/ico_ok.gif" alt="完成" />&nbsp;&nbsp;
         	冻结：	<img src="<%=iconPath%>/ico_dj.gif" alt="冻结" />
-        	&nbsp;&nbsp;<input type="text" name="aufnr" style="width:100px"   id="aufnr"/><a href="javascript:queryAufnr()">查询</a>
+        	&nbsp;&nbsp;<input type="text" name="aufnr" style="width:100px"   id="aufnr"/><a href="javascript:queryAufnr()" id="queryBtn">查询</a>
         </caption>
     </table>
         <div class="tabpage" id="tab">
