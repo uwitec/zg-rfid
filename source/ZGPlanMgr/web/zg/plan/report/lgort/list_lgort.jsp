@@ -82,6 +82,7 @@ for(SortInfo si:list){
 							<td class="tableHeader">包装方式<%=map.get("ec_image_t0_PMENGE")==null?"":map.get("ec_image_t0_PMENGE")%></td>
 							<td class="tableHeader">发料仓库<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
 							<td class="tableHeader">生产批量<%=map.get("ec_image_t0_MAKTX1")==null?"":map.get("ec_image_t0_MAKTX1")%></td>
+							<td class="tableHeader">领料类型<%=map.get("ec_image_t0_PSMNG")==null?"":map.get("ec_image_t0_PSMNG")%></td>
 							<td class="tableHeader">领料数量<%=map.get("ec_image_t0_PSMNG")==null?"":map.get("ec_image_t0_PSMNG")%></td>
 							<td class="tableHeader">供应商代码<%=map.get("ec_image_t0_PMENGE")==null?"":map.get("ec_image_t0_PMENGE")%></td>
 							<td class="tableHeader">供应商<%=map.get("ec_image_t0_PMENGE")==null?"":map.get("ec_image_t0_PMENGE")%></td>
@@ -112,6 +113,14 @@ for(SortInfo si:list){
 							<td align="center">${obj.SORTF}</td>
 							<td>${obj.LGORT}</td>
 							<td>${obj.CAR_NUM}</td>
+							<td align="center">
+							<c:choose>
+							 <c:when test="${obj.ORDER_PLAN_TYPE=='BACK'}">退料</c:when>
+							 <c:when test="${obj.ORDER_PLAN_TYPE=='CHANGE'}">换料</c:when>
+							 <c:when test="${obj.ORDER_PLAN_TYPE=='RENEW'}">补领料</c:when>
+							 <c:otherwise>正常领料</c:otherwise>
+							</c:choose>
+							</td>
 							<td align="center">${obj.REAL_NUM}</td>
 							<td align="left">${obj.LIFNR}</td>
 							<td align="left">${obj.LIFNR_NAME}</td>
@@ -127,7 +136,7 @@ for(SortInfo si:list){
 						</tr>
 					</c:forEach>
 						<tr>
-							<td colspan="21" >
+							<td colspan="23" >
 								<%@include file="/frame/default/ux/pagebar.jsp" %>
 							</td>
 						</tr>
