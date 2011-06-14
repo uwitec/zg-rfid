@@ -93,6 +93,12 @@
    		update zg_materiel t set t.advance='1' where t.id='$cuid$'
     </insert>
     
+     <insert id="updateMaterielLevel" parameterClass="java.util.HashMap">
+   		 update zg_materiel t set t.materiel_level='$materieLevel$' where t.id='$materielId$'
+    </insert>
+    
+    
+    
     <insert id="insert" parameterClass="zgMateriel">
     <![CDATA[
         INSERT INTO

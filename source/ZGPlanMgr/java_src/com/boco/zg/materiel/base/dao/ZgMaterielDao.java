@@ -253,6 +253,14 @@ public class ZgMaterielDao extends BaseIbatisDao<ZgMateriel,java.lang.String>{
 		return getSqlMapClientTemplate().queryForList("ZgMateriel.getMatklByOpertatorId",params);
 	}
 
+	/**
+	 * @param paramsMap
+	 * @return
+	 */
+	public boolean updateMaterielLevel(Map paramsMap) {
+		return getSqlMapClientTemplate().update("ZgMateriel.updateMaterielLevel",paramsMap)>0;
+	}
+
 
 
 }

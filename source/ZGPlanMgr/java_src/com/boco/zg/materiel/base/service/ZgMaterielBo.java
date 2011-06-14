@@ -323,6 +323,17 @@ public class ZgMaterielBo extends BaseManager<ZgMateriel,java.lang.String>{
 		}
 		return matkls;
 	}
+	/**
+	 * @param marerielId
+	 * @param level
+	 * @return
+	 */
+	public boolean updateMaterielLevel(String materielId, String level) {
+		Map paramsMap=new HashMap();
+		paramsMap.put("materielId", materielId);
+		paramsMap.put("materieLevel", level);
+		return zgMaterielDao.updateMaterielLevel(paramsMap);
+	}
 	
 	
 }

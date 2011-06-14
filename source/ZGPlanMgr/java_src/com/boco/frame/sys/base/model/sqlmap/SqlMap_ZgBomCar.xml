@@ -158,6 +158,51 @@
 		</dynamic>
     </select>
     
+    <select id="pageSelectForMateriel" resultClass="java.util.HashMap">
+    	select t.id,
+	       t.materiel_name,
+	       WMSYS.WM_CONCAT(t.lgort) orgid,
+	       WMSYS.WM_CONCAT(org.label_cn) orgname,
+	       t.materiel_level
+	  from zg_materiel t, fw_organization org
+	 where t.lgort = org.cuid
+	  	<isNotEmpty prepend="AND" property="orgId">
+	    		 t.PARENT_ID in (select m.cuid from zg_materiel m where m.id = '$orgId$')
+	    </isNotEmpty> 
+	    <isEmpty prepend="AND" property="orgId">
+	    		exists (select 1
+                          from zg_materiel temp
+                         where temp.cuid = t.parent_id
+                           and temp.type = '1')
+	    </isEmpty> 
+	   
+	   	<isNotEmpty prepend="AND" property="materielId">
+	    		t.id like '%$materielId$%'
+	    </isNotEmpty> 
+	 group by t.id, t.materiel_name, t.materiel_level
+    </select>
+    
+    <select id="pageSelectForMateriel_count" resultClass="long">
+    	select count(1) from (select 1
+	  from zg_materiel t, fw_organization org
+	 where t.lgort = org.cuid
+	   <isNotEmpty prepend="AND" property="orgId">
+	    		 t.PARENT_ID in (select m.cuid from zg_materiel m where m.id = '$orgId$')
+	    </isNotEmpty> 
+	    <isEmpty prepend="AND" property="orgId">
+	    		exists (select 1
+                          from zg_materiel temp
+                         where temp.cuid = t.parent_id
+                           and temp.type = '1')
+	    </isEmpty> 
+	   
+	   	<isNotEmpty prepend="AND" property="materielId">
+	    		t.id like '%$materielId$%'
+	    </isNotEmpty> 
+	 group by t.id, t.materiel_name, t.materiel_level)
+    
+    </select>
+    
     <select id="findTheZgMaterielType" parameterClass="zgMateriel" resultMap="zgMaterielResult2">
     	<![CDATA[
     		select distinct type from ZG_MATERIEL where cuid=#cuid#
