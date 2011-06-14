@@ -69,6 +69,8 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	private Long carnum;
 	private String orderTaskId;
 	
+	private String sortf;
+	
 	/*
 	 * wjz，领料组，领料人
 	 */
@@ -361,6 +363,18 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	 */
 	public void setOrderTaskId(String orderTaskId) {
 		this.orderTaskId = orderTaskId;
+	}
+	/**
+	 * @return the sortf
+	 */
+	public String getSortf() {
+		return sortf;
+	}
+	/**
+	 * @param sortf the sortf to set
+	 */
+	public void setSortf(String sortf) {
+		this.sortf = sortf;
 	}
 	
 }

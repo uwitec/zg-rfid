@@ -93,7 +93,7 @@ public class ZgTorderDao extends BaseIbatisDao<ZgTorder,java.lang.String>{
 	 */
 	public Page findByPageRequest1(PageRequest<Map> pr) {
 		((Map)pr.getFilters()).put("BM_CLASS_ID", ZgTorder.BM_CLASS_ID);
-		return pageQuery("ZgTorder.pageSelect","ZgTorder.count1",pr);
+		return pageQuery("ZgTorder.pageSelect1","ZgTorder.count1",pr);
 	}
 
 	/**

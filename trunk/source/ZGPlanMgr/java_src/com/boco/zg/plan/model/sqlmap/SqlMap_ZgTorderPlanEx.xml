@@ -630,6 +630,9 @@
 	
 	<select id="getOrderPlanListByOrderTaskId" resultMap="zgTorderPlanResult" >
     	select t.* from zg_t_order_plan t where t.order_task_id='$orderTaskId$'
+    		<isNotEmpty prepend="AND" property="sortf">
+	    		 t.plan_type in ('$sortf$')
+	    	</isNotEmpty>
     </select>
     
     <select id="getOrderPlanListByOrderId" resultMap="zgTorderPlanResult" >

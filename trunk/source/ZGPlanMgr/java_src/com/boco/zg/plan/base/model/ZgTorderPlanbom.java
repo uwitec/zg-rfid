@@ -118,6 +118,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 	private java.lang.String idnrk;
 	private String posnr;
 	private String orderId;
+	private Date finishTime;
 	
 	//columns END
 	public java.lang.String getCuid() {
@@ -521,6 +522,20 @@ public class ZgTorderPlanbom extends BaseEntity {
 	 */
 	public void setOrderId(String orderId) {
 		this.orderId = orderId;
+	}
+
+	/**
+	 * @return the finishTime
+	 */
+	public Date getFinishTime() {
+		return finishTime;
+	}
+
+	/**
+	 * @param finishTime the finishTime to set
+	 */
+	public void setFinishTime(Date finishTime) {
+		this.finishTime = finishTime;
 	}
 
 }

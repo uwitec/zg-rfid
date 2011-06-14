@@ -22,6 +22,7 @@ import cn.org.rapid_framework.util.MapAndObject;
 import com.boco.zg.plan.base.model.ZgTorderPlan;
 import com.boco.zg.plan.base.model.ZgTorderPlanComment;
 import com.boco.zg.plan.model.ZgTorderPlanEx;
+import com.boco.zg.util.Constants;
 
 
 @Component
@@ -324,6 +325,7 @@ public class ZgTorderPlanExDao extends BaseIbatisDao<ZgTorderPlanEx,java.lang.St
 	public List<ZgTorderPlan> getOrderPlanListByOrderTaskId(String orderTaskId) {
 		Map params=new HashMap();
 		params.put("orderTaskId", orderTaskId);
+		params.put("sortf", Constants.NEEDPLANSORTF);
 		return getSqlMapClientTemplate().queryForList("ZgTorderPlanEx.getOrderPlanListByOrderTaskId", params);
 	}
 

@@ -192,7 +192,6 @@
 	        LABEL_CN = #labelCn# ,
 	        ORDER_task_ID = #orderTaskId# ,
 	        DEPARTMENU_ID = #departmenuId# ,
-	       
 	        PLAN_DATE = #planDate# ,
 	        PLAN_START_TIME = #planStartTime# ,
 	        PLAN_END_TIME = #planEndTime# ,
@@ -201,7 +200,8 @@
 	        plant = #plant#,
 	        percent = #percent#,
 	        back_zbz=#backZbz#,
-	        back_reason=#backReason#
+	        back_reason=#backReason#,
+	       isManul= #isManul#
 	    WHERE CUID = #cuid#
     ]]>
     </update>

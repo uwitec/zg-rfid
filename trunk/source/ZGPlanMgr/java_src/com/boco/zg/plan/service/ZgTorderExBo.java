@@ -398,35 +398,37 @@ public class ZgTorderExBo extends ZgTorderBo {
 	 * 	1 生成领料计划 更新领料计划标记为手工完结单
 	 *  2 领料计划设置成完成
 	 *  3 按照BOM的仓库分配，每个仓库生成一张装车计划
-	 * @param orderId
+	 * @param orderTaskId
 	 */
-	public void manulFinishOrderByOrderId(String orderId,String operatorId) {
-		List<String> softList=getSoftByOrderId(orderId);
+	public void manulFinishOrderByOrderId(String orderTaskId,String operatorId) {
+//		List<String> softList=getSoftByOrderId(orderTaskId);
 //		createPlan(orderId,softList,null,"0","",Constants.isManulFinished);
 		
 		// 更新领料计划标记为手工完结单
-		zgTorderExDao.updateOrderPlanToManul(orderId);
+//		zgTorderExDao.updateOrderPlanToManul(orderTaskId);
 		
-		List<ZgTorderPlan> planList= zgTorderPlanExBo.getOrderPlanListByOrderTaskId(orderId);
+		List<ZgTorderPlan> planList= zgTorderPlanExBo.getOrderPlanListByOrderTaskId(orderTaskId);
 		
 		//领料计划设置成完成
 		for(ZgTorderPlan plan:planList){
+			//按照BOM的仓库分配，每个仓库生成一张装车计划
+			submitOrderPlan(plan.getCuid(),operatorId);
+			
 			plan.setState(Constants.OrderPlanStatus.FINISHED.value());
 			plan.setPercent(1d);
+			plan.setIsManul(Constants.isManulFinished);
 			zgTorderPlanBo.update(plan);
 		}
 		
 		//领料计划设置成完成
-		List<ZgTorderPlanGroup> planGrouList=zgTorderPlanGroupExBo.getPlanGroupListByOrderId(orderId);
+		List<ZgTorderPlanGroup> planGrouList=zgTorderPlanGroupExBo.getPlanGroupListByOrderId(orderTaskId);
 		for(ZgTorderPlanGroup group:planGrouList){
 			group.setState(Constants.OrderPlanStatus.FINISHED.value());
-//			double percent=zgTorderPlanGroupExBo.getPercent(group.getCuid());
 			group.setPercent(1d);
 			zgTorderPlanGroupExBo.update(group);
 		}
 		
-		//按照BOM的仓库分配，每个仓库生成一张装车计划
-		submitOrderPlan(orderId,operatorId);
+		
 		
 		
 		
@@ -440,38 +442,47 @@ public class ZgTorderExBo extends ZgTorderBo {
 	 * @param orderPlanId 领料计划单编号
 	 * @param operatorInfo 创建人
 	 */
-	public void submitOrderPlan(String orderId,String operatorId) {
-		List<ZgTorderPlanbomEx> list = zgTorderPlanbomExBo.findBomListByOrderId(orderId);
+	public void submitOrderPlan(String planId,String operatorId) {
+		List<ZgTorderPlanbomEx> list =zgTorderPlanbomExBo.findBomListByOrderPlanId1(planId);
 		String lgortId="";
 		String carPlanId="";
 		int num=0;
 		for(ZgTorderPlanbomEx obj : list) {
-			if(Constants.CarPlanStatus.DONE.value().equals(obj.getState())){//该bom组件已经领取，则不需要再添加装车计划 或是领料人为空，直接不生成装车计划
+			if(obj.getIdnrk().equals("392010004R")){
+				System.out.println("");
+			}
+			if(Constants.CarPlanStatus.DONE.value().equals(obj.getState())){//该bom组件已经领取，则不需要再添加装车计划 
 				continue;
 			}
-			if(!lgortId.equals(obj.getLgort())){//仓库或领料人编号不一样，则创建新的装车单
-					lgortId=obj.getLgort();
-					ZgTcarplan zgTcarplan = new ZgTcarplan(); 
-					zgTcarplan.setCreateUserId(operatorId);
-					zgTcarplan.setCreateDate(Calendar.getInstance().getTime());
-					zgTcarplan.setCarUser(operatorId);
-					zgTcarplan.setStorageId(obj.getLgort());
-					zgTcarplan.setCarState(Constants.CarPlanStatus.NEW.value());
-					zgTcarplan.setType(Constants.CarPlanType.STOREGETDATA.value());
-					zgTcarplan.setIsManul(Constants.isManulFinished);
-					carPlanId=zgTcarplanBo.getCuid(num);
-					zgTcarplan.setCuid(carPlanId);
-					zgTcarplanBo.saveCarplan3(zgTcarplan);
-					num++;
+			if(!Constants.NEEDPLANSORTF.contains(obj.getSortf())){
+				continue;
 			}
-			if(obj.getCarnum()>obj.getCompleteNum()){
+			if(obj.getCarNum()>obj.getCompleteNum()){
+				if(!lgortId.equals(obj.getLgort())){//仓库或领料人编号不一样，则创建新的装车单
+						lgortId=obj.getLgort();
+						ZgTcarplan zgTcarplan = new ZgTcarplan(); 
+						zgTcarplan.setCreateUserId(operatorId);
+						zgTcarplan.setCreateDate(Calendar.getInstance().getTime());
+						zgTcarplan.setCarUser(operatorId);
+						zgTcarplan.setStorageId(obj.getLgort());
+						zgTcarplan.setCarState(Constants.CarPlanStatus.NEW.value());
+						zgTcarplan.setType(Constants.CarPlanType.STOREGETDATA.value());
+						zgTcarplan.setIsManul(Constants.isManulFinished);
+						zgTcarplan.setOrderPlanType(obj.getSortf());
+						carPlanId=zgTcarplanBo.getCuid(num);
+						zgTcarplan.setCuid(carPlanId);
+						zgTcarplanBo.saveCarplan3(zgTcarplan);
+						num++;
+				}
+			}
+			if(obj.getCarNum()>obj.getCompleteNum()){
 				ZgTcarbom bom = new ZgTcarbom();
 				bom.setCarPlanId(carPlanId);
-//				bom.setOrderId(obj.getOrderId());//TODO TASKBOMID
-//				bom.setOrderBomId(obj.getOrderBomId());
 				bom.setOrderPlanbomId(obj.getCuid());
 				bom.setPlanNum(obj.getCarnum()-obj.getCompleteNum());
 				bom.setRealNum(obj.getCarnum()-obj.getCompleteNum());
+				bom.setTaskBomId(obj.getTaskBomId());
+				bom.setOrderTaskId(obj.getOrderTaskId());
 				zgTcarbomBo.save(bom);
 				zgTorderPlanbomExBo.finishBom(obj.getCuid());
 			}

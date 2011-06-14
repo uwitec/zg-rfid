@@ -134,6 +134,11 @@ public class ZgTorderPlanbomExBo extends ZgTorderPlanbomBo{
 		return zgTorderPlanbomExList;
 	}
 	
+	public List<ZgTorderPlanbomEx> findBomListByOrderPlanId1(String orderPlanId) {
+		List<ZgTorderPlanbomEx> zgTorderPlanbomExList=zgTorderPlanbomExDao.findBomListByOrderPlanId1(orderPlanId);
+		return zgTorderPlanbomExList;
+	}
+	
 	/**
 	 * 获取领料计划下的详细bom(提前领料的bom)
 	 * 

@@ -6,6 +6,7 @@
 
 package com.boco.zg.plan.base.action;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -22,7 +23,9 @@ import com.boco.frame.sys.base.model.FwOrganization;
 import com.boco.frame.sys.base.service.FwOrganizationBo;
 import com.boco.frame.sys.service.FwOrganizationExBo;
 import com.boco.zg.plan.base.model.ZgTorder;
+import com.boco.zg.plan.base.model.ZgTorderTask;
 import com.boco.zg.plan.base.service.ZgTorderBo;
+import com.boco.zg.plan.base.service.ZgTorderTaskBo;
 import com.boco.zg.plan.common.service.CommonService;
 import com.boco.zg.plan.service.ZgTorderExBo;
 import com.boco.zg.util.Constants;
@@ -73,6 +76,8 @@ public class ZgTorderAction extends BaseStruts2Action implements Preparable,Mode
 	private ZgTorderBo zgTorderBo;
 	
 	private IVmModelBo vmModelBo;
+	
+	private ZgTorderTaskBo zgTorderTaskBo;
 	
 	public void setVmModelBo(IVmModelBo vmModelBo) {
 		this.vmModelBo = vmModelBo;
@@ -306,7 +311,7 @@ public class ZgTorderAction extends BaseStruts2Action implements Preparable,Mode
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		//pageRequest.getFilters().put("key",value);     //add custom filter
 		//getRequest().setAttribute("attrMap",vmModelBo.getAttrsByUser(zgTorder.BM_CLASS_ID,super.getSessionUserId()));
-		Page page = zgTorderBo.findByPageRequest(pageRequest);
+		Page page = zgTorderBo.findByPageRequest1(pageRequest);
 		savePage(page,pageRequest);
 		return LIST_JSP3;
 	}
@@ -329,21 +334,22 @@ public class ZgTorderAction extends BaseStruts2Action implements Preparable,Mode
 		return LIST_JSP4;
 	}
 	
-	/**手工结单*/
-	public String finishOrder() {
+	/**手工结单
+	 * @throws IOException */
+	public void finishOrder() throws IOException {
 		
 		for(int i = 0; i < items.length; i++) {
 			Hashtable params = HttpUtils.parseQueryString(items[i]);
-			String orderId=(java.lang.String)params.get("id");
+			String orderTaskId=(java.lang.String)params.get("id");
 			
-			zgTorderExBo.manulFinishOrderByOrderId(orderId,getSessionOperatorId());
+			zgTorderExBo.manulFinishOrderByOrderId(orderTaskId,getSessionOperatorId());
 			
-			
-			ZgTorder order =zgTorderBo.getById(orderId);
-			order.setOrderState(Constants.OrderStatus.MANULFINISHED.value());
+			ZgTorderTask task=zgTorderTaskBo.getById(orderTaskId);
+			ZgTorder order =zgTorderBo.getById(task.getOrderId());
+			order.setOrderState(Constants.OrderStatus.SUBMIT.value());
 			zgTorderBo.update(order);
 		}
-		return LIST_ACTION2;
+		rendHtml("alert('操作成功');window.parent.doQuery();");
 	}
 	/** 进入查询页面 */
 	public String query5() {
@@ -362,6 +368,20 @@ public class ZgTorderAction extends BaseStruts2Action implements Preparable,Mode
 		Page page = zgTorderBo.findByPageRequest(pageRequest);
 		savePage(page,pageRequest);
 		return LIST_JSP5;
+	}
+
+	/**
+	 * @return the zgTorderTaskBo
+	 */
+	public ZgTorderTaskBo getZgTorderTaskBo() {
+		return zgTorderTaskBo;
+	}
+
+	/**
+	 * @param zgTorderTaskBo the zgTorderTaskBo to set
+	 */
+	public void setZgTorderTaskBo(ZgTorderTaskBo zgTorderTaskBo) {
+		this.zgTorderTaskBo = zgTorderTaskBo;
 	}
 	
 	
