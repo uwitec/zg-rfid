@@ -25,6 +25,8 @@ public class ZgBomCarAction extends BaseStruts2Action implements Preparable,Mode
 	protected static final String DEFAULT_SORT_COLUMNS = null; 
 	
 	protected static final String QUERY_FOR_STORECAR_JSP = "//zg/storeAndCar/query_storeCar.jsp";
+	protected static final String QUERY_FOR_MATERIEL_JSP = "//zg/storeAndCar/query_materiel.jsp";
+	protected static final String LIST_FOR_MATERIEL_JSP = "//zg/storeAndCar/list_materiel.jsp";
 	protected static final String LIST_FOR_STORECAR_JSP = "//zg/storeAndCar/list_storeCar.jsp";
 	protected static final String EDIT_JSP="//zg/storeAndCar/edit_storeCar.jsp";
 	protected static final String QUERY_FORCAR="//zg/storeAndCar/query_forCar.jsp";
@@ -78,18 +80,11 @@ public class ZgBomCarAction extends BaseStruts2Action implements Preparable,Mode
 	public String queryForStoreCar(){
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		getRequest().setAttribute("pageRequest", pageRequest);
-		//getRequest().setAttribute("orgId", orgId);
-		//getRequest().setAttribute("parentOrgId", parentOrgId);//把父节点的ID也放进去
-		//String parentName=zgBomCarBo.findParentOrgIdName(parentOrgId);//parentOrgId其实这个是父ID的cuid
-		//String materielGroupName=zgBomCarBo.findmaterielGroupName(orgId);//parentOrgId其实这个是父ID的cuid
-		//getRequest().setAttribute("parentName", parentName);
-		//getRequest().setAttribute("materielGroupName", materielGroupName);
 		return QUERY_FOR_STORECAR_JSP;
 	}
 	
 	/** 执行库存与车型关系的搜索 */
-	public String listForStoreCar() {
-		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+	public String listForStoreCar() {	PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		String orgId=getRequest().getParameter("orgId");//materielGroupName
 		if(!isNullOrEmptyString(orgId)){
 			pageRequest.getFilters().put("orgId", orgId);
@@ -123,6 +118,8 @@ public class ZgBomCarAction extends BaseStruts2Action implements Preparable,Mode
 		savePage(page,pageRequest);
 		
 		return LIST_FOR_STORECAR_JSP;
+			
+			
 	}
 //	public String edit(){
 //		String bomId=getRequest().getParameter("id");
@@ -297,6 +294,21 @@ public class ZgBomCarAction extends BaseStruts2Action implements Preparable,Mode
 
 	public void setZgCarInfoManager(ZgCarInfoManager zgCarInfoManager) {
 		this.zgCarInfoManager = zgCarInfoManager;
+	}
+	
+	public String queryForMateriel(){
+		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+		getRequest().setAttribute("pageRequest", pageRequest);
+		return QUERY_FOR_MATERIEL_JSP;
+	}
+	
+	public String listForMateriel() {
+		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+		String orgId=getRequest().getParameter("orgId");//materielGroupName
+		Page page = zgBomCarBo.findByPageRequestForMateriel(pageRequest);
+		savePage(page,pageRequest);
+		
+		return LIST_FOR_MATERIEL_JSP;
 	}
 
 }

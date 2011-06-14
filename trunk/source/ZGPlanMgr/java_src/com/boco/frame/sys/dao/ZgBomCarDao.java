@@ -35,6 +35,10 @@ public class ZgBomCarDao extends BaseIbatisDao<ZgBomCar,java.lang.String>{
 		}
 		return pageQuery("ZgBomCar.pageSelect",pageRequest);
 	}
+	
+	public Page findByPageRequestForMaterirel(PageRequest pageRequest){
+		return pageQuery("ZgBomCar.pageSelectForMateriel","ZgBomCar.pageSelectForMateriel_count",pageRequest);
+	}
 
 	/**
 	 * 查看某物料组是仓库还是仓库

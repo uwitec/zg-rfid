@@ -142,5 +142,9 @@ public class ZgMaterielDwrAction extends BaseDwrAction{
 	public boolean isLorgNode(String id){
 		return getZgMaterielBo().isLorgNode(id);
 	}
+	
+	public boolean updateMaterielLevel(String marerielId,String level) {
+		return getZgMaterielBo().updateMaterielLevel(marerielId,level);
+	}
 
 }

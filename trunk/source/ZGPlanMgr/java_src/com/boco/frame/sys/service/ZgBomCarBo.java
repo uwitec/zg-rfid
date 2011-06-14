@@ -35,6 +35,10 @@ public class ZgBomCarBo extends BaseManager<ZgBomCar,java.lang.String>{
 	public Page findByPageRequestForStoreCar(PageRequest<Map> pageRequest) {
 		return zgBomCarDao.findByPageRequest(pageRequest);
 	}
+	
+	public Page findByPageRequestForMateriel(PageRequest<Map> pageRequest) {
+		return zgBomCarDao.findByPageRequestForMaterirel(pageRequest);
+	}
 
 	public String findParentOrgIdName(String parentOrgId) {
 		return zgBomCarDao.findParentOrgIdName(parentOrgId);
