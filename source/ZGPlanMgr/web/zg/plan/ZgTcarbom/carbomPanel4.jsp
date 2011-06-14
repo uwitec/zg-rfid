@@ -86,8 +86,9 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 		    if (items.length > 0) {
 		        for (var i = 0; i < items.length; i++){
 		        	var carNum=document.frames['listFrame'].document.getElementById("carbomList["+i+"].planNum").value*1;
+		        	var idnrk=document.frames['listFrame'].document.getElementById("carbomList["+i+"].idnrk").value;
 		        	if(carNum=='0'){
-		        		alert("确认领料数量不能为零，请确认！");
+		        		alert(idnrk+" 确认领料数量不能为零，请确认！");
 						return;
 		        	}
 		        	var supItems=document.frames['listFrame'].document.getElementsByName("items"+i);
@@ -97,7 +98,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 		        	   carSupNumAll=carSupNumAll+carSupNum*1;
 		        	}
 		        	if(carNum!=carSupNumAll&&supItems.length>0){
-		        		alert("确认领料数量与具体供应商数量不相等，请确认！");
+		        		alert(idnrk+" 确认领料数量与具体供应商数量不相等，请确认！");
 		        		return false;
 		        	}
 		        	
@@ -156,7 +157,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 					<img src="${ctx }/resources/images/frame/ico_noexpand.gif"
 						style="cursor: pointer"  alt="" id="img_1"
 						border="0" onclick="changeV('1')" />
-					补领单据
+					单据信息
 				</td>
 			</tr>
 		</thead>
@@ -265,6 +266,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 							<td align="center">
 								<input type="hidden" name="carbomList[${n.count-1}].lgort" id="carbomList[${n.count-1}].lgort" value="${pageRequest.filters.lgort }"/>
 								<input type="hidden" name="carbomList[${n.count-1}].cuid" id="carbomList[${n.count-1}].lgort" value="${obj.CUID }"/>
+								<input type="hidden" name="carbomList[${n.count-1}].idnrk" id="carbomList[${n.count-1}].idnrk" value="${obj.IDNRK }"/>
 								<input type="hidden" name="carbomList[${n.count-1}].carId" id="carbomList[${n.count-1}].lgort" value="${pageRequest.filters.carId }"/>
 								<input type="hidden" name="carbomList[${n.count-1}].orderBomId" id="carbomList[${n.count-1}].lgort" value="${obj.ORDER_BOM_ID }"/>
 								<input type="hidden" name="carbomList[${n.count-1}].orderPlanbomId" id="carbomList[${n.count-1}].lgort" value="${obj.ORDER_PLANBOM_ID }"/>
