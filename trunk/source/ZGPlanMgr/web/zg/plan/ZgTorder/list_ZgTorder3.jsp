@@ -80,7 +80,6 @@ for(SortInfo si:list){
 							<td class="tableHeader"  width="3%" ><input type='checkbox' onclick="setAllCheckboxState('items',this.checked)" ></td>
 							<td class="tableHeader" onclick="queryColumn(this,'t0_PCDAT')" title="排序 排产日期" >排产日期<%=map.get("ec_image_t0_PCDAT")==null?"":map.get("ec_image_t0_PCDAT")%></td>
 							<td class="tableHeader" onclick="queryColumn(this,'t0_AUFNR')" title="排序 生产订单编号" >生产订单编号<%=map.get("ec_image_t0_AUFNR")==null?"":map.get("ec_image_t0_AUFNR")%></td>
-							<td class="tableHeader" onclick="queryColumn(this,'t0_ARBPL1')" title="排序 生产线" >原生产线<%=map.get("ec_image_t0_ARBPL")==null?"":map.get("ec_image_t0_ARBPL")%></td>
 							<td class="tableHeader" onclick="queryColumn(this,'t0_ARBPL')" title="排序 生产线" >生产线<%=map.get("ec_image_t0_ARBPL")==null?"":map.get("ec_image_t0_ARBPL")%></td>
 							<td class="tableHeader" onclick="queryColumn(this,'t0_MAKTX2')" title="排序 客户机型" >客户机型<%=map.get("ec_image_t0_MAKTX2")==null?"":map.get("ec_image_t0_MAKTX2")%></td>
 							<td class="tableHeader" onclick="queryColumn(this,'t0_KDAUF')" title="排序 销售订单号" >销售订单号<%=map.get("ec_image_t0_KDAUF")==null?"":map.get("ec_image_t0_KDAUF")%></td>
@@ -102,7 +101,6 @@ for(SortInfo si:list){
 							</td>
 							<td>${obj.pcdatString}</td>
 							<td>${obj.aufnr}</td>
-							<td>${obj.arbpl1}</td>
 							<td>${obj.arbpl}</td>
 							<td align="left">${obj.maktx2}</td>
 							<td>${obj.kdauf}</td>

@@ -147,8 +147,8 @@
 					<td width="120px" class="label">生产订单处理状态：</td>
 					<td>
 						<select name="s_orderState" id="s_orderState">
-							<option value="">全部</option>
-							<option value="0" selected="selected">待调整</option>
+							<option value="" selected="selected">全部</option>
+							<option value="0" >待调整</option>
 							<option value="4">保存</option>
 							<option value="8">已提交</option>
 							<option value="10">手工结单</option>
