@@ -65,10 +65,11 @@ public class ZgTorderTaskBo extends BaseManager<ZgTorderTask,java.lang.String>{
 		task.setArbpl(order.getArbpl());
 		task.setOrderId(order.getCuid());
 		
-		//特殊处理 用于重复做排序数据的订单，不做排序日期推后修改
-		if(task.getPxDate().after(order.getPxdat())){
-			task.setPxDate(order.getPxdat());
-		}
+//		//特殊处理 用于重复做排序数据的订单，不做排序日期推后修改
+//		if(task.getPxDate().after(order.getPxdat())){
+//			task.setPxDate(order.getPxdat());
+//		}
+		task.setPxDate(order.getPxdat());
 		task.setPoskey(order.getPoskey());
 		task.setPmenge(order.getPmenge());
 		task.setAufnr(order.getAufnr());
