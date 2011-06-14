@@ -758,6 +758,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		if(plant.equals("null")&&rfidOrderList.size()==0){//工单变更接口 工厂为空 刚只插入orderbom表
 			//处理新增物料 处理
 			int addRow=getHandlerOrderServiceImpl().doBgAddBomData(batchNo, aufnr, "", orderId);
+			return;
 		}
 		
 		//===================处理订单排序的插入==========================================
@@ -770,11 +771,13 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		for(ZgTorderTemp orderTemp:sapOrderList){//测试过 查找RFID,SAP两边数据都存在的排序数据，进行更新
 			for(ZgTorder order:rfidOrderList){
 				if(order.getArbpl().equals(orderTemp.getArbpl())){//测试过
-					if(!orderTemp.getPmenge().equals(order.getPmenge())){
+//					if(!orderTemp.getPmenge().equals(order.getPmenge())){
 						//排序数量不等，则需要更新排序数量
+						order.setArbpl(orderTemp.getArbpl());
+						order.setPxdat(orderTemp.getPxdat());
 						order.setPmenge(orderTemp.getPmenge());
 						getZgTorderTaskBo().updateZgtorderTaskByOrder(order,ZgTorderTask.NUMULSTATE);
-					}
+//					}
 					
 					//处理新增物料 处理
 					int addRow=getHandlerOrderServiceImpl().doPxAddBomData(batchNo, aufnr, plant, order);
