@@ -195,6 +195,9 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 				if(StringHelper.isEmpty(bom.getCuid())) continue ;
 				
 				if((!StringHelper.isEmpty(orderPlanBomIds))&&(!orderPlanBomIds.contains(bom.getOrderPlanbomId()))){
+					if(log.isInfoEnabled()){
+						log.info("提交领料计划时　领料计划删除BOM：orderplabbomid:"+bom.getOrderPlanbomId()+"  carbomId:"+bom.getCuid());
+					}
 					zgTcarplanExBo.deleteBom(bom.getCuid(), bom.getOrderPlanbomId());
 					continue;
 				}
@@ -317,6 +320,10 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 			ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(bom.getOrderPlanbomId());
 			
 			String carBomId=(String)save(bom);
+			
+			if(log.isInfoEnabled()){
+				log.info("OrderPlanbomId:"+bom.getOrderPlanbomId()+" 添加装车计划BOM(carBomId):"+carBomId);
+			}
 			
 			if(null!=bom.getSupList()){
 				//保存具体供应商bom数量

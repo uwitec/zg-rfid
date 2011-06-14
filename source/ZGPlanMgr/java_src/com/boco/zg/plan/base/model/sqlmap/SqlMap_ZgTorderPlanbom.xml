@@ -233,7 +233,8 @@
        		out_num=#outNum#,
        		move_Num_In=#moveNumIn#,
        		wait_Back_Num=#waitBackNum#,
-       		storage_Num=#storageNum#
+       		storage_Num=#storageNum#,
+       		FINISH_TIME=#finishTime#
 	    WHERE CUID = #cuid#
     ]]>
     </update>

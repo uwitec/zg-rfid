@@ -6,7 +6,7 @@
     <typeAlias alias="zgTorderPlanbomEx" type="com.boco.zg.plan.model.ZgTorderPlanbomEx"/>
 	<typeAlias alias="zgTorderPlanbom" type="com.boco.zg.plan.base.model.ZgTorderPlanbom"/>
 	<resultMap id="zgTorderPlanbomExResult" class="zgTorderPlanbomEx">
-		<result property="orderTaskId" column="ORDER_ID"/>
+		<result property="orderTaskId" column="order_task_id"/>
 		<result property="orderBomId" column="ORDER_BOM_ID"/>
 		<result property="taskBomId" column="taskBomId"/>
 		<result property="cuid" column="CUID"/>
@@ -27,7 +27,9 @@
 		<result property="zdtyl" column="zdtyl"/>	
 		<result property="carId" column="car_id"/>
 		<result property="carnum" column="carnum"/>	
+		<result property="carNum" column="car_num"/>	
 		<result property="waitBackNum" column="wait_back_num"/>	
+		<result property="sortf" column="sortf"/>	
     </resultMap>
     
     <resultMap id="zgTorderPlanbomExBatchResult" class="zgTorderPlanbomEx">
@@ -440,9 +442,9 @@
     <select id="findBomListByGroupId" resultMap="zgTorderPlanbomExResult">
 		<![CDATA[
 					  select distinct bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,bom.menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
-			org.label_cn org_name,bom.zbz,         decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per ,bom.posnr,bom.aufnr,
-     		  tbom.car_id,
-      		 tbom.carnum,planbom.wait_back_num from zg_t_group_order_plan oup,zg_t_order_plan plan,
+			org.label_cn org_name,bom.zbz,         decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per ,bom.posnr,
+     		  tbom.car_id,bom.idnrk,
+      		 tbom.carnum,planbom.wait_back_num,planBom.Car_Num,taskbom.order_task_id from zg_t_group_order_plan oup,zg_t_order_plan plan,
 			zg_t_order_planbom planBom,zg_t_orderbom bom,fw_organization org,
        			zg_t_bom              tbom,
        			zg_t_order_taskbom taskbom
@@ -465,9 +467,9 @@
      <select id="findBomListByGroupIdAdvance" resultMap="zgTorderPlanbomExResult">
 		<![CDATA[
 					  select distinct bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,bom.menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
-			org.label_cn org_name,bom.zbz,         decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per,bom.posnr,bom.aufnr,
-    		  tbom.car_id,
-      		 tbom.carnum,planbom.wait_back_num from zg_t_group_order_plan oup,zg_t_order_plan plan,
+			org.label_cn org_name,bom.zbz,         decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per,bom.posnr,
+    		  tbom.car_id,bom.sortf,bom.idnrk,
+      		 tbom.carnum,planbom.wait_back_num,planBom.Car_Num,taskbom.order_task_id from zg_t_group_order_plan oup,zg_t_order_plan plan,
 			zg_t_order_planbom planBom,zg_t_orderbom bom,fw_organization org,
        			zg_t_bom              tbom,zg_materiel ma,
        			 zg_t_order_taskbom taskbom
@@ -491,13 +493,13 @@
     
      <select id="findBomListByOrderPlanId" resultMap="zgTorderPlanbomExResult">
 				select distinct bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl,
-		       bom.idnrk,
 		       bom.maktx2,
 		       bom.matnr,
 		       bom.maktx1,
 		       bom.aufnr,
 		       bom.msehl2,
 		       bom.menge,
+		       bom.sortf,
 		       nvl(planBom.Plan_Num,0) Plan_Num,
 		       nvl(planBom.Complete_Num,0) Complete_Num,
 		       bom.lgort,
@@ -505,9 +507,9 @@
 		       bom.zbz,
          decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per,
 		       bom.posnr,
-		       bom.aufnr, 
+		    
 		       tbom.car_id,
-       		   tbom.carnum,planbom.wait_back_num
+       		   tbom.carnum,planbom.wait_back_num,planBom.Car_Num,taskbom.order_task_id,bom.idnrk
 		  from 
 		       zg_t_order_plan       plan,
 		       zg_t_order_planbom    planBom,
@@ -528,7 +530,50 @@
        		</isNotEmpty>
 		   
 		
-		 order by idnrk
+		 order by bom.idnrk
+
+    </select>
+    
+     <select id="findBomListByOrderPlanId1" resultMap="zgTorderPlanbomExResult">
+				select distinct bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl,
+		       bom.maktx2,
+		       bom.matnr,
+		       bom.maktx1,
+		       bom.aufnr,
+		       bom.msehl2,
+		       bom.menge,
+		       bom.sortf,
+		       nvl(planBom.Plan_Num,0) Plan_Num,
+		       nvl(planBom.Complete_Num,0) Complete_Num,
+		       bom.lgort,
+		       org.label_cn org_name,
+		       bom.zbz,
+         decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per,
+		       bom.posnr,
+		    
+		       tbom.car_id,
+       		   tbom.carnum,planbom.wait_back_num,planBom.Car_Num,taskbom.order_task_id,bom.idnrk
+		  from 
+		       zg_t_order_plan       plan,
+		       zg_t_order_planbom    planBom,
+		       zg_t_orderbom         bom,
+		           zg_t_order_taskbom taskbom,
+		       fw_organization       org,
+     		   zg_t_bom tbom
+		 where 
+		    bom.idnrk=tbom.idnrk
+  			and plan.cuid = planBom.Order_Plan_Id
+		   and plan.cuid = planBom.Order_Plan_Id
+        and planbom.taskbom_id=taskbom.cuid
+          and taskbom.order_bom_id=bom.cuid
+		   and org.cuid(+) = bom.lgort
+		      
+		  <isNotEmpty prepend="AND" property="orderPlanId">
+	       		 plan.cuid='$orderPlanId$'	
+       		</isNotEmpty>
+		   
+		
+		 order by bom.lgort
 
     </select>
     
@@ -542,6 +587,7 @@
 		       bom.aufnr,
 		       bom.msehl2,
 		       bom.menge,
+		         bom.sortf,
 		       nvl(planBom.Plan_Num,0) Plan_Num,
 		       nvl(planBom.Complete_Num,0) Complete_Num,
 		       bom.lgort,
@@ -549,9 +595,8 @@
 		       bom.zbz,
          decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per,
 		       bom.posnr,
-		       bom.aufnr, 
 		      null as car_id,
-       		   planBom.CAR_NUM as carnum,planbom.wait_back_num
+       		   planBom.CAR_NUM as carnum,planbom.wait_back_num,planBom.Car_Num,taskbom.order_task_id,bom.idnrk
 		  from 
 		       zg_t_order_plan       plan,
 		       zg_t_order_planbom    planBom,
@@ -569,7 +614,7 @@
        		</isNotEmpty>
 		   
 		
-		 order by bom.lgort, idnrk
+		 order by bom.lgort, bom.idnrk
 
     </select>
     
@@ -582,6 +627,7 @@
 		       bom.aufnr,
 		       bom.msehl2,
 		       bom.menge,
+		         bom.sortf,
 		       planBom.Plan_Num,
 		       planBom.Complete_Num,
 		       bom.lgort,
@@ -589,9 +635,8 @@
 		       bom.zbz,
          decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per,
 		       bom.posnr,
-		       bom.aufnr, 
 		       tbom.car_id,
-       		   tbom.carnum,planbom.wait_back_num
+       		   tbom.carnum,planbom.wait_back_num,planBom.Car_Num,taskbom.order_task_id,bom.idnrk
 		  from 
 		       zg_t_order_plan       plan,
 		       zg_t_order_planbom    planBom,
@@ -613,7 +658,7 @@
        		</isNotEmpty>
 		   
 		
-		 order by idnrk
+		 order by bom.idnrk
 
     </select>
     
@@ -745,8 +790,8 @@
      <update id="updateBomState" parameterClass="java.util.HashMap">
     <![CDATA[
         update zg_t_order_planbom t set t.state ='9',
-        t.complete_num=t.car_num,t.plan_num=t.car_num,t.storage_num=t.storage_num+(t.car_num-t.complete_num)
-        where t.cuid='$planBomId$'
+        t.complete_num=t.car_num,t.plan_num=t.car_num,t.storage_num=t.storage_num+(t.car_num-t.complete_num),t.manul_num=nvl(t.manul_num,0)+(t.car_num-t.complete_num),t.FINISH_TIME=sysdate
+         where t.cuid='$planBomId$'
     ]]>
     </update>
     

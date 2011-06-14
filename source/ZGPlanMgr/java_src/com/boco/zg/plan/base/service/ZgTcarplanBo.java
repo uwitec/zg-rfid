@@ -6,6 +6,8 @@
 
 package com.boco.zg.plan.base.service;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 import cn.org.rapid_framework.page.Page;
@@ -27,6 +29,7 @@ import com.boco.zg.plan.base.model.*;
 import com.boco.zg.plan.base.dao.*;
 import com.boco.zg.plan.base.service.*;
 import com.boco.zg.plan.service.ZgTcarbomExBo;
+import com.boco.zg.plan.service.ZgTcarplanExBo;
 import com.boco.zg.plan.service.ZgTorderPlanExBo;
 import com.boco.zg.plan.service.ZgTorderPlanbomExBo;
 
@@ -38,6 +41,7 @@ import com.boco.zg.plan.service.ZgTorderPlanbomExBo;
 
 @Component
 public class ZgTcarplanBo extends BaseManager<ZgTcarplan,java.lang.String>{
+	private static Log log=LogFactory.getLog(ZgTcarplanBo.class);
 	protected ZgTcarplanDao zgTcarplanDao;
 	private ZgTcarbomExBo zgTcarbomExBo;
 	ZgTorderPlanbomExBo zgTorderPlanbomExBo;
@@ -97,7 +101,11 @@ public class ZgTcarplanBo extends BaseManager<ZgTcarplan,java.lang.String>{
 		// <!--modify by wengq 2020/06/17: 添加逻辑：删除bom组件的时候改变orderplanbom的计划数量
 		List<Map> list = zgTcarbomExBo.findCarPlanBomByCarPlanId(carPlanId);
 		for(Map map:list){
+			
 			String orderPlanbomId=map.get("ORDER_PLANBOM_ID").toString();
+			if(log.isInfoEnabled()){
+				log.info("取消装车计划 orderPlanbomId:"+orderPlanbomId);
+			}
 			long carPlanNum=Long.parseLong(map.get("CAR_PLAN_NUM").toString());
 			zgTorderPlanbomExBo.updatePlanNum(orderPlanbomId,carPlanNum);
 		}

@@ -480,7 +480,7 @@
     </select>
     
     <update id="updateOrderPlanToManul" parameterClass="java.util.HashMap">
-    	<![CDATA[	update zg_t_order_plan t set t.ismanul='0' where t.order_id='$orderId$' and t.state<>'9' ]]>
+    	<![CDATA[	update zg_t_order_plan t set t.ismanul='0' where t.order_task_id='$orderId$' and t.state<>'9' ]]>
     </update>
 	
 	

@@ -139,6 +139,13 @@ public class ZgTorderPlanbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.l
 		paramsBom.put("orderPlanId", orderPlanId);
 		return this.getSqlMapClientTemplate().queryForList("ZgTorderPlanbomEx.findBomListByOrderPlanId", paramsBom);
 	}
+	
+	public List<ZgTorderPlanbomEx> findBomListByOrderPlanId1(String orderPlanId) {
+		Map paramsBom=new HashMap();
+		paramsBom.put("orderPlanId", orderPlanId);
+		return this.getSqlMapClientTemplate().queryForList("ZgTorderPlanbomEx.findBomListByOrderPlanId1", paramsBom);
+	}
+
 
 	/**
 	 * 获取领料计划下的详细bom(提前领料的bom)

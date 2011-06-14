@@ -1184,9 +1184,10 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		       carbom.plan_num car_plan_num,
 		       orderbom.zbz,
 		       orderbom.menge
-		  from zg_t_carplan car, zg_t_carbom carbom, zg_t_orderbom orderbom
+		  from zg_t_carplan car, zg_t_carbom carbom, zg_t_orderbom orderbom, zg_t_order_taskbom taskbom
 		 where car.cuid = carbom.car_plan_id
-		   and carbom.order_bom_id = orderbom.cuid
+		   and carbom.taskbom_id=taskbom.cuid
+  			 and taskbom.order_bom_id= orderbom.cuid
 		    and car.cuid = '$carPlanId$'
     </select>
      <select id="findRoleCuid"  resultClass="java.lang.String">

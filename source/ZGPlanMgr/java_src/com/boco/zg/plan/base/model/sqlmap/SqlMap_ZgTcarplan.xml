@@ -685,16 +685,16 @@
 		       null as department_name,
 		       plan.remark,
 		       plan.type,
-		       plan.ORDER_PLAN_TYPE,zto.aufnr
+		       plan.ORDER_PLAN_TYPE,task.aufnr
 		  from zg_t_carplan    plan,
 		       zg_t_carbom     bom,
-		       zg_t_order      zto,
+		       zg_t_order_task      task,
 		       fw_organization org
 		        <isNotEqual property="operatorId" compareValue="0">
 			          ,fw_organization_manager ma
 			    </isNotEqual>
 			 where plan.cuid = bom.car_plan_id
-			   and bom.order_id = zto.cuid
+			   and bom.order_task_id = task.cuid
 			   and plan.storage_id = org.cuid
 			   and plan.ismanul = '0'
 			    <isNotEqual property="operatorId" compareValue="0">
@@ -731,16 +731,16 @@
 			       plan.remark,
 			       plan.type,
 			       plan.ORDER_PLAN_TYPE,
-			       zto.aufnr
+			       task.aufnr
 			  from zg_t_carplan    plan,
 			       zg_t_carbom     bom,
-			       zg_t_order      zto,
+			       zg_t_order_task      task,
 			       fw_organization org
 			        <isNotEqual property="operatorId" compareValue="0">
 			          ,fw_organization_manager ma
 			       </isNotEqual>
 			 where plan.cuid = bom.car_plan_id
-			   and bom.order_id = zto.cuid
+			   and bom.order_task_id = task.cuid
 			   and plan.storage_id = org.cuid
 			   and plan.ismanul = '0'
 			    <isNotEqual property="operatorId" compareValue="0">

@@ -23,6 +23,9 @@ import javacommon.util.StringHelper;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 import cn.org.rapid_framework.util.ApplicationContextHolder;
@@ -67,6 +70,7 @@ import com.opensymphony.xwork2.Preparable;
 
 
 public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,ModelDriven{
+	private static Log log=LogFactory.getLog(ZgTcarplanAction.class);
 	//默认多列排序,example: username desc,createTime asc
 	protected static final String DEFAULT_SORT_COLUMNS = null; 
 	
@@ -623,6 +627,9 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 				bomCuids=bomCuids.replace(taskBomId,"");
 				
 			}else {
+				if(log.isInfoEnabled()){
+					log.info("人工删除　领料计划删除BOM：orderplabbomid:"+orderPlanbomId+"  carbomId:"+cuid);
+				}
 				zgTcarplanExBo.deleteBom(cuid,orderPlanbomId);
 			}
 			

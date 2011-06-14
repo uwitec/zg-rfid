@@ -9,8 +9,11 @@ import java.util.Map;
 
 import javacommon.util.StringHelper;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
+import sap.LoadRequestProcessThread;
 import sap.SapClient;
 
 import cn.org.rapid_framework.util.ApplicationContextHolder;
@@ -38,6 +41,8 @@ import freemarker.template.utility.StringUtil;
 
 @Component
 public class ZgTcarplanExBo extends ZgTcarplanBo{
+	
+	private static Log log=LogFactory.getLog(ZgTcarplanExBo.class);
 	
 	private ZgTcarplanBo zgTcarplanBo;
 	
@@ -151,6 +156,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 					
 					
 					if(carNum <= completeNum) {
+						planbom.setFinishTime(Calendar.getInstance().getTime());
 						planbom.setState(Constants.CarPlanStatus.DONE.value());
 					}
 					zgTorderPlanbomBo.update(planbom);
@@ -163,6 +169,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 					planbom.setCompleteNum(completeNum);
 					planbom.setStorageNum(planbom.getStorageNum()+realNum);
 					if(carNum <= completeNum) {
+						planbom.setFinishTime(Calendar.getInstance().getTime());
 						planbom.setState(Constants.CarPlanStatus.DONE.value());
 					}
 					zgTorderPlanbomBo.update(planbom);;
@@ -285,7 +292,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		sql.append("	and car.cuid = carbom.car_plan_id ");
 		sql.append("	and carbom.order_planbom_id = planbom.cuid ");
 		sql.append("	and carbom.taskbom_id=taskbom.cuid  and taskbom.order_bom_id=orderbom.cuid  and bom.idnrk = orderbom.idnrk   and car.ORDER_PLAN_TYPE='"+planType+"'");
-		sql.append("	and car.storage_id='"+lgort+"'");
+		sql.append("	and car.storage_id='"+lgort+"' and car.ismanul='1'");
 
 		  
 		return ((ZgTcarplanDao)this.getEntityDao()).findDynQuery(sql.toString());
@@ -483,12 +490,15 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 				}
 
 				if(StringHelper.isEmpty(bom.getCuid())){
-					if(orderPlanBomIds.contains(bom.getOrderPlanbomId())){
+					if(orderPlanBomIds.contains(bom.getOrderPlanbomId())){//只有鈗选的才做处理
 						newList.add(bom);
 					}
 					
 				}else {
-					if(!orderPlanBomIds.contains(bom.getOrderPlanbomId())){
+					if(!orderPlanBomIds.contains(bom.getOrderPlanbomId())){//只有鈗选的才做处理//之前有的现在没有勾选　中，则说明不用做装车计划，直接从计划中删除
+						if(log.isInfoEnabled()){
+							log.info("保存领料计划时　领料计划删除BOM：orderplabbomid:"+bom.getOrderPlanbomId()+"  carbomId:"+bom.getCuid());
+						}
 						deleteBom(bom.getCuid(),bom.getOrderPlanbomId());
 					}else {
 						editList.add(bom);
@@ -757,6 +767,13 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 			
 			String carPlanId=carbomList.get(0).getCarPlanId();
 			
+			for(ZgTcarbomEx bom:carbomList){
+				ZgTcarbom carbom=zgTcarbomBo.getById(bom.getCuid());
+				carbom.setStorageUserId(storageUserId);
+				carbom.setCarDate(Calendar.getInstance().getTime());
+				zgTcarbomBo.update(carbom);
+			}
+			
 			//2 手工结束计划单并设定仓管员
 			ZgTcarplan zgTcarplan = zgTcarplanBo.getById(carPlanId);
 			zgTcarplan.setCarState(Constants.CarPlanStatus.SUBMIT.value());
@@ -828,10 +845,12 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 * @param oldBomList
 	 */
 	public void deleteBom(String carBomId,String orderPlanbomId) {
-			ZgTcarbom temp=zgTcarbomExBo.getById(carBomId);
-			long carPlanNum=temp.getPlanNum();
-			zgTorderPlanbomExBo.updatePlanNum(orderPlanbomId,carPlanNum);
-			zgTcarbomBo.removeById(carBomId);
+		
+			
+		ZgTcarbom temp=zgTcarbomExBo.getById(carBomId);
+		long carPlanNum=temp.getPlanNum();
+		zgTorderPlanbomExBo.updatePlanNum(orderPlanbomId,carPlanNum);
+		zgTcarbomBo.removeById(carBomId);
 	}
 
 
