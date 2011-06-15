@@ -748,6 +748,10 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		//查询RFID系统中的订单信息
 		List<ZgTorder> rfidOrderList = getHandlerOrderServiceImpl().getRfidOrderListByAufnrPlant(aufnr,plant);
 		
+		if(rfidOrderList.size()==0&&StringHelper.isEmpty(pxDateStr)){//工单变更接口，如果sap找不到订单记录，则不处理
+			return;
+		}
+		
 		//查询SAP此次过来的订单信息
 		List<ZgTorderTemp> sapOrderList =getHandlerOrderServiceImpl().getSapOrderListByAufnrPlant(aufnr,plant,batchNo);
 		
