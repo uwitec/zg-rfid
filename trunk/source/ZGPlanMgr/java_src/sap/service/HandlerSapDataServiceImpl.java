@@ -759,9 +759,10 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		String orderId=getHandlerOrderServiceImpl().doProcessPcdate(batchNo, aufnr, rfidOrderList, sapOrderList);
 		//=============================================================================
 		
-		if(plant.equals("null")&&rfidOrderList.size()==0){//工单变更接口 工厂为空 刚只插入orderbom表
+		if(plant.equals("null")&&StringHelper.isEmpty(pxDateStr)){//工单变更接口 订单排序没有过来，只有排产数据的时候
+			doProdessPcOrder(batchNo,sapOrderList.get(0));
 			//处理新增物料 处理
-			int addRow=getHandlerOrderServiceImpl().doBgAddBomData(batchNo, aufnr, "", orderId);
+//			int addRow=getHandlerOrderServiceImpl().doBgAddBomData(batchNo, aufnr, "", orderId);
 			return;
 		}
 		
