@@ -47,6 +47,9 @@ public class ZgTorderAction extends BaseStruts2Action implements Preparable,Mode
 	
 	//forward paths
 	protected static final String QUERY_JSP = "/zg/plan/ZgTorder/query_ZgTorder.jsp";
+	protected static final String QUERY_BACK_ORDER_JSP = "/zg/plan/ZgTorder/query_Back_Torder.jsp";
+	protected static final String LIST_BACK_ORDER_JSP= "/zg/plan/ZgTorder/list_Back_Torder.jsp";
+	
 	protected static final String QUERY_JSP3 = "/zg/plan/ZgTorder/query_ZgTorder3.jsp";
 	protected static final String LIST_JSP3= "/zg/plan/ZgTorder/list_ZgTorder3.jsp";
 	protected static final String QUERY_JSP4 = "/zg/plan/ZgTorder/query_ZgTorder4.jsp";
@@ -382,6 +385,22 @@ public class ZgTorderAction extends BaseStruts2Action implements Preparable,Mode
 	 */
 	public void setZgTorderTaskBo(ZgTorderTaskBo zgTorderTaskBo) {
 		this.zgTorderTaskBo = zgTorderTaskBo;
+	}
+	
+	public String queryBackOrder(){
+		CommonService.defultDateSet(getRequest(), "pcdat_start", "pcdat_end");
+		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+		getRequest().setAttribute("pageRequest", pageRequest);
+		getRequest().getRequestURL();
+		return QUERY_BACK_ORDER_JSP;
+	}
+	
+	public String listBackOrder(){
+		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+		
+//		Page page = zgTorderBo.findBackOrder(pageRequest);
+//		savePage(page,pageRequest);
+		return LIST_JSP;
 	}
 	
 	
