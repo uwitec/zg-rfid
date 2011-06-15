@@ -93,5 +93,12 @@ public class ZgTorderBo extends BaseManager<ZgTorder,java.lang.String>{
 	public ZgTorder getByTaskId(String id) {
 		return zgTorderDao.getByTaskId(id);
 	}
+	/**
+	 * @param pageRequest
+	 * @return
+	 */
+	public Page findBackOrder(PageRequest<Map> pageRequest) {
+		return zgTorderDao.findBackOrder(pageRequest);
+	}
 
 }
