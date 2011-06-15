@@ -881,7 +881,6 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 			 and ma.advance='1'
 			 and fworg.cuid=orderbom.lgort
 		  and car.cuid=bom.car_id
-		  and planbom.car_num-nvl(planbom.plan_num,0)>0
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
@@ -984,7 +983,6 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 			 and ma.advance='1'
 			 and fworg.cuid=orderbom.lgort
 		  and car.cuid=bom.car_id
-		  and planbom.car_num-nvl(planbom.plan_num,0)>0
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
