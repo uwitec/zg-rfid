@@ -216,7 +216,6 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		   and gop.group_id = oup.cuid
 		    <![CDATA[
 		       and zto.order_state<>'-1' 
-		     and planbom.state='0' 
 		     and zto.freeze<>'4' ]]>
 		
 		   and task.plant='$plant$'

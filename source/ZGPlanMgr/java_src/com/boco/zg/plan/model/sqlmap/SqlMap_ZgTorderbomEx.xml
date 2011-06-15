@@ -942,7 +942,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
     </select>
     
      <select id="getBomListByGroupIdAdvance1" resultClass="java.util.HashMap">
-		    select distinct null as cuid,
+		   select distinct null as cuid,
                ORDERBOM.ZDTYL,
                orderbom.ORDER_ID,
                orderbom.cuid order_bom_id,
@@ -951,14 +951,16 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
                planbom.cuid as order_planbom_id,
                null as car_plan_id,
                orderbom.aufnr,
-             	taskbom.menge car_num,
+               taskbom.menge car_num,
                nvl(planbom.plan_num, 0) plan_num,
                nvl(planbom.complete_num, 0) complete_num,
                0 as car_plan_num,
-               planbom.car_num - nvl(planbom.plan_num, 0) max_value,
+               nvl(planbom.wait_back_num, 0) max_value,
+               nvl(planbom.wait_back_num, 0) wait_back_num,
+               nvl(planbom.back_num, 0) back_num,
                bom.carnum carCount,
-                 orderbom.zbz,
-                 taskbom.cuid as taskbom_id,
+               orderbom.zbz,
+               taskbom.cuid taskbom_id,
                  taskbom.order_task_id as orderTaskId,
                  zto.aufnr,zto.arbpl,zto.kdauf,zto.kdpos,zto.maktx1
 		  from 
