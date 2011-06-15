@@ -139,15 +139,15 @@
 						<div class="button" style="text-align: left;">
 										
 						     <c:if test="${model.state=='-6'}">
-							 <a href="javascript:"><span onclick="submitOrRejectPlan(1,'${cuid}',this)">
-							 <img src="<%=iconPath%>/true.gif" />通过</span> </a>
-							 &nbsp;<a href="javascript:"><span onclick="submitOrRejectPlan(2,'${cuid}',this)">
+							 <a href="javascript:submitOrRejectPlan(1,'${cuid}',this)"><span>
+							 <img src="<%=iconPath%>/true.gif" />通过1</span> </a>
+							 &nbsp;<a href="javascript:submitOrRejectPlan(2,'${cuid}',this)"><span>
 							 <img src="<%=iconPath%>/ico_009a.gif" />退回</span> </a>
 							 &nbsp;<a href="javascript:"><span onclick="if(parent.doQuery)parent.doQuery()">
 							 <img src="<%=iconPath%>/ico_007.gif" />返回</span> </a>
                              </c:if>
                              <c:if test="${model.state=='-4'}">
-                             <a href="javascript:"><span onclick="submitOrRejectPlan1('${cuid}',this)">
+                             <a href="javascript:submitOrRejectPlan1('${cuid}',this)"><span>
 							 <img src="<%=iconPath%>/true.gif" />通过</span> </a>
 							 &nbsp;<a href="javascript:"><span onclick="if(parent.doQuery)parent.doQuery()">
 							 <img src="<%=iconPath%>/ico_007.gif" />返回</span> </a>
