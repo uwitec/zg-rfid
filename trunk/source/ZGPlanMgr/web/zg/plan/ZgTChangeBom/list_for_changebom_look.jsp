@@ -140,7 +140,7 @@
 										
 						     <c:if test="${model.state=='-6'}">
 							 <a href="javascript:submitOrRejectPlan(1,'${cuid}',this)"><span>
-							 <img src="<%=iconPath%>/true.gif" />通过1</span> </a>
+							 <img src="<%=iconPath%>/true.gif" />通过</span> </a>
 							 &nbsp;<a href="javascript:submitOrRejectPlan(2,'${cuid}',this)"><span>
 							 <img src="<%=iconPath%>/ico_009a.gif" />退回</span> </a>
 							 &nbsp;<a href="javascript:"><span onclick="if(parent.doQuery)parent.doQuery()">
