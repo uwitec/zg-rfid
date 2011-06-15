@@ -322,7 +322,7 @@
 							<select name="extend1" id="extend1" >
 								<option value="A">A级物料</option>
 								<option value="B">B级物料</option>
-								<option value="C">C级物料</option>
+								<option value="C" selected="true">C级物料</option>
 							</select>
 							
 						</td>
