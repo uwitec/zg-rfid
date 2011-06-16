@@ -549,7 +549,7 @@
 	        from 
 	        ZG_T_ORDER t0,zg_t_order_task task
 	        
-	         where  t0.cuid=task.order_id
+	         where  t0.cuid=task.order_id(+)
                    group by 
                    
                    t0.CUID ,
@@ -737,7 +737,7 @@
 	        		t0.ARBPL1 as t0_ARBPL1
 	        from 
 	        ZG_T_ORDER t0,zg_t_order_task task
-	        where t0.cuid=task.order_id
+	        where t0.cuid=task.order_id(+)
  ) m
 	        left join  ( select 
 	        	t1.CUID as t1_CUID,
@@ -1039,7 +1039,7 @@
 	          		<![CDATA[ and fom.org_id(+) = t0.ARBPL
 	          		and fom.EMPLOYEE_ID=#operatorId# ]]>
           		</isNotEqual>
-          		 and t0.cuid=task.order_id
+          		 and t0.cuid=task.order_id(+)
           		 group by 
                    
                    t0.CUID ,
@@ -1438,7 +1438,7 @@
 	          		<![CDATA[ and fom.org_id(+) = t0.ARBPL
 	          		and fom.EMPLOYEE_ID=#operatorId# ]]>
           		</isNotEqual>
-          		 and t0.cuid=task.order_id
+          		 and t0.cuid=task.order_id(+)
  <![CDATA[ ) m
 	        left join  ( select 
 	        	t1.CUID as t1_CUID,
@@ -1595,7 +1595,7 @@
 	          		<![CDATA[ and fom.org_id(+) = t0.ARBPL
 	          		and fom.EMPLOYEE_ID=#operatorId# ]]>
           		</isNotEqual>
-          		 and t0.cuid=task.order_id
+          		 and t0.cuid=task.order_id(+)
  <![CDATA[ ) m
 	        left join  ( select 
 	        	t1.CUID as t1_CUID,
@@ -1885,7 +1885,7 @@
 	        		task.poskey as t0_poskey
 	        from 
 	        ZG_T_ORDER t0,zg_t_order_task task
-	        where t0.cuid=task.order_id
+	        where t0.cuid=task.order_id(+)
 	        and t0.aufnr='$aufnr$'  ]]>
 	        
 	         <isEqual prepend="AND" property="plant" compareValue = "null">
