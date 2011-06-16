@@ -219,6 +219,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 								<span style="font-size: 10px; word-break: break-all; width: 185px;">
 									<font style="font-size: 10px;"> 
 								退料编号:${pageRequest.filters.carPlanId }
+								订单号:${obj.AUFNR}<br/>
 								生产线：${obj.ARBPL}<br />
 								仓库编号：${pageRequest.filters.lgort} <br />
 								仓库名称：${pageRequest.filters.lgortName }<br />

@@ -112,6 +112,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 					sortfs.push(items[i].getAttribute("key")+"_"+items[i].value);
 				}
 				if(sortfs.length > 0) {
+					alert('${orderId}');
 					ZgTorderDwrAction.submitOrder('${orderId}',sortfs,function(data){
 						if(data == "success") {
 							alert("提交成功");
