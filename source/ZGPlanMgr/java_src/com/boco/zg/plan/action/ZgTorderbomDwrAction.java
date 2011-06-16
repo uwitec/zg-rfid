@@ -89,10 +89,15 @@ public class ZgTorderbomDwrAction extends BaseDwrAction {
 	 */
 	public String changeSortF1(String[] sortfs) {
 		String orderId="";
+		String idnrk="";
 		for (int j = 0; j < sortfs.length; j++) {
 			if (!StringUtils.isBlank(sortfs[j])) {
 				String[] s = sortfs[j].split("_");
-				getZgTorderbomExBo().updateOrderBomSortf1(s[0], s[1]);
+				String result=getZgTorderbomExBo().updateOrderBomSortf1(s[0], s[1]);
+				if(!StringHelper.isEmpty(result)){
+					idnrk=idnrk+result+"  ";
+				}
+				
 			}
 		}
 		if(sortfs.length>0){//重新计算领料进度
@@ -101,7 +106,7 @@ public class ZgTorderbomDwrAction extends BaseDwrAction {
 			getZgTorderbomExBo().doZgtorderProcess(orderbom.getOrderId(),"order");
 		}
 		
-		return "success";
+		return idnrk.length()>1?idnrk:"success";
 	}
 
 	/**
