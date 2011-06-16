@@ -639,6 +639,10 @@ public class LoadRequestProcessThread implements Runnable {
 					String plant=IbatisDAOHelper.getStringValue(map, "PLANT","");
 					Long orderCou=IbatisDAOHelper.getLongValue(map, "COU");
 					
+					if(aufnr.equals("1000024327")){
+						System.out.println("");
+					}
+					
 					//订单加锁，同步不允许领料
 					zgTorderLock.setAufnr(aufnr);
 					getZgTorderLockBo().update(zgTorderLock);
