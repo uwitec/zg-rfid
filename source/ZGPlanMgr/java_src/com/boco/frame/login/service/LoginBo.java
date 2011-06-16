@@ -98,16 +98,16 @@ public class LoginBo {
 			if("ALL".equals(type)){
 				type=Constants.sorft.ABE.value();
 			}
-			if(Constants.sorft.ABE.value().equals(type)){
+//			if(Constants.sorft.ABE.value().equals(type)){
 				List<Map> carPlanList=zgTcarplanExBo.getCarPlanByUserId1(operatorId,type);
 				String arbpl="";
 				if(carPlanList.size()>0){
 					arbpl=carPlanList.get(0).get("ARBPL")==null?"":carPlanList.get(0).get("ARBPL").toString();
 				}
 				url ="zg/plan/ZgTcarplan/carplan_frame.jsp?type=2&orderPlanType="+type+"&onload=onload&defaulArbpl="+arbpl;;
-			}else {
-				url ="zg/plan/ZgTcarplan/query1.do?type=2&orderPlanType="+type+"&onload=onload";
-			}
+//			}else {
+//				url ="zg/plan/ZgTcarplan/query1.do?type=2&orderPlanType="+type+"&onload=onload";
+//			}
 		}
 		return url;
 	}
