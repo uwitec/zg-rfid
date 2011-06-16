@@ -217,19 +217,19 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	 * @param sortfs
 	 * @return
 	 */
-	public void updateOrderBomSortf1(String bomId, String sortf) {
+	public String updateOrderBomSortf1(String bomId, String sortf) {
 		ZgTorderbom orderbom = (ZgTorderbom) zgTorderbomDao.getById(bomId);
 		if(!sortf.equals(orderbom.getSortf())){
 			//删除原排序字符串相应的planbom
 			//判断是否已经瑛料
 			boolean isStartCar=zgTorderPlanbomBo.isStartCar(bomId);
 			if(isStartCar){//已经开始领料，不允许改标识 
-				return;
+				return orderbom.getIdnrk();
 			}
 			 List<ZgTorderPlanbom> list=zgTorderPlanbomBo.getPlanBomByOrderBomId(bomId);
 			 if(list.size()>0){
 				 int delRow=zgTorderPlanbomBo.deletePlanBomByOrderBomId(bomId);
-					if(delRow==0) return;
+					if(delRow==0) return "";
 					//删除原来的taskBom
 					zgTorderTaskbomBo.deleteTaskBomByOrderBomId(bomId);
 			 }
@@ -259,6 +259,7 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 			
 			
 		}
+		return "";
 		
 		
 	}

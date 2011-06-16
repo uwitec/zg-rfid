@@ -57,7 +57,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 						alert("保存成功！");
 						window.parent.doQuery();
 					}else {
-						alert("保存失败！");
+						alert("物料:"+data+"已经开始领料，不能修改制作标识，请确认!");
 					}
 					obj.disabled = false;
 				});
