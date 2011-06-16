@@ -190,7 +190,7 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 			//循环排序任务找到相应的排序任务插入
 			for(ZgTorderTask orderTask:taskList){
 				String taskSortf=getPlantSortfMap().get(orderTask.getPlant());
-				if(taskSortf.equals(sortf)){
+				if(taskSortf!=null&&taskSortf.equals(sortf)){
 					//插入工单任务BOM ZG_T_ORDER_TASKBOM
 					Long menge=orderTask.getPmenge()*orderbom.getZdtyl();
 					ZgTorderTaskbom taskbom=getHandlerOrderServiceImpl().saveZgTorderTaskBom(orderTask.getCuid(),menge , bomId);
@@ -246,7 +246,7 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 			//循环排序任务找到相应的排序任务插入
 			for(ZgTorderTask orderTask:taskList){
 				String taskSortf=getPlantSortfMap().get(orderTask.getPlant());
-				if(taskSortf.equals(sortf)){
+				if(taskSortf!=null&&taskSortf.equals(sortf)){
 					//插入工单任务BOM ZG_T_ORDER_TASKBOM
 					Long menge=orderTask.getPmenge()*orderbom.getZdtyl();
 					ZgTorderTaskbom taskbom=getHandlerOrderServiceImpl().saveZgTorderTaskBom(orderTask.getCuid(),menge , bomId);
