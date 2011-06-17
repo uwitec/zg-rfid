@@ -638,4 +638,13 @@
         where t.order_task_id ='$taskId$'
         and t.PLAN_TYPE ='$planType$'
     </select>
+    
+     <select id="isStartCar" resultClass="java.util.HashMap">
+	   select *
+		  from zg_t_order_plan t, zg_t_order_planbom planbom, zg_t_carbom carbom
+		 where t.cuid = planbom.order_plan_id
+		   and planbom.cuid = carbom.order_planbom_id
+		   and t.cuid = '$planId$'
+    </select>
+    
 </sqlMap>

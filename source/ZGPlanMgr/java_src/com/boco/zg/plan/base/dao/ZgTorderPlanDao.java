@@ -116,4 +116,14 @@ public class ZgTorderPlanDao extends BaseIbatisDao<ZgTorderPlan,java.lang.String
 		List<ZgTorderPlan> list= getSqlMapClientTemplate().queryForList("ZgTorderPlan.getPlanByTaskId",paramsMap);
 		return list.size()>0?list.get(0):null;
 	}
+
+	/**
+	 * 检验申请单是否已经开始领料，
+	 * @param paramsMap
+	 * @return
+	 */
+	public boolean isStartCar(Map paramsMap) {
+		List<ZgTorderPlan> list= getSqlMapClientTemplate().queryForList("ZgTorderPlan.isStartCar",paramsMap);
+		return list.size()>0;
+	}
 }

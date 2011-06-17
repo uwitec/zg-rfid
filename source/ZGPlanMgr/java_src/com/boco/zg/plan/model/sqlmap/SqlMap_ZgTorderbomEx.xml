@@ -1282,7 +1282,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 				  from (select zdtyl, matkl, sortf, lgort, zbz, zrzqd, idnrk, task.order_id, task.aufnr, task.arbpl,
 				   matnr, maktx2, msehl1, msehl2, label_cn, sortf_h, matnr1, storage_num, storage_state, maktx1, posnr, matkl_self, 
 				   taskbom.*,
-				               (select sum(pb.storage_num)
+				               (select sum(nvl(pb.storage_num,0))-sum(nvl(pb.wait_back_num,0))
 				                  from zg_t_order_planbom pb
 				                 where pb.taskbom_id = taskbom.cuid) all_storage_num
 				          from zg_t_orderbom t, zg_t_order_task task,zg_t_order_taskbom taskbom

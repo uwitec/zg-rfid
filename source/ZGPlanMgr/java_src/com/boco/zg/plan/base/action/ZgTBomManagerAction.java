@@ -78,6 +78,8 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	private static final String QUERYFORCHANGE = "/zg/plan/ZgTChangeBom/query_for_changebom.jsp";
 	private static final String LISTFORCHANGE = "/zg/plan/ZgTChangeBom/list_for_changebom.jsp";
 	
+	private static final String QUERYFORBACKBOM = "/zg/plan/ZgTChangeBom/query_for_backbom.jsp";
+	private static final String LISTFORBACKBOM = "/zg/plan/ZgTChangeBom/list_for_backbom.jsp";
 	private static final String QUERYFORBACK = "/zg/plan/ZgTChangeBom/query_for_back.jsp";
 	private static final String LISTFORBACK = "/zg/plan/ZgTChangeBom/list_for_back.jsp";
 	
@@ -218,6 +220,24 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 		getRequest().setAttribute("pageRequest", pageRequest);
 		
 		return QUERYFORBACK;
+	}
+	
+	public String queryForBackBom(){
+		CommonService.defultDateSet(getRequest(), "planDate_start", "planDate_end");
+		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+		getRequest().setAttribute("pageRequest", pageRequest);
+		
+		return QUERYFORBACKBOM;
+	}
+	
+	public String listForBackBom(){
+		CommonService.defultDateSet(getRequest(), "planDate_start", "planDate_end");  //显示前两天后五天的时间
+		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS); 
+		// Map params=pageRequest.getFilters();
+		// params.put("cuid", "123");
+		Page page = zgTBomManagerBo.pageOrderPlanForChange(pageRequest);  
+		savePage(page,pageRequest);
+		return LISTFORBACKBOM;
 	}
 	
 	public String listForBack(){
@@ -689,14 +709,23 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	/*
 	 * 删除换料计划
 	 */
-	public String deletePlan(){
-		// PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+	public void deletePlan() throws IOException{
+		String planIds="";
 		for(int i = 0; i < items.length; i++) {
 			Hashtable params = HttpUtils.parseQueryString(items[i]);
-			zgTorderPlanBo.removeById((java.lang.String)params.get("id"));
-			zgTorderPlanBo.deletePlanBomByPlanId((java.lang.String)params.get("id"));
+			String planId=(java.lang.String)params.get("id");
+			//检验申请单是否已经开始领料，如果已经开始领料则不能删除
+			boolean isStartCar=zgTorderPlanBo.isStartCar(planId);
+			if(isStartCar){
+				planIds=planIds+planId+";";
+				continue;
+			}
+			
+			zgTorderPlanBo.removeById(planId);
+			zgTorderPlanBo.deletePlanBomByPlanId(planId);
 		}
-		return LIST_FOR_CHANGEBOM;
+		String msg=planIds.length()>0?planIds+"　申请单已经开始领料，不能删除，请确认":"操作成功!";
+		forwardQuery(msg);
 	}
 
 	/**
