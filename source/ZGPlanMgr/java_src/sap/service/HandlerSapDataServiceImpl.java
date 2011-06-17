@@ -755,6 +755,19 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		//查询SAP此次过来的订单信息
 		List<ZgTorderTemp> sapOrderList =getHandlerOrderServiceImpl().getSapOrderListByAufnrPlant(aufnr,plant,batchNo);
 		
+		//
+		boolean isPsmngChange=false;
+		Long psmng=0l;
+		if(sapOrderList.size()>0&&rfidOrderList.size()>0){//如果订单项数量改变，则后面需要修改orderbom批量需求数量
+			ZgTorder order=rfidOrderList.get(0);
+			ZgTorderTemp orderTemp=sapOrderList.get(0);
+			if(!order.getPsmng().equals(orderTemp.getPsmng())){
+				isPsmngChange=true;
+				psmng=orderTemp.getPsmng();
+			}
+			
+		}
+		
 		//===================处理订单排产数据的插入 ,处理没有过来排产数据直接过来排序数据的那种 及更新order信息====
 		String orderId=getHandlerOrderServiceImpl().doProcessPcdate(batchNo, aufnr, rfidOrderList, sapOrderList);
 		//=============================================================================
@@ -770,7 +783,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		String sortf=getPlantSortfMap().get(plant);
 		String sapIsDoArbpls="";
 		
-		//更新ORDER表
+		
 		
 		//A、找两边生产线生产厂都存在的订单，这种只需要更新需求数量
 		for(ZgTorderTemp orderTemp:sapOrderList){//测试过 查找RFID,SAP两边数据都存在的排序数据，进行更新
@@ -920,6 +933,10 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 				getZgTorderbomExBo().doZgtorderProcess(order.getTaskId(),"task");
 				
 			}
+		}
+		
+		if(isPsmngChange){//更新orderbom的需求数量
+			getZgTorderbomBo().updateMengeByOrder(orderId,psmng);
 		}
 		
 		//=============================================================================

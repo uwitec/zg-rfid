@@ -147,4 +147,12 @@ public class ZgTorderbomDao extends BaseIbatisDao<ZgTorderbom,java.lang.String>{
 		 getSqlMapClientTemplate().insert("ZgTorderbom.saveZgtorderTaskBomByOrderIdTaskId",paramsMap);
 	}
 
+	/**
+	 * 更新orderbom的需求数量
+	 * @param paramsMap
+	 */
+	public void updateMengeByOrder(Map paramsMap) {
+		getSqlMapClientTemplate().update("ZgTorderbom.updateMengeByOrder",paramsMap);
+	}
+
 }
