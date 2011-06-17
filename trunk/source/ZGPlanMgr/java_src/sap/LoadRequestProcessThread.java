@@ -128,7 +128,7 @@ public class LoadRequestProcessThread implements Runnable {
 			
 			// 领料数据回传sap接口
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_05")) {
-//				this.handlerSynOrderBOM();//TODO 实际部署时放开
+				this.handlerSynOrderBOM();//TODO 实际部署时放开
 			}
 			
 			// 退料接口
@@ -639,7 +639,7 @@ public class LoadRequestProcessThread implements Runnable {
 					String plant=IbatisDAOHelper.getStringValue(map, "PLANT","");
 					Long orderCou=IbatisDAOHelper.getLongValue(map, "COU");
 					
-					if(aufnr.equals("1000024327")){
+					if(aufnr.equals("1000020172")){
 						System.out.println("");
 					}
 					

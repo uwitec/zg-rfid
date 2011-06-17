@@ -236,6 +236,10 @@
     ]]>
     </update>
     
+     <update id="updateMengeByOrder" parameterClass="java.util.HashMap">
+     	 update zg_t_orderbom t set t.menge=$psmng$*t.zdtyl where t.order_id='$orderId$'
+     </update>
+    
 	<delete id="deleteZG_T_ORDERBOM" parameterClass="java.lang.String">
 		delete from ZG_T_ORDERBOM 
 		 where CUID = #cuid#
