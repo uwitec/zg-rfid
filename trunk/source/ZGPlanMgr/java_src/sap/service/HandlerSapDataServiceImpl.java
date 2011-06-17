@@ -1034,14 +1034,14 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 */
 	public void handleSuppliersData(int batchNo){
 		StringBuffer sql=new StringBuffer();
-		sql.append(" delete from zg_t_order_suppliers t where t.aufnr ");
-		sql.append(" in (select temp.aufnr from zg_t_order_temp temp where temp.batch_no='"+batchNo+"' )");
+		sql.append("   delete from zg_t_order_suppliers t where exists ");
+		sql.append("(select temp.aufnr from zg_t_orderbom_temp_all  temp where t.idnrk=temp.idnrk and temp.batch_no='"+batchNo+"'  )");
 		this.baseDao.executeSql(sql.toString());
 		
 		sql=new StringBuffer();
-		sql.append("insert into zg_t_order_suppliers  (cuid, aufnr, idnrk, lifnr, lifnr_name, plant) ");
-		sql.append("  select sys_guid(), temp.aufnr, temp.idnrk,temp.lifnr, temp.name1, temp.plant from zg_t_order_suppliers_temp temp ");
-		sql.append("   where temp.batch_no = '"+batchNo+"'");
+		sql.append(" insert into zg_t_order_suppliers  (cuid, aufnr, idnrk, lifnr, lifnr_name, plant) ");
+		sql.append(" select sys_guid(),'',idnrk,lifnr,name1,'' from  ");
+		sql.append(" ( select distinct temp.idnrk,temp.lifnr,temp.name1 from zg_t_order_suppliers_temp temp where temp.batch_no='"+batchNo+"') ");
 		this.baseDao.executeSql(sql.toString());
 	
 	}

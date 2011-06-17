@@ -205,8 +205,7 @@
 		              t0.LIFNR_NAME as t0_LIFNR_NAME,
 		          	  null as t0_CAR_NUM,
               		  t0.aufnr t0_aufnr,
-             		 	t0.idnrk t0_idnrk   from zg_t_order_suppliers t0 where t0.aufnr in ('$aufnrs$')
-					  and t0.idnrk in ('$idnrks$')
+             		 	t0.idnrk t0_idnrk   from zg_t_order_suppliers t0 where  t0.idnrk in ('$idnrks$')
     </select>
     
 </sqlMap>

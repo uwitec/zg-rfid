@@ -85,4 +85,15 @@ public class ZgTorderPlanBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 		return zgTorderPlanDao.getPlanByTaskIdPlanType(paramsMap);
 	}
 	
+	/**
+	 * //检验申请单是否已经开始领料，
+	 * @param planId
+	 * @return
+	 */
+	public boolean isStartCar(String planId) {
+		Map paramsMap=new HashMap<String, Object>();
+		paramsMap.put("planId", planId);
+		return zgTorderPlanDao.isStartCar(paramsMap);
+	}
+	
 }

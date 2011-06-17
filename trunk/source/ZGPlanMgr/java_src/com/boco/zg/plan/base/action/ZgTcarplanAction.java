@@ -754,7 +754,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 			String aufnr=bom.get("AUFNR").toString();
 			String idnrk=bom.get("IDNRK").toString();
 			for(ZgTcarbomSuppliers sup:suppliersLst){
-				if(aufnr.equals(sup.getAufnr())&&idnrk.equals(sup.getIdnrk())){
+				if(idnrk.equals(sup.getIdnrk())){
 					tempList.add(sup);
 				}
 			}
@@ -1213,7 +1213,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 				String aufnr=bom.get("AUFNR").toString();
 				String idnrk=bom.get("IDNRK").toString();
 				for(ZgTcarbomSuppliers sup:suppliersLst){
-					if(aufnr.equals(sup.getAufnr())&&idnrk.equals(sup.getIdnrk())){
+					if(idnrk.equals(sup.getIdnrk())){
 						tempList.add(sup);
 					}
 				}
