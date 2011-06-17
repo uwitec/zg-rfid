@@ -441,7 +441,7 @@
 	<!-- 查找订单分组下面的bom -->
     <select id="findBomListByGroupId" resultMap="zgTorderPlanbomExResult">
 		<![CDATA[
-					  select distinct bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,bom.menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
+					  select distinct bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,planBom.Car_Num as menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
 			org.label_cn org_name,bom.zbz,         decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per ,bom.posnr,
      		  tbom.car_id,bom.idnrk,bom.sortf,
       		 tbom.carnum,planbom.wait_back_num,planBom.Car_Num,taskbom.order_task_id from zg_t_group_order_plan oup,zg_t_order_plan plan,
@@ -466,7 +466,7 @@
     	<!-- 查找订单分组下面的bom 提前领料 -->
      <select id="findBomListByGroupIdAdvance" resultMap="zgTorderPlanbomExResult">
 		<![CDATA[
-					  select distinct bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,bom.menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
+					  select distinct bom.order_id,taskbom.ORDER_BOM_ID,taskbom.cuid taskBomId,planBom.cuid,bom.zdtyl, bom.idnrk,bom.maktx2,bom.matnr,bom.maktx1,bom.aufnr,bom.msehl2,planBom.Car_Num as menge,planBom.Plan_Num,planBom.Complete_Num,bom.lgort,
 			org.label_cn org_name,bom.zbz,         decode(planBom.Car_Num,0,1, nvl(planBom.Complete_Num, 0) / nvl(planbom.car_num, 1)) * 100 per,bom.posnr,
     		  tbom.car_id,bom.sortf,bom.idnrk,
       		 tbom.carnum,planbom.wait_back_num,planBom.Car_Num,taskbom.order_task_id from zg_t_group_order_plan oup,zg_t_order_plan plan,
@@ -498,7 +498,7 @@
 		       bom.maktx1,
 		       bom.aufnr,
 		       bom.msehl2,
-		       bom.menge,
+		       planBom.Car_Num as menge,
 		       bom.sortf,
 		       nvl(planBom.Plan_Num,0) Plan_Num,
 		       nvl(planBom.Complete_Num,0) Complete_Num,
@@ -626,7 +626,7 @@
 		       bom.maktx1,
 		       bom.aufnr,
 		       bom.msehl2,
-		       bom.menge,
+		       planBom.Car_Num as menge,
 		         bom.sortf,
 		       planBom.Plan_Num,
 		       planBom.Complete_Num,
