@@ -45,10 +45,10 @@ String expandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 			
 			if(planStat=='-8'){
 			  
-			//	$("#deletePlanButton").attr("style","display:''")
+				$("#deletePlanButton").attr("style","display:''")
 				
 			}else{
-			//	$("#deletePlanButton").attr("style","display:none");
+				$("#deletePlanButton").attr("style","display:none");
 			}
 			if(batchValidation('listFrame','${ctx}/zg/plan/ZgTBomManager/listForChange.do',document.forms[0]))document.forms[0].submit();
 			document.forms[0].submit();
@@ -267,7 +267,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 							
 							<a href="javascript:query()" id="queryBtn"><span><img src="<%=iconPath%>/ico_search.gif" />查询</span></a>
 							<a href="javascript:document.forms[0].reset()"><span><img src="<%=iconPath%>/ico_007.gif" />重置</span></a>
-							<a id="deletePlanButton" href="javascript:deletePlan()"><span><img src="<%=iconPath%>/ico_005.gif" />删除</span></a>
+							<a id="deletePlanButton" style="display:none" href="javascript:deletePlan()"><span><img src="<%=iconPath%>/ico_005.gif" />删除</span></a>
 							<a href="javascript:addPlan();"><span><img src="<%=iconPath%>/addition.gif" />新单</span></a>
 							
 						</div>
