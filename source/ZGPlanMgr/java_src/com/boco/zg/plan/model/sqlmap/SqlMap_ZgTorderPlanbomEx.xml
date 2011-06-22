@@ -87,6 +87,9 @@
 		<result property="moveNumIn" column="t0_move_num_in"/>
 		<result property="waitBackNum" column="t0_wait_back_num"/>
 		<result property="storageNum" column="t0_storage_num"/>
+		<result property="bomType" column="t0_BOM_TYPE"/>
+		<result property="parentId" column="t0_parent_id"/>
+	
     </resultMap>
     
     
@@ -120,7 +123,10 @@
 			       nvl(t.back_num,0) as t0_back_num,
 			       nvl(t.out_num,0) as t0_out_num,
 			       nvl(t.move_num_in,0) as t0_move_num_in,
-			       nvl(t.wait_back_num,0) as t0_wait_back_num,
+			       nvl(t.wait_back_num,0) as t0_wait_back_num
+			       ,
+			       t.PATENT_ID as t0_parent_id,
+			       t.bom_type as t0_bom_type,
 			       nvl(t.storage_num,0) as t0_storage_num  from zg_t_order_planbom t , zg_t_orderbom orderbom where  orderbom.order_id='$targerOrderId$'
 				and orderbom.idnrk='$idnrk$'
 				and orderbom.matkl='$matkl$'
@@ -169,7 +175,9 @@
        m.t0_out_num,
        m.t0_move_num_in,
        m.t0_wait_back_num,
-       m.t0_storage_num
+       m.t0_storage_num,
+      m.t0_parent_id,
+	m.t0_bom_type,
 	    <![CDATA[
 	       from (select 
 	        		t0.CUID as t0_CUID,
@@ -194,7 +202,8 @@
 			       nvl(out_num,0) as t0_out_num,
 			       nvl(move_num_in,0) as t0_move_num_in,
 			       nvl(wait_back_num,0) as t0_wait_back_num,
-			       nvl(storage_num,0) as t0_storage_num
+			       nvl(storage_num,0) as t0_storage_num,t0.PATENT_ID as t0_parent_id,
+			       t0.bom_type as t0_bom_type,
 	        from 
 	        ZG_T_ORDER_PLANBOM t0
  ) m
@@ -451,6 +460,7 @@
 			
 			where 
 			 bom.idnrk=tbom.idnrk
+			 and planbom.parent_id is null
  			 and oup.order_plan_id=plan.cuid
 			and plan.cuid=planBom.Order_Plan_Id
 			and planbom.taskbom_id=taskbom.cuid
@@ -476,6 +486,7 @@
 			
 			where 
 			 bom.idnrk=tbom.idnrk
+			 and planbom.parent_id is null
  			and	 oup.order_plan_id=plan.cuid
 			and plan.cuid=planBom.Order_Plan_Id
 			  and planbom.taskbom_id=taskbom.cuid
@@ -519,6 +530,7 @@
      		   zg_t_bom tbom
 		 where 
 		    bom.idnrk=tbom.idnrk
+		    and planbom.parent_id is null
   			and plan.cuid = planBom.Order_Plan_Id
 		   and plan.cuid = planBom.Order_Plan_Id
         and planbom.taskbom_id=taskbom.cuid
@@ -646,6 +658,7 @@
      		   zg_t_bom tbom,zg_materiel ma
 		 where 
 		    bom.idnrk=tbom.idnrk(+)
+		    and planbom.parent_id is null
   			and plan.cuid = planBom.Order_Plan_Id
 		   and planbom.taskbom_id=taskbom.cuid
         and taskbom.order_bom_id=bom.cuid

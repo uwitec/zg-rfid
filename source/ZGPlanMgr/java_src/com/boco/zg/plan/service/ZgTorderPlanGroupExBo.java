@@ -276,19 +276,19 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 		List<Map> list=((ZgTorderPlanGroupExDao)this.getEntityDao()).findDynQuery(sql.toString());
 		
 		if(list.size()==0){//领料已经完成，检查是否有退料
-			sql=new StringBuffer();
-			sql.append("select planbom.* ");
-			sql.append(" from zg_t_order_plan plan, zg_t_order_planbom planbom,zg_t_group_order_plan gop");
-			sql.append(" where plan.cuid = planbom.order_plan_id");
-			sql.append(" and plan.cuid=gop.order_plan_id ");
-			sql.append(" and gop.group_id = '"+groupId+"'");
-			sql.append(" and planbom.wait_back_num>0 ");
-			List<Map> backList=((ZgTorderPlanGroupExDao)this.getEntityDao()).findDynQuery(sql.toString());
-			if(backList.size()>0){
-				return Constants.OrderPlanStatus.SUBMIT.value();
-			}else {
-				return Constants.OrderPlanStatus.FINISHED.value();
-			}
+//			sql=new StringBuffer();
+//			sql.append("select planbom.* ");
+//			sql.append(" from zg_t_order_plan plan, zg_t_order_planbom planbom,zg_t_group_order_plan gop");
+//			sql.append(" where plan.cuid = planbom.order_plan_id");
+//			sql.append(" and plan.cuid=gop.order_plan_id ");
+//			sql.append(" and gop.group_id = '"+groupId+"'");
+//			sql.append(" and planbom.wait_back_num>0 ");
+//			List<Map> backList=((ZgTorderPlanGroupExDao)this.getEntityDao()).findDynQuery(sql.toString());
+//			if(backList.size()>0){
+//				return Constants.OrderPlanStatus.SUBMIT.value();
+//			}else {
+			return Constants.OrderPlanStatus.FINISHED.value();
+//			}
 			
 		}
 		
@@ -328,7 +328,7 @@ public class ZgTorderPlanGroupExBo extends BaseManager<ZgTorderPlanGroup,java.la
 		sql.append("              zg_t_bom           bom , zg_t_group_order_plan gop");
 		sql.append("         where plan.cuid = planbom.order_plan_id");
 		sql.append("           and planbom.taskbom_id=taskbom.cuid and taskbom.order_bom_id = orderbom.cuid");
-		sql.append("           and orderbom.idnrk = bom.idnrk");
+		sql.append("           and orderbom.idnrk = bom.idnrk and planbom.car_num>0 ");
 		sql.append("           and bom.car_id is not null");
 		sql.append("          and bom.carnum is not null  and gop.order_plan_id=plan.cuid");
 		sql.append("          and gop.group_id = '"+orderPlanId+"')");

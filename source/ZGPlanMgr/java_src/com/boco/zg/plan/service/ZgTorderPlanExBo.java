@@ -344,23 +344,28 @@ public class ZgTorderPlanExBo extends BaseManager<ZgTorderPlanEx,java.lang.Strin
 		sql.append("from zg_t_order_plan plan, zg_t_order_planbom planbom ");
 		sql.append(" where plan.cuid = planbom.order_plan_id");
 		sql.append(" and nvl(planbom.complete_num,0)<planbom.car_num");
-		sql.append(" and planbom.car_num>'0' ");
+		sql.append(" and planbom.car_num>0 ");
 		sql.append(" and plan.cuid = '"+orderPlanId+"'");
 		List<Map> list=((ZgTorderPlanExDao)this.getEntityDao()).findDynQuery(sql.toString());
 		
 		if(list.size()==0){//领料已经完成，检查是否有退料
-			sql=new StringBuffer();
-			sql.append("select planbom.* ");
-			sql.append("from zg_t_order_plan plan, zg_t_order_planbom planbom ");
-			sql.append(" where plan.cuid = planbom.order_plan_id");
-			sql.append(" and plan.cuid = '"+orderPlanId+"'");
-			sql.append(" and planbom.wait_back_num>0 ");
-			List<Map> backList=((ZgTorderPlanExDao)this.getEntityDao()).findDynQuery(sql.toString());
-			if(backList.size()>0){
-				return Constants.OrderPlanStatus.SUBMIT.value();
+			if(plan.getPlanType().equals(Constants.OrderPlanType.CHANGE.value())){
+				sql=new StringBuffer();
+				sql.append("select planbom.* ");
+				sql.append("from zg_t_order_plan plan, zg_t_order_planbom planbom ");
+				sql.append(" where plan.cuid = planbom.order_plan_id");
+				sql.append(" and plan.cuid = '"+orderPlanId+"'");
+				sql.append(" and planbom.wait_back_num>0 ");
+				List<Map> backList=((ZgTorderPlanExDao)this.getEntityDao()).findDynQuery(sql.toString());
+				if(backList.size()>0){
+					return Constants.OrderPlanStatus.SUBMIT.value();
+				}else {
+					return Constants.OrderPlanStatus.FINISHED.value();
+				}
 			}else {
 				return Constants.OrderPlanStatus.FINISHED.value();
 			}
+			
 			
 		}
 		

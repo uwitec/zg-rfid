@@ -72,7 +72,7 @@
 			if(isNumber(value)) {
 				if(max < value*1) {
 					if("${planType}"!="RENEW"){
-						alert("换料数量数量必须小于备料库存！");
+						alert("换料数量数量必须小于最大退换料数量！");
 						obj.value = wait_back_num;
 					}
 					
@@ -238,6 +238,9 @@
 										备料库存
 									</td>
 									<td class="tableHeader">
+										最大退换料数量
+									</td>
+									<td class="tableHeader">
 										<c:if test="${planType=='CHANGE'}">换料数量</c:if>
 										<c:if test="${planType=='BACK'}">退料数量</c:if>
 										<c:if test="${planType=='RENEW'}">补领料数量</c:if>
@@ -276,16 +279,19 @@
 										 
 										  ${obj.STORAGE_NUM}
 										 </td>
+										  <td>
+										  ${obj.MAX_WAITBACKNUM}
+										 </td>
 										
 										<td>
 										    <c:choose>
 								            	<c:when test="${model.state=='-7'||model.state=='-8'||empty model.state}">
 								            	<c:if test="${planType=='CHANGE'}">
-								            		<input type="text" name="bomList.waitBackNum" value="${obj.WAIT_BACK_NUM}" id="WAIT_BACK_NUM_${num}" maxValue="${obj.STORAGE_NUM}" maxLength="13" size="8" 	onchange="checkWait_back_num(this,'${obj.WAIT_BACK_NUM}')" />
+								            		<input type="text" name="bomList.waitBackNum" value="${obj.WAIT_BACK_NUM}" id="WAIT_BACK_NUM_${num}" maxValue="${obj.MAX_WAITBACKNUM}" maxLength="13" size="8" 	onchange="checkWait_back_num(this,'${obj.WAIT_BACK_NUM}')" />
 													<input type="hidden" name="bomList.cuid"value="${obj.CUID}" />
 								            	</c:if>
 												<c:if test="${planType=='BACK'}">
-													<input type="text" name="bomList.waitBackNum" value="${obj.WAIT_BACK_NUM}" id="WAIT_BACK_NUM_${num}" maxValue="${obj.STORAGE_NUM}" maxLength="13" size="8" 	onchange="checkWait_back_num(this,'${obj.WAIT_BACK_NUM}')" />
+													<input type="text" name="bomList.waitBackNum" value="${obj.WAIT_BACK_NUM}" id="WAIT_BACK_NUM_${num}" maxValue="${obj.MAX_WAITBACKNUM}" maxLength="13" size="8" 	onchange="checkWait_back_num(this,'${obj.WAIT_BACK_NUM}')" />
 													<input type="hidden" name="bomList.cuid"value="${obj.CUID}" />
 												</c:if>
 												<c:if test="${planType=='RENEW'}">
