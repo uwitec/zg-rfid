@@ -409,7 +409,7 @@
 					
 				</tr>
 				<tr>
-<th width="10%">
+					<th width="10%">
 						客户机型：
 					</th>
 					<td width="15%">
@@ -483,6 +483,22 @@
 						</c:if>
 					
 				</tr>
+				<c:if test="${orderPlanType=='CHANGE'||orderPlanType=='RENEW'||orderPlanType=='BACK'}">
+				<tr>
+					<th width="10%">
+						备注：
+					</th>
+					<td colspan="7">
+					<c:choose>
+					<c:when test="${planGroupList[0].planType=='ABC'||planGroupList[0].planType=='ABD'||planGroupList[0].planType=='ABE'}">
+					工单变更引起退换料
+					</c:when>
+					<c:otherwise>	${obj.zbz }</c:otherwise>
+					</c:choose>
+					
+					</td>
+					</tr>
+				</c:if>
 			</tbody>
 			</c:forEach>
 		</table>
@@ -617,6 +633,16 @@
 						</c:if>
 					
 				</tr>
+					<c:if test="${orderPlanType=='CHANGE'||orderPlanType=='RENEW'||orderPlanType=='BACK'}">
+				<tr>
+					<th width="10%">
+						备注：
+					</th>
+					<td colspan="7">
+						${obj.zbz }
+					</td>
+					</tr>
+				</c:if>
 			</tbody>
 			</c:forEach>
 		</table>
@@ -753,6 +779,16 @@
 						</c:if>
 					
 				</tr>
+						<c:if test="${orderPlanType=='CHANGE'||orderPlanType=='RENEW'||orderPlanType=='BACK'}">
+				<tr>
+					<th width="10%">
+						备注：
+					</th>
+					<td colspan="7">
+						${obj.zbz }
+					</td>
+					</tr>
+				</c:if>
 			</tbody>
 			</c:forEach>
 		</table>
@@ -888,6 +924,16 @@
 						</c:if>
 					
 				</tr>
+					<c:if test="${orderPlanType=='CHANGE'||orderPlanType=='RENEW'||orderPlanType=='BACK'}">
+				<tr>
+					<th width="10%">
+						备注：
+					</th>
+					<td colspan="7">
+						${obj.zbz }
+					</td>
+					</tr>
+				</c:if>
 			</tbody>
 			</c:forEach>
 		</table>
@@ -1023,6 +1069,16 @@
 						</c:if>
 					
 				</tr>
+					<c:if test="${orderPlanType=='CHANGE'||orderPlanType=='RENEW'||orderPlanType=='BACK'}">
+				<tr>
+					<th width="10%">
+						备注：
+					</th>
+					<td colspan="7">
+						${obj.zbz }
+					</td>
+					</tr>
+				</c:if>
 			</tbody>
 			</c:forEach>
 		</table>
@@ -1137,6 +1193,16 @@
 						
 					
 				</tr>
+					<c:if test="${orderPlanType=='CHANGE'||orderPlanType=='RENEW'||orderPlanType=='BACK'}">
+				<tr>
+					<th width="10%">
+						备注：
+					</th>
+					<td colspan="7">
+						${obj.zbz }
+					</td>
+					</tr>
+				</c:if>
 			</tbody>
 		</table>
 		</div>

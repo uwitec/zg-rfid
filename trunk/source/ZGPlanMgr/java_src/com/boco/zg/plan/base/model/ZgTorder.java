@@ -184,6 +184,7 @@ public class ZgTorder extends BaseEntity {
 	private String arbpl1;
 	private String taskId;
 	private String poskey;
+	private String zbz;
 	
 	private Long publish_num;//下线数量
 
@@ -885,5 +886,19 @@ public class ZgTorder extends BaseEntity {
 
 	public void setPoskey(String poskey) {
 		this.poskey = poskey;
+	}
+
+	/**
+	 * @return the zbz
+	 */
+	public String getZbz() {
+		return zbz;
+	}
+
+	/**
+	 * @param zbz the zbz to set
+	 */
+	public void setZbz(String zbz) {
+		this.zbz = zbz;
 	}
 }

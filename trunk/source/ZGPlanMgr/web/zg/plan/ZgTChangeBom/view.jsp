@@ -199,6 +199,15 @@
 						</td>
 
 					</tr>
+						<tr>	
+						<th>
+							备注：
+						</th>
+						<td colspan="5">
+						${model.zbz }
+						</td>
+				
+					</tr>
 				</tbody>
 			</table>
 			</form>

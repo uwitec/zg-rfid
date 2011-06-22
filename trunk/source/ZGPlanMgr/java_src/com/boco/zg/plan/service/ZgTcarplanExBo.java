@@ -379,7 +379,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		}
 		sql.append("bom.carnum carCount,taskbom.cuid taskbom_id,taskbom.order_task_id orderTaskId, od.aufnr,  od.arbpl,     od.kdauf,     od.kdpos,  od.maktx1");
 		sql.append(" from zg_t_order_planbom planbom, zg_t_orderbom orderbom, zg_t_bom bom,zg_t_order_taskbom taskbom,zg_t_order od,  zg_t_group_order_plan gop ");
-		sql.append(" where orderbom.order_id=od.cuid and and planbom.parent_id is not null planbom.taskbom_id=taskbom.cuid         and taskbom.order_bom_id=orderbom.cuid " );
+		sql.append(" where orderbom.order_id=od.cuid and  planbom.parent_id is not null and planbom.taskbom_id=taskbom.cuid         and taskbom.order_bom_id=orderbom.cuid " );
 		if(Constants.OrderPlanType.BACK.value().equals(planType)){
 			sql.append(" and nvl(planbom.wait_back_num,0)>0 ");
 		}else {
@@ -583,7 +583,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 * @param operatorInfo
 	 * @param storageUserId 仓管员id
 	 */
-	public String  confirmCarPlan(String[] items,List<ZgTcarbomEx> carbomList,OperatorInfo operatorInfo,String storageUserId,String planType) {
+	public String  confirmCarPlan(String[] items,List<ZgTcarbomEx> carbomList,OperatorInfo operatorInfo,String storageUserId,String planType,String remark) {
 		String result="noTurn";
 		
 		//<!--modify by wengqin 2011/05/12 同一个装车计划分多次刷卡，选哪个物料刷哪些物料的装车数量- 如果领料计划的物料没有刷卡完，则不计算领料进度
@@ -621,6 +621,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 						zgTcarplan.setCarId(bom.getCarId());
 						zgTcarplan.setStorageId(bom.getLgort());
 						zgTcarplan.setIsManul(Constants.isNotManulFinished);
+						zgTcarplan.setRemark(remark);
 						save1(zgTcarplan);
 					}
 					num++;
@@ -641,6 +642,10 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 //			updateCarPlanStorageUserId(carPlanId, storageUserId);
 			//4 更新planbom表的数量及carplan表的状态 及仓管员信息
 			boolean isCarPlanFinished=storagePlanSubmitById(carPlanId,storageUserId,orderPlanBomIds,planType);
+			
+			ZgTcarplan zgTcarplan = zgTcarplanBo.getById(carPlanId);
+			zgTcarplan.setRemark(remark);
+			update(zgTcarplan);
 			
 			if(isCarPlanFinished){//该装车计划已经领完，则进行相应的状态变化，计划进度
 				if(Constants.OrderPlanType.BACK.value().equals(planType)){

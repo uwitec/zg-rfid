@@ -93,6 +93,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
          function returnMsgAndClose(){
          	var cuid=$("#cuid").val();
          	var labelCn=$("#labelCn").val();
+         	var zbz=$("#zbz").val();
          	if(cuid==''||cuid==undefined){
          		alert('请仓管员刷卡确认');
          		return;
@@ -100,6 +101,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
          	var returnObj=new Array();
          	returnObj.cuid=cuid;
          	returnObj.labelCn=labelCn;
+         	returnObj.zbz=zbz;
+         	//alert(zbz);
          	window.returnValue=returnObj;
          	window.close();
 	     }
@@ -148,12 +151,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<td><input id="email" class="readOnlyInput" /></td>
 			
 					</tr>
-						<tr>	
+					
+					<tr>	
+						<td class="label">
+					　领料备注：</td>	
+						<td colspan="3">	<textarea name="zbz" id="zbz" onpropertychange="if(value.length>50) value=value.substr(0,50)"
+								 cols=40 rows=2></textarea></td>
+					</tr>
+					<tr>	
 						<td>
 						<OBJECT id="RFIDReader" classid="clsid:93D9C558-C72F-4348-A071-BC594E06A0AA" style="visibility:hidden;"> </OBJECT>
 				       <input type="hidden" id="kCode"/>
 						</td>
-			
 					</tr>
 				</table>
 			</div>

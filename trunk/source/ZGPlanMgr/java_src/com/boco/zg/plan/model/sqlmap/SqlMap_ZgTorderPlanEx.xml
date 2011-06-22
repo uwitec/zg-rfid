@@ -44,6 +44,13 @@
 		<result property="planType" column="PLAN_TYPE"/>
 		<result property="plant" column="plant"/>
 		<result property="percent" column="PERCENT"/>
+		<result property="backReason" column="BACK_REASON"/>
+		<result property="backZbz" column="BACK_ZBZ"/>
+		<result property="isManul" column="ISMANUL"/>
+		<result property="zbz" column="ZBZ"/>
+		<result property="extend1" column="EXTEND1"/>
+		
+		
     </resultMap>
     
     <select id="getOrderPlanListByCarPlanId" resultMap="zgTorderPlanResult" >

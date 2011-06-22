@@ -311,6 +311,8 @@
         <col id="idnrk" name="物料编码" datatype="string" desc=""></col>
         <col id="maktx2" name="物料描述" datatype="string" desc=""></col>
          <col id="posnr" name="项目编号" datatype="string" desc=""></col>
+          <col id="zbz" name="抬头备注" datatype="string" desc=""></col>
+        <col id="remark" name="领料备注" datatype="string" desc=""></col>
         <col id="sortf" name="包装方式" datatype="string" desc=""></col>
         <col id="lgort" name="发料仓库" datatype="string" desc=""></col>
         <col id="car_num" name="生产批量" datatype="string" desc=""></col>
@@ -340,7 +342,9 @@
                sup.lifnr_name,
                zto.kdauf,
                zto.KDPOS ,
-               orderbom.posnr
+               orderbom.posnr,
+               plan.zbz,
+               carplan.remark
             from zg_t_carbom           carbom,
                zg_t_carplan          carplan,
                zg_t_order            zto,
@@ -413,7 +417,9 @@
 	          orderbom.sortf,
 	          orderbom.lgort,
 	          sup.lifnr,plan.plant,
-	          sup.lifnr_name ,emu.orgname, zto.kdauf,zto.KDPOS,orderbom.posnr,carplan.order_plan_type
+	          sup.lifnr_name ,emu.orgname, zto.kdauf,zto.KDPOS,orderbom.posnr,carplan.order_plan_type,
+               plan.zbz,
+               carplan.remark
        		</isEmpty>
         </dynamic>
         <content>
@@ -444,6 +450,8 @@
         <col id="idnrk" name="物料编码" datatype="string" desc=""></col>
         <col id="maktx2" name="物料描述" datatype="string" desc=""></col>
         <col id="posnr" name="项目编号" datatype="string" desc=""></col>
+        <col id="zbz" name="抬头备注" datatype="string" desc=""></col>
+        <col id="remark" name="领料备注" datatype="string" desc=""></col>
         <col id="sortf" name="包装方式" datatype="string" desc=""></col>
         <col id="lgort" name="发料仓库" datatype="string" desc=""></col>
         <col id="car_num" name="生产批量" datatype="string" desc=""></col>
@@ -474,8 +482,8 @@
 	       orderbom.sortf,
 	       orderbom.lgort,
 	       sup.lifnr,
-	        decode( carplan.order_plan_type,'ABC' ,'正常领料','ABD','正常领料','ABE','正常领料','BACK','退料','CHANGE','换料','RENEW','补领料') order_plan_type,
-	          case when  nvl(sup.car_num,0)=0 then carbom.real_num else nvl(sup.car_num,0) end as real_num,
+	       decode( carplan.order_plan_type,'ABC' ,'正常领料','ABD','正常领料','ABE','正常领料','BACK','退料','CHANGE','换料','RENEW','补领料') order_plan_type,
+	       case when  nvl(sup.car_num,0)=0 then carbom.real_num else nvl(sup.car_num,0) end as real_num,
 	       planbom.car_num,
 	       sup.lifnr_name,
 	       carplan.car_user,
@@ -486,7 +494,9 @@
 	       op1.label_cn storage_user_name,
 	       sup.batchno,
            sup.zrzqd,zto.kdauf,zto.KDPOS,       
-               orderbom.posnr
+           orderbom.posnr,
+        plan.zbz,
+               carplan.remark
 	  from zg_t_carbom           carbom,
 	       zg_t_carplan          carplan,
 	       zg_t_order            zto,

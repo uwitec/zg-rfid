@@ -60,7 +60,9 @@
                sup.lifnr_name,
                zto.kdauf,
                zto.KDPOS,
-               orderbom.posnr
+               orderbom.posnr,
+               plan.zbz,
+               carplan.remark
             from zg_t_carbom           carbom,
                zg_t_carplan          carplan,
                zg_t_order            zto,
@@ -100,7 +102,9 @@
 	          plan.plant,
 	          sup.lifnr,
 	          sup.lifnr_name,orgname, zto.kdauf,zto.KDPOS,
-               orderbom.posnr,  carplan.order_plan_type ]]>
+               orderbom.posnr,  carplan.order_plan_type,
+               plan.zbz,
+               carplan.remark,plan.plan_type ]]>
 
 	</select>   
 	
@@ -120,7 +124,9 @@
                sum(planbom.car_num) car_num,
                sup.lifnr_name,
                zto.kdauf,
-               zto.KDPOS
+               zto.KDPOS,
+               plan.zbz,
+               carplan.remark
           from zg_t_carbom           carbom,
                zg_t_carplan          carplan,
                zg_t_order            zto,
@@ -160,7 +166,9 @@
 	          sup.lifnr,
 	          plan.plant,
 	          sup.lifnr_name,orgname, zto.kdauf,zto.KDPOS,
-               orderbom.posnr,carplan.order_plan_type) ]]>
+               orderbom.posnr,carplan.order_plan_type,
+               plan.zbz,
+               carplan.remark) ]]>
 
 	  </select>
 </sqlMap>

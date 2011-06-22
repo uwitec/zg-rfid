@@ -1447,7 +1447,8 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 			       t.cuid planId,
 			      
 			        pb.wait_back_num,
-			           (select temp.storage_num-nvl(temp.wait_back_num,0)+nvl(pb.wait_back_num,0)
+			           (select temp.storage_num-nvl(temp.wait_back_num,0)+nvl(pb.wait_back_num,0)-(select nvl(sum(nvl(tp1.wait_back_num,0)),0) from zg_t_order_planbom tp1,zg_t_order_plan p where p.cuid=tp1.order_plan_id and 
+               tp1.parent_id=temp.cuid and p.plan_type='CHANGE' )
           from zg_t_order_planbom temp
          where temp.cuid = pb.parent_id) max_waitBackNum,
          (select temp.storage_num
@@ -1505,13 +1506,14 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		               t.label_cn,
 		               sortf_h,
 		               matnr1,
-		               t.storage_num,
+		               planbom.storage_num,
 		               storage_state,
 		               maktx1,
 		               posnr,
 		               matkl_self,
 		               taskbom.*,
-				  nvl(planbom.storage_num,0)-nvl(planbom.wait_back_num,0)  as all_storage_num
+				       ( select nvl(planbom.storage_num, 0) - nvl(planbom.wait_back_num, 0)-(select nvl(sum(nvl(tp1.wait_back_num,0)),0) from zg_t_order_planbom tp1,zg_t_order_plan p where p.cuid=tp1.order_plan_id and 
+               tp1.parent_id=planbom.cuid and p.plan_type='CHANGE' ) from dual )as all_storage_num
 				          from zg_t_orderbom t, zg_t_order_task task,zg_t_order_taskbom taskbom,zg_t_order_planbom planbom
 				         where t.cuid = taskbom.order_bom_id
 				         and taskbom.cuid=planbom.taskbom_id

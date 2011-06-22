@@ -13,12 +13,13 @@
 		<result property="psbh" column="psbh"/>
 		<result property="advance" column="advance"/>
 		<result property="indexNo" column="indexNo"/>
+		<result property="zbz" column="zbz"/>
     </resultMap>
     
     
     
      <select id="getPlanGroupListByCarPlanId" resultMap="zgTorderPlanGroupResult">
-		select distinct oup.*,null as advance
+		select distinct oup.*,null as advance,plan.zbz
 		  from zg_t_carplan       carplan,
 		       zg_t_carbom        carbom,
 		       zg_t_order_planbom planbom,
@@ -34,7 +35,7 @@
     </select>
     
     <select id="getPlanGroupListByOrderPlanId" resultMap="zgTorderPlanGroupResult">
-				select t.*,null as advance from zg_t_order_plan_group t ,zg_t_group_order_plan gop,zg_t_order_plan plan
+				select t.*,null as advance,plan.zbz from zg_t_order_plan_group t ,zg_t_group_order_plan gop,zg_t_order_plan plan
 		where plan.cuid='$orderPlanId$'
 		and plan.cuid=gop.order_plan_id
 		and gop.group_id=t.cuid
@@ -103,7 +104,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
     
     <select id="getPlanGroupList1" resultMap="zgTorderPlanGroupResult">
      select    * from ((
-		     	select oup.*,min(zto.arbpl) arbpl,min(task.px_date) px_date,'0' as advance
+		     	select oup.*,min(zto.arbpl) arbpl,min(task.px_date) px_date,'0' as advance,min(plan.zbz) zbz
 		  from 
 		  
 		     <isNotEqual property="operatorId" compareValue="0"> 
@@ -172,7 +173,8 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		
 		    ]]>) union 
 		    (
-		    	select oup.*,min(zto.arbpl) arbpl,min(task.px_date) px_date,'1' as advance
+		    	select oup.*,min(zto.arbpl) arbpl,min(task.px_date) px_date,'1' as advance,
+                min(plan.zbz) zbz
 		  from 
 		  
 		     <isNotEqual property="operatorId" compareValue="0"> 
@@ -255,7 +257,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
     <!--今天之前没有领完的订单，今天的订单，今天之后特殊领料的订单 -->
      <select id="getPlanGroupList" resultMap="zgTorderPlanGroupResult">
      select    * from ((
-		     	select oup.*,min(zto.arbpl) arbpl,min(task.px_date) px_date,'0' as advance
+		     	select oup.*,min(zto.arbpl) arbpl,min(task.px_date) px_date,'0' as advance,min(plan.zbz) zbz
 		  from 
 		  
 		     <isNotEqual property="operatorId" compareValue="0"> 
@@ -320,7 +322,8 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		
 		    ]]>) union 
 		    (
-		    	select oup.*,min(zto.arbpl) arbpl,min(task.px_date) px_date,'1' as advance
+		    	select oup.*,min(zto.arbpl) arbpl,min(task.px_date) px_date,'1' as advance,
+                min(plan.zbz) zbz
 		  from 
 		  
 		     <isNotEqual property="operatorId" compareValue="0"> 
@@ -400,7 +403,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
     </select>
     
     <select id="getPlanGroupListByOrderTaskId" resultMap="zgTorderPlanGroupResult">
-	    select distinct oup.*, null as advance
+	    select distinct oup.*, null as advance,t.zbz
 	  from zg_t_order_plan_group oup,zg_t_group_order_plan gop, zg_t_order_plan t
 	 where gop.order_plan_id = t.cuid
 	 and oup.cuid=gop.group_id
@@ -408,7 +411,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
     </select>
     
      <select id="getPlanGroupListByOrderId" resultMap="zgTorderPlanGroupResult">
-	  select distinct oup.*, null as advance
+	  select distinct oup.*, null as advance,t.zbz
 		  from zg_t_order_plan_group oup,
 		       zg_t_group_order_plan gop,
 		       zg_t_order_plan       t,

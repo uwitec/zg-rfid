@@ -79,6 +79,8 @@ for(SortInfo si:list){
 							<td class="tableHeader">物料编码<%=map.get("ec_image_t0_PLANT")==null?"":map.get("ec_image_t0_PLANT")%></td>
 							<td class="tableHeader">物料描述<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
 							<td class="tableHeader">项目编号<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
+							<td class="tableHeader">抬头备注<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
+							<td class="tableHeader">领料备注<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
 							<td class="tableHeader">包装方式<%=map.get("ec_image_t0_PMENGE")==null?"":map.get("ec_image_t0_PMENGE")%></td>
 							<td class="tableHeader">发料仓库<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
 							<td class="tableHeader">生产批量<%=map.get("ec_image_t0_MAKTX1")==null?"":map.get("ec_image_t0_MAKTX1")%></td>
@@ -92,7 +94,6 @@ for(SortInfo si:list){
 							<td class="tableHeader">确认刷卡时间<%=map.get("ec_image_t0_PMENGE")==null?"":map.get("ec_image_t0_PMENGE")%></td>
 								<td class="tableHeader">批次<%=map.get("ec_image_t0_PSMNG")==null?"":map.get("ec_image_t0_PSMNG")%></td>
 							<td class="tableHeader">认证清单<%=map.get("ec_image_t0_PMENGE")==null?"":map.get("ec_image_t0_PMENGE")%></td>
-							
 						</tr>
 					</thead>
 					<tbody>
@@ -102,7 +103,6 @@ for(SortInfo si:list){
 							<td>${obj.AUFNR}</td>
 							<td>${obj.MATNR}</td>
 							<td>${obj.MAKTX1}</td>
-							<td>${obj.POSNR}</td>
 							<td>${obj.KDAUF}</td>
 							<td>${obj.KDPOS}</td>
 							<td align="center">${ obj.PLANT}
@@ -110,6 +110,9 @@ for(SortInfo si:list){
 							<td>${obj.ARBPL}</td>
 							<td>${obj.IDNRK}</td>
 							<td align="left">${obj.MAKTX2}</td>
+							<td >${obj.POSNR}</td>
+							<td>${obj.ZBZ}</td>
+							<td>${obj.REMARK}</td>
 							<td align="center">${obj.SORTF}</td>
 							<td>${obj.LGORT}</td>
 							<td>${obj.CAR_NUM}</td>
