@@ -701,6 +701,11 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 			}else {
 				tempPlanbom.setWaitBackNum(0l);
 			}
+			
+			//生成退料子记录
+			Long manulWaitBackNum=getZgTorderPlanbomBo().getManulWaitBackNumByPbId(planbom.getCuid());
+			getZgTorderPlanbomBo().generateWaiBackBom(tempPlanbom,manulWaitBackNum);
+			
 		}
 		if(tempPlanbom.getCompleteNum()>=tempPlanbom.getCarNum()){
 			tempPlanbom.setState(Constants.CarPlanStatus.DONE.value());

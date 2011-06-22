@@ -110,11 +110,11 @@ public class ZgTBomManagerDao extends BaseIbatisDao<ZgTorderPlan,java.lang.Strin
 	@SuppressWarnings("unchecked")
 	public List<Map> findBomlListByOrderId(PageRequest<Map> pageRequest) {
 		String planType=pageRequest.getFilters().get("planType").toString();
-		if(Constants.OrderPlanType.RENEW.value().equals(planType)){
-			return getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findBomlListByOrderId1",pageRequest.getFilters());
-		}else {
+//		if(Constants.OrderPlanType.RENEW.value().equals(planType)){
+//			return getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findBomlListByOrderId1",pageRequest.getFilters());
+//		}else {
 			return getSqlMapClientTemplate().queryForList("ZgTorderbomEx.findBomlListByOrderId",pageRequest.getFilters());
-		}
+//		}
 		
 	}
 	

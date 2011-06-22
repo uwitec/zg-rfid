@@ -119,6 +119,8 @@ public class ZgTorderPlanbom extends BaseEntity {
 	private String posnr;
 	private String orderId;
 	private Date finishTime;
+	private String parentId;
+	private String bomType;
 	
 	//columns END
 	public java.lang.String getCuid() {
@@ -537,5 +539,39 @@ public class ZgTorderPlanbom extends BaseEntity {
 	public void setFinishTime(Date finishTime) {
 		this.finishTime = finishTime;
 	}
+
+
+
+
+	/**
+	 * @return the bomType
+	 */
+	public String getBomType() {
+		return bomType;
+	}
+
+	/**
+	 * @param bomType the bomType to set
+	 */
+	public void setBomType(String bomType) {
+		this.bomType = bomType;
+	}
+
+
+
+	/**
+	 * @return the parentId
+	 */
+	public String getParentId() {
+		return parentId;
+	}
+
+	/**
+	 * @param parentId the parentId to set
+	 */
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+
 
 }

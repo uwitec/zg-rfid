@@ -12,12 +12,14 @@ import java.util.Map;
 
 import javacommon.base.BaseManager;
 import javacommon.base.EntityDao;
+import javacommon.util.StringHelper;
 
 import org.springframework.stereotype.Component;
 
 import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 
+import com.boco.frame.meta.dao.IbatisDAOHelper;
 import com.boco.zg.plan.base.dao.ZgTBomManagerDao;
 import com.boco.zg.plan.base.model.ZgTcarbom;
 import com.boco.zg.plan.base.model.ZgTcarplan;
@@ -39,6 +41,7 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
     private ZgTorderPlanbom zgTorderPlanbom;
     private ZgTcarplanBo zgTcarplanBo;
     private ZgTcarbomBo zgTcarbomBo;
+    private ZgTorderPlanBo zgTorderPlanBo;
 
 	/* (non-Javadoc)
 	 * @see javacommon.base.BaseManager#getEntityDao()
@@ -113,7 +116,7 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 		for (Map obj : bol) {
 			//if(obj.get("isDel")==null){
 			 boolean b=((Boolean)obj.get("isDel")).booleanValue();
-			 if(b==false){
+			 if(b==false){//删除状态为假，则直接插入
 					ZgTorderPlanbom zgTorderPlanbom=new ZgTorderPlanbom();
 					
 					
@@ -133,6 +136,12 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 						zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
 					}
 					
+					//获取该退换料记录的主记录
+					ZgTorderPlanbom parentPlanbom=zgTorderPlanbomBo.getParentPlanBomByTaskBomId(String.valueOf(obj.get("CUID")));
+					parentPlanbom.setWaitBackNum(parentPlanbom.getWaitBackNum()+Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+					zgTorderPlanbomBo.update(parentPlanbom);
+					
+					zgTorderPlanbom.setParentId(parentPlanbom.getCuid());
 					zgTorderPlanbom.setTaskBomId(String.valueOf(obj.get("CUID")));
 					zgTorderPlanbom.setOrderTaskId(zgTorderPlan.getOrderTaskId());
 					zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
@@ -158,8 +167,6 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 			//System.out.print(obj.get("CUID").toString());
 			
 			if(obj.get("isModity")==null||"".equals(obj.get("isModity"))){//空代表从数据库中获取而且没有修改过
-			
-				System.out.print("a");
 			}
 //			else if(((Boolean)obj.get("isModity")).booleanValue()==false){//FALSE代表新添加但没有修改
 //	            ZgTorderPlanbom zgTorderPlanbom=new ZgTorderPlanbom();
@@ -194,9 +201,21 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 				    
 				 	zgTorderPlanbom.setState("0");
 				    zgTorderPlanbomBo.update(zgTorderPlanbom);
+				    
+				    //汇总父领料记录的待退料数
+				    ZgTorderPlanbom parentPbom=zgTorderPlanbomBo.getById(zgTorderPlanbom.getParentId());
+				    zgTorderPlanbomBo.upDateParentWaitBackNumByPlanBom(parentPbom,zgTorderPlanbom.getOrderPlanId(),null);
 				}else if(((Boolean)obj.get("isDel")).booleanValue()==true){//删除为TRUE代表数据库中获取的数据有删除状态
 					String pbId=obj.get("PBID")==null?"":obj.get("PBID").toString();
-					zgTorderPlanbomBo.removeById(pbId);
+					if(!StringHelper.isEmpty(pbId)){
+						zgTorderPlanbom=(ZgTorderPlanbom)zgTorderPlanbomBo.getById(pbId);
+						zgTorderPlanbomBo.removeById(pbId);
+						
+						 //汇总父领料记录的待退料数
+					    ZgTorderPlanbom parentPbom=zgTorderPlanbomBo.getById(zgTorderPlanbom.getParentId());
+					    zgTorderPlanbomBo.upDateParentWaitBackNumByPlanBom(parentPbom,zgTorderPlanbom.getOrderPlanId(),null);
+					}
+					
 				}else if(obj.get("PBID")==null){  //表示新添加的bom
 					ZgTorderPlanbom zgTorderPlanbom=new ZgTorderPlanbom();
 					
@@ -217,6 +236,12 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 						zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
 					}
 						
+					//获取该退换料记录的主记录
+					ZgTorderPlanbom parentPlanbom=zgTorderPlanbomBo.getParentPlanBomByTaskBomId(String.valueOf(obj.get("CUID")));
+					parentPlanbom.setWaitBackNum(parentPlanbom.getWaitBackNum()+Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+					zgTorderPlanbomBo.update(parentPlanbom);
+					
+					zgTorderPlanbom.setParentId(parentPlanbom.getCuid());
 					zgTorderPlanbom.setTaskBomId(String.valueOf(obj.get("CUID")));
 					zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
 					zgTorderPlanbom.setState("0");
@@ -247,6 +272,8 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 	     
 	
 	 
+
+
 	public ZgTorderPlanbomBo getZgTorderPlanbomBo() {
 		return zgTorderPlanbomBo;
 	}
@@ -348,6 +375,44 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 
 	public void setZgTcarplanBo(ZgTcarplanBo zgTcarplanBo) {
 		this.zgTcarplanBo = zgTcarplanBo;
-	} 
+	}
+
+	/**
+	 * @param planId
+	 * @return
+	 */
+	public void deletePlan(String planId) {
+	
+		
+		 //汇总父领料记录的待退料数
+		List<Map> pbList=findBomListByPlanID(planId);
+		for(Map pbom:pbList){
+			String planBomId=IbatisDAOHelper.getStringValue(pbom, "PBID");
+			String parentId=IbatisDAOHelper.getStringValue(pbom, "PARENT_ID");
+			String orderPlanId=IbatisDAOHelper.getStringValue(pbom, "ORDER_PLAN_ID");
+			zgTorderPlanbomBo.removeById(planBomId);
+			//汇总计算退料数量
+			ZgTorderPlanbom parentPbom=zgTorderPlanbomBo.getById(parentId);
+			zgTorderPlanbomBo.upDateParentWaitBackNumByPlanBom(parentPbom,orderPlanId,null);
+			
+			
+		}
+		
+		zgTorderPlanBo.removeById(planId);
+	}
+
+	/**
+	 * @return the zgTorderPlanBo
+	 */
+	public ZgTorderPlanBo getZgTorderPlanBo() {
+		return zgTorderPlanBo;
+	}
+
+	/**
+	 * @param zgTorderPlanBo the zgTorderPlanBo to set
+	 */
+	public void setZgTorderPlanBo(ZgTorderPlanBo zgTorderPlanBo) {
+		this.zgTorderPlanBo = zgTorderPlanBo;
+	}
  }
 

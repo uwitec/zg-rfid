@@ -418,12 +418,23 @@ public class HandlerOrderServiceImpl {
 			planbom.setCarNum(taskbom.getMenge());
 			Long carNum=planbom.getCarNum();
 			Long completeNum=planbom.getCompleteNum();
+			//获取人工申请的退料数量
+			Long manulWaitBackNum=getZgTorderPlanbomBo().getManulWaitBackNumByPbId(planbom.getCuid());
 			if(carNum<=completeNum){//产生退料
 				planbom.setState(Constants.OrderPlanStatus.FINISHED.value());
-				planbom.setWaitBackNum(completeNum-carNum);
+				
+				planbom.setWaitBackNum((completeNum-carNum));
+				
+				//生成退料子记录
+				getZgTorderPlanbomBo().generateWaiBackBom(planbom,manulWaitBackNum);
 			}else {
 				planbom.setState(Constants.OrderPlanStatus.NEW.value());
 				planbom.setWaitBackNum(0l);
+				
+				//生成退料子记录
+				getZgTorderPlanbomBo().generateWaiBackBom(planbom,manulWaitBackNum);
+				
+				
 			}
 			getZgTorderPlanbomBo().update(planbom);
 			

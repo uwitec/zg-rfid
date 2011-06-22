@@ -223,9 +223,9 @@ public class ZgTorderbomDwrAction extends BaseDwrAction {
 			OperatorInfo operatorInfo=getSessionOperatorInfo(request);
 			msg=getZgTorderbomExBo().bomMove(objcetJOSNs, sourceOrderTaskId,targetOrderTaskId,operatorInfo);
 			
-			getZgTorderbomExBo().doZgtorderProcess(sourceOrderTaskId,"order");
+			getZgTorderbomExBo().doZgtorderProcess(sourceOrderTaskId,"task");
 			
-			getZgTorderbomExBo().doZgtorderProcess(targetOrderTaskId,"order");
+			getZgTorderbomExBo().doZgtorderProcess(targetOrderTaskId,"task");
 			
 		}catch(Exception e){
 			flag = false;

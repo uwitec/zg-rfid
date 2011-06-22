@@ -43,6 +43,7 @@ import com.boco.zg.plan.base.model.ZgTorderbom;
 import com.boco.zg.plan.model.ZgTorderPlanbomEx;
 import com.boco.zg.plan.model.ZgTorderbomEx;
 import com.boco.zg.util.Constants;
+import com.boco.frame.meta.dao.IbatisDAOHelper;
 import com.boco.frame.sys.base.model.FwOrganization;
 import com.boco.frame.sys.base.model.Province;
 
@@ -116,7 +117,13 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 	 * @return
 	 */
 	public  List<ZgTorderbomEx> getBomListByProperty(PageRequest<Map> pageRequest) {
-		return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByProperty",pageRequest.getFilters());
+		String planType=IbatisDAOHelper.getStringValue(pageRequest.getFilters(),"planType");
+		if(Constants.NEEDPLANSORTF.contains(planType)){
+			return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByProperty",pageRequest.getFilters());
+		}else {
+			return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByProperty1",pageRequest.getFilters());
+		}
+		
 
 	}
 
@@ -127,7 +134,14 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 	 */
 	public List<ZgTorderbomEx> getBomListByPropertyAdvance(
 			PageRequest<Map> pageRequest) {
-		return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByPropertyAdvance",pageRequest.getFilters());
+		String planType=IbatisDAOHelper.getStringValue(pageRequest.getFilters(),"planType");
+		if(Constants.NEEDPLANSORTF.contains(planType)){
+			return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByPropertyAdvance",pageRequest.getFilters());
+		}else {
+			return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByPropertyAdvance1",pageRequest.getFilters());
+		}
+		
+		
 	}
 	
 	/**

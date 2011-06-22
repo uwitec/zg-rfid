@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dbunit.database.statement.IStatementFactory;
 import org.springframework.stereotype.Component;
 
 import cn.org.rapid_framework.page.PageRequest;
@@ -168,6 +169,43 @@ public class ZgTorderPlanbomDao extends BaseIbatisDao<ZgTorderPlanbom,java.lang.
 	 */
 	public  List<ZgTorderPlanbom> getPlanBomByOrderBomId(Map paramsMap) {
 		return getSqlMapClientTemplate().queryForList("ZgTorderPlanbom.getPlanBomByOrderBomId",paramsMap);
+	}
+
+	/**
+	 * 获取该物料人工发起的退料数量
+	 * @param paramsMap
+	 * @return
+	 */
+	public Long getManulWaitBackNumByPbId(Map paramsMap) {
+		return Long.parseLong(getSqlMapClientTemplate().queryForObject("ZgTorderPlanbom.getManulWaitBackNumByPbId",paramsMap).toString());
+	}
+	
+	/**
+	 * 获取该物料工单变更的退料数量
+	 * @param paramsMap
+	 * @return
+	 */
+	public List<ZgTorderPlanbom> getAutoWaitBackBomListByPbId(Map paramsMap) {
+		return getSqlMapClientTemplate().queryForList("ZgTorderPlanbom.getAutoWaitBackBomListByPbId",paramsMap);
+	}
+
+	/**
+	 *  每个BOM有几条领料计划记录（退换料　正常领料）　找到正常领料的主记录
+	 * @param taskBomId
+	 * @return
+	 */
+	public ZgTorderPlanbom getParentPlanBomByTaskBomId(Map paramsMap) {
+		List<ZgTorderPlanbom> pbList= getSqlMapClientTemplate().queryForList("ZgTorderPlanbom.getParentPlanBomByTaskBomId",paramsMap);
+		return pbList.size()>0?pbList.get(0):null;
+	}
+
+	/**
+	 * @param cuid
+	 * @return
+	 */
+	public Map getParentWaitBackNumByPBId(Map paramsMap) {
+		List<Map>  list=getSqlMapClientTemplate().queryForList("ZgTorderPlanbom.getParentWaitBackNumByPBId",paramsMap);
+		return list.size()>0?list.get(0):null;
 	}
 	
 	

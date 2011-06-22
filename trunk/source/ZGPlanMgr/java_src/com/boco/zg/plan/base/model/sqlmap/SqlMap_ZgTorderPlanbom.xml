@@ -36,6 +36,8 @@
 		<result property="moveNumIn" column="t0_move_num_in"/>
 		<result property="waitBackNum" column="t0_wait_back_num"/>
 		<result property="storageNum" column="t0_storage_num"/>
+		<result property="parentId" column="t0_parent_id"/>
+		<result property="bomType" column="t0_bom_type"/>
     </resultMap>
     
     <!-- 用于select查询公用抽取的列 -->
@@ -71,7 +73,9 @@
        m.t0_out_num,
        m.t0_move_num_in,
        m.t0_wait_back_num,
-       m.t0_storage_num
+       m.t0_storage_num,
+			       m.t0_parent_id,
+			        m.t0_bom_type
 	    ]]>
 	</sql>
 	
@@ -140,7 +144,7 @@
         	COMPLETE_NUM ,
         	CAR_NUM,
         	PLAN_NUM,
-        	BOM_ID 
+        	BOM_ID ,parent_Id,bom_type,wait_back_num
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
@@ -156,7 +160,7 @@
         	#completeNum# ,
         	#carNum#,
         	#planNum#,
-        	#bomId# 
+        	#bomId#,#parentId#,#bomType#,#waitBackNum#
         )
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
@@ -183,7 +187,7 @@
         	PLAN_NUM,
         	BOM_ID,
         	WAIT_BACK_NUM,
-        	STORAGE_NUM 
+        	STORAGE_NUM ,parent_Id,bom_type
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
@@ -201,7 +205,7 @@
         	#planNum#,
         	#bomId#,
         	#waitBackNum#,
-        	#storageNum# 
+        	#storageNum# ,#parentId#,#bomType#
         )
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
@@ -234,7 +238,9 @@
        		move_Num_In=#moveNumIn#,
        		wait_Back_Num=#waitBackNum#,
        		storage_Num=#storageNum#,
-       		FINISH_TIME=#finishTime#
+       		FINISH_TIME=#finishTime#,
+       		parent_Id=#parentId# ,
+       		bom_type=#bomType# 
 	    WHERE CUID = #cuid#
     ]]>
     </update>
@@ -281,7 +287,9 @@
        m.t0_out_num,
        m.t0_move_num_in,
        m.t0_wait_back_num,
-       m.t0_storage_num
+       m.t0_storage_num,
+		t0_parent_id,
+		t0_bom_type
 	   
 	       from (select 
 	        		t0.CUID as t0_CUID,
@@ -308,7 +316,9 @@
 			       nvl(wait_back_num,0) as t0_wait_back_num,
 			       nvl(t0.storage_num,0) as t0_storage_num,
 			       bom.aufnr ,
-			       bom.idnrk
+			       bom.idnrk,
+			       t0.parent_ID as t0_parent_id,
+			       t0.bom_type as t0_bom_type
 	        from 
 	        ZG_T_ORDER_PLANBOM t0,zg_t_orderbom bom where t0.order_bom_id=bom.cuid
  		) m   where m.aufnr='$aufnr$' 
@@ -342,7 +352,9 @@
 			       nvl(out_num,0) as t0_out_num,
 			       nvl(move_num_in,0) as t0_move_num_in,
 			       nvl(wait_back_num,0) as t0_wait_back_num,
-			       nvl(storage_num,0) as t0_storage_num
+			       nvl(storage_num,0) as t0_storage_num,
+			        t0.parent_id as t0_parent_id,
+      				t0.bom_type  as t0_bom_type
 	        from 
 	        ZG_T_ORDER_PLANBOM t0
  ) m
@@ -419,7 +431,9 @@
 			       nvl(out_num,0) as t0_out_num,
 			       nvl(move_num_in,0) as t0_move_num_in,
 			       nvl(wait_back_num,0) as t0_wait_back_num,
-			       nvl(storage_num,0) as t0_storage_num
+			       nvl(storage_num,0) as t0_storage_num,
+			       t0.parent_ID as t0_parent_id,
+			       t0.bom_type as t0_bom_type
 	        from 
 	        ZG_T_ORDER_PLANBOM t0
  ) m
@@ -500,7 +514,9 @@
 			       nvl(out_num,0) as t0_out_num,
 			       nvl(move_num_in,0) as t0_move_num_in,
 			       nvl(wait_back_num,0) as t0_wait_back_num,
-			       nvl(storage_num,0) as t0_storage_num
+			       nvl(storage_num,0) as t0_storage_num,
+			       t0.parent_ID as t0_parent_id,
+			       t0.bom_type as t0_bom_type
 	        from 
 	        ZG_T_ORDER_PLANBOM t0
  ) m
@@ -581,7 +597,9 @@
 			       nvl(out_num,0) as t0_out_num,
 			       nvl(move_num_in,0) as t0_move_num_in,
 			       nvl(wait_back_num,0) as t0_wait_back_num,
-			       nvl(storage_num,0) as t0_storage_num
+			       nvl(storage_num,0) as t0_storage_num,
+			       t0.parent_ID as t0_parent_id,
+			       t0.bom_type as t0_bom_type
 	        from 
 	        ZG_T_ORDER_PLANBOM t0
  ) m
@@ -661,7 +679,9 @@
 			       nvl(out_num,0) as t0_out_num,
 			       nvl(move_num_in,0) as t0_move_num_in,
 			       nvl(wait_back_num,0) as t0_wait_back_num,
-			       nvl(storage_num,0) as t0_storage_num
+			       nvl(storage_num,0) as t0_storage_num,
+			       t0.parent_ID as t0_parent_id,
+			       t0.bom_type as t0_bom_type
 	        from 
 	        ZG_T_ORDER_PLANBOM t0
  ) m
@@ -735,6 +755,8 @@
 		<result property="moveNumIn" column="move_num_in"/>
 		<result property="waitBackNum" column="wait_back_num"/>
 		<result property="storageNum" column="storage_num"/>
+		<result property="parentId" column="PARENT_ID"/>
+		<result property="bomType" column="BOM_TYPE"/>
     </resultMap>
     
    
@@ -756,12 +778,30 @@
     </select>
     
     <select id="getPlanBomByOrderBomId" resultMap="zgTorderPlanbomResultBase">
-	    select t0.*
+    	  select t0.*
 	        from 
 	        ZG_T_ORDER_PLANBOM t0,zg_t_order_taskbom taskbom
 	        where 
 	         t0.taskbom_id=taskbom.cuid
            and taskbom.order_bom_id='$bomId$'
+    
+	  
+    </select>
+    
+     <select id="getManulWaitBackNumByPbId" resultClass="long">
+	     select nvl(sum(nvl(t.wait_back_num, 0)), 0)
+		  from zg_t_order_planbom t, zg_t_order_plan plan
+		 where t.parent_id = '$planBomId$'
+		   and t.order_plan_id = plan.cuid
+		   and plan.plan_type in ('BACK')
+    </select>
+    
+       <select id="getAutoWaitBackBomListByPbId" resultMap="zgTorderPlanbomResultBase">
+	      select t.*
+	     from zg_t_order_planbom t, zg_t_order_plan plan
+	    where t.order_plan_id = plan.cuid
+	      and t.parent_id = '$planBomId$'
+	      and plan.plan_type in ('ABC', 'ABD', 'ABE') order by t.bom_type
     </select>
     
       <select id="getPlanBomByPlanIdTaskBomId" resultMap="zgTorderPlanbomResultBase">
@@ -771,6 +811,20 @@
 	        where t0.order_plan_id='$planId$'
 	        and t0.taskBom_id='$taskBomId$'
     </select>
+    
+    <select id="getParentPlanBomByTaskBomId" resultMap="zgTorderPlanbomResultBase">
+	   select * from zg_t_order_planbom t where t.taskbom_id='$taskBomId$' and t.parent_id is null
+    </select>
+    
+     <select id="getParentWaitBackNumByPBId" resultClass="java.util.HashMap">
+	  select nvl(sum(nvl(t.wait_back_num, 0)), 0) wait_back_Num,
+		       nvl(sum(nvl(t.back_num, 0)), 0) back_num
+		  from zg_t_order_planbom t,zg_t_order_plan plan
+		 where   t.order_plan_id=plan.cuid
+		  <![CDATA[ and plan.plan_type <>'CHANGE'     ]]>
+		and  t.parent_id = '$planBomId$'
+    </select>
+    
     
       
     <update id="updatePlanBomCarNumTo0ByPlanId" parameterClass="java.util.HashMap">

@@ -92,8 +92,8 @@
     <!-- 使用分页 查找订单号和生产线 ，findOrderArbplList未使用分页 -->
     <select id="findOrderArbplByPageRequest" resultMap="zgTorderbomExResult3">
     		 select t.aufnr, t.cuid order_id, t.arbpl, o.label_cn, t.plant
-			   from zg_t_order_task t, fw_organization o
-			  where t.arbpl = o.cuid
+			   from zg_t_order_task t, fw_organization o,zg_t_order od
+			  where t.arbpl = o.cuid  and od.cuid=t.order_id and od.order_state in ('10','8','9') 
 			    and exists (select 1
 			           from zg_t_order_planbom p
 			          where p.order_task_id = t.cuid
@@ -102,7 +102,7 @@
 		    		$sqlQueryString$ 
 		    </isNotEmpty>
        		<isNotEmpty prepend="AND" property="aufnr">
-       			aufnr like '%'||'$aufnr$'||'%'
+       			od.aufnr like '%'||'$aufnr$'||'%'
        		</isNotEmpty>   
        		<isNotEmpty prepend="AND" property="arbpl">
        		    t.arbpl like '%'||'$arbpl$'||'%'
@@ -114,8 +114,8 @@
     
      <!-- 统计已提交的订单 -->
     <select id="countByOrder" resultClass="java.lang.Long">
-    		select count(1) from (select  t.* from zg_t_order_task t,fw_organization o where t.arbpl=o.cuid 
-    		and exists (select 1
+    		select count(1) from (select  t.* from zg_t_order_task t,fw_organization o,zg_t_order od where t.arbpl=o.cuid 
+    		and od.cuid=t.order_id and od.order_state in ('10','8','9')  and exists (select 1
 			           from zg_t_order_planbom p
 			          where p.order_task_id = t.cuid
 			            and p.storage_num > 0)
@@ -123,7 +123,7 @@
 		    		$sqlQueryString$ 
 		    </isNotEmpty>
        		<isNotEmpty prepend="AND" property="aufnr">
-       			aufnr like '%'||'$aufnr$'||'%'
+       			od.aufnr like '%'||'$aufnr$'||'%'
        		</isNotEmpty>   
        		<isNotEmpty prepend="AND" property="arbpl">
        		    o.label_cn like '%'||'$arbpl$'||'%'
@@ -505,6 +505,105 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		    and plan.order_task_id=task.cuid
  			and task.order_id=zto.cuid
 		   and gop.group_id = oup.cuid
+		   and planbom.parent_id is null
+		   
+		     <isNotEqual prepend="AND"  property="planType" compareValue="BACK"> 
+		      	 oup.plan_type = '$planType$'
+		      </isNotEqual>
+		      <isEqual prepend="AND"  property="planType" compareValue="BACK"> 
+		      	 planbom.wait_back_num > 0
+		      </isEqual>
+		   <isNotEqual property="operatorId" compareValue="0"> 
+		   	and emp.user_id = '$operatorId$'
+		   </isNotEqual>
+		    and bom.car_id is not null
+		   and bom.carnum is not null
+		   <!-- 总装领料　只有 freeze是0时才能领料-->
+		   	 <isEqual prepend="AND" property="planType" compareValue = "ABE">
+				 zto.freeze='0'
+      		 </isEqual>
+		   <![CDATA[  
+		     and zto.freeze<>'4'
+		   and task.flag<>'-1'
+		    and (planbom.car_num > 0 or planbom.wait_back_num>0)
+		
+		  
+		   and plan.plant is not null
+		 
+		   ]]>
+		   <isEqual prepend="AND" property="planType" compareValue = "BACK">
+				 planbom.wait_back_num>0
+				         and TO_NUMBER(oup.state) >=0
+      		     and TO_NUMBER( plan.state) >=0
+      	   </isEqual>
+      	    <isNotEqual prepend="AND" property="planType" compareValue = "BACK">
+      	    	  oup.state in('0','4','8') 
+		   			and plan.state in('0','4','8')
+      	   </isNotEqual>
+		   <isNotEmpty prepend="AND" property="groupId">
+		    oup.cuid='$groupId$'
+		   </isNotEmpty>
+    
+    
+    </select>
+    
+    <select id="getBomListByProperty1" resultMap="zgTorderbomExResult4">
+		    select distinct orderbom.*, taskbom.cuid taskbom_id,planbom.car_num,      planbom.wait_back_num,nvl(planbom.complete_num,0) complete_num,nvl(planbom.plan_num,0) plan_num,
+			
+			<isNotEqual   property="planType" compareValue="BACK"> 
+		      	ceil((planbom.car_num-nvl(planbom.plan_num,0))/decode(bom.carnum,0,1,nvl(bom.carnum,1))) carCount,
+		      	planbom.car_num-nvl(planbom.plan_num,0) valid_Num,
+		      	 decode(planbom.car_num,0 ,1 ,trunc(nvl(planbom.complete_num, 0) /
+                      nvl(planbom.car_num, 1),
+                      2)) percent,
+		   </isNotEqual>
+		      <isEqual  property="planType" compareValue="BACK"> 
+		      	ceil(planbom.wait_back_num/decode(bom.carnum,0,1,nvl(bom.carnum,1))) carCount,
+		      	planbom.wait_back_num valid_Num,
+		      	trunc(nvl(planbom.back_num, 0) /
+                      (nvl(planbom.wait_back_num, 0)+nvl(planbom.back_num, 0)),
+                      2) percent,
+		      </isEqual>
+			      nvl(planbom.back_num,0) back_num,
+		fworg.label_cn lgortName ,car.label_cn carName,bom.car_id,car.code
+		  from 
+		    <isNotEqual property="operatorId" compareValue="0"> 
+		  zg_t_virtualorg_employee emp,
+		       zg_t_virtualorg          vorg,
+		       ZG_MATERIEL_VIRTUALORG   morg,
+		       zg_materiel              mat,
+		       </isNotEqual>
+		        zg_t_bom                 bom,
+		       zg_t_orderbom            orderbom,
+		       zg_t_order_planbom       planbom,
+		       zg_t_order_plan          plan,
+		       zg_t_group_order_plan    gop,
+		       zg_t_order_plan_group    oup,
+		       zg_t_order zto,      
+		       zg_t_order_task task,
+     		  zg_t_order_taskbom taskbom,
+      		 fw_organization fworg,zg_carinfo car
+		 where  fworg.cuid=orderbom.lgort
+		  and car.cuid=bom.car_id
+		  <isNotEqual property="operatorId" compareValue="0"> 
+		   and emp.org_id = vorg.cuid
+		   and vorg.cuid = morg.org_id
+		<!--    and morg.matkl = mat.id -->
+		<!--   and mat.id = bom.matkl_self
+		   and mat.lgort = orderbom.lgort --> 
+		    and mat.id in ('$carMatkls$')
+   			and mat.id=orderbom.matkl_self
+		    and vorg.org_id=plan.plant 
+		   </isNotEqual>
+		     and bom.idnrk = orderbom.idnrk 
+		    and planbom.taskbom_id=taskbom.cuid
+   			and taskbom.order_bom_id=orderbom.cuid
+		    and planbom.order_plan_id = plan.cuid
+		   and plan.cuid = gop.order_plan_id
+		    and plan.order_task_id=task.cuid
+ 			and task.order_id=zto.cuid
+		   and gop.group_id = oup.cuid
+		   and planbom.parent_id is not null
 		   
 		     <isNotEqual prepend="AND"  property="planType" compareValue="BACK"> 
 		      	 oup.plan_type = '$planType$'
@@ -684,6 +783,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
        			zg_t_order_taskbom taskbom
 		 where  fworg.cuid=orderbom.lgort
 		  and car.cuid=bom.car_id
+		  and planbom.parent_id is not null
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
@@ -801,6 +901,108 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		   and plan.order_task_id=task.cuid
  			and task.order_id=zto.cuid
 		   and gop.group_id = oup.cuid
+		   and planbom.parent_id is  null
+		    <isNotEqual prepend="AND"  property="planType" compareValue="BACK"> 
+		      	 oup.plan_type = '$planType$'
+		      </isNotEqual>
+		      <isEqual prepend="AND"  property="planType" compareValue="BACK"> 
+		      	 planbom.wait_back_num > 0
+		      </isEqual>
+		   <isNotEqual property="operatorId" compareValue="0"> 
+		   	and emp.user_id = '$operatorId$'
+		   </isNotEqual>
+		    and bom.car_id is not null
+		   and bom.carnum is not null	   <!-- 总装领料　只有 freeze是0时才能领料-->
+		   	 <isEqual prepend="AND" property="planType" compareValue = "ABE">
+				 zto.freeze='0'
+      		 </isEqual>
+		   <![CDATA[  
+		     and zto.freeze<>'4'
+		      and task.flag<>'-1'
+		   
+		      and (planbom.car_num > 0 or planbom.wait_back_num>0)
+		   and plan.plant is not null
+		   ]]>
+		   
+		      <isEqual prepend="AND" property="planType" compareValue = "BACK">
+				 planbom.wait_back_num>0
+				         and TO_NUMBER(oup.state) >=0
+      		     and TO_NUMBER( plan.state) >=0
+      	   </isEqual>
+      	    <isNotEqual prepend="AND" property="planType" compareValue = "BACK">
+      	    	  oup.state in('0','4','8') 
+		   			and plan.state in('0','4','8')
+      	   </isNotEqual>
+		   
+		   <isNotEmpty prepend="AND" property="groupId">
+		    oup.cuid='$groupId$'
+		   </isNotEmpty>
+    </select>
+    
+    <select id="getBomListByPropertyAdvance1" resultMap="zgTorderbomExResult4">
+		    select distinct orderbom.*,planbom.car_num,    taskbom.cuid taskbom_id,    planbom.wait_back_num,nvl(planbom.complete_num,0) complete_num,nvl(planbom.plan_num,0) plan_num,
+				<isNotEqual   property="planType" compareValue="BACK"> 
+		      	ceil((planbom.car_num-nvl(planbom.plan_num,0))/decode(bom.carnum,0,1,nvl(bom.carnum,1))) carCount,
+		      	planbom.car_num-nvl(planbom.plan_num,0) valid_Num,
+		      	   decode(planbom.car_num,0 ,1 ,trunc(nvl(planbom.complete_num, 0) /
+                      nvl(planbom.car_num, 1),
+                      2)) percent, 
+		   </isNotEqual>
+		      <isEqual  property="planType" compareValue="BACK"> 
+		      	ceil(planbom.wait_back_num/decode(bom.carnum,0,1,nvl(bom.carnum,1))) carCount,
+		      	planbom.wait_back_num valid_Num,
+		      		trunc(nvl(planbom.back_num, 0) /
+                      (nvl(planbom.wait_back_num, 0)+nvl(planbom.back_num, 0)),
+                      2) percent,
+		      </isEqual>
+			  nvl(planbom.back_num,0) back_num,
+		fworg.label_cn lgortName ,car.label_cn carName,bom.car_id,car.code,planbom.car_num-nvl(planbom.plan_num,0) valid_Num
+		  from 
+		    <isNotEqual property="operatorId" compareValue="0"> 
+		  zg_t_virtualorg_employee emp,
+		       zg_t_virtualorg          vorg,
+		       ZG_MATERIEL_VIRTUALORG   morg,
+		       zg_materiel              mat,
+		       </isNotEqual>
+		        zg_t_bom                 bom,
+		       zg_t_orderbom            orderbom,
+		       zg_t_order_planbom       planbom,
+		       zg_t_order_plan          plan,
+		       zg_t_group_order_plan    gop,
+		       zg_materiel ma,
+		       zg_t_order_plan_group    oup,
+		       zg_t_order zto,    
+		       zg_t_order_task task,
+       			zg_t_order_taskbom taskbom,
+        		fw_organization fworg,zg_carinfo car
+		 where <!--  ma.id=bom.matkl_self
+			  and ma.lgort=orderbom.lgort -->
+			 ma.id =orderbom.matkl_self
+			 and ma.advance='1'
+			 and fworg.cuid=orderbom.lgort
+		  and car.cuid=bom.car_id
+		  <isNotEqual property="operatorId" compareValue="0"> 
+		   and emp.org_id = vorg.cuid
+		   and vorg.cuid = morg.org_id
+		  <!--     and morg.matkl = mat.id
+		
+		  and mat.id = bom.matkl_self
+		  and mat.lgort = orderbom.lgort -->
+		    and mat.id in ('$carMatkls$')
+  			 and mat.id=orderbom.matkl_self
+		    and vorg.org_id=plan.plant 
+		   </isNotEqual>
+		     and bom.idnrk = orderbom.idnrk 
+		    <!--  and bom.lgort=orderbom.lgort
+ 			and bom.matkl=orderbom.matkl-->
+		   and planbom.taskbom_id=taskbom.cuid
+   			and taskbom.order_bom_id=orderbom.cuid
+		    and planbom.order_plan_id = plan.cuid
+		   and plan.cuid = gop.order_plan_id
+		   and plan.order_task_id=task.cuid
+ 			and task.order_id=zto.cuid
+		   and gop.group_id = oup.cuid
+		   and planbom.parent_id is not  null
 		    <isNotEqual prepend="AND"  property="planType" compareValue="BACK"> 
 		      	 oup.plan_type = '$planType$'
 		      </isNotEqual>
@@ -985,6 +1187,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 			 and ma.advance='1'
 			 and fworg.cuid=orderbom.lgort
 		  and car.cuid=bom.car_id
+		  and planbom.parent_id is not null
 		  <isNotEqual property="operatorId" compareValue="0"> 
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
@@ -1060,6 +1263,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		 and orderbom.cuid = taskbom.order_bom_id
  				and taskbom.cuid= planbom.taskbom_id
 		   and orderbom.lgort is not null
+		    and planbom.parent_id is  null
 		    and planbom.complete_num>0
 		   and taskbom.order_task_id = '$orderTaskId1$'
 		   <isNotEqual prepend="AND" property="isDel" compareValue="-1">
@@ -1115,6 +1319,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		 and taskbom.cuid=planbom.taskbom_id
 		   and orderbom.lgort is not null
 		   and taskbom.order_task_id = '$orderTaskId1$'
+		   and planbom.parent_id is  null
 		   <isNotEmpty prepend="AND" property="both">
 		    exists
 		 (
@@ -1242,14 +1447,18 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 			       t.cuid planId,
 			      
 			        pb.wait_back_num,
-			       (select sum(temp.storage_num)
-			          from zg_t_order_planbom temp
-			         where temp.taskbom_id = taskbom.cuid) STORAGE_NUM,       
+			           (select temp.storage_num-nvl(temp.wait_back_num,0)+nvl(pb.wait_back_num,0)
+          from zg_t_order_planbom temp
+         where temp.cuid = pb.parent_id) max_waitBackNum,
+         (select temp.storage_num
+          from zg_t_order_planbom temp
+         where temp.cuid = pb.parent_id) STORAGE_NUM,     
 			       pb.cuid pbID ,
+			       pb.parent_id,
               bom.cuid orderbomId,
               taskbom.cuid,
               bom.msehl2,
-			       taskbom.menge,  nvl(pb.car_num,0) car_num,nvl(pb.complete_num,0) complete_num,nvl(pb.back_num,0) back_num
+			       taskbom.menge,  nvl(pb.car_num,0) car_num,nvl(pb.complete_num,0) complete_num,nvl(pb.back_num,0) back_num,pb.order_plan_id
 			  from zg_t_order_plan    t,
 			       zg_t_order_planbom pb,
 			       zg_t_orderbom      bom,
@@ -1279,14 +1488,34 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
      	<select id="findBomlListByOrderId" resultClass="java.util.HashMap">
      	
      		select w.*
-				  from (select zdtyl, matkl, sortf, lgort, zbz, zrzqd, idnrk, task.order_id, task.aufnr, task.arbpl,
-				   matnr, maktx2, msehl1, msehl2, label_cn, sortf_h, matnr1, storage_num, storage_state, maktx1, posnr, matkl_self, 
-				   taskbom.*,
-				               (select sum(nvl(pb.storage_num,0))-sum(nvl(pb.wait_back_num,0))
-				                  from zg_t_order_planbom pb
-				                 where pb.taskbom_id = taskbom.cuid) all_storage_num
-				          from zg_t_orderbom t, zg_t_order_task task,zg_t_order_taskbom taskbom
+				  from (select zdtyl,
+		               matkl,
+		               sortf,
+		               lgort,
+		               t.zbz,
+		               zrzqd,
+		               idnrk,
+		               task.order_id,
+		               task.aufnr,
+		               task.arbpl,
+		               matnr,
+		               maktx2,
+		               msehl1,
+		               msehl2,
+		               t.label_cn,
+		               sortf_h,
+		               matnr1,
+		               t.storage_num,
+		               storage_state,
+		               maktx1,
+		               posnr,
+		               matkl_self,
+		               taskbom.*,
+				  nvl(planbom.storage_num,0)-nvl(planbom.wait_back_num,0)  as all_storage_num
+				          from zg_t_orderbom t, zg_t_order_task task,zg_t_order_taskbom taskbom,zg_t_order_planbom planbom
 				         where t.cuid = taskbom.order_bom_id
+				         and taskbom.cuid=planbom.taskbom_id
+         				and planbom.parent_id is null
 				         and taskbom.order_task_id=task.cuid
 				         and task.cuid='$orderId$'
 				         <isNotEmpty prepend="AND" property="changeBomIds">

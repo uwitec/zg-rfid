@@ -666,9 +666,9 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		//获取本次追加的bom列表 
 		List<Map> newBomList=null;
 		if(Constants.OrderPlanType.BACK.value().equals(planType)){
-			newBomList=zgTcarplanExBo.getBomListByBomIds1(bomCuids,getSessionOperatorId(),planType);
+			newBomList=zgTcarplanExBo.getBomListByBomIds1(bomCuids,getSessionOperatorId(),planType,groupId);
 		}else {
-			 newBomList=zgTcarplanExBo.getBomListByBomIds(bomCuids,getSessionOperatorId());
+			 newBomList=zgTcarplanExBo.getBomListByBomIds(bomCuids,getSessionOperatorId(),groupId);
 		}
 		
 		

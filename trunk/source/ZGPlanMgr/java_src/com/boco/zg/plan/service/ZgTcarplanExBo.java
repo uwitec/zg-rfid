@@ -48,6 +48,8 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	
 	private ZgTcarplanExDao  zgTcarplanExDao;
 	
+	private ZgTorderbomExBo zgTorderbomExBo;
+	
 	private SapClient getSapClient() {
 		return (SapClient)ApplicationContextHolder.getBean("sapClient");
 	}
@@ -135,6 +137,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		param.setStorageUserId("null");
 		List<ZgTcarbom> carbomList = zgTcarbomBo.findByProperty(param);
 		boolean flag=true;
+		String taskId="";
 		for(ZgTcarbom carbom : carbomList) {
 			String orderPlanbomId = carbom.getOrderPlanbomId();
 			if(orderPlanBomIds.contains(orderPlanbomId)||orderPlanBomIds.equals("ALL")){//选哪个物料刷哪些物料的装车数量
@@ -160,6 +163,11 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 						planbom.setState(Constants.CarPlanStatus.DONE.value());
 					}
 					zgTorderPlanbomBo.update(planbom);
+					
+					//汇总主记录的退料数量
+					ZgTorderPlanbom parentPbom=zgTorderPlanbomBo.getById(planbom.getParentId());
+					zgTorderPlanbomBo.upDateParentWaitBackNumByPlanBom(parentPbom,planbom.getOrderPlanId(),realNum);
+					
 				}else {//其他的更新　领料数量
 					Long realNum = carbom.getRealNum()==null?new Long(0):carbom.getRealNum();
 					Long cPlanNum = carbom.getPlanNum()==null?new Long(0):carbom.getPlanNum();
@@ -172,7 +180,18 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 						planbom.setFinishTime(Calendar.getInstance().getTime());
 						planbom.setState(Constants.CarPlanStatus.DONE.value());
 					}
-					zgTorderPlanbomBo.update(planbom);;
+					zgTorderPlanbomBo.update(planbom);
+					
+					if(!StringHelper.isEmpty(planbom.getParentId())){//退换料子记录领料，则需要更新主记录
+						//汇总主记录的领料汇总记录 并更新领料进度
+						ZgTorderPlanbom parentPbom=zgTorderPlanbomBo.getById(planbom.getParentId());
+						zgTorderPlanbomBo.upDateParentCompleteNumByPlanBom(parentPbom,realNum,planbom.getOrderPlanId());
+						if(!taskId.equals(parentPbom.getOrderTaskId())){//统计主记录的领料进度
+							zgTorderbomExBo.doZgtorderProcess(parentPbom.getOrderTaskId(),"task");
+							taskId=parentPbom.getOrderTaskId();
+						}
+					}
+					
 				}
 				
 				
@@ -305,7 +324,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 * @param bomCuids
 	 * @return
 	 */
-	public List<Map> getBomListByBomIds(String bomCuids,String operatorId) {
+	public List<Map> getBomListByBomIds(String bomCuids,String operatorId,String groupId) {
 		bomCuids=bomCuids.replace(",", "','");
 		StringBuffer sql = new StringBuffer();
 		sql.append("select * from ( select distinct null as cuid,    ORDERBOM.ZDTYL,orderbom.ORDER_ID,");
@@ -320,11 +339,13 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		sql.append("0 as car_plan_num,");
 		sql.append(" planbom.car_num-nvl(planbom.plan_num,0)   max_value,");
 		sql.append("bom.carnum carCount,taskbom.cuid taskbom_id,taskbom.order_task_id orderTaskId, od.aufnr,  od.arbpl,     od.kdauf,     od.kdpos,  od.maktx1");
-		sql.append(" from zg_t_order_planbom planbom, zg_t_orderbom orderbom, zg_t_bom bom,zg_t_order_taskbom taskbom,zg_t_order od ");
+		sql.append(" from zg_t_order_planbom planbom, zg_t_orderbom orderbom, zg_t_bom bom,zg_t_order_taskbom taskbom,zg_t_order od,zg_t_group_order_plan gop ");
 		sql.append(" where orderbom.order_id=od.cuid and  planbom.taskbom_id=taskbom.cuid         and taskbom.order_bom_id=orderbom.cuid and  planbom.car_num-nvl(planbom.plan_num,0)>0 ");
 		sql.append("   and bom.idnrk = orderbom.idnrk    ");
-		sql.append(" and taskbom.cuid in ('"+bomCuids+"') ) w where w.taskbom_id not in(");
-		sql.append(" select carbom.taskbom_id from zg_t_carplan plan,zg_t_carbom carbom       where plan.car_user='"+operatorId+"' ");
+		sql.append(" and taskbom.cuid in ('"+bomCuids+"') " );
+		sql.append(" and planbom.order_plan_id=gop.order_plan_id  AND gop.group_id ='"+groupId+"'");
+		sql.append(") w where w.taskbom_id not in(");
+		sql.append(" select nvl(carbom.taskbom_id,'null') from zg_t_carplan plan,zg_t_carbom carbom       where plan.car_user='"+operatorId+"' ");
 		sql.append("     and plan.car_state='0'        and plan.cuid=carbom.car_plan_id   )");
 
 		
@@ -336,7 +357,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	 * @param bomCuids
 	 * @return
 	 */
-	public List<Map> getBomListByBomIds1(String bomCuids,String operatorId,String planType) {
+	public List<Map> getBomListByBomIds1(String bomCuids,String operatorId,String planType,String groupId) {
 		bomCuids=bomCuids.replace(",", "','");
 		StringBuffer sql = new StringBuffer();
 		sql.append("select * from ( select distinct null as cuid,    ORDERBOM.ZDTYL,orderbom.ORDER_ID,");
@@ -357,8 +378,8 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 			sql.append(" planbom.car_num-nvl(planbom.plan_num,0)   max_value,");
 		}
 		sql.append("bom.carnum carCount,taskbom.cuid taskbom_id,taskbom.order_task_id orderTaskId, od.aufnr,  od.arbpl,     od.kdauf,     od.kdpos,  od.maktx1");
-		sql.append(" from zg_t_order_planbom planbom, zg_t_orderbom orderbom, zg_t_bom bom,zg_t_order_taskbom taskbom,zg_t_order od ");
-		sql.append(" where orderbom.order_id=od.cuid and  planbom.taskbom_id=taskbom.cuid         and taskbom.order_bom_id=orderbom.cuid " );
+		sql.append(" from zg_t_order_planbom planbom, zg_t_orderbom orderbom, zg_t_bom bom,zg_t_order_taskbom taskbom,zg_t_order od,  zg_t_group_order_plan gop ");
+		sql.append(" where orderbom.order_id=od.cuid and and planbom.parent_id is not null planbom.taskbom_id=taskbom.cuid         and taskbom.order_bom_id=orderbom.cuid " );
 		if(Constants.OrderPlanType.BACK.value().equals(planType)){
 			sql.append(" and nvl(planbom.wait_back_num,0)>0 ");
 		}else {
@@ -366,8 +387,10 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		}
 				
 		sql.append("   and bom.idnrk = orderbom.idnrk    ");
-		sql.append(" and taskbom.cuid in ('"+bomCuids+"') ) w where w.taskbom_id not in(");
-		sql.append(" select carbom.taskbom_id from zg_t_carplan plan,zg_t_carbom carbom       where plan.car_user='"+operatorId+"' ");
+		sql.append(" and taskbom.cuid in ('"+bomCuids+"') " );
+		sql.append(" and planbom.order_plan_id=gop.order_plan_id  AND gop.group_id ='"+groupId+"'");
+		sql.append(") w where w.taskbom_id not in(");
+		sql.append(" select  nvl(carbom.taskbom_id,'null') from zg_t_carplan plan,zg_t_carbom carbom       where plan.car_user='"+operatorId+"' ");
 		sql.append("     and plan.car_state='0'        and plan.cuid=carbom.car_plan_id   )");
 
 		
@@ -1011,5 +1034,21 @@ String[] aufnrArbpl1={"","","","",""};
 			return IbatisDAOHelper.getStringValue(list.get(0), "AUFNR")+"  订单正在从sap系统中下载数据，请稍后再试!";
 		}
 		return "OK";
+	}
+
+
+	/**
+	 * @return the zgTorderbomExBo
+	 */
+	public ZgTorderbomExBo getZgTorderbomExBo() {
+		return zgTorderbomExBo;
+	}
+
+
+	/**
+	 * @param zgTorderbomExBo the zgTorderbomExBo to set
+	 */
+	public void setZgTorderbomExBo(ZgTorderbomExBo zgTorderbomExBo) {
+		this.zgTorderbomExBo = zgTorderbomExBo;
 	}
 }

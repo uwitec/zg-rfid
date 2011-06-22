@@ -24,6 +24,7 @@ import cn.org.rapid_framework.page.PageRequest;
 import cn.org.rapid_framework.web.util.HttpUtils;
 
 import com.boco.frame.login.pojo.OperatorInfo;
+import com.boco.frame.meta.dao.IbatisDAOHelper;
 import com.boco.frame.sys.base.model.FwEmployee;
 import com.boco.frame.sys.base.model.FwOrganization;
 import com.boco.frame.sys.base.service.FwEmployeeBo;
@@ -43,6 +44,7 @@ import com.boco.zg.plan.base.service.ZgTorderBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanCommentBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanGroupBo;
+import com.boco.zg.plan.base.service.ZgTorderPlanbomBo;
 import com.boco.zg.plan.base.service.ZgTorderTaskBo;
 import com.boco.zg.plan.base.service.ZgTorderbomBo;
 import com.boco.zg.plan.common.service.CommonService;
@@ -137,6 +139,7 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	private ZgTorderPlanBo zgTorderPlanBo;
 	private List<ZgTorderbomEx> bomList;
 	private ZgTorderPlanbom zgTorderPlanbom;
+	private ZgTorderPlanbomBo zgTorderPlanbomBo;
 	private String s_state;
 	private Long waitBackNum;
 	private ZgTcarbomBo zgTcarbomBo;
@@ -676,6 +679,7 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 				map.put("IDNRK",(java.lang.String)params.get("idnrk"));
 				map.put("MAKTX2", bom.getMaktx2());
 				map.put("STORAGE_NUM",(java.lang.String)params.get("storage_num"));
+				map.put("MAX_WAITBACKNUM",(java.lang.String)params.get("storage_num"));
 				map.put("WAIT_BACK_NUM", 0);
 				map.put("isDel",false);
 				map.put("isModity", true);
@@ -721,12 +725,14 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 				continue;
 			}
 			
-			zgTorderPlanBo.removeById(planId);
-			zgTorderPlanBo.deletePlanBomByPlanId(planId);
+			zgTBomManagerBo.deletePlan(planId);
+		   
 		}
 		String msg=planIds.length()>0?planIds+"　申请单已经开始领料，不能删除，请确认":"操作成功!";
 		forwardQuery(msg);
 	}
+
+
 
 	/**
 	 * 保存换料物料记录 处理逻辑： 保存换料句话bom表信息，设置状态为保存 
@@ -1053,6 +1059,20 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	 */
 	public void setZgTorderbomBo(ZgTorderbomBo zgTorderbomBo) {
 		this.zgTorderbomBo = zgTorderbomBo;
+	}
+
+	/**
+	 * @return the zgTorderPlanbomBo
+	 */
+	public ZgTorderPlanbomBo getZgTorderPlanbomBo() {
+		return zgTorderPlanbomBo;
+	}
+
+	/**
+	 * @param zgTorderPlanbomBo the zgTorderPlanbomBo to set
+	 */
+	public void setZgTorderPlanbomBo(ZgTorderPlanbomBo zgTorderPlanbomBo) {
+		this.zgTorderPlanbomBo = zgTorderPlanbomBo;
 	}
 
 	

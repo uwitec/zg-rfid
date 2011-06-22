@@ -127,6 +127,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		   and vorg.org_id=plan.plant 
 		   and emp.org_id = vorg.cuid
 		   and vorg.cuid = morg.org_id
+		  
 		<!--    and morg.matkl = mat.id
 		    and mat.id in   
 		 and mat.id = bom.matkl_self   
@@ -134,6 +135,7 @@ and t.state<>'9' and gop.group_id='$groupId$')
 		    and mat.id in ('$carMatkls$')
    			and mat.id=orderbom.matkl_self
 		   </isNotEqual>
+		    and planbom.parent_id is not null
 		    and bom.idnrk = orderbom.idnrk 
 		     and bom.car_id is not null
 		   and bom.carnum is not null
