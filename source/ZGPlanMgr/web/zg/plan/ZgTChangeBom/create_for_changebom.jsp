@@ -353,6 +353,16 @@
 						</td>
 
 					</tr>
+					<tr>	
+						<th>
+							备注：
+						</th>
+						<td colspan="5">
+						<textarea name="zbz" id="zbz" onpropertychange="if(value.length>85) value=value.substr(0,85)"
+								 cols=100 rows=2></textarea>
+						</td>
+				
+					</tr>
 				</tbody>
 			</table>
 		</form>

@@ -26,6 +26,7 @@
 		<result property="create_date" column="t0_CREATE_DATE"/>
 		<result property="backReason" column="t0_BACK_REASON"/>
 		<result property="backZbz" column="t0_BACK_ZBZ"/>
+		<result property="zbz" column="t0_ZBZ"/>
     </resultMap>
     
     <!-- 用于select查询公用抽取的列 -->
@@ -51,7 +52,8 @@
 	        m.t0_EXTEND1,
 	        m.t0_CREATE_DATE,
 	        m.t0_BACK_REASON,
-	        m.t0_BACK_ZBZ
+	        m.t0_BACK_ZBZ,
+	        m.t0_zbz
 	        
 	    ]]>
 	</sql>
@@ -119,7 +121,8 @@
         	PLAN_TYPE ,
         	PLANT,
         	percent,
-        	isManul
+        	isManul,
+        	zbz
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
@@ -133,7 +136,7 @@
         	#planType# ,
         	#plant#,
         	#percent#,
-        	#isManul#
+        	#isManul#,#zbz#
         )
     ]]>
 		<selectKey resultClass="java.lang.String" type="pre"
@@ -162,7 +165,8 @@
         	extend1,
         	back_zbz,
         	back_reason,
-        	create_date
+        	create_date,
+        	zbz
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
@@ -180,7 +184,8 @@
         	#extend1#,
         	#backZbz#,
         	#backReason#,
-        	sysdate
+        	sysdate,
+        	#zbz#
         )
     ]]>
 
@@ -201,7 +206,8 @@
 	        percent = #percent#,
 	        back_zbz=#backZbz#,
 	        back_reason=#backReason#,
-	       isManul= #isManul#
+	       isManul= #isManul#,
+	       zbz=#zbz#
 	    WHERE CUID = #cuid#
     ]]>
     </update>
@@ -273,7 +279,7 @@
 	                t0.EXTEND1 as t0_EXTEND1,
 	                t0.CREATE_DATE as t0_CREATE_DATE,
 	                t0.BACK_REASON as t0_BACK_REASON,
-	                t0.BACK_ZBZ as t0_BACK_ZBZ
+	                t0.BACK_ZBZ as t0_BACK_ZBZ,t0.zbz as t0_zbz
 	        from 
 	        ZG_T_ORDER_PLAN t0
  ) m
@@ -338,7 +344,7 @@
 	        			          t0.EXTEND1 as t0_EXTEND1,
 	        t0.CREATE_DATE as t0_CREATE_DATE,
 	                t0.BACK_REASON as t0_BACK_REASON,
-	                t0.BACK_ZBZ as t0_BACK_ZBZ
+	                t0.BACK_ZBZ as t0_BACK_ZBZ,t0.zbz as t0_zbz
 	        			
 	        from 
 	        ZG_T_ORDER_PLAN t0
@@ -408,7 +414,7 @@
                        t0.EXTEND1 as t0_EXTEND1,
 	        t0.CREATE_DATE as t0_CREATE_DATE,
 	                t0.BACK_REASON as t0_BACK_REASON,
-	                t0.BACK_ZBZ as t0_BACK_ZBZ
+	                t0.BACK_ZBZ as t0_BACK_ZBZ,t0.zbz as t0_zbz
 	        from 
 	        ZG_T_ORDER_PLAN t0
  ) m
@@ -477,7 +483,7 @@
 	        		          t0.EXTEND1 as t0_EXTEND1,
 	        t0.CREATE_DATE as t0_CREATE_DATE,
 	                t0.BACK_REASON as t0_BACK_REASON,
-	                t0.BACK_ZBZ as t0_BACK_ZBZ
+	                t0.BACK_ZBZ as t0_BACK_ZBZ,t0.zbz as t0_zbz
 	        from 
 	        ZG_T_ORDER_PLAN t0
  ) m
@@ -545,7 +551,7 @@
 	        			          t0.EXTEND1 as t0_EXTEND1,
 	        t0.CREATE_DATE as t0_CREATE_DATE,
 	                t0.BACK_REASON as t0_BACK_REASON,
-	                t0.BACK_ZBZ as t0_BACK_ZBZ
+	                t0.BACK_ZBZ as t0_BACK_ZBZ,t0.zbz as t0_zbz
 	        from 
 	        ZG_T_ORDER_PLAN t0
  ) m

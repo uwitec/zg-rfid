@@ -252,6 +252,7 @@ String noexpandIcon = basePath+"/resources/images/frame/ico_noexpand.gif";
 	<input type="hidden" name="s_lgortName" value="${pageRequest.filters.lgortName }"/>
 	<input type="hidden"  name="storageUserId" id="storageUserId"/>
 	<input type="hidden"  name="s_aufnr" id="s_aufnr" value="${pageRequest.filters.aufnr }"/>
+	<input type="hidden"  name="s_remark" id="s_remark" />
 	
 		<div>
 		</div>

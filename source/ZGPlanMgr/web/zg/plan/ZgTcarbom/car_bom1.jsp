@@ -124,6 +124,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				return;
 			}
 			document.frames['listFrame'].document.getElementById('storageUserId').value=result.cuid;
+			document.frames['listFrame'].document.getElementById('s_remark').value=result.zbz;
 			var form=document.frames['listFrame'].document.getElementById("carList");
 			
 			form.action="${ctx}/zg/plan/ZgTcarplan/confirmCarPlan.do";

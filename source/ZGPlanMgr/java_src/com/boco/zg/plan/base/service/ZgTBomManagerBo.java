@@ -138,8 +138,11 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 					
 					//获取该退换料记录的主记录
 					ZgTorderPlanbom parentPlanbom=zgTorderPlanbomBo.getParentPlanBomByTaskBomId(String.valueOf(obj.get("CUID")));
-					parentPlanbom.setWaitBackNum(parentPlanbom.getWaitBackNum()+Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
-					zgTorderPlanbomBo.update(parentPlanbom);
+					if(!planType.equals(Constants.OrderPlanType.CHANGE.value())){//注：换料不需要汇总，因为一退一领备料数量是不会改变的
+						parentPlanbom.setWaitBackNum(parentPlanbom.getWaitBackNum()+Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+						zgTorderPlanbomBo.update(parentPlanbom);
+					}
+					
 					
 					zgTorderPlanbom.setParentId(parentPlanbom.getCuid());
 					zgTorderPlanbom.setTaskBomId(String.valueOf(obj.get("CUID")));
@@ -203,17 +206,23 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 				    zgTorderPlanbomBo.update(zgTorderPlanbom);
 				    
 				    //汇总父领料记录的待退料数
-				    ZgTorderPlanbom parentPbom=zgTorderPlanbomBo.getById(zgTorderPlanbom.getParentId());
-				    zgTorderPlanbomBo.upDateParentWaitBackNumByPlanBom(parentPbom,zgTorderPlanbom.getOrderPlanId(),null);
+					if(!planType.equals(Constants.OrderPlanType.CHANGE.value())){//注：换料不需要汇总，因为一退一领备料数量是不会改变的
+						ZgTorderPlanbom parentPbom=zgTorderPlanbomBo.getById(zgTorderPlanbom.getParentId());
+					    zgTorderPlanbomBo.upDateParentWaitBackNumByPlanBom(parentPbom,zgTorderPlanbom.getOrderPlanId(),null);
+					}
+				    
 				}else if(((Boolean)obj.get("isDel")).booleanValue()==true){//删除为TRUE代表数据库中获取的数据有删除状态
 					String pbId=obj.get("PBID")==null?"":obj.get("PBID").toString();
 					if(!StringHelper.isEmpty(pbId)){
 						zgTorderPlanbom=(ZgTorderPlanbom)zgTorderPlanbomBo.getById(pbId);
 						zgTorderPlanbomBo.removeById(pbId);
 						
-						 //汇总父领料记录的待退料数
-					    ZgTorderPlanbom parentPbom=zgTorderPlanbomBo.getById(zgTorderPlanbom.getParentId());
-					    zgTorderPlanbomBo.upDateParentWaitBackNumByPlanBom(parentPbom,zgTorderPlanbom.getOrderPlanId(),null);
+						if(!planType.equals(Constants.OrderPlanType.CHANGE.value())){//注：换料不需要汇总，因为一退一领备料数量是不会改变
+							//汇总父领料记录的待退料数
+						    ZgTorderPlanbom parentPbom=zgTorderPlanbomBo.getById(zgTorderPlanbom.getParentId());
+						    zgTorderPlanbomBo.upDateParentWaitBackNumByPlanBom(parentPbom,zgTorderPlanbom.getOrderPlanId(),null);
+						}
+						 
 					}
 					
 				}else if(obj.get("PBID")==null){  //表示新添加的bom
@@ -238,8 +247,11 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 						
 					//获取该退换料记录的主记录
 					ZgTorderPlanbom parentPlanbom=zgTorderPlanbomBo.getParentPlanBomByTaskBomId(String.valueOf(obj.get("CUID")));
-					parentPlanbom.setWaitBackNum(parentPlanbom.getWaitBackNum()+Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
-					zgTorderPlanbomBo.update(parentPlanbom);
+					if(!planType.equals(Constants.OrderPlanType.CHANGE.value())){//注：换料不需要汇总，因为一退一领备料数量是不会改变
+						parentPlanbom.setWaitBackNum(parentPlanbom.getWaitBackNum()+Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+						zgTorderPlanbomBo.update(parentPlanbom);
+					}
+					
 					
 					zgTorderPlanbom.setParentId(parentPlanbom.getCuid());
 					zgTorderPlanbom.setTaskBomId(String.valueOf(obj.get("CUID")));
@@ -383,7 +395,7 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 	 */
 	public void deletePlan(String planId) {
 	
-		
+		ZgTorderPlan plan=zgTorderPlanBo.getById(planId);
 		 //汇总父领料记录的待退料数
 		List<Map> pbList=findBomListByPlanID(planId);
 		for(Map pbom:pbList){
@@ -391,9 +403,12 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 			String parentId=IbatisDAOHelper.getStringValue(pbom, "PARENT_ID");
 			String orderPlanId=IbatisDAOHelper.getStringValue(pbom, "ORDER_PLAN_ID");
 			zgTorderPlanbomBo.removeById(planBomId);
-			//汇总计算退料数量
-			ZgTorderPlanbom parentPbom=zgTorderPlanbomBo.getById(parentId);
-			zgTorderPlanbomBo.upDateParentWaitBackNumByPlanBom(parentPbom,orderPlanId,null);
+			
+			if(!plan.getPlanType().equals(Constants.OrderPlanType.CHANGE.value())){//注：换料不需要汇总，因为一退一领备料数量是不会改变
+				//汇总计算退料数量
+				ZgTorderPlanbom parentPbom=zgTorderPlanbomBo.getById(parentId);
+				zgTorderPlanbomBo.upDateParentWaitBackNumByPlanBom(parentPbom,orderPlanId,null);
+			}
 			
 			
 		}

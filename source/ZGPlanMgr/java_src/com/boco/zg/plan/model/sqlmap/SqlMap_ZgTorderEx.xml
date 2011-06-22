@@ -22,6 +22,7 @@
 		<result property="orderState" column="ORDER_STATE"/>
 		<result property="pxdat" column="px_date"/>
 		
+			<result property="zbz" column="zbz"/>
     </resultMap>
     
     <resultMap id="zgTorderResult1" class="zgTorder">
@@ -129,7 +130,7 @@
 		       t.matnr,
 		       t.label_cn,
 		       t.order_state,
-		       task.px_date
+		       task.px_date,plan.zbz
 			  from zg_t_order            t,
 			       zg_t_group_order_plan oup,
 			       zg_t_order_plan       plan,
@@ -158,7 +159,7 @@
        t.matnr,
        t.label_cn,
        t.order_state,
-       task.px_date
+       task.px_date,plan.zbz
   from zg_t_order t, zg_t_order_plan plan, zg_t_order_task task
  where task.cuid = plan.order_task_id
    and task.order_id = t.cuid

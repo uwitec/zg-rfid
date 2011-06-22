@@ -77,6 +77,7 @@ public class ZgTorderPlanGroup extends BaseEntity {
 	private java.lang.Long num;
 	private String advance;//是滞提前领料
 	private Long indexNo;//内部排序号
+	private String zbz;
 	public String getAdvance() {
 		return advance;
 	}
@@ -181,5 +182,19 @@ public class ZgTorderPlanGroup extends BaseEntity {
 
 	public void setPercent(java.lang.Double percent) {
 		this.percent = percent;
+	}
+
+	/**
+	 * @return the zbz
+	 */
+	public String getZbz() {
+		return zbz;
+	}
+
+	/**
+	 * @param zbz the zbz to set
+	 */
+	public void setZbz(String zbz) {
+		this.zbz = zbz;
 	}
 }

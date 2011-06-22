@@ -573,9 +573,10 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 	public void confirmCarPlan() throws IOException{
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		String planType=pageRequest.getFilters().get("planType").toString();
+		String remark=IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "remark");
 		OperatorInfo operatorInfo=(OperatorInfo) getSession().getAttribute("operatorInfo");
 		String storageUserId=getRequest().getParameter("storageUserId");
-		String result=zgTcarplanExBo.confirmCarPlan(items,carbomList,operatorInfo,storageUserId,planType);
+		String result=zgTcarplanExBo.confirmCarPlan(items,carbomList,operatorInfo,storageUserId,planType,remark);
 		if(Constants.OrderPlanType.BACK.value().equals(planType)){
 			result="turn";
 		}
