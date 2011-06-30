@@ -107,11 +107,11 @@
 		<c:if test="${not empty model.cuid}">
 		<c:choose>
 			<c:when test="${operatorId=='0'}">
-				<input type="text" value="${model.password}" size="30" maxlength="9" name="password"  class="required"/>
+				<input type="text" value="${model.password}" size="30" maxlength="80" name="password"  class="required"/>
 			</c:when>
 			<c:otherwise>
 				****
-				<input type="hidden" value="${model.password}" size="30" maxlength="9" name="password"  />
+				<input type="hidden" value="${model.password}" size="30" maxlength="80" name="password"  />
 			</c:otherwise>
 		</c:choose>
 		</c:if>

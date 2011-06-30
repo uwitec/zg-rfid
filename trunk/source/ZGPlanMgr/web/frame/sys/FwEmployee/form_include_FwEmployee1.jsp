@@ -101,7 +101,7 @@
 			<span  style="color:red">*</span><%=FwEmployee.ALIAS_EFFECT_TIME%>：
 		</td>	
 		<td>
-			   		<input type="hidden" value="${model.password}" size="30" maxlength="9" name="password"  class="required" readOnly="true"/>
+			   		<input type="hidden" value="${model.password}" size="30" maxlength="80" name="password"  class="required" readOnly="true"/>
 		
 	   		<input type="text" readOnly="true" id="effectTimeString" name="effectTimeString" value="${model.effectTimeString}" class="required" size="30" readonly = "true"/>
 		</td>
