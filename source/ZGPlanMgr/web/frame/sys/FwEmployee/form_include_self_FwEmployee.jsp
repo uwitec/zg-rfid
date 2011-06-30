@@ -54,7 +54,7 @@
 			<span  style="color:red">*</span><%=FwEmployee.ALIAS_PASSWORD%>：
 		</td>	
 		<td>
-	   		<input type="text" value="${model.password}" size="30" maxlength="9" name="password"  class="required"/>
+	   		<input type="text" value="${model.password}" size="30" maxlength="80" name="password"  class="required"/>
 		</td>
 	</tr>
 	<tr>
