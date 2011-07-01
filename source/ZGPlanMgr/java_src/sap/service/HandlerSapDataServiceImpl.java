@@ -752,6 +752,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			return;
 		}
 		
+		
 		//查询SAP此次过来的订单信息
 		List<ZgTorderTemp> sapOrderList =getHandlerOrderServiceImpl().getSapOrderListByAufnrPlant(aufnr,plant,batchNo);
 		
@@ -935,11 +936,16 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			}
 		}
 		
+		if(StringHelper.isEmpty(pxDateStr)){//整单排产数据处理
+			doProdessChangeOrder(batchNo, aufnr,sapOrderList.get(0));
+		}
+		
 		if(isPsmngChange){//更新orderbom的需求数量
 			getZgTorderbomBo().updateMengeByOrder(orderId,psmng);
 		}
 		
 		//=============================================================================
+		
 		
 		
 		
