@@ -513,8 +513,8 @@
                zg_t_order_taskbom taskbom
 	 where  plan.cuid=planbom.order_plan_id
          and plan.plant=emu.plantid
-         and op.cuid = carplan.car_user
-	   and op1.cuid = carbom.storage_user_id
+         and op.cuid(+) = carplan.car_user
+	   and op1.cuid(+) = carbom.storage_user_id
 	   and carbom.car_plan_id = carplan.cuid
 	   and carbom.order_task_id=task.cuid
      and task.order_id = zto.cuid
