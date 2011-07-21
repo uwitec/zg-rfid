@@ -1,0 +1,123 @@
+﻿/*tab.htm css*/
+.tabpage{border:1px solid #a8cfeb;margin-bottom:10px;}
+
+.tabpage ul{height:27px; background-color:#f3f8ff; padding-left:3px;border-bottom:1px solid #a8cfeb;background:#e2ebf4 url(../bg_com_title.gif) repeat-x left top;}
+.tabpage ul li{float:left;margin-right:4px;cursor:pointer; margin-top:3px;}
+
+.tabpage ul li a{ height:23px; background:url(tableft1.gif) no-repeat left -42px;display:inline-block;border-bottom:solid 1px #fff;}
+.tabpage ul li a span{ height:23px; line-height:23px; margin-left:4px; display:inline-block;white-space:nowrap; WORD-BREAK: keep-all; background:url(tabright1.gif) no-repeat right -42px;padding-left:9px; padding-right:12px;color:#32587f;}
+.tabpage ul li a:link,.tabpage ul li a:visited{color:#32587f; text-decoration:none;}
+
+.tabpage ul li a:hover{color:#72aed9;text-decoration:none;  height:23px; background:url(tab_o_l.gif) no-repeat left bottom;display:inline-block;}
+.tabpage ul li a:hover span{height:23px; line-height:23px; margin-left:4px; display:inline-block;white-space:nowrap; WORD-BREAK: keep-all; background:url(tab_o_r.gif) no-repeat right bottom;padding-left:9px; padding-right:12px; color:#32587f;}
+
+.tabpage ul li.current{font-weight:bold;margin-top:2px;}
+.tabpage ul li.current a{height:25px; background:url(tableft1.gif) no-repeat left top;display:inline-block;}
+.tabpage ul li.current a span{ height:25px; line-height:25px; margin-left:4px; display:inline-block;white-space:nowrap; WORD-BREAK: keep-all; background:url(tabright1.gif) no-repeat right top;padding-left:9px; padding-right:12px;}
+.tabpage ul li.current a:link,.tabpage ul li.current a:visited{height:25px;color:#fff; text-decoration:none;}
+.tabpage ul li.current a:hover{height:25px;background:url(tableft1.gif) no-repeat left top;}
+.tabpage ul li.current a:hover span{height:25px;background:url(tabright1.gif) no-repeat right -42px;background:url(tabright1.gif) no-repeat right top;padding-left:9px;}
+
+.tabpage ul li.sucess a{background-position:0% -42px; text-decoration:none;}
+.tabpage ul li.sucess a span{background-position:100% -126px; text-decoration:none;color:#32587f; padding-right:17px;}
+.tabpage ul li.sucess a:hover{color:#72aed9;text-decoration:none;  height:23px; background:url(tab_o_l.gif) no-repeat left bottom;display:inline-block;}
+.tabpage ul li.sucess a:hover span{height:23px; line-height:23px; display:inline-block;white-space:nowrap; WORD-BREAK: keep-all; background:url(tab_sucess_r.gif) no-repeat right bottom;padding-left:9px; color:#32587f;padding-right:16px;}
+
+.tabpage .main{padding:5px;}
+.tabpage .main .none{display:none;}
+
+
+
+
+/* 标签页 */
+.tab_unselect1{cursor:hand;background-image:url(tab_unselect1.gif); width:4px; height:26px; background-repeat:no-repeat;}
+.tab_unselect2{cursor:hand;background-image:url(tab_unselect2.gif); width:70px; text-align:center; padding:5px 5px 0px 5px;word-break:keep-all;}
+.tab_unselect3{cursor:hand;background-image:url(tab_unselect3.gif); width:4px; background-repeat:no-repeat; margin-right:4px;}
+.tab_select1{cursor:hand;background-image:url(tab_select1.gif); width:5px; height:26px; background-repeat:no-repeat;}
+.tab_select2{cursor:hand;background-image:url(tab_select2.gif); width:70px; text-align:center; padding:5px 5px 0px 5px;word-break:keep-all;}
+.tab_select3{cursor:hand;background-image:url(tab_select3.gif); width:5px; background-repeat:no-repeat;}
+.tab_right{border-bottom:0px solid #b8cfec;}
+.tab_top{height:1px; background-color:#b8cfec;}
+.tab_mid{border-top:0px solid #9B9B9B; padding:10px 10px 15px 10px;}
+.tab_main{border-left:0px solid #9B9B9B;border-right:0px solid #9B9B9B;border-bottom:0px solid #9B9B9B}
+.tab_fim_div{ padding:0px;}
+
+/*竖向tab*/
+#lib_Tab1_sx {
+    width:816px;
+    margin:0px;
+    padding:0px;
+    margin-bottom:15px;
+    overflow:hidden;
+	background:#e2eefd;
+}
+
+.lib_tabborder_sx {
+    
+	background-color:#f3f8fe;
+	
+}
+
+
+.lib_Menubox_sx {
+    line-height:28px;
+    position:relative;
+    float:left;
+	width:175px;
+	*width:167px;
+    _width:163px;
+    height:240px;
+   
+}
+.lib_Menubox_sx ul {
+    margin:0px;
+    padding:0px;
+    list-style:none;
+    position:absolute;
+    top:10px;
+    left:5px;
+    margin-left:5px;
+    height:25px;
+    text-align:center;
+}
+.lib_Menubox_sx li {
+    display:block;
+    cursor:pointer;
+    width:145px;
+    color:#235571;
+    margin-bottom:8px;
+    height:34px;
+    line-height:34px;
+    background:url(lib_Menubox_sx.gif) no-repeat;
+	position:relative;
+}
+.lib_Menubox_sx li.hover {
+    padding:0px;
+    width:157px;
+    border-right:0;
+    color:#316f92;
+	font-weight:bold;
+    height:34px;
+    line-height:34px;
+	background:url(lib_Menubox_sxhover.gif) no-repeat;
+	border-right:solid 1px #f3f8fe;
+	margin-right:-4px;
+	z-index:999;
+}
+
+.lib_Menubox_sx li span.ico{ position:absolute; left:9px; top:8px;}
+.lib_Contentbox_sx {
+    margin-top:0px;
+    border-top:none;
+    padding:20px;
+    border-left:0;
+    margin-left:167px;
+	*margin-left:157px;
+	_margin-left:155px;
+	border:1px solid #95C9E1;
+	height:400px;
+	background:#f3f8fe;
+
+	
+	
+}

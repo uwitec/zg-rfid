@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="LgortReportStat">
+
+<sql id="dynamicWhere">
+	    <dynamic prepend="">
+       		<isNotEmpty prepend="AND" property="date_start">
+	       			 carbom.car_date>=to_date('$date_start$','yyyy-mm-dd hh24:mi:ss') 
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="date_end">
+	       			to_date('$date_end$','yyyy-mm-dd hh24:mi:ss') >= carbom.car_date
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="aufnr">
+	       		  zto.aufnr like '%'||'$aufnr$'||'%'
+       		</isNotEmpty> 
+       		<isNotEmpty prepend="AND" property="matnr">
+       			  zto.matnr like '%'||'$matnr$'||'%'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="plant">
+       			task.plant='$plant$'
+       		</isNotEmpty>  
+       		
+       		<isNotEmpty prepend="AND" property="arbpl">
+	       		  task.arbpl like '%'||'$arbpl$'||'%'
+       		</isNotEmpty> 
+       		<isNotEmpty prepend="AND" property="planType">
+	       		 carplan.order_plan_type in ('$planType$')
+       		</isNotEmpty> 
+       			<isNotEmpty prepend="AND" property="idnrk">
+	       		  orderbom.idnrk like '%'||'$idnrk$'||'%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty prepend="AND" property="suppliers">
+	       		  sup.lifnr_name like '%'||'$suppliers$'||'%'
+       		</isNotEmpty> 
+       		
+       			<isNotEmpty prepend="AND" property="lgort">
+	       		  orderbom.lgort like '%'||'$lgort$'||'%'
+       		</isNotEmpty> 
+       		
+	    </dynamic>	
+	</sql>
+
+	<select id="pageSelect" resultClass="java.util.HashMap">
+<![CDATA[	select zto.aufnr,
+               zto.matnr,
+               zto.maktx1,
+               task.plant||'('||emu.orgname||')' plant,
+               task.arbpl,
+               orderbom.idnrk,
+               orderbom.maktx2,
+               orderbom.sortf,
+               orderbom.lgort,
+               sup.lifnr,
+               carplan.order_plan_type,
+                 case when sum(nvl(sup.car_num, 0))=0 then sum(carbom.real_num) else sum(nvl(sup.car_num, 0)) end as complete_num,
+               sum(taskbom.menge) car_num,
+               sup.lifnr_name,
+               zto.kdauf,
+               zto.KDPOS,
+               orderbom.posnr,
+               plan.zbz   planzbz,
+               planbom.zbz  planbomzbz,decode(planbom.bom_type,'1','良品','-1','不良品','良品')  bom_type
+            from zg_t_carbom           carbom,
+               zg_t_carplan          carplan,
+               zg_t_order            zto,
+               zg_t_orderbom         orderbom,
+               zg_t_order_planbom    planbom,
+               zg_t_carbom_suppliers sup,
+               t_plant_enumevalue    emu,
+               zg_t_order_plan       plan,
+               
+               zg_t_order_task task,
+               zg_t_order_taskbom taskbom
+               
+               
+         where plan.cuid = planbom.order_plan_id
+           and task.plant = emu.plantid
+           and carbom.car_plan_id = carplan.cuid
+           and carbom.order_task_id=task.cuid
+           and task.order_id = zto.cuid
+           and carbom.taskbom_id = taskbom.cuid
+           and taskbom.order_bom_id=orderbom.cuid
+           and taskbom.order_task_id = carbom.order_task_id
+           and planbom.cuid = carbom.order_planbom_id
+           and sup.car_bom_id(+) = carbom.cuid
+           and carbom.storage_user_id is not null
+           and carplan.order_plan_type <> '3'
+           and (sup.car_num > 0 or sup.car_num is null)  ]]>
+	    <include refid="dynamicWhere"/>
+	<![CDATA[ group by zto.aufnr,
+	          zto.matnr,
+	          zto.maktx1,
+	          task.plant,
+	          task.arbpl,
+	          orderbom.idnrk,
+	          orderbom.maktx2,
+	          orderbom.sortf,
+	          orderbom.lgort,
+	          plan.plant,
+	          sup.lifnr,
+	          sup.lifnr_name,orgname, zto.kdauf,zto.KDPOS,
+               orderbom.posnr,  carplan.order_plan_type,
+               plan.zbz,
+               carplan.remark,plan.plan_type,planbom.zbz,planbom.bom_type  ]]>
+
+	</select>   
+	
+	  <select id="count" resultClass="long">
+		  	<![CDATA[select count(1)
+  from (select zto.aufnr,
+               zto.matnr,
+               zto.maktx1,
+               emu.orgname plant,
+               task.arbpl,
+               orderbom.idnrk,
+               orderbom.maktx2,
+               orderbom.sortf,
+               orderbom.lgort,
+               sup.lifnr,
+               sum(nvl(sup.car_num, 0)) complete_num,
+               sum(planbom.car_num) car_num,
+               sup.lifnr_name,
+               zto.kdauf,
+               zto.KDPOS,
+               plan.zbz,
+               carplan.remark
+          from zg_t_carbom           carbom,
+               zg_t_carplan          carplan,
+               zg_t_order            zto,
+               zg_t_orderbom         orderbom,
+               zg_t_order_planbom    planbom,
+               zg_t_carbom_suppliers sup,
+               t_plant_enumevalue    emu,
+               zg_t_order_plan       plan,
+               
+               zg_t_order_task task,
+               zg_t_order_taskbom taskbom
+               
+               
+         where plan.cuid = planbom.order_plan_id
+           and task.plant = emu.plantid
+           and carbom.car_plan_id = carplan.cuid
+           and carbom.order_task_id=task.cuid
+           and task.order_id = zto.cuid
+           and carbom.taskbom_id = taskbom.cuid
+           and taskbom.order_bom_id=orderbom.cuid
+           and taskbom.order_task_id = carbom.order_task_id
+           and planbom.cuid = carbom.order_planbom_id
+           and sup.car_bom_id(+) = carbom.cuid
+           and carbom.storage_user_id is not null
+           and carplan.order_plan_type <> '3'
+           and (sup.car_num > 0 or sup.car_num is null) ]]>
+	    <include refid="dynamicWhere"/>
+	<![CDATA[ group by zto.aufnr,
+	          zto.matnr,
+	          zto.maktx1,
+	          task.plant,
+	          task.arbpl,
+	          orderbom.idnrk,
+	          orderbom.maktx2,
+	          orderbom.sortf,
+	          orderbom.lgort,
+	          sup.lifnr,
+	          plan.plant,
+	          sup.lifnr_name,orgname, zto.kdauf,zto.KDPOS,
+               orderbom.posnr,carplan.order_plan_type,
+               plan.zbz,
+               carplan.remark,planbom.zbz,planbom.bom_type ) ]]>
+
+	  </select>
+</sqlMap>

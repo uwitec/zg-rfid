@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgMateriel">
+    <typeAlias alias="zgMateriel" type="com.boco.frame.sys.base.model.ZgMateriel"/>
+	<resultMap id="zgMaterielResult" class="zgMateriel">
+		<result property="materielName" column="materiel_name"/>
+		<result property="id" column="matkl"/>
+		<result property="organizationId" column="orgid"/>
+		<result property="organizationName" column="orgname"/>
+		<result property="virtualorgCuid" column="vorgId"/>
+    </resultMap>
+    
+    <resultMap class="zgMateriel" id="getByIdZgMateriel">
+    	<result property="cuid" column="cuid"/>
+		<result property="parentId" column="parent_id"/>
+		<result property="materielName" column="materiel_name"/>
+		<result property="type" column="type"/>
+		<result property="id" column="id"/>
+		<result property="lgort" column="lgort"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.zm_cuid,
+	        m.zm_parent_id,
+	        m.zm_materiel_name,
+	        m.zm_type,
+	        m.zm_id,
+	        m.virtualorgCuid,
+	        m.virtualorgName,
+	        m.organizationName,
+	        m.virtualorgType,
+	        m.virtualorgNote,
+	        m.zmv_cuid,
+	        m.advance
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic>
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="materielName">
+	       			materiel_name like '%'||#materielName#||'%'
+       		</isNotEmpty>    
+       		<isNotEqual property="organizationId" compareValue="">
+			    <isNotEmpty prepend="AND" property="organizationId">
+		       			org.org_id=  '$organizationId$'
+	       		</isNotEmpty>
+       		</isNotEqual>
+       		<isNotEqual property="whetherParent" compareValue=""> 
+			    <isEqual property="whetherParent" compareValue="1">
+       				<isNotEmpty prepend="AND" property="treeCuid">
+		       			org.cuid= #treeCuid#
+	       			</isNotEmpty>
+       			</isEqual>
+       		</isNotEqual> 
+       		 <isNotEmpty prepend="AND" property="advance">
+       		 	advance='$advance$'
+       		 </isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertZG_MATERIEL" parameterClass="zgMateriel">
+    <![CDATA[
+        INSERT INTO
+        ZG_MATERIEL (
+        	CUID ,
+        	PARENT_ID ,
+        	MATERIEL_NAME ,
+        	TYPE ,
+        	ID ,
+        	advance
+        ) VALUES (
+        	#cuid# ,
+        	#parentId# ,
+        	#materielName# ,
+        	#type# ,
+        	#id# ,
+        	#advance#
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <insert id="addAddvanceMat">
+   		update zg_materiel t set t.advance='1' where t.id='$cuid$'
+    </insert>
+    
+     <insert id="updateMaterielLevel" parameterClass="java.util.HashMap">
+   		 update zg_materiel t set t.materiel_level='$materieLevel$' where t.id='$materielId$'
+    </insert>
+    
+    
+    
+    <insert id="insert" parameterClass="zgMateriel">
+    <![CDATA[
+        INSERT INTO
+        ZG_MATERIEL (
+        	CUID ,
+        	PARENT_ID ,
+        	MATERIEL_NAME ,
+        	TYPE ,
+        	ID ,
+        	LGORT,
+        	advance
+        ) VALUES (
+        	#cuid# ,
+        	#parentId# ,
+        	#materielName# ,
+        	#type# ,
+        	#id# ,
+        	#lgort#,
+        	#advance#
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateZG_MATERIEL" parameterClass="zgMateriel">
+    <![CDATA[
+        UPDATE ZG_MATERIEL SET
+	        PARENT_ID = #parentId# ,
+	        MATERIEL_NAME = #materielName# ,
+	        TYPE = #type# ,
+	        ID = #id# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteZG_MATERIEL_VIRTUALORG" parameterClass="java.lang.String">
+		delete from ZG_MATERIEL_VIRTUALORG 
+		 where CUID = #cuid#
+	</delete>
+	
+	
+	
+	
+	<delete id="removeVorgById" parameterClass="java.util.HashMap">
+		delete from zg_materiel_virtualorg t where t.matkl='$matkl$' and t.org_id='$vorgId$'
+		</delete>
+	
+	<delete id="delMateriel" parameterClass="java.lang.String">
+		delete from ZG_MATERIEL
+		 where id = #cuid#
+	</delete>
+	
+	<update id="updateZG_MATERIEL2" parameterClass="zgMateriel">
+    <![CDATA[
+        update ZG_MATERIEL
+		   set PARENT_ID = #parentId#, MATERIEL_NAME = #materielName#, LGORT = #lgort#
+		 where CUID = #cuid#
+    ]]>
+    </update>
+    
+    <select id="findByProperty" resultMap="zgMaterielResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.PARENT_ID as t0_PARENT_ID,
+	        		t0.MATERIEL_NAME as t0_MATERIEL_NAME,
+	        		t0.TYPE as t0_TYPE,
+	        		t0.ID as t0_ID,
+	        		null as advance
+	        from 
+	        ZG_MATERIEL t0
+ 			) m
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+        <select id="getById" resultMap="getByIdZgMateriel">
+    	<![CDATA[
+    		select * from zg_materiel t where t.cuid=#cuid# 
+    	]]>
+    </select>
+    
+    <select id="count" resultClass="long">
+           
+       select count(1) from (select 1  
+       from zg_materiel t, fw_organization fwo,zg_materiel_virtualorg vorg,zg_t_virtualorg org
+      where t.lgort = fwo.cuid
+      and t.id=vorg.matkl
+      and vorg.org_id=org.cuid
+               
+      <include refid="dynamicWhere"/>
+      
+           group by t.id,t.materiel_name,org.cuid)
+    </select>
+    
+    
+    
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgMaterielResult">
+       select t.id matkl,
+            t.materiel_name,
+            WMSYS.WM_CONCAT(t.lgort) orgid,
+            WMSYS.WM_CONCAT(fwo.label_cn) orgname,
+            org.cuid vorgId
+       from zg_materiel t, fw_organization fwo,zg_materiel_virtualorg vorg,zg_t_virtualorg org
+      where t.lgort = fwo.cuid
+      and t.id=vorg.matkl
+      and vorg.org_id=org.cuid
+               
+      <include refid="dynamicWhere"/>
+ 		
+           group by t.id,t.materiel_name,org.cuid
+    </select>
+    
+    <select id="findAll" resultMap="zgMaterielResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.PARENT_ID as t0_PARENT_ID,
+	        		t0.MATERIEL_NAME as t0_MATERIEL_NAME,
+	        		t0.TYPE as t0_TYPE,
+	        		t0.ID as t0_ID,
+	        		null as advance
+	        from 
+	        ZG_MATERIEL t0
+ 			) m
+        ]]>
+    </select>
+    
+    <select id="checkAllMaterielName" resultClass="long">
+    	<![CDATA[ select count(1) from ZG_MATERIEL t where t.materiel_name=#materielName# ]]>
+    </select>
+    
+    <delete id="deleteZgMaterielByCuid">
+    	<![CDATA[ delete ZG_MATERIEL t where t.cuid=#cuid# ]]>
+    </delete>
+    
+     <select id="findLgortByParentId" resultClass="java.lang.String">
+    	<![CDATA[ select lgort from ZG_MATERIEL t where t.cuid=#cuid# ]]>
+    </select>
+    
+    <select id="findIdByParentId" resultClass="java.lang.String">
+    	<![CDATA[ select id from ZG_MATERIEL t where t.cuid=#cuid# ]]>
+    </select>
+    
+    <select id="getCountZG_MATERIEL_VIRTUALORG" resultClass="long">
+    	<![CDATA[
+    		select count(*) from ZG_MATERIEL_VIRTUALORG t where t.MATKL =#cuid#
+    	]]>
+    </select>
+    <select id="getCountZG_T_BOM" resultClass="long">
+    	<![CDATA[
+    		select count(*) 
+    		from ZG_T_BOM x ,ZG_MATERIEL y  
+    		where x.MATKL =y.id and y.cuid=#cuid#
+    	]]>
+    </select>
+    <select id="getByCuid" resultMap="getByIdZgMateriel">
+    	<![CDATA[
+    		select * from zg_materiel t where t.id=#cuid# and rownum=1
+    	]]>
+    </select>
+    <update id="updateMateriel" parameterClass="zgMateriel">
+    <![CDATA[
+        update ZG_MATERIEL
+		   set PARENT_ID = #parentId#, MATERIEL_NAME = #materielName#, LGORT = #lgort#,type=#type#,id=#id#
+		 where CUID = #cuid#
+    ]]>
+    </update>
+    
+    <!-- 统计子节点 -->
+    <select id="findChildCount" resultClass="long">
+    	<![CDATA[
+    		select count(*) from zg_materiel t where t.parent_id=#cuid#
+    	]]>
+    </select>
+    
+     <!-- 统计子节点 -->
+    <select id="hasBom" resultClass="java.util.HashMap">
+    	<![CDATA[
+    		select * from zg_t_bom t where t.matkl_self=#cuid#
+    	]]>
+    </select>
+    <select id="findIdForValid" resultClass="java.lang.String">
+    	<![CDATA[
+    	 select id from zg_materiel t where t.parent_id=#parentId#
+    	 ]]>
+    </select>
+    <select id="findNameForValid" resultClass="java.lang.String">
+    	<![CDATA[
+    	select materiel_name from zg_materiel t where t.parent_id=#parentId#
+    	]]>
+    </select>
+    <select id="findNameByCuid" resultClass="java.lang.String">
+    	<![CDATA[  
+    		select materiel_name from zg_materiel t where t.cuid=#cuid#
+    	]]>
+    </select>
+  	<select id="findIdByCuid" resultClass="java.lang.String">
+     	<![CDATA[  
+    		select id from zg_materiel t where t.cuid=#cuid#
+    	]]> 	
+  	</select>  
+  	<select id="findParentId" resultClass="java.lang.String">
+     	<![CDATA[  
+    		select parent_Id from zg_materiel t where t.id=#cuid# and rownum=1
+    	]]> 	
+  	</select> 
+  	
+  	<select id="findLgortListById" resultClass="java.util.HashMap">
+  	  select t.* from  ZG_MATERIEL t where t.id='$cuid$'
+  	</select>
+  	
+  	 	<select id="getByIdAndLgort" resultClass="java.util.HashMap">
+  			 select t.cuid,t.advance from zg_materiel t where t.id='$id$' and t.lgort='$lgort$' and rownum=1
+  		</select>
+  		<select id="validId1" resultClass="java.lang.String">
+  			 select * from zg_materiel t where t.parent_id in (select temp.cuid from zg_materiel temp where temp.id='$parentId$')
+and t.id='$id$'
+
+  		</select>	
+  		
+  		<select id="getMatklByOpertatorId" resultClass="java.lang.String">
+  			select  distinct mat.id from zg_t_virtualorg_employee emp ,zg_t_virtualorg org,
+				zg_materiel_virtualorg morg,zg_materiel mat 
+				where emp.user_id='$operatorId$'
+				and emp.org_id=org.cuid
+				and morg.org_id=org.cuid
+				 and mat.id in (select tm.id
+				                    from zg_materiel tm
+				                   start with tm.id = morg.matkl
+				                  connect by prior  tm.cuid=tm.parent_id)
+  		</select>	
+  		
+  		<select id="getMaterielLevelByTaskBomId" resultClass="java.lang.String">
+  			select mat.materiel_level  from zg_t_order_taskbom taskbom ,zg_t_orderbom orderbom,zg_materiel mat
+			where taskbom.order_bom_id=orderbom.cuid
+			and orderbom.matkl=mat.id
+			and taskbom.cuid='$taskBomId$' and rownum=1
+  		</select>	
+  		
+  	
+  	
+</sqlMap>

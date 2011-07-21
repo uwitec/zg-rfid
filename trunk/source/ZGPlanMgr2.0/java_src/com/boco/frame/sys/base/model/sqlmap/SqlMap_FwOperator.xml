@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FwOperator">
+    <typeAlias alias="fwOperator" type="com.boco.frame.sys.base.model.FwOperator"/>
+	<resultMap id="fwOperatorResult" class="fwOperator">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="userId" column="t0_USER_ID"/>
+		<result property="password" column="t0_PASSWORD"/>
+		<result property="createTime" column="t0_CREATE_TIME"/>
+		<result property="lastModifyTime" column="t0_LAST_MODIFY_TIME"/>
+		<result property="effectTime" column="t0_EFFECT_TIME"/>
+		<result property="status" column="t0_STATUS"/>
+		<result property="relatedBmClassId" column="t0_RELATED_BM_CLASS_ID"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_LABEL_CN,
+	        m.t0_USER_ID,
+	        m.t0_PASSWORD,
+	        m.t0_CREATE_TIME,
+	        m.t0_LAST_MODIFY_TIME,
+	        m.t0_EFFECT_TIME,
+	        m.t0_STATUS,
+	        m.t0_RELATED_BM_CLASS_ID
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="equalBmClassIdQuery">
+	    		m.t0_RELATED_BM_CLASS_ID  = #BM_CLASS_ID# 
+	    	</isNotEmpty> 
+	    	<isNotEmpty prepend="AND" property="inSubBmClassIdQuery">
+	    		m.t0_RELATED_BM_CLASS_ID in (select p.bm_classid from t_md_abstract_type p start with p.bm_classid=#BM_CLASS_ID# connect by prior  p.cuid =p.parent_type_cuid )
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="userId">
+	       			m.t0_USER_ID like #userId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="password">
+	       			m.t0_PASSWORD like #password#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="createTime_start">
+       			<![CDATA[m.t0_CREATE_TIME >= to_date(#createTime_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="createTime_end">
+       			<![CDATA[m.t0_CREATE_TIME <= to_date(#createTime_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="lastModifyTime_start">
+       			<![CDATA[m.t0_LAST_MODIFY_TIME >= to_date(#lastModifyTime_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="lastModifyTime_end">
+       			<![CDATA[m.t0_LAST_MODIFY_TIME <= to_date(#lastModifyTime_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="effectTime_start">
+       			<![CDATA[m.t0_EFFECT_TIME >= to_date(#effectTime_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="effectTime_end">
+       			<![CDATA[m.t0_EFFECT_TIME <= to_date(#effectTime_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="status">
+	       			m.t0_STATUS = #status#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="relatedBmClassId">
+	       			m.t0_RELATED_BM_CLASS_ID like #relatedBmClassId#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertFW_OPERATOR" parameterClass="fwOperator">
+    <![CDATA[
+        INSERT INTO
+        FW_OPERATOR (
+        	CUID ,
+        	LABEL_CN ,
+        	USER_ID ,
+        	PASSWORD ,
+        	CREATE_TIME ,
+        	LAST_MODIFY_TIME ,
+        	EFFECT_TIME ,
+        	STATUS ,
+        	RELATED_BM_CLASS_ID 
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#userId# ,
+        	#password# ,
+        	sysdate,
+        	sysdate,
+        	#effectTime# ,
+        	#status# ,
+        	#relatedBmClassId# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateFW_OPERATOR" parameterClass="fwOperator">
+    <![CDATA[
+        UPDATE FW_OPERATOR SET
+	        LABEL_CN = #labelCn# ,
+	        USER_ID = #userId# ,
+	        PASSWORD = #password# ,
+	        CREATE_TIME = sysdate ,
+	        LAST_MODIFY_TIME = sysdate,
+	        EFFECT_TIME = #effectTime# ,
+	        STATUS = #status# ,
+	        RELATED_BM_CLASS_ID = #relatedBmClassId# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteFW_OPERATOR" parameterClass="java.lang.String">
+		delete from FW_OPERATOR 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="fwOperatorResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PASSWORD as t0_PASSWORD,
+	        		t0.CREATE_TIME as t0_CREATE_TIME,
+	        		t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        		t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        		t0.STATUS as t0_STATUS,
+	        		t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        from 
+	        FW_OPERATOR t0
+ ) m
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="fwOperatorResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PASSWORD as t0_PASSWORD,
+	        		t0.CREATE_TIME as t0_CREATE_TIME,
+	        		t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        		t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        		t0.STATUS as t0_STATUS,
+	        		t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        from 
+	        FW_OPERATOR t0
+ ) m
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PASSWORD as t0_PASSWORD,
+	        		t0.CREATE_TIME as t0_CREATE_TIME,
+	        		t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        		t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        		t0.STATUS as t0_STATUS,
+	        		t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        from 
+	        FW_OPERATOR t0
+ ) m
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="fwOperatorResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PASSWORD as t0_PASSWORD,
+	        		t0.CREATE_TIME as t0_CREATE_TIME,
+	        		t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        		t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        		t0.STATUS as t0_STATUS,
+	        		t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        from 
+	        FW_OPERATOR t0
+ ) m
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="fwOperatorResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PASSWORD as t0_PASSWORD,
+	        		t0.CREATE_TIME as t0_CREATE_TIME,
+	        		t0.LAST_MODIFY_TIME as t0_LAST_MODIFY_TIME,
+	        		t0.EFFECT_TIME as t0_EFFECT_TIME,
+	        		t0.STATUS as t0_STATUS,
+	        		t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        from 
+	        FW_OPERATOR t0
+ ) m
+        ]]>
+    </select>
+    
+</sqlMap>

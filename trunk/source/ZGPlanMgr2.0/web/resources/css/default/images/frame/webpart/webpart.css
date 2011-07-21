@@ -1,0 +1,14 @@
+﻿/* webpart */
+.webpart{border:1px solid #A8CFEB;overflow:hidden;margin-bottom:3px;}
+.webpart h1{cursor:pointer; background:#e2ebf4 url(../bg_com_title.gif) repeat-x left top;text-align:left; font-weight:bold;color:#3a6683;padding-left:10px;height:18px;padding-top:5px;font-size:12px;margin:0px;border-bottom:1px solid #c8e1f3; position:relative}
+.webpart h1 span{background:#DFEAFB;}
+.webpart h1 .button{cursor:pointer; position:absolute;right:5px;top:2px;}
+.webpart .main{overflow:hidden; vertical-align:top;padding:1px;}
+
+.webpart h1 ul.tabmenu{height:20px;  border-bottom:1px solid #c8e1f3; position:absolute;left:150px;top:3px;}
+.webpart h1 ul.tabmenu li{background:#f3f8ff;float:left;border:1px solid #c8e1f3;padding-left:15px;height:16px;padding-top:3px;padding-right:15px;margin-right:2px;border-bottom:0px;}
+.webpart h1 ul.tabmenu li a:link,.webpart h1 ul.tabmenu li a:visited{color:#72aed9; text-decoration:none;}
+.webpart h1 ul.tabmenu li a:hover{color:#72aed9;text-decoration:none;}
+.webpart h1 ul.tabmenu li.current{background:#fff;border-bottom:1px solid #fff;font-weight:bold;}
+.webpart h1 ul.tabmenu li.current a:link,.tabpage ul li.current a:visited{color:#1c568a; text-decoration:none;}
+.webpart h1 ul.tabmenu li.current a:hover{color:#1c568a;text-decoration:none;}

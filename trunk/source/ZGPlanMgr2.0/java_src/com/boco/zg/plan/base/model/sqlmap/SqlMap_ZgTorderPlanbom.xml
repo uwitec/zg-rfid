@@ -1,0 +1,860 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTorderPlanbom">
+    <typeAlias alias="zgTorderPlanbom" type="com.boco.zg.plan.base.model.ZgTorderPlanbom"/>
+	<resultMap id="zgTorderPlanbomResult" class="zgTorderPlanbom">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="taskBomId" column="t0_TASKBOM_ID"/>
+		<result property="orderPlanId" column="t0_ORDER_PLAN_ID"/>
+		<result property="taskBomId_related.value" column="t0_0_1_t0_LABEL_CN"/>
+		<result property="taskBomId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="orderTaskId" column="t0_ORDER_tasK_ID"/>
+		<result property="orderTaskId_related.value" column="t0_1_1_t0_AUFNR"/>
+		<result property="orderTaskId_related.relatedBmClassId" column="t0_1_1_BD"/>
+		<result property="departmentId" column="t0_DEPARTMENT_ID"/>
+		<result property="departmentId_related.value" column="t0_2_1_t0_LABEL_CN"/>
+		<result property="departmentId_related.relatedBmClassId" column="t0_2_1_BD"/>
+		<result property="userId" column="t0_USER_ID"/>
+		<result property="userId_related.value" column="t0_3_1_t1_LABEL_CN"/>
+		<result property="userId_related.relatedBmClassId" column="t0_3_1_BD"/>
+		<result property="planDate" column="t0_PLAN_DATE"/>
+		<result property="planStartTime" column="t0_PLAN_START_TIME"/>
+		<result property="planEndTime" column="t0_PLAN_END_TIME"/>
+		<result property="state" column="t0_STATE"/>
+		<result property="completeNum" column="t0_COMPLETE_NUM"/>
+		<result property="carNum" column="t0_CAR_NUM"/>
+		<result property="planNum" column="t0_PLAN_NUM"/>
+		<result property="bomId" column="t0_BOM_ID"/>
+		<result property="zbz" column="t0_zbz"/>
+		<result property="auditNum" column="t0_audit_num"/>
+		<result property="moveNum" column="t0_move_num"/>
+		<result property="backNum" column="t0_back_num"/>
+		<result property="outNum" column="t0_out_num"/>
+		<result property="moveNumIn" column="t0_move_num_in"/>
+		<result property="waitBackNum" column="t0_wait_back_num"/>
+		<result property="storageNum" column="t0_storage_num"/>
+		<result property="parentId" column="t0_parent_id"/>
+		<result property="bomType" column="t0_bom_type"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_LABEL_CN,
+		    t0_0_1.t0_LABEL_CN as t0_0_1_t0_LABEL_CN,
+	        'ZG_T_ORDERBOM' as t0_0_1_BD,
+	        m.t0_ORDER_PLAN_ID,
+	        m.t0_TaskBOM_ID,
+		    t0_1_1.t0_AUFNR as t0_1_1_t0_AUFNR,
+	        'ZG_T_ORDER_task' as t0_1_1_BD,
+	        m.t0_ORDER_task_ID,
+		    t0_2_1.t0_LABEL_CN as t0_2_1_t0_LABEL_CN,
+	        'FW_ORGANIZATION' as t0_2_1_BD,
+	        m.t0_DEPARTMENT_ID,
+		    t0_3_1.t1_LABEL_CN as t0_3_1_t1_LABEL_CN,
+	        'FW_EMPLOYEE' as t0_3_1_BD,
+	        m.t0_USER_ID,
+	        m.t0_PLAN_DATE,
+	        m.t0_PLAN_START_TIME,
+	        m.t0_PLAN_END_TIME,
+	        m.t0_STATE,
+	        m.t0_COMPLETE_NUM,
+	        m.t0_CAR_NUM,
+	        m.t0_PLAN_NUM,
+	        m.t0_BOM_ID,
+	        m.t0_zbz,
+       m.t0_audit_num,
+       m.t0_move_num,
+       m.t0_back_num,
+       m.t0_out_num,
+       m.t0_move_num_in,
+       m.t0_wait_back_num,
+       m.t0_storage_num,
+			       m.t0_parent_id,
+			        m.t0_bom_type
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like #labelCn#
+       		</isNotEmpty>  
+       		 <isNotEmpty prepend="AND" property="orderPlanId">
+	       			m.t0_ORDER_PLAN_ID like #orderPlanId#
+       		</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="orderBomId">
+	       			m.t0_ORDER_BOM_ID like #orderBomId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="orderId">
+	       			m.t0_ORDER_ID like #orderId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="departmentId">
+	       			m.t0_DEPARTMENT_ID like #departmentId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="userId">
+	       			m.t0_USER_ID like #userId#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="planDate_start">
+       			<![CDATA[m.t0_PLAN_DATE >= to_date(#planDate_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="planDate_end">
+       			<![CDATA[m.t0_PLAN_DATE <= to_date(#planDate_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="planStartTime">
+       				m.t0_PLAN_START_TIME = #planStartTime#
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="planEndTime">
+       				m.t0_PLAN_END_TIME = #planEndTime#
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="state">
+	       			m.t0_STATE = #state#
+       		</isNotEmpty>    
+       		<isNotEmpty prepend="AND" property="bomId">
+	       			m.t0_BOM_ID = #bomId#
+       		</isNotEmpty>     
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertZG_T_ORDER_PLANBOM" parameterClass="zgTorderPlanbom">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_ORDER_PLANBOM (
+        	CUID ,
+        	LABEL_CN ,
+        	ORDER_PLAN_ID,
+        	TASKBOM_ID ,
+        	ORDER_TASK_ID ,
+        	DEPARTMENT_ID ,
+        	USER_ID ,
+        	PLAN_DATE ,
+        	PLAN_START_TIME ,
+        	PLAN_END_TIME ,
+        	STATE ,
+        	COMPLETE_NUM ,
+        	CAR_NUM,
+        	PLAN_NUM,
+        	BOM_ID ,parent_Id,bom_type,wait_back_num
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#orderPlanId#,
+        	#taskBomId# ,
+        	#orderTaskId# ,
+        	#departmentId# ,
+        	#userId# ,
+        	#planDate# ,
+        	#planStartTime# ,
+        	#planEndTime# ,
+        	#state# ,
+        	#completeNum# ,
+        	#carNum#,
+        	#planNum#,
+        	#bomId#,#parentId#,#bomType#,#waitBackNum#
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+     <insert id="insertZG_T_ORDER_PLANBOM1" parameterClass="zgTorderPlanbom">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_ORDER_PLANBOM (
+        	CUID ,
+        	LABEL_CN ,
+        	ORDER_PLAN_ID,
+        	TASKBOM_ID ,
+        	ORDER_TASK_ID ,
+        	DEPARTMENT_ID ,
+        	USER_ID ,
+        	PLAN_DATE ,
+        	PLAN_START_TIME ,
+        	PLAN_END_TIME ,
+        	STATE ,
+        	COMPLETE_NUM ,
+        	CAR_NUM,
+        	PLAN_NUM,
+        	BOM_ID,
+        	WAIT_BACK_NUM,
+        	STORAGE_NUM ,parent_Id,bom_type,zbz
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#orderPlanId#,
+        	#taskBomId# ,
+        	#orderTaskId# ,
+        	#departmentId# ,
+        	#userId# ,
+        	#planDate# ,
+        	#planStartTime# ,
+        	#planEndTime# ,
+        	#state# ,
+        	#completeNum# ,
+        	#carNum#,
+        	#planNum#,
+        	#bomId#,
+        	#waitBackNum#,
+        	#storageNum# ,#parentId#,#bomType#,#zbz#
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateZG_T_ORDER_PLANBOM" parameterClass="zgTorderPlanbom">
+    <![CDATA[
+        UPDATE ZG_T_ORDER_PLANBOM SET
+	        LABEL_CN = #labelCn# ,
+	        ORDER_PLAN_ID = #orderPlanId# ,
+	        TASKBOM_ID=#taskBomId# ,
+        	ORDER_TASK_ID=#orderTaskId# ,
+	        DEPARTMENT_ID = #departmentId# ,
+	        USER_ID = #userId# ,
+	        PLAN_DATE = #planDate# ,
+	        PLAN_START_TIME = #planStartTime# ,
+	        PLAN_END_TIME = #planEndTime# ,
+	        STATE = #state# ,
+	        COMPLETE_NUM = #completeNum# ,
+	        CAR_NUM = #carNum#,
+	        PLAN_NUM = #planNum#,
+	        BOM_ID = #bomId# ,
+	        zbz=#zbz#,
+       		audit_num=#auditNum#,
+       		move_num=#moveNum#,
+       		back_num=#backNum#,
+       		out_num=#outNum#,
+       		move_Num_In=#moveNumIn#,
+       		wait_Back_Num=#waitBackNum#,
+       		storage_Num=#storageNum#,
+       		FINISH_TIME=#finishTime#,
+       		parent_Id=#parentId# ,
+       		bom_type=#bomType# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteZG_T_ORDER_PLANBOM" parameterClass="java.lang.String">
+		delete from ZG_T_ORDER_PLANBOM 
+		 where CUID = #cuid#
+	</delete>
+	
+	<delete id="deleteZG_T_ORDER_PLANBOM1" parameterClass="java.lang.String">
+		delete from ZG_T_ORDER_PLANBOM  t
+		 where CUID = #cuid#  and nvl(t.plan_num,0)=0
+	</delete>
+	
+	
+	<select id="getWaitBackBomListByAufnrIdnrk" resultMap="zgTorderPlanbomResult">
+	    select   m.t0_CUID,
+	        m.t0_LABEL_CN,
+		    null as t0_0_1_t0_LABEL_CN,
+	        'ZG_T_ORDERBOM' as t0_0_1_BD,
+	        m.t0_ORDER_PLAN_ID,
+	        m.t0_TaskBOM_ID,
+		    null as t0_1_1_t0_AUFNR,
+	        'ZG_T_ORDER' as t0_1_1_BD,
+	        m.t0_ORDER_task_ID,
+		    null as t0_2_1_t0_LABEL_CN,
+	       null as t0_2_1_BD,
+	        m.t0_DEPARTMENT_ID,
+		    null as t0_3_1_t1_LABEL_CN,
+	        'FW_EMPLOYEE' as t0_3_1_BD,
+	        m.t0_USER_ID,
+	        m.t0_PLAN_DATE,
+	        m.t0_PLAN_START_TIME,
+	        m.t0_PLAN_END_TIME,
+	        m.t0_STATE,
+	        m.t0_COMPLETE_NUM,
+	        m.t0_CAR_NUM,
+	        m.t0_PLAN_NUM,
+	        m.t0_BOM_ID,
+	        m.t0_zbz,
+       m.t0_audit_num,
+       m.t0_move_num,
+       m.t0_back_num,
+       m.t0_out_num,
+       m.t0_move_num_in,
+       m.t0_wait_back_num,
+       m.t0_storage_num,
+		t0_parent_id,
+		t0_bom_type
+	   
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ORDER_PLAN_ID as t0_ORDER_PLAN_ID,
+	        		t0.taskBOM_ID as t0_TaskBOM_ID,
+	        		t0.ORDER_task_ID as t0_ORDER_ID,
+	        		t0.DEPARTMENT_ID as t0_DEPARTMENT_ID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PLAN_DATE as t0_PLAN_DATE,
+	        		t0.PLAN_START_TIME as t0_PLAN_START_TIME,
+	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
+	        		t0.STATE as t0_STATE,
+	        		nvl(t0.COMPLETE_NUM,0) as t0_COMPLETE_NUM,
+	        		nvl(t0.CAR_NUM,0) as t0_CAR_NUM,
+	        		nvl(t0.PLAN_NUM,0) as t0_PLAN_NUM,
+	        		t0.BOM_ID as t0_BOM_ID,
+	        		t0.zbz as t0_zbz,
+			       nvl(audit_num,0) as t0_audit_num ,
+			       nvl(move_num,0) as t0_move_num,
+			       nvl(back_num,0) as t0_back_num,
+			       nvl(out_num,0) as t0_out_num,
+			       nvl(move_num_in,0) as t0_move_num_in,
+			       nvl(wait_back_num,0) as t0_wait_back_num,
+			       nvl(t0.storage_num,0) as t0_storage_num,
+			       bom.aufnr ,
+			       bom.idnrk,
+			       t0.parent_ID as t0_parent_id,
+			       t0.bom_type as t0_bom_type
+	        from 
+	        ZG_T_ORDER_PLANBOM t0,zg_t_orderbom bom where t0.order_bom_id=bom.cuid
+ 		) m   where m.aufnr='$aufnr$' 
+ 		and  m.idnrk='$idnrk$'
+		</select>
+ 
+	
+	<select id="getById" resultMap="zgTorderPlanbomResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ORDER_PLAN_ID as t0_ORDER_PLAN_ID,
+	        		t0.TASKBOM_ID as t0_TASKBOM_ID,
+	        		t0.ORDER_task_ID as t0_ORDER_task_ID,
+	        		t0.DEPARTMENT_ID as t0_DEPARTMENT_ID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PLAN_DATE as t0_PLAN_DATE,
+	        		t0.PLAN_START_TIME as t0_PLAN_START_TIME,
+	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
+	        		t0.STATE as t0_STATE,
+	        		nvl(t0.COMPLETE_NUM,0) as t0_COMPLETE_NUM,
+	        		nvl(t0.CAR_NUM,0) as t0_CAR_NUM,
+	        		nvl(t0.PLAN_NUM,0) as t0_PLAN_NUM,
+	        		t0.BOM_ID as t0_BOM_ID,
+	        		zbz as t0_zbz,
+			       nvl(audit_num,0) as t0_audit_num ,
+			       nvl(move_num,0) as t0_move_num,
+			       nvl(back_num,0) as t0_back_num,
+			       nvl(out_num,0) as t0_out_num,
+			       nvl(move_num_in,0) as t0_move_num_in,
+			       nvl(wait_back_num,0) as t0_wait_back_num,
+			       nvl(storage_num,0) as t0_storage_num,
+			        t0.parent_id as t0_parent_id,
+      				t0.bom_type  as t0_bom_type
+	        from 
+	        ZG_T_ORDER_PLANBOM t0
+ ) m
+	       left join (select t0_LABEL_CN,
+                    t0_cuid FROM (select taskbom.cuid as t0_cuid ,t0.LABEL_CN as
+                            t0_LABEL_CN
+                            from ZG_T_ORDERBOM t0,
+                            zg_t_order_taskbom taskbom where
+                            t0.cuid = taskbom.order_bom_id) t0) t0_0_1 on t0_0_1.t0_CUID =
+                                                                          m.t0_taskBOM_ID
+  left join (select t0.CUID as t0_CUID, t0.AUFNR as t0_AUFNR
+               from ZG_T_ORDER_TASK t0) t0_1_1 on t0_1_1.t0_CUID =
+                                                  m.t0_ORDER_TASK_ID
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_2_1 on t0_2_1.t0_CUID = m.t0_DEPARTMENT_ID 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_3_1 on t0_3_1.t0_CUID = m.t0_USER_ID 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="zgTorderPlanbomResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ORDER_PLAN_ID as t0_ORDER_PLAN_ID,
+	        		t0.TASKBOM_ID as t0_TASK_BOM_ID,
+	        		t0.ORDER_TASK_ID as t0_ORDER_TASK_ID,
+	        		t0.DEPARTMENT_ID as t0_DEPARTMENT_ID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PLAN_DATE as t0_PLAN_DATE,
+	        		t0.PLAN_START_TIME as t0_PLAN_START_TIME,
+	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
+	        		t0.STATE as t0_STATE,
+	        		t0.COMPLETE_NUM as t0_COMPLETE_NUM,
+	        		t0.CAR_NUM as t0_CAR_NUM,
+	        		t0.PLAN_NUM as t0_PLAN_NUM,
+	        		t0.BOM_ID as t0_BOM_ID,
+	        		zbz as t0_zbz,
+			       nvl(audit_num,0) as t0_audit_num ,
+			       nvl(move_num,0) as t0_move_num,
+			       nvl(back_num,0) as t0_back_num,
+			       nvl(out_num,0) as t0_out_num,
+			       nvl(move_num_in,0) as t0_move_num_in,
+			       nvl(wait_back_num,0) as t0_wait_back_num,
+			       nvl(storage_num,0) as t0_storage_num,
+			       t0.parent_ID as t0_parent_id,
+			       t0.bom_type as t0_bom_type
+	        from 
+	        ZG_T_ORDER_PLANBOM t0
+ ) m
+	        left join (select t0_LABEL_CN,
+                    t0_cuid FROM (select taskbom.cuid as t0_cuid ,t0.LABEL_CN as
+                            t0_LABEL_CN
+                            from ZG_T_ORDERBOM t0,
+                            zg_t_order_taskbom taskbom where
+                            t0.cuid = taskbom.order_bom_id) t0) t0_0_1 on t0_0_1.t0_CUID =
+                                                                          m.t0_taskBOM_ID
+  left join (select t0.CUID as t0_CUID, t0.AUFNR as t0_AUFNR
+               from ZG_T_ORDER_TASK t0) t0_1_1 on t0_1_1.t0_CUID =
+                                                  m.t0_ORDER_TASK_ID
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_2_1 on t0_2_1.t0_CUID = m.t0_DEPARTMENT_ID 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_3_1 on t0_3_1.t0_CUID = m.t0_USER_ID 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ORDER_PLAN_ID as t0_ORDER_PLAN_ID,
+	        		t0.TASKBOM_ID as t0_TASKBOM_ID,
+	        		t0.ORDER_TASK_ID as t0_ORDER_TASK_ID,
+	        		t0.DEPARTMENT_ID as t0_DEPARTMENT_ID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PLAN_DATE as t0_PLAN_DATE,
+	        		t0.PLAN_START_TIME as t0_PLAN_START_TIME,
+	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
+	        		t0.STATE as t0_STATE,
+	        		t0.COMPLETE_NUM as t0_COMPLETE_NUM,
+	        		t0.CAR_NUM as t0_CAR_NUM,
+	        		t0.PLAN_NUM as t0_PLAN_NUM,
+	        		t0.BOM_ID as t0_BOM_ID,
+	        		zbz as t0_zbz,
+			       nvl(audit_num,0) as t0_audit_num ,
+			       nvl(move_num,0) as t0_move_num,
+			       nvl(back_num,0) as t0_back_num,
+			       nvl(out_num,0) as t0_out_num,
+			       nvl(move_num_in,0) as t0_move_num_in,
+			       nvl(wait_back_num,0) as t0_wait_back_num,
+			       nvl(storage_num,0) as t0_storage_num,
+			       t0.parent_ID as t0_parent_id,
+			       t0.bom_type as t0_bom_type
+	        from 
+	        ZG_T_ORDER_PLANBOM t0
+ ) m
+	       left join (select t0_LABEL_CN,
+                    t0_cuid FROM (select taskbom.cuid as t0_cuid ,t0.LABEL_CN as
+                            t0_LABEL_CN
+                            from ZG_T_ORDERBOM t0,
+                            zg_t_order_taskbom taskbom where
+                            t0.cuid = taskbom.order_bom_id) t0) t0_0_1 on t0_0_1.t0_CUID =
+                                                                          m.t0_taskBOM_ID
+  left join (select t0.CUID as t0_CUID, t0.AUFNR as t0_AUFNR
+               from ZG_T_ORDER_TASK t0) t0_1_1 on t0_1_1.t0_CUID =
+                                                  m.t0_ORDER_TASK_ID
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_2_1 on t0_2_1.t0_CUID = m.t0_DEPARTMENT_ID 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_3_1 on t0_3_1.t0_CUID = m.t0_USER_ID 
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTorderPlanbomResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ORDER_PLAN_ID as t0_ORDER_PLAN_ID,
+	        		t0.TASKBOM_ID as t0_TASKBOM_ID,
+	        		t0.ORDER_TASK_ID as t0_ORDER_TASK_ID,
+	        		t0.DEPARTMENT_ID as t0_DEPARTMENT_ID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PLAN_DATE as t0_PLAN_DATE,
+	        		t0.PLAN_START_TIME as t0_PLAN_START_TIME,
+	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
+	        		t0.STATE as t0_STATE,
+	        		t0.COMPLETE_NUM as t0_COMPLETE_NUM,
+	        		t0.CAR_NUM as t0_CAR_NUM,
+	        		t0.PLAN_NUM as t0_PLAN_NUM,
+	        		t0.BOM_ID as t0_BOM_ID,
+	        		zbz as t0_zbz,
+			       nvl(audit_num,0) as t0_audit_num ,
+			       nvl(move_num,0) as t0_move_num,
+			       nvl(back_num,0) as t0_back_num,
+			       nvl(out_num,0) as t0_out_num,
+			       nvl(move_num_in,0) as t0_move_num_in,
+			       nvl(wait_back_num,0) as t0_wait_back_num,
+			       nvl(storage_num,0) as t0_storage_num,
+			       t0.parent_ID as t0_parent_id,
+			       t0.bom_type as t0_bom_type
+	        from 
+	        ZG_T_ORDER_PLANBOM t0
+ ) m
+	         left join (select t0_LABEL_CN,
+                    t0_cuid FROM (select taskbom.cuid as t0_cuid ,t0.LABEL_CN as
+                            t0_LABEL_CN
+                            from ZG_T_ORDERBOM t0,
+                            zg_t_order_taskbom taskbom where
+                            t0.cuid = taskbom.order_bom_id) t0) t0_0_1 on t0_0_1.t0_CUID =
+                                                                          m.t0_taskBOM_ID
+  left join (select t0.CUID as t0_CUID, t0.AUFNR as t0_AUFNR
+               from ZG_T_ORDER_TASK t0) t0_1_1 on t0_1_1.t0_CUID =
+                                                  m.t0_ORDER_TASK_ID
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_2_1 on t0_2_1.t0_CUID = m.t0_DEPARTMENT_ID 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_3_1 on t0_3_1.t0_CUID = m.t0_USER_ID 
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="zgTorderPlanbomResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ORDER_PLAN_ID as t0_ORDER_PLAN_ID,
+	        		t0.taskBOM_ID as t0_taskBOM_ID,
+	        		t0.ORDER_task_ID as t0_ORDER_task_ID,
+	        		t0.DEPARTMENT_ID as t0_DEPARTMENT_ID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PLAN_DATE as t0_PLAN_DATE,
+	        		t0.PLAN_START_TIME as t0_PLAN_START_TIME,
+	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
+	        		t0.STATE as t0_STATE,
+	        		t0.COMPLETE_NUM as t0_COMPLETE_NUM,
+	        		t0.CAR_NUM as t0_CAR_NUM,
+	        		t0.PLAN_NUM as t0_PLAN_NUM,
+	        		t0.BOM_ID as t0_BOM_ID,
+	        		zbz as t0_zbz,
+			       nvl(audit_num,0) as t0_audit_num ,
+			       nvl(move_num,0) as t0_move_num,
+			       nvl(back_num,0) as t0_back_num,
+			       nvl(out_num,0) as t0_out_num,
+			       nvl(move_num_in,0) as t0_move_num_in,
+			       nvl(wait_back_num,0) as t0_wait_back_num,
+			       nvl(storage_num,0) as t0_storage_num,
+			       t0.parent_ID as t0_parent_id,
+			       t0.bom_type as t0_bom_type
+	        from 
+	        ZG_T_ORDER_PLANBOM t0
+ ) m
+	       left join (select t0_LABEL_CN,
+                    t0_cuid FROM (select taskbom.cuid as t0_cuid ,t0.LABEL_CN as
+                            t0_LABEL_CN
+                            from ZG_T_ORDERBOM t0,
+                            zg_t_order_taskbom taskbom where
+                            t0.cuid = taskbom.order_bom_id) t0) t0_0_1 on t0_0_1.t0_CUID =
+                                                                          m.t0_taskBOM_ID
+  left join (select t0.CUID as t0_CUID, t0.AUFNR as t0_AUFNR
+               from ZG_T_ORDER_TASK t0) t0_1_1 on t0_1_1.t0_CUID =
+                                                  m.t0_ORDER_TASK_ID
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_2_1 on t0_2_1.t0_CUID = m.t0_DEPARTMENT_ID 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_3_1 on t0_3_1.t0_CUID = m.t0_USER_ID 
+        ]]>
+    </select>
+    
+    <resultMap id="zgTorderPlanbomResultBase" class="zgTorderPlanbom">
+		<result property="cuid" column="CUID"/>
+		<result property="labelCn" column="LABEL_CN"/>
+		<result property="taskBomId" column="TASKBOM_ID"/>
+		<result property="orderPlanId" column="ORDER_PLAN_ID"/>
+		<result property="orderTaskId" column="ORDER_TASK_ID"/>
+		<result property="departmentId" column="DEPARTMENT_ID"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="planDate" column="PLAN_DATE"/>
+		<result property="planStartTime" column="PLAN_START_TIME"/>
+		<result property="planEndTime" column="PLAN_END_TIME"/>
+		<result property="state" column="STATE"/>
+		<result property="completeNum" column="COMPLETE_NUM"/>
+		<result property="carNum" column="CAR_NUM"/>
+		<result property="planNum" column="PLAN_NUM"/>
+		<result property="bomId" column="BOM_ID"/>
+		<result property="zbz" column="zbz"/>
+		<result property="auditNum" column="audit_num"/>
+		<result property="moveNum" column="move_num"/>
+		<result property="backNum" column="back_num"/>
+		<result property="outNum" column="out_num"/>
+		<result property="moveNumIn" column="move_num_in"/>
+		<result property="waitBackNum" column="wait_back_num"/>
+		<result property="storageNum" column="storage_num"/>
+		<result property="parentId" column="PARENT_ID"/>
+		<result property="bomType" column="BOM_TYPE"/>
+    </resultMap>
+    
+   
+    
+    <select id="getPlanBomByTaskIdPlanTypeTaskBomId" resultMap="zgTorderPlanbomResultBase">
+	    select t0.*
+	        from 
+	        ZG_T_ORDER_PLANBOM t0,zg_t_order_plan plan 
+	        where 
+	         plan.cuid=t0.order_plan_id
+	        and t0.taskBom_id='$taskBomId$'
+	        
+	          <isNotEmpty prepend="AND" property="taskId">
+	       			plan.order_task_id='$taskId$'
+       		</isNotEmpty>    
+       		     <isNotEmpty prepend="AND" property="planType">
+	       			 plan.plan_type in ('$planType$')
+       		</isNotEmpty>    
+    </select>
+    
+    <select id="getPlanBomByOrderBomId" resultMap="zgTorderPlanbomResultBase">
+    	  select t0.*
+	        from 
+	        ZG_T_ORDER_PLANBOM t0,zg_t_order_taskbom taskbom
+	        where 
+	         t0.taskbom_id=taskbom.cuid
+           and taskbom.order_bom_id='$bomId$'
+    
+	  
+    </select>
+    
+     <select id="getManulWaitBackNumByPbId" resultClass="long">
+	     select nvl(sum(nvl(t.wait_back_num, 0)), 0)
+		  from zg_t_order_planbom t, zg_t_order_plan plan
+		 where t.parent_id = '$planBomId$'
+		   and t.order_plan_id = plan.cuid
+		   and plan.plan_type in ('BACK')
+    </select>
+    
+    <select id="getAutoWaitBackBomListByPbId" resultMap="zgTorderPlanbomResultBase">
+	      select t.*
+	     from zg_t_order_planbom t, zg_t_order_plan plan
+	    where t.order_plan_id = plan.cuid
+	      and t.parent_id = '$planBomId$'
+	      and plan.plan_type in ('ABCBACK', 'ABDBACK', 'ABEBACK')  order by to_number(plan.state),t.bom_type desc
+    </select>
+    
+    <select id="getAutoWaitBackBomListNotAuditByPbId" resultMap="zgTorderPlanbomResultBase">
+	      select t.*
+	     from zg_t_order_planbom t, zg_t_order_plan plan
+	    where t.order_plan_id = plan.cuid
+	      and t.parent_id = '$planBomId$'
+	      and plan.plan_type in ('ABCBACK', 'ABDBACK', 'ABEBACK') and plan.STATE in ('-6','-7') order by t.bom_type desc
+    </select>
+      
+      <select id="getPlanBomByPlanIdTaskBomId" resultMap="zgTorderPlanbomResultBase">
+	    select t0.*
+	        from 
+	        ZG_T_ORDER_PLANBOM t0
+	        where t0.order_plan_id='$planId$'
+	        and t0.taskBom_id='$taskBomId$'
+    </select>
+    
+    <select id="getParentPlanBomByTaskBomId" resultMap="zgTorderPlanbomResultBase">
+	   select * from zg_t_order_planbom t where t.taskbom_id='$taskBomId$' and t.parent_id is null
+    </select>
+    
+     <select id="getParentWaitBackNumByPBId" resultClass="java.util.HashMap">
+	  select nvl(sum(nvl(t.wait_back_num, 0)), 0) wait_back_Num,
+		       nvl(sum(nvl(t.back_num, 0)), 0) back_num
+		  from zg_t_order_planbom t,zg_t_order_plan plan
+		 where   t.order_plan_id=plan.cuid
+		  <![CDATA[ and plan.plan_type <>'CHANGE'     ]]>
+		and  t.parent_id = '$planBomId$'
+    </select>
+    
+    
+      
+    <update id="updatePlanBomCarNumTo0ByPlanId" parameterClass="java.util.HashMap">
+    <![CDATA[
+       update zg_t_order_planbom t
+		   set t.state = '9', t.car_num = 0, t.wait_back_num = t.complete_num
+		 where t.order_plan_id = '$planId$'
+    ]]>
+    </update>
+    
+     <delete id="delPlanBomPlanId" parameterClass="java.util.HashMap">
+    <![CDATA[
+       delete from  zg_t_order_planbom t
+		 where t.order_plan_id = '$planId$'
+    ]]>
+    </delete>
+    
+        <delete id="deletePlanBomByOrderBomId" parameterClass="java.util.HashMap">
+    <![CDATA[
+        delete from zg_t_order_planbom t where exists (select 1 from zg_t_order_taskbom taskbom  where taskbom.cuid=t.taskbom_id
+   			and taskbom.order_bom_id='$bomId$') and nvl(t.plan_num,0)=0
+    ]]>
+    </delete>
+    
+</sqlMap>

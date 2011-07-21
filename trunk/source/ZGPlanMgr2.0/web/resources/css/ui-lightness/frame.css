@@ -1,0 +1,83 @@
+.eXtremeTable .tableHeader {
+	background-image: url(images/ui-bg_glass_100_fdf5ce_1x400.png);
+	background-position:50% 50%;
+	background-repeat:repeat-x;
+	background-color: #f6f6f6;
+	border: 1px solid #cccccc;
+	border-width:1px 0 1px 1px;
+	color: #1c94c4;
+}
+
+.eXtremeTable .tableHeaderSort {
+	background-image: url(images/ui-bg_glass_100_fdf5ce_1x400.png);
+	background-position:50% 50%;
+	background-repeat:repeat-x;
+	background-color: #f6f6f6;
+	border: 1px solid #fed22f;
+	border-width:1px 0 1px 1px;
+	color: #363636;
+}
+
+.eXtremeTable .odd {
+	background-color: #FFFFFF;
+}
+
+.eXtremeTable .even {
+	background-color: #f6f6f6;
+}
+
+.nav_tree_node{
+	cursor: pointer;
+	font-size: 120%;
+	background-image: url(../../images/frame/nav_menu_tree_node_lvx.png);
+	background-repeat: no-repeat;
+	background-position: center left;
+	padding-left:12px;
+}
+
+.nav_tree_node a{text-decoration: none;color:black;}
+.nav_tree_node a:hover{color:red;font-weight: bold;}
+
+.nav_tree_node.lv1{
+	background-image: url(../../images/frame/nav_menu_tree_node_lv1.png);
+}
+
+.delButton {
+	background-color:transparent;
+	background-image: url('../../images/frame/del_button.png');
+	background-repeat: no-repeat;
+	background-position:center left;
+	padding:1px 0 0 12px;
+	border: 0;
+	cursor: pointer;
+	height:15px;
+	color:blue;
+}
+
+.addButton {
+	background-color:transparent;
+	background-image: url('../../images/frame/add_button.png');
+	background-repeat: no-repeat;
+	background-position:center left;
+	padding:1px 0 0 12px;
+	border: 0;
+	cursor: pointer;
+	height:15px;
+	color:blue;
+}
+
+.expButton {
+	background-color:transparent;
+	background-image: url('../../images/frame/exp_button.png');
+	background-repeat: no-repeat;
+	background-position:center left;
+	padding:1px 0 0 12px;
+	border: 0;
+	cursor: pointer;
+	height:15px;
+	color:blue;
+}
+
+.addButton.btnOver, .delButton.btnOver, .expButton.btnOver {
+	color:red
+}

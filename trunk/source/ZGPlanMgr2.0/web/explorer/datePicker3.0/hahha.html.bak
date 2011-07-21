@@ -1,0 +1,13 @@
+<html>
+<body>
+<script language="javascript" type="text/javascript" src="My97DatePicker/WdatePicker.js"></script>
+
+<table>
+<tr>
+<td>
+<input class="Wdate" type="text"  onClick="new WdatePicker('el','dateFmt','showsTime','skin')"/>
+</td>
+</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
+	default-autowire="byName" default-lazy-init="false">
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath*:syscfg.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 数据源定义,使用Apache DBCP 连接池 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		 <!-- 初始化连接 -->
+        <property name="initialSize">
+            <value>20</value>
+        </property>
+        <!-- 最大连接数量 -->
+        <property name="maxActive">
+            <value>100</value>
+        </property>
+        <!-- 最大空闲连接 -->
+        <property name="maxIdle">
+            <value>30</value>
+        </property>
+        <!-- 最小空闲连接 -->
+        <property name="minIdle">
+            <value>10</value>
+
+      </property>
+        <!-- 是否在自动回收超时连接的时候打印连接的超时错误 -->
+        <property name="logAbandoned">
+            <value>true</value>
+        </property>
+        <!-- 是否自动回收超时连接 -->
+        <property name="removeAbandoned">
+            <value>true</value>
+        </property>
+        <!-- 超时时间(以s为单位) -->
+        <property name="removeAbandonedTimeout">
+            <value>20</value>
+        </property>
+        <!-- 超时等待时间（以ms为单位） -->
+        <property name="maxWait">
+            <value>1000</value>
+        </property>
+
+		
+	</bean>
+
+
+	<!-- 支持 @Transactional 标记 -->
+	<tx:annotation-driven />
+
+	<!-- 支持 @AspectJ 标记-->
+	<aop:aspectj-autoproxy />
+	
+	<bean id="CacheInterceptor" class="javacommon.interceptor.BoCacheInterceptor" />
+	  
+	<!-- 以AspectJ方式 定义 AOP -->
+	<aop:config proxy-target-class="true">
+		<aop:advisor pointcut="execution(* javacommon.base.BaseManager.*(..))"
+			advice-ref="txAdvice" />
+		<aop:advisor pointcut="execution(* com.*..*.service.*Bo.*(..))"
+			advice-ref="txAdvice" />
+		<aop:aspect id="CacheInterceptorAspect" ref="CacheInterceptor"> 
+			<aop:pointcut id="bo-cache-pointcut" expression="execution(* javacommon..*VmModelBo.get*(..))"/>
+			<aop:around method="around" pointcut-ref="bo-cache-pointcut"/>
+		</aop:aspect>
+	</aop:config>
+
+	<!--
+		基本事务定义,使用transactionManager作事务管理,默认get* find*方法的事务为readonly,其余方法按默认设置.
+		默认的设置请参考Spring文档事务一章.
+	-->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="query*" read-only="true" />
+			<tx:method name="*" read-only="false" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<!--
+		用于持有ApplicationContext,可以使用ApplicationContextHolder.getBean('xxxx')的静态方法得到spring
+		bean对象
+	-->
+	<bean class="cn.org.rapid_framework.util.ApplicationContextHolder" />
+	
+	<bean id="cacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation">
+			<value>classpath:ehcache.xml</value>
+		</property>
+	</bean>
+
+	<bean id="methodCache"
+		class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager">
+			<ref local="cacheManager" />
+		</property>
+		<property name="cacheName">
+			<value>com.company.cache.METHOD_CACHE</value>
+		</property>
+	</bean>
+
+	<bean id="cacheService" class="com.boco.frame.cache.EhCacheServiceImpl">
+		<property name="cache">
+			<ref local="methodCache" />
+		</property>
+	</bean>
+	
+	
+	
+</beans>

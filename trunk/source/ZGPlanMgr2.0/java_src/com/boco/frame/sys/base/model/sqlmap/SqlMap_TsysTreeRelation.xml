@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TsysTreeRelation">
+    <typeAlias alias="tsysTreeRelation" type="com.boco.frame.sys.base.model.TsysTreeRelation"/>
+	<resultMap id="tsysTreeRelationResult" class="tsysTreeRelation">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="templateCuid1" column="t0_TEMPLATE_CUID1"/>
+		<result property="templateCuid1_related.value" column="t0_0_1_t0_CUID"/>
+		<result property="templateCuid1_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="templateCuid2" column="t0_TEMPLATE_CUID2"/>
+		<result property="templateCuid2_related.value" column="t0_1_2_t0_CUID"/>
+		<result property="templateCuid2_related.relatedBmClassId" column="t0_1_2_BD"/>
+		<result property="remark" column="t0_REMARK"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+		    t0_0_1.t0_CUID as t0_0_1_t0_CUID,
+	        'T_SYS_TREE_TEMPLATE' as t0_0_1_BD,
+	        m.t0_TEMPLATE_CUID1,
+		    t0_1_2.t0_CUID as t0_1_2_t0_CUID,
+	        'T_SYS_TREE_TEMPLATE' as t0_1_2_BD,
+	        m.t0_TEMPLATE_CUID2,
+	        m.t0_REMARK
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="templateCuid1">
+	       			m.t0_TEMPLATE_CUID1 like #templateCuid1#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="templateCuid2">
+	       			m.t0_TEMPLATE_CUID2 like #templateCuid2#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="remark">
+	       			m.t0_REMARK like #remark#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertT_SYS_TREE_RELATION" parameterClass="tsysTreeRelation">
+    <![CDATA[
+        INSERT INTO
+        T_SYS_TREE_RELATION (
+        	CUID ,
+        	TEMPLATE_CUID1 ,
+        	TEMPLATE_CUID2 ,
+        	REMARK 
+        ) VALUES (
+        	#cuid# ,
+        	#templateCuid1# ,
+        	#templateCuid2# ,
+        	#remark# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateT_SYS_TREE_RELATION" parameterClass="tsysTreeRelation">
+    <![CDATA[
+        UPDATE T_SYS_TREE_RELATION SET
+	        TEMPLATE_CUID1 = #templateCuid1# ,
+	        TEMPLATE_CUID2 = #templateCuid2# ,
+	        REMARK = #remark# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteT_SYS_TREE_RELATION" parameterClass="java.lang.String">
+		delete from T_SYS_TREE_RELATION 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="tsysTreeRelationResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.TEMPLATE_CUID1 as t0_TEMPLATE_CUID1,
+	        		t0.TEMPLATE_CUID2 as t0_TEMPLATE_CUID2,
+	        		t0.REMARK as t0_REMARK
+	        from 
+	        T_SYS_TREE_RELATION t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        	t0.PARAM1 as t0_PARAM1,
+	        	t0.PARAM2 as t0_PARAM2,
+	        	t0.PARAM3 as t0_PARAM3,
+	        	t0.PARAM4 as t0_PARAM4,
+	        	t0.PARAM5 as t0_PARAM5,
+	        	t0.PARAM6 as t0_PARAM6,
+	        	t0.REMARK as t0_REMARK,
+	        	t0.ISDISTINCT as t0_ISDISTINCT,
+	        	t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        	t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        	t0.OPEN_URL as t0_OPEN_URL,
+	        	t0.PAGE_SIZE as t0_PAGE_SIZE
+	        	 from
+		        T_SYS_TREE_TEMPLATE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_TEMPLATE_CUID1 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        	t0.PARAM1 as t0_PARAM1,
+	        	t0.PARAM2 as t0_PARAM2,
+	        	t0.PARAM3 as t0_PARAM3,
+	        	t0.PARAM4 as t0_PARAM4,
+	        	t0.PARAM5 as t0_PARAM5,
+	        	t0.PARAM6 as t0_PARAM6,
+	        	t0.REMARK as t0_REMARK,
+	        	t0.ISDISTINCT as t0_ISDISTINCT,
+	        	t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        	t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        	t0.OPEN_URL as t0_OPEN_URL,
+	        	t0.PAGE_SIZE as t0_PAGE_SIZE
+	        	 from
+		        T_SYS_TREE_TEMPLATE t0
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_TEMPLATE_CUID2 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="tsysTreeRelationResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.TEMPLATE_CUID1 as t0_TEMPLATE_CUID1,
+	        		t0.TEMPLATE_CUID2 as t0_TEMPLATE_CUID2,
+	        		t0.REMARK as t0_REMARK
+	        from 
+	        T_SYS_TREE_RELATION t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        	t0.PARAM1 as t0_PARAM1,
+	        	t0.PARAM2 as t0_PARAM2,
+	        	t0.PARAM3 as t0_PARAM3,
+	        	t0.PARAM4 as t0_PARAM4,
+	        	t0.PARAM5 as t0_PARAM5,
+	        	t0.PARAM6 as t0_PARAM6,
+	        	t0.REMARK as t0_REMARK,
+	        	t0.ISDISTINCT as t0_ISDISTINCT,
+	        	t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        	t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        	t0.OPEN_URL as t0_OPEN_URL,
+	        	t0.PAGE_SIZE as t0_PAGE_SIZE
+	        	 from
+		        T_SYS_TREE_TEMPLATE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_TEMPLATE_CUID1 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        	t0.PARAM1 as t0_PARAM1,
+	        	t0.PARAM2 as t0_PARAM2,
+	        	t0.PARAM3 as t0_PARAM3,
+	        	t0.PARAM4 as t0_PARAM4,
+	        	t0.PARAM5 as t0_PARAM5,
+	        	t0.PARAM6 as t0_PARAM6,
+	        	t0.REMARK as t0_REMARK,
+	        	t0.ISDISTINCT as t0_ISDISTINCT,
+	        	t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        	t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        	t0.OPEN_URL as t0_OPEN_URL,
+	        	t0.PAGE_SIZE as t0_PAGE_SIZE
+	        	 from
+		        T_SYS_TREE_TEMPLATE t0
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_TEMPLATE_CUID2 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.TEMPLATE_CUID1 as t0_TEMPLATE_CUID1,
+	        		t0.TEMPLATE_CUID2 as t0_TEMPLATE_CUID2,
+	        		t0.REMARK as t0_REMARK
+	        from 
+	        T_SYS_TREE_RELATION t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        	t0.PARAM1 as t0_PARAM1,
+	        	t0.PARAM2 as t0_PARAM2,
+	        	t0.PARAM3 as t0_PARAM3,
+	        	t0.PARAM4 as t0_PARAM4,
+	        	t0.PARAM5 as t0_PARAM5,
+	        	t0.PARAM6 as t0_PARAM6,
+	        	t0.REMARK as t0_REMARK,
+	        	t0.ISDISTINCT as t0_ISDISTINCT,
+	        	t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        	t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        	t0.OPEN_URL as t0_OPEN_URL,
+	        	t0.PAGE_SIZE as t0_PAGE_SIZE
+	        	 from
+		        T_SYS_TREE_TEMPLATE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_TEMPLATE_CUID1 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        	t0.PARAM1 as t0_PARAM1,
+	        	t0.PARAM2 as t0_PARAM2,
+	        	t0.PARAM3 as t0_PARAM3,
+	        	t0.PARAM4 as t0_PARAM4,
+	        	t0.PARAM5 as t0_PARAM5,
+	        	t0.PARAM6 as t0_PARAM6,
+	        	t0.REMARK as t0_REMARK,
+	        	t0.ISDISTINCT as t0_ISDISTINCT,
+	        	t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        	t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        	t0.OPEN_URL as t0_OPEN_URL,
+	        	t0.PAGE_SIZE as t0_PAGE_SIZE
+	        	 from
+		        T_SYS_TREE_TEMPLATE t0
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_TEMPLATE_CUID2 
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="tsysTreeRelationResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.TEMPLATE_CUID1 as t0_TEMPLATE_CUID1,
+	        		t0.TEMPLATE_CUID2 as t0_TEMPLATE_CUID2,
+	        		t0.REMARK as t0_REMARK
+	        from 
+	        T_SYS_TREE_RELATION t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        	t0.PARAM1 as t0_PARAM1,
+	        	t0.PARAM2 as t0_PARAM2,
+	        	t0.PARAM3 as t0_PARAM3,
+	        	t0.PARAM4 as t0_PARAM4,
+	        	t0.PARAM5 as t0_PARAM5,
+	        	t0.PARAM6 as t0_PARAM6,
+	        	t0.REMARK as t0_REMARK,
+	        	t0.ISDISTINCT as t0_ISDISTINCT,
+	        	t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        	t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        	t0.OPEN_URL as t0_OPEN_URL,
+	        	t0.PAGE_SIZE as t0_PAGE_SIZE
+	        	 from
+		        T_SYS_TREE_TEMPLATE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_TEMPLATE_CUID1 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        	t0.PARAM1 as t0_PARAM1,
+	        	t0.PARAM2 as t0_PARAM2,
+	        	t0.PARAM3 as t0_PARAM3,
+	        	t0.PARAM4 as t0_PARAM4,
+	        	t0.PARAM5 as t0_PARAM5,
+	        	t0.PARAM6 as t0_PARAM6,
+	        	t0.REMARK as t0_REMARK,
+	        	t0.ISDISTINCT as t0_ISDISTINCT,
+	        	t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        	t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        	t0.OPEN_URL as t0_OPEN_URL,
+	        	t0.PAGE_SIZE as t0_PAGE_SIZE
+	        	 from
+		        T_SYS_TREE_TEMPLATE t0
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_TEMPLATE_CUID2 
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="tsysTreeRelationResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.TEMPLATE_CUID1 as t0_TEMPLATE_CUID1,
+	        		t0.TEMPLATE_CUID2 as t0_TEMPLATE_CUID2,
+	        		t0.REMARK as t0_REMARK
+	        from 
+	        T_SYS_TREE_RELATION t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        	t0.PARAM1 as t0_PARAM1,
+	        	t0.PARAM2 as t0_PARAM2,
+	        	t0.PARAM3 as t0_PARAM3,
+	        	t0.PARAM4 as t0_PARAM4,
+	        	t0.PARAM5 as t0_PARAM5,
+	        	t0.PARAM6 as t0_PARAM6,
+	        	t0.REMARK as t0_REMARK,
+	        	t0.ISDISTINCT as t0_ISDISTINCT,
+	        	t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        	t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        	t0.OPEN_URL as t0_OPEN_URL,
+	        	t0.PAGE_SIZE as t0_PAGE_SIZE
+	        	 from
+		        T_SYS_TREE_TEMPLATE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_TEMPLATE_CUID1 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.SQL_TEMPLATE as t0_SQL_TEMPLATE,
+	        	t0.PARAM1 as t0_PARAM1,
+	        	t0.PARAM2 as t0_PARAM2,
+	        	t0.PARAM3 as t0_PARAM3,
+	        	t0.PARAM4 as t0_PARAM4,
+	        	t0.PARAM5 as t0_PARAM5,
+	        	t0.PARAM6 as t0_PARAM6,
+	        	t0.REMARK as t0_REMARK,
+	        	t0.ISDISTINCT as t0_ISDISTINCT,
+	        	t0.PRIMARYCOLUMN as t0_PRIMARYCOLUMN,
+	        	t0.IS_OPEN_URL as t0_IS_OPEN_URL,
+	        	t0.OPEN_URL as t0_OPEN_URL,
+	        	t0.PAGE_SIZE as t0_PAGE_SIZE
+	        	 from
+		        T_SYS_TREE_TEMPLATE t0
+	        ) t0_1_2 on t0_1_2.t0_CUID = m.t0_TEMPLATE_CUID2 
+        ]]>
+    </select>
+    
+</sqlMap>
