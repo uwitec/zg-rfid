@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTstoragebom">
+    <typeAlias alias="zgTstoragebom" type="com.boco.zg.storage.base.model.ZgTstoragebom"/>
+	<resultMap id="zgTstoragebomResult" class="zgTstoragebom">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="zgTstorageId" column="t0_ZG_T_STORAGE_ID"/>
+		<result property="zgTstorageId_related.value" column="t0_0_1_t0_LABEL_CN"/>
+		<result property="zgTstorageId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="orderBomId" column="t0_ORDER_BOMID"/>
+		<result property="num" column="t0_NUM"/>
+		<result property="zbz" column="t0_ZBZ"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_LABEL_CN,
+		    t0_0_1.t0_LABEL_CN as t0_0_1_t0_LABEL_CN,
+	        'ZG_T_STORAGE' as t0_0_1_BD,
+	        m.t0_ZG_T_STORAGE_ID,
+	        m.t0_ORDER_BOMID,
+	        m.t0_NUM,
+	        m.t0_ZBZ
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zgTstorageId">
+	       			m.t0_ZG_T_STORAGE_ID like #zgTstorageId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="orderBomId">
+	       			m.t0_ORDER_BOMID like #orderBomId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="num">
+	       			m.t0_NUM = #num#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="zbz">
+	       			m.t0_ZBZ like #zbz#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertZG_T_STORAGEBOM" parameterClass="zgTstoragebom">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_STORAGEBOM (
+        	CUID ,
+        	LABEL_CN ,
+        	ZG_T_STORAGE_ID ,
+        	 ORDER_BOMID,
+        	NUM ,
+        	ZBZ 
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#zgTstorageId# ,
+        	#orderBomId# ,
+        	#num# ,
+        	#zbz# 
+        )
+    ]]>
+    </insert>
+    
+    <update id="updateZG_T_STORAGEBOM" parameterClass="zgTstoragebom">
+    <![CDATA[
+        UPDATE ZG_T_STORAGEBOM SET
+	        LABEL_CN = #labelCn# ,
+	        ZG_T_STORAGE_ID = #zgTstorageId# ,
+	        ORDER_BOMID = #orderBomId# ,
+	        NUM = #num# ,
+	        ZBZ = #zbz# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteZG_T_STORAGEBOM" parameterClass="java.lang.String">
+		delete from ZG_T_STORAGEBOM 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="zgTstoragebomResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ZG_T_STORAGE_ID as t0_ZG_T_STORAGE_ID,
+	        		t0.ORDER_BOMID as t0_ORDER_BOMID,
+	        		t0.NUM as t0_NUM,
+	        		t0.ZBZ as t0_ZBZ
+	        from 
+	        ZG_T_STORAGEBOM t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.ORDER_ID as t0_ORDER_ID,
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.LGORT as t0_LGORT,
+	        	t0.DEPT_ID as t0_DEPT_ID,
+	        	t0.CREATOR_ID as t0_CREATOR_ID,
+	        	t0.ZBZ as t0_ZBZ,
+	        	t0.CREATE_DATE as t0_CREATE_DATE,
+	        	t0.STATE as t0_STATE,
+	        	t0.TYPE as t0_TYPE,
+	        	t0.PRODUCT_TYPE as t0_PRODUCT_TYPE
+	        	 from
+		        ZG_T_STORAGE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ZG_T_STORAGE_ID 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="zgTstoragebomResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ZG_T_STORAGE_ID as t0_ZG_T_STORAGE_ID,
+	        		t0.ORDER_BOMID as t0_ORDER_BOMID,
+	        		t0.NUM as t0_NUM,
+	        		t0.ZBZ as t0_ZBZ
+	        from 
+	        ZG_T_STORAGEBOM t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.ORDER_ID as t0_ORDER_ID,
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.LGORT as t0_LGORT,
+	        	t0.DEPT_ID as t0_DEPT_ID,
+	        	t0.CREATOR_ID as t0_CREATOR_ID,
+	        	t0.ZBZ as t0_ZBZ,
+	        	t0.CREATE_DATE as t0_CREATE_DATE,
+	        	t0.STATE as t0_STATE,
+	        	t0.TYPE as t0_TYPE,
+	        	t0.PRODUCT_TYPE as t0_PRODUCT_TYPE
+	        	 from
+		        ZG_T_STORAGE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ZG_T_STORAGE_ID 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ZG_T_STORAGE_ID as t0_ZG_T_STORAGE_ID,
+	        		t0.ORDER_BOMID as t0_ORDER_BOMID,
+	        		t0.NUM as t0_NUM,
+	        		t0.ZBZ as t0_ZBZ
+	        from 
+	        ZG_T_STORAGEBOM t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.ORDER_ID as t0_ORDER_ID,
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.LGORT as t0_LGORT,
+	        	t0.DEPT_ID as t0_DEPT_ID,
+	        	t0.CREATOR_ID as t0_CREATOR_ID,
+	        	t0.ZBZ as t0_ZBZ,
+	        	t0.CREATE_DATE as t0_CREATE_DATE,
+	        	t0.STATE as t0_STATE,
+	        	t0.TYPE as t0_TYPE,
+	        	t0.PRODUCT_TYPE as t0_PRODUCT_TYPE
+	        	 from
+		        ZG_T_STORAGE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ZG_T_STORAGE_ID 
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTstoragebomResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ZG_T_STORAGE_ID as t0_ZG_T_STORAGE_ID,
+	        		t0.ORDER_BOMID as t0_ORDER_BOMID,
+	        		t0.NUM as t0_NUM,
+	        		t0.ZBZ as t0_ZBZ
+	        from 
+	        ZG_T_STORAGEBOM t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.ORDER_ID as t0_ORDER_ID,
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.LGORT as t0_LGORT,
+	        	t0.DEPT_ID as t0_DEPT_ID,
+	        	t0.CREATOR_ID as t0_CREATOR_ID,
+	        	t0.ZBZ as t0_ZBZ,
+	        	t0.CREATE_DATE as t0_CREATE_DATE,
+	        	t0.STATE as t0_STATE,
+	        	t0.TYPE as t0_TYPE,
+	        	t0.PRODUCT_TYPE as t0_PRODUCT_TYPE
+	        	 from
+		        ZG_T_STORAGE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ZG_T_STORAGE_ID 
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="zgTstoragebomResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ZG_T_STORAGE_ID as t0_ZG_T_STORAGE_ID,
+	        		t0.ORDER_BOMID as t0_ORDER_BOMID,
+	        		t0.NUM as t0_NUM,
+	        		t0.ZBZ as t0_ZBZ
+	        from 
+	        ZG_T_STORAGEBOM t0
+ ) m
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.ORDER_ID as t0_ORDER_ID,
+	        	t0.ARBPL as t0_ARBPL,
+	        	t0.LGORT as t0_LGORT,
+	        	t0.DEPT_ID as t0_DEPT_ID,
+	        	t0.CREATOR_ID as t0_CREATOR_ID,
+	        	t0.ZBZ as t0_ZBZ,
+	        	t0.CREATE_DATE as t0_CREATE_DATE,
+	        	t0.STATE as t0_STATE,
+	        	t0.TYPE as t0_TYPE,
+	        	t0.PRODUCT_TYPE as t0_PRODUCT_TYPE
+	        	 from
+		        ZG_T_STORAGE t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ZG_T_STORAGE_ID 
+        ]]>
+    </select>
+    
+</sqlMap>

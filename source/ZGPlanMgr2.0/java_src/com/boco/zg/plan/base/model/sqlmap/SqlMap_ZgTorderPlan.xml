@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTorderPlan">
+    <typeAlias alias="zgTorderPlan" type="com.boco.zg.plan.base.model.ZgTorderPlan"/>
+	<resultMap id="zgTorderPlanResult" class="zgTorderPlan">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="orderTaskId" column="t0_ORDER_TASK_ID"/>
+		<result property="orderTaskId_related.value" column="t0_0_1_t0_AUFNR"/>
+		<result property="orderTaskId_related.relatedBmClassId" column="t0_0_1_BD"/>
+		<result property="departmenuId" column="t0_DEPARTMENU_ID"/>
+		<result property="departmenuId_related.value" column="t0_1_1_t0_LABEL_CN"/>
+		<result property="departmenuId_related.relatedBmClassId" column="t0_1_1_BD"/>
+		<result property="userId" column="t0_USER_ID"/>
+		<result property="userId_related.value" column="t0_2_1_t1_LABEL_CN"/>
+		<result property="userId_related.relatedBmClassId" column="t0_2_1_BD"/>
+		<result property="planDate" column="t0_PLAN_DATE"/>
+		<result property="planStartTime" column="t0_PLAN_START_TIME"/>
+		<result property="planEndTime" column="t0_PLAN_END_TIME"/>
+		<result property="state" column="t0_STATE"/>
+		<result property="planType" column="t0_PLAN_TYPE"/>
+		<result property="plant" column="t0_PLANT"/>
+		<result property="extend1" column="t0_EXTEND1"/>
+		<result property="create_date" column="t0_CREATE_DATE"/>
+		<result property="backReason" column="t0_BACK_REASON"/>
+		<result property="backZbz" column="t0_BACK_ZBZ"/>
+		<result property="zbz" column="t0_ZBZ"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.t0_CUID,
+	        m.t0_LABEL_CN,
+		    t0_0_1.t0_AUFNR as t0_0_1_t0_AUFNR,
+	        'ZG_T_ORDER' as t0_0_1_BD,
+	        m.t0_ORDER_TASK_ID,
+		    t0_1_1.t0_LABEL_CN as t0_1_1_t0_LABEL_CN,
+	        'FW_ORGANIZATION' as t0_1_1_BD,
+	        m.t0_DEPARTMENU_ID,
+		    t0_2_1.t1_LABEL_CN as t0_2_1_t1_LABEL_CN,
+	        'FW_EMPLOYEE' as t0_2_1_BD,
+	        m.t0_USER_ID,
+	        m.t0_PLAN_DATE,
+	        m.t0_PLAN_START_TIME,
+	        m.t0_PLAN_END_TIME,
+	        m.t0_STATE,
+	        m.t0_PLAN_TYPE,
+	        m.t0_PLANT,
+	        m.t0_EXTEND1,
+	        m.t0_CREATE_DATE,
+	        m.t0_BACK_REASON,
+	        m.t0_BACK_ZBZ,
+	        m.t0_zbz
+	        
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="orderTaskId">
+	       			m.t0_ORDER_TASK_ID like #orderTaskId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="departmenuId">
+	       			m.t0_DEPARTMENU_ID like #departmenuId#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="userId">
+	       			m.t0_USER_ID like #userId#
+       		</isNotEmpty>    
+			<isNotEmpty prepend="AND" property="planDate_start">
+       			<![CDATA[m.t0_PLAN_DATE >= to_date(#planDate_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="planDate_end">
+       			<![CDATA[m.t0_PLAN_DATE <= to_date(#planDate_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="planStartTime_start">
+       			<![CDATA[m.t0_PLAN_START_TIME >= to_date(#planStartTime_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="planStartTime_end">
+       			<![CDATA[m.t0_PLAN_START_TIME <= to_date(#planStartTime_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="planEndTime_start">
+       			<![CDATA[m.t0_PLAN_END_TIME >= to_date(#planEndTime_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="planEndTime_end">
+       			<![CDATA[m.t0_PLAN_END_TIME <= to_date(#planEndTime_end#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="state">
+	       			m.t0_STATE like #state#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="planType">
+	       			m.t0_PLAN_TYPE like #planType#
+       		</isNotEmpty>    
+	    </dynamic>	
+	</sql>
+
+	<insert id="insertZG_T_ORDER_PLAN" parameterClass="zgTorderPlan">
+		<![CDATA[
+        INSERT INTO
+        ZG_T_ORDER_PLAN (
+        	CUID ,
+        	LABEL_CN ,
+        	ORDER_TASK_ID ,
+        	DEPARTMENU_ID ,
+        	USER_ID ,
+        	PLAN_DATE ,
+        	PLAN_START_TIME ,
+        	PLAN_END_TIME ,
+        	STATE ,
+        	PLAN_TYPE ,
+        	PLANT,
+        	percent,
+        	isManul,
+        	zbz,extend1,create_date
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#orderTaskId# ,
+        	#departmenuId# ,
+        	#userId# ,
+        	#planDate# ,
+        	#planStartTime# ,
+        	#planEndTime# ,
+        	#state# ,
+        	#planType# ,
+        	#plant#,
+        	#percent#,
+        	#isManul#,#zbz#,#extend1#,sysdate
+        )
+    ]]>
+		<selectKey resultClass="java.lang.String" type="pre"
+			keyProperty="cuid">
+				SELECT sys_guid() FROM			DUAL
+		</selectKey>
+	</insert>
+	
+	<insert id="insertZG_T_ORDER_PLAN1" parameterClass="zgTorderPlan">
+		<![CDATA[
+        INSERT INTO
+        ZG_T_ORDER_PLAN (
+        	CUID ,
+        	LABEL_CN ,
+        	ORDER_TASK_ID ,
+        	DEPARTMENU_ID ,
+        	USER_ID ,
+        	PLAN_DATE ,
+        	PLAN_START_TIME ,
+        	PLAN_END_TIME ,
+        	STATE ,
+        	PLAN_TYPE ,
+        	PLANT,
+        	percent,
+        	isManul,
+        	extend1,
+        	back_zbz,
+        	back_reason,
+        	create_date,
+        	zbz
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#orderTaskId# ,
+        	#departmenuId# ,
+        	#userId# ,
+        	#planDate# ,
+        	#planStartTime# ,
+        	#planEndTime# ,
+        	#state# ,
+        	#planType# ,
+        	#plant#,
+        	#percent#,
+        	#isManul#,
+        	#extend1#,
+        	#backZbz#,
+        	#backReason#,
+        	sysdate,
+        	#zbz#
+        )
+    ]]>
+
+	</insert>
+
+	<update id="updateZG_T_ORDER_PLAN" parameterClass="zgTorderPlan">
+    <![CDATA[
+        UPDATE ZG_T_ORDER_PLAN SET
+	        LABEL_CN = #labelCn# ,
+	        ORDER_task_ID = #orderTaskId# ,
+	        DEPARTMENU_ID = #departmenuId# ,
+	        PLAN_DATE = #planDate# ,
+	        PLAN_START_TIME = #planStartTime# ,
+	        PLAN_END_TIME = #planEndTime# ,
+	        STATE = #state# ,
+	        PLAN_TYPE = #planType# ,
+	        plant = #plant#,
+	        percent = #percent#,
+	        back_zbz=#backZbz#,
+	        back_reason=#backReason#,
+	       isManul= #isManul#,
+	       zbz=#zbz#
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteZG_T_ORDER_PLAN" parameterClass="java.lang.String">
+		delete from ZG_T_ORDER_PLAN 
+		 where CUID = #cuid#
+	</delete>
+	
+	<delete id="deletePlanBomByPlanId" parameterClass="java.lang.String">
+		 delete from zg_t_order_planbom t where t.order_plan_id='$cuid$'
+	</delete>
+	
+	 <select id="pageOrderPlanForChange_count" resultClass="long">
+          	 select count(*)
+		 from zg_t_order_plan t,
+		       zg_t_order      od,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where t.plan_type = 'CHANGE'
+		   and t.order_id = od.cuid
+		   and t.user_id = emp.cuid
+		   and emo.cuid=emp.cuid
+       and emo.org_id=org.cuid
+
+		<include refid="dynamicWhere"/> 
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageOrderPlanForChange" resultClass="java.util.HashMap">
+		    	 select  emo.org_id,t.*, od.aufnr, emp.label_cn createName, org.label_cn orgName
+
+		 from zg_t_order_plan t,
+		       zg_t_order      od,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where t.plan_type = 'CHANGE'
+		   and t.order_id = od.cuid
+		   and t.user_id = emp.cuid
+		   and emo.cuid=emp.cuid
+       and emo.org_id=org.cuid
+		   
+
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+	<select id="getById" resultMap="zgTorderPlanResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.order_task_id as t0_ORDER_task_ID,
+	        		t0.DEPARTMENU_ID as t0_DEPARTMENU_ID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PLAN_DATE as t0_PLAN_DATE,
+	        		t0.PLAN_START_TIME as t0_PLAN_START_TIME,
+	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
+	        		t0.STATE as t0_STATE,
+	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
+	        		t0.plant as t0_PLANT,
+	                t0.EXTEND1 as t0_EXTEND1,
+	                t0.CREATE_DATE as t0_CREATE_DATE,
+	                t0.BACK_REASON as t0_BACK_REASON,
+	                t0.BACK_ZBZ as t0_BACK_ZBZ,t0.zbz as t0_zbz
+	        from 
+	        ZG_T_ORDER_PLAN t0
+ ) m
+	        left join  ( select 
+	        		 t0.cuid as t0_cuid,
+                    t0.AUFNR       as t0_AUFNR
+               from zg_t_order_task t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_task_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_DEPARTMENU_ID 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.E_LABEL_CN as t0_E_LABEL_CN,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_1 on t0_2_1.t0_CUID = m.t0_USER_ID 
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="zgTorderPlanResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ORDER_task_ID as t0_ORDER_TASK_ID,
+	        		t0.DEPARTMENU_ID as t0_DEPARTMENU_ID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PLAN_DATE as t0_PLAN_DATE,
+	        		t0.PLAN_START_TIME as t0_PLAN_START_TIME,
+	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
+	        		t0.STATE as t0_STATE,
+	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
+	        			t0.plant as t0_PLANT,
+	        			          t0.EXTEND1 as t0_EXTEND1,
+	        t0.CREATE_DATE as t0_CREATE_DATE,
+	                t0.BACK_REASON as t0_BACK_REASON,
+	                t0.BACK_ZBZ as t0_BACK_ZBZ,t0.zbz as t0_zbz
+	        			
+	        from 
+	        ZG_T_ORDER_PLAN t0
+ ) m
+	        left join  ( select 
+	        		 t0.cuid as t0_cuid,
+                    t0.AUFNR       as t0_AUFNR
+               from zg_t_order_task t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_task_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_DEPARTMENU_ID 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.E_LABEL_CN as t0_E_LABEL_CN,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_1 on t0_2_1.t0_CUID = m.t0_USER_ID 
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ORDER_task_ID as t0_ORDER_TASK_ID,
+	        		t0.DEPARTMENU_ID as t0_DEPARTMENU_ID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PLAN_DATE as t0_PLAN_DATE,
+	        		t0.PLAN_START_TIME as t0_PLAN_START_TIME,
+	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
+	        		t0.STATE as t0_STATE,
+	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
+	        			t0.plant as t0_PLANT,
+                       t0.EXTEND1 as t0_EXTEND1,
+	        t0.CREATE_DATE as t0_CREATE_DATE,
+	                t0.BACK_REASON as t0_BACK_REASON,
+	                t0.BACK_ZBZ as t0_BACK_ZBZ,t0.zbz as t0_zbz
+	        from 
+	        ZG_T_ORDER_PLAN t0
+ ) m
+	     left join  ( select 
+	     			 t0.cuid as t0_cuid,
+                    t0.AUFNR       as t0_AUFNR
+               from zg_t_order_task t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_task_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_DEPARTMENU_ID 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.E_LABEL_CN as t0_E_LABEL_CN,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_1 on t0_2_1.t0_CUID = m.t0_USER_ID 
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTorderPlanResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ORDER_task_ID as t0_ORDER_TASK_ID,
+	        		t0.DEPARTMENU_ID as t0_DEPARTMENU_ID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PLAN_DATE as t0_PLAN_DATE,
+	        		t0.PLAN_START_TIME as t0_PLAN_START_TIME,
+	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
+	        		t0.STATE as t0_STATE,
+	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
+	        			t0.plant as t0_PLANT
+	        		          t0.EXTEND1 as t0_EXTEND1,
+	        t0.CREATE_DATE as t0_CREATE_DATE,
+	                t0.BACK_REASON as t0_BACK_REASON,
+	                t0.BACK_ZBZ as t0_BACK_ZBZ,t0.zbz as t0_zbz
+	        from 
+	        ZG_T_ORDER_PLAN t0
+ ) m
+	       left join  ( select 
+	       			 t0.cuid as t0_cuid,
+                    t0.AUFNR       as t0_AUFNR
+               from zg_t_order_task t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_task_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_DEPARTMENU_ID 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.E_LABEL_CN as t0_E_LABEL_CN,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_1 on t0_2_1.t0_CUID = m.t0_USER_ID 
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="zgTorderPlanResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ORDER_task_ID as t0_ORDER_TASK_ID,
+	        		t0.DEPARTMENU_ID as t0_DEPARTMENU_ID,
+	        		t0.USER_ID as t0_USER_ID,
+	        		t0.PLAN_DATE as t0_PLAN_DATE,
+	        		t0.PLAN_START_TIME as t0_PLAN_START_TIME,
+	        		t0.PLAN_END_TIME as t0_PLAN_END_TIME,
+	        		t0.STATE as t0_STATE,
+	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
+	        			t0.plant as t0_PLANT
+	        			          t0.EXTEND1 as t0_EXTEND1,
+	        t0.CREATE_DATE as t0_CREATE_DATE,
+	                t0.BACK_REASON as t0_BACK_REASON,
+	                t0.BACK_ZBZ as t0_BACK_ZBZ,t0.zbz as t0_zbz
+	        from 
+	        ZG_T_ORDER_PLAN t0
+ ) m
+	       left join  ( select 
+	       				 t0.cuid as t0_cuid,
+                    t0.AUFNR       as t0_AUFNR
+               from zg_t_order_task t0
+	        ) t0_0_1 on t0_0_1.t0_CUID = m.t0_ORDER_task_ID 
+	        left join  ( select 
+	        	t0.CUID as t0_CUID,
+	        	t0.LABEL_CN as t0_LABEL_CN,
+	        	t0.PARENT_ORG_ID as t0_PARENT_ORG_ID,
+	        	t0.LEVEL_NUM as t0_LEVEL_NUM,
+	        	t0.SEQ as t0_SEQ,
+	        	t0.NOTE as t0_NOTE,
+	        	t0.RELATED_BM_CLASS_ID as t0_RELATED_BM_CLASS_ID
+	        	 from
+		        FW_ORGANIZATION t0
+	        ) t0_1_1 on t0_1_1.t0_CUID = m.t0_DEPARTMENU_ID 
+	        left join  ( select 
+	        	t1.CUID as t1_CUID,
+	        	t1.LABEL_CN as t1_LABEL_CN,
+	        	t1.USER_ID as t1_USER_ID,
+	        	t1.PASSWORD as t1_PASSWORD,
+	        	t1.CREATE_TIME as t1_CREATE_TIME,
+	        	t1.LAST_MODIFY_TIME as t1_LAST_MODIFY_TIME,
+	        	t1.EFFECT_TIME as t1_EFFECT_TIME,
+	        	t1.STATUS as t1_STATUS,
+	        	t1.RELATED_BM_CLASS_ID as t1_RELATED_BM_CLASS_ID,
+	        		        	t0.CUID as t0_CUID,
+	        	t0.E_LABEL_CN as t0_E_LABEL_CN,
+	        	t0.SEX as t0_SEX,
+	        	t0.MOBILE as t0_MOBILE,
+	        	t0.TELEPHONE as t0_TELEPHONE,
+	        	t0.ADDRESS as t0_ADDRESS,
+	        	t0.EMAIL as t0_EMAIL
+	        	 from
+		        FW_OPERATOR t1,
+		        FW_EMPLOYEE t0
+		    where
+			t1.CUID = t0.CUID 
+	        ) t0_2_1 on t0_2_1.t0_CUID = m.t0_USER_ID 
+        ]]>
+    </select>
+     <select id="pageSelect1" resultClass="java.util.HashMap">
+		    	 select  emo.org_id,t.*, od.aufnr, emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
+		       zg_t_order      od,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where t.plan_type = 'CHANGE'
+		   and t.order_id = od.cuid
+		   and t.user_id = emp.cuid
+		   and emo.cuid=emp.cuid
+           and emo.org_id=org.cuid
+		   
+
+
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    
+    <resultMap id="zgTorderPlanResultBase" class="zgTorderPlan">
+		<result property="cuid" column="cuid"/>
+		<result property="departmenuId" column="DEPARTMENU_ID"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="planDate" column="PLAN_DATE"/>
+		<result property="planDate_start" column="PLAN_START_TIME"/>
+		<result property="planDate_end" column="PLAN_END_TIME"/>
+		<result property="labelCn" column="LABEL_CN"/>
+		<result property="state" column="STATE"/>
+		<result property="plant" column="PLANT"/>
+		<result property="planType" column="PLAN_TYPE"/>
+		<result property="backReason" column="BACK_REASON"/>
+		<result property="backZbz" column="BACK_ZBZ"/>
+		<result property="percent" column="PERCENT"/>
+		<result property="isManul" column="ISMANUL"/>
+			<result property="zbz" column="ZBZ"/>
+		<result property="extend1" column="EXTEND1"/>
+		<result property="orderTaskId" column="ORDER_TASK_ID"/>
+    </resultMap>
+    
+   
+    
+    <select id="getPlanByTaskId" resultMap="zgTorderPlanResultBase">
+	    select * from zg_t_order_plan t  
+        where t.order_task_id ='$taskId$'
+        and t.PLAN_TYPE ='$planType$'
+    </select>
+      <select id="getPlanNotAuditList" resultMap="zgTorderPlanResultBase">
+	   select t.* from zg_t_order_plan t where t.order_task_id='$orderTaskId$' and t.state in ('-7','-6')
+		and t.plan_type in ('$planType$')  and t.extend1='$materielLevel$' and t.plant='$plant$'
+    </select>
+    
+    
+     <select id="isStartCar" resultClass="java.util.HashMap">
+	   select *
+		  from zg_t_order_plan t, zg_t_order_planbom planbom, zg_t_carbom carbom
+		 where t.cuid = planbom.order_plan_id
+		   and planbom.cuid = carbom.order_planbom_id
+		   and t.cuid = '$planId$'
+    </select>
+    
+</sqlMap>

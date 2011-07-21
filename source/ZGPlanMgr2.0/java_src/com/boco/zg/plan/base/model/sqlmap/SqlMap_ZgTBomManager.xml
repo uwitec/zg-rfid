@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTBomManager">
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="state">
+	       			STATE = #state#
+       		</isNotEmpty>    
+       		
+       		<isNotEmpty prepend="AND" property="createDate_start">
+       			<![CDATA[CREATE_DATE >= to_date(#createDate_start#,'yyyy-mm-dd HH24:mi:ss') ]]>
+       		</isNotEmpty>
+       		<isNotEmpty prepend="AND" property="createDate_end">
+       			<![CDATA[CREATE_DATE <= to_date(#createDate_end#,'yyyy-mm-dd HH24:mi:ss')+1
+       			 ]]>
+       		</isNotEmpty> 
+       		 <isNotEmpty prepend="AND" property="cuid">
+	       			CUID like #cuid#
+       		</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="aufnr">
+	       			AUFNR like '%$aufnr$%'
+       		</isNotEmpty>  
+       		   <isNotEmpty prepend="AND" property="plant">
+	       			plant = '$plant$'
+       		</isNotEmpty>   
+       		   <isNotEmpty prepend="AND" property="arbpl">
+	       			arbpl='$arbpl$'
+       		</isNotEmpty>     
+		   
+       		  <isNotEmpty prepend="AND" property="type">
+	       			plan_type  in ('$type$')
+       		</isNotEmpty> 
+	    </dynamic>	
+	</sql>
+	
+    
+    <select id="pageOrderPlanForChange_count" resultClass="long">
+          select count(1) from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , task.aufnr, emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
+		       zg_t_order_task      task,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where  exists
+           (select 1
+                    from zg_t_virtualorg vorg, zg_t_virtualorg_employee vemp
+                   where vorg.cuid = vemp.org_id
+                     and vorg.org_id = t.plant
+               <isNotEqual property="operatorId" compareValue="0">
+           				 and  vemp.user_id = '$operatorId$'
+			    </isNotEqual>
+                     )
+		 	and t.order_task_id = task.cuid
+		   and t.user_id = emp.cuid(+)
+		   and emo.cuid(+)=t.user_id
+           and emo.org_id=org.cuid(+)
+			
+			 and t.plan_type in ('$type$')
+       )
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageOrderPlanForChange" resultClass="java.util.HashMap">
+		    select * from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mi:ss') createDate ,   task.aufnr,
+               task.arbpl,emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
+		       zg_t_order_task      task,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where 
+		 exists
+           (select 1
+                    from zg_t_virtualorg vorg, zg_t_virtualorg_employee vemp
+                   where vorg.cuid = vemp.org_id
+                     and vorg.org_id = t.plant
+               <isNotEqual property="operatorId" compareValue="0">
+           				 and  vemp.user_id = '$operatorId$'
+			    </isNotEqual>
+                     )
+		 	
+		
+		   and t.order_task_id = task.cuid
+		  and t.user_id = emp.cuid(+)
+		   and emo.cuid(+)=t.user_id
+           and emo.org_id=org.cuid(+)
+           
+           and t.plan_type in ('$type$')
+          
+          
+           
+			    
+       )
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+     <select id="pageOrderPlanForChange1_count" resultClass="long">
+            select count(1) from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , task.aufnr,task.arbpl, emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
+		       zg_t_order_task      task,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where   exists
+           (select 1
+                    from zg_t_virtualorg vorg, zg_t_virtualorg_employee vemp
+                   where vorg.cuid = vemp.org_id
+                     and vorg.org_id = t.plant
+               <isNotEqual property="operatorId" compareValue="0">
+           				 and  vemp.user_id = '$operatorId$'
+			    </isNotEqual>
+                     )
+		 	and t.order_task_id = task.cuid
+		  and t.user_id = emp.cuid(+)
+		   and emo.cuid(+)=t.user_id
+           and emo.org_id=org.cuid(+)
+			 and t.plan_type in ('$type$')
+          
+            
+           <isEqual property="roleId" compareValue="A">
+	    		<![CDATA[
+	    			and t.extend1 in('A','B','C')
+	    		]]>
+		    	</isEqual>
+		    	<isEqual property="roleId" compareValue="B">
+	    		<![CDATA[
+	    			and t.extend1 in('B','C')
+	    		]]>
+		    	</isEqual>
+		    	<isEqual property="roleId" compareValue="C">
+	    		<![CDATA[
+	    			and t.extend1 in('C')
+	    		]]>
+		    	</isEqual> <isEmpty prepend="AND" property="roleId">
+	       			1=2
+       			</isEmpty> 
+		    	
+       )
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+      <select id="pageOrderPlanForChange1" resultClass="java.util.HashMap">
+		    select * from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , task.aufnr,task.arbpl, emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
+		       zg_t_order_task      task,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where  exists
+           (select 1
+                    from zg_t_virtualorg vorg, zg_t_virtualorg_employee vemp
+                   where vorg.cuid = vemp.org_id
+                     and vorg.org_id = t.plant
+               <isNotEqual property="operatorId" compareValue="0">
+           				 and  vemp.user_id = '$operatorId$'
+			    </isNotEqual>
+                     )
+		 	and t.order_task_id = task.cuid
+		   and t.user_id = emp.cuid(+)
+		   and emo.cuid(+)=t.user_id
+           and emo.org_id=org.cuid(+)
+			 and t.plan_type  in ('$type$')
+          
+            
+           <isEqual property="roleId" compareValue="A">
+	    		<![CDATA[
+	    			and t.extend1 in('A','B','C')
+	    		]]>
+		    	</isEqual>
+		    	<isEqual property="roleId" compareValue="B">
+	    		<![CDATA[
+	    			and t.extend1 in('B','C')
+	    		]]>
+		    	</isEqual>
+		    	<isEqual property="roleId" compareValue="C">
+	    		<![CDATA[
+	    			and t.extend1 in('C')
+	    		]]>
+		    </isEqual>
+		    <isEmpty prepend="AND" property="roleId">
+	       			1=2
+       		</isEmpty> 
+       )
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+     <select id="pageOrderPlanForChange2_count" resultClass="long">
+            select count(1) from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , task.aufnr,task.arbpl, emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
+		       zg_t_order_task      task,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where   exists
+           (select 1
+                    from zg_t_virtualorg vorg, zg_t_virtualorg_employee vemp
+                   where vorg.cuid = vemp.org_id
+                     and vorg.org_id = t.plant
+               <isNotEqual property="operatorId" compareValue="0">
+           				 and  vemp.user_id = '$operatorId$'
+			    </isNotEqual>
+                     )
+		 	and t.order_task_id = task.cuid
+		 and t.user_id = emp.cuid(+)
+		   and emo.cuid(+)=t.user_id
+           and emo.org_id=org.cuid(+)
+			 and t.plan_type  in ('$type$')
+          
+            
+		    	
+       )
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+      <select id="pageOrderPlanForChange2" resultClass="java.util.HashMap">
+		    select * from(	 select  emo.org_id,t.*,to_char(t.create_date,'yyyy-mm-dd hh24:mm:ss') createDate , task.aufnr,task.arbpl, emp.label_cn createName, org.label_cn orgName
+		 from zg_t_order_plan t,
+		       zg_t_order_task      task,
+		       fw_operator     emp,
+		       fw_organization org,
+           fw_employee     emo
+		 where  exists
+           (select 1
+                    from zg_t_virtualorg vorg, zg_t_virtualorg_employee vemp
+                   where vorg.cuid = vemp.org_id
+                     and vorg.org_id = t.plant
+               <isNotEqual property="operatorId" compareValue="0">
+           				 and  vemp.user_id = '$operatorId$'
+			    </isNotEqual>
+                     )
+		 	and t.order_task_id = task.cuid
+		  and t.user_id = emp.cuid(+)
+		   and emo.cuid(+)=t.user_id
+           and emo.org_id=org.cuid(+)
+			 and t.plan_type  in ('$type$')
+          
+            
+       )
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    
+    
+      <select id="pageListBackBom_count" resultClass="long">
+		select count(distinct t.cuid)
+			  from zg_t_order_planbom t,
+			       zg_t_order_plan    p,
+			       zg_t_order         od,
+			       zg_t_order_aide    aide,
+			       zg_t_orderbom      orderbom,
+			       zg_t_bom bom
+			       <isNotEqual property="operatorId" compareValue="0"> ,
+			       zg_materiel mat,
+			       zg_materiel_virtualorg matorg,
+			       zg_t_virtualorg vorg,
+			       zg_t_virtualorg_employee emp
+			       </isNotEqual>
+			 	where 
+			 	<isNotEqual property="operatorId" compareValue="0"> 
+				  emp.org_id=vorg.cuid
+				 and vorg.cuid=matorg.org_id
+				 and matorg.matkl=mat.id
+				 and mat.id=bom.matkl
+				 and mat.lgort=bom.lgort and
+				 </isNotEqual>
+				
+				  bom.idnrk = orderbom.idnrk
+			 and t.order_plan_id = p.cuid
+			   and t.order_id = od.cuid
+			   and p.plant = aide.plant
+			   and aide.order_id = t.order_id
+			   and t.order_bom_id = orderbom.cuid
+			   and orderbom.order_id = t.order_id
+			 	
+			 	<isNotEmpty prepend="AND" property="aufnr">
+	       			od.aufnr like '%$aufnr$%'
+       			</isNotEmpty> 
+	       			and aide.plant= '$plant$'
+	       		<isNotEqual property="operatorId" compareValue="0"> 
+	       			and vorg.org_id='$plant$'
+	       		</isNotEqual>
+       			<isNotEmpty prepend="AND" property="matnr1">
+	       			bom.matnr1 like'%$matnr$%'
+       			</isNotEmpty> 
+       			<isNotEqual property="operatorId" compareValue="0"> 
+	       			and  emp.user_id='$operatorId$'
+	       		</isNotEqual>
+	       	
+				<isNotEmpty prepend="AND" property="arbpl">
+	       			od.arbpl ='$arbpl$'
+       			</isNotEmpty>
+	       			<isEqual property="state" compareValue="9">
+       				and t.back_num > 0
+       				and t.wait_back_num = 0
+       			</isEqual>
+       			<isNotEqual property="state" compareValue="9">
+       				<![CDATA[
+	    			and t.wait_back_num > 0
+	    			]]>
+       			</isNotEqual>
+			 	
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageListBackBom" resultClass="java.util.HashMap">
+		  select distinct t.*,orderbom.idnrk,orderbom.MSEHL2,orderbom.maktx2,od.aufnr,aide.plant,od.arbpl,p.cuid planId
+			  from zg_t_order_planbom t,
+			       zg_t_order_plan    p,
+			       zg_t_order         od,
+			       zg_t_order_aide    aide,
+			       zg_t_orderbom      orderbom,
+			       zg_t_bom bom
+			       <isNotEqual property="operatorId" compareValue="0"> ,
+			       zg_materiel mat,
+			       zg_materiel_virtualorg matorg,
+			       zg_t_virtualorg vorg,
+			       zg_t_virtualorg_employee emp
+			       </isNotEqual>
+			 	where 
+			 	<isNotEqual property="operatorId" compareValue="0"> 
+				  emp.org_id=vorg.cuid
+				 and vorg.cuid=matorg.org_id
+				 and matorg.matkl=mat.id
+				 and mat.id=bom.matkl
+				 and mat.lgort=bom.lgort and
+				 </isNotEqual>
+			   bom.idnrk = orderbom.idnrk
+			   and t.order_plan_id = p.cuid
+			   and t.order_id = od.cuid
+			   and p.plant = aide.plant
+			   and aide.order_id = t.order_id
+			   and t.order_bom_id = orderbom.cuid
+			   and orderbom.order_id = t.order_id
+			 	<isNotEmpty prepend="AND" property="aufnr">
+	       			od.aufnr like '%$aufnr$%'
+       			</isNotEmpty>
+	       			and aide.plant= '$plant$'
+	       		<isNotEqual property="operatorId" compareValue="0"> 
+	       			and vorg.org_id='$plant$'
+	       		</isNotEqual>
+       			<isNotEmpty prepend="AND" property="matnr">
+	       			bom.matnr1 like'%$matnr$%'
+       			</isNotEmpty>
+       			<isNotEqual property="operatorId" compareValue="0"> 
+	       			and emp.user_id='$operatorId$'
+	       		</isNotEqual>
+	       		<isNotEmpty prepend="AND" property="arbpl">
+	       			od.arbpl ='$arbpl$'
+       			</isNotEmpty>
+	       		<isEqual property="state" compareValue="9">
+       				and t.back_num > 0
+       				and t.wait_back_num = 0
+       			</isEqual>
+       			<isNotEqual property="state" compareValue="9">
+       				<![CDATA[
+	    			and t.wait_back_num > 0
+	    			]]>
+       			</isNotEqual>
+				<dynamic prepend="ORDER BY">
+					<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+				</dynamic>
+    </select>
+    
+        <select id="getPlanListByOperatorId" resultClass="java.util.HashMap">
+        	select distinct org.org_id
+			  from ZG_T_VIRTUALORG_EMPLOYEE emp, zg_t_virtualorg org
+			 where emp.org_id = org.cuid
+	           <isNotEqual property="operatorId" compareValue="0" >   
+	            and emp.user_id = '$operatorId$'  
+	           </isNotEqual>
+	           order by org.org_id
+         </select>
+         
+          <select id="checkBackNum" resultClass="java.util.HashMap">
+        	select *  from zg_t_order_planbom t where t.wait_back_num>=#backNum# and t.cuid=#orderPlanbomId#
+         </select>
+    
+    
+    
+      <update id="manulFinishBom" parameterClass="java.lang.String">
+      	update zg_t_order_planbom t set t.manul_num=t.wait_back_num,t.wait_back_num=0 where t.cuid='$cuid$'
+     </update>
+    
+    
+    
+    
+</sqlMap>

@@ -1,0 +1,8 @@
+﻿/*streeview css*/
+div.treeview{ vertical-align:top;height:100%; }
+div.treeview h1{cursor:pointer; position:relative;background-color:#DFEAFB;text-align:left; font-weight:bold;color:#1C568A;padding-left:5px;padding-top:5px;padding-bottom:5px;font-size:9pt;margin:0px;border:1px solid #A8CFEB;}
+div.treeview h1 img{cursor:pointer; position:absolute;right:5px;top:8px;}
+div.treeview .main{overflow:auto; vertical-align:top;padding-top:5px;border:1px solid #A8CFEB;border-top:none;height:400px;}
+div.treeview .button{padding-top:5px; text-align:right;padding-right:5px; background-color:#F1F6FF;}
+
+div.treeview .main img{ margin-bottom:14px;}

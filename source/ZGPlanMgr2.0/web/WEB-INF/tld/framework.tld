@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
+        "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib xmlns="http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+    <tlibversion>1.2</tlibversion>
+    <jspversion>1.1</jspversion>
+    <shortname>fwTag</shortname>
+    <tag>
+        <name>page</name>
+        <tagclass>javacommon.util.PageGuideTag</tagclass>
+        <bodycontent>page</bodycontent>
+        <attribute>
+            <name>hasToolbar</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>addUrl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>deleteUrl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>exportUrl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+</taglib>

@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SapBom">
+	
+	<select id="getSynSapOrderBom" resultClass="java.util.HashMap">
+	<![CDATA[	select zto.mandt,
+		       zto.aufnr,
+		       zto.matnr,
+		       zto.maktx1,
+		       zto.MIPOS,
+           		zto.KDAUF,
+		       orderbom.idnrk,
+		       orderbom.maktx2,
+		       orderbom.msehl2 msehl1,
+		       orderbom.zdtyl,
+		      taskbom.menge,
+		      sum(nvl(sup.car_num,0))  LGMNG,
+		       sup.lifnr,
+		       sup.lifnr_name,
+		       orderbom.sortf,
+		       orderbom.lgort,
+		       WMSYS.WM_CONCAT(carplan.cuid) carplancuid,
+		      decode( carplan.order_plan_type,'ABC','A','ABD','A','ABE','A','BACK','T','CHANGE','H','RENEW','B') LLTYP,
+		       orderbom.posnr
+		  from zg_t_order            zto,
+		       zg_t_orderbom         orderbom,
+		       zg_t_carplan          carplan,
+		       zg_t_carbom           carbom,
+		       zg_t_carbom_suppliers sup,
+           zg_t_order_planbom planbom,
+           
+           zg_t_order_task task,
+           zg_t_order_taskbom taskbom
+           
+		 where zto.cuid = task.order_id
+        and task.cuid=carbom.order_task_id 
+		   and taskbom.cuid = carbom.taskbom_id
+		   and carbom.car_plan_id = carplan.cuid
+		   and carbom.cuid = sup.car_bom_id
+       and planbom.cuid=carbom.order_planbom_id
+       and planbom.taskbom_id=taskbom.cuid
+       and taskbom.order_bom_id=orderbom.cuid
+         and sup.car_num>0
+		   and  carplan.syn = '0'
+		   and carplan.type='2'
+		   and carplan.car_state='8'
+		   and carplan.order_plan_type <>'3'
+     
+		   group by 
+		         zto.mandt,
+		       zto.aufnr,
+		       zto.matnr,
+		       zto.maktx1,
+		       orderbom.idnrk,
+		       orderbom.maktx2,
+		       orderbom.msehl2 ,
+		       orderbom.zdtyl,
+		       taskbom.menge,
+		       sup.lifnr,
+		       sup.lifnr_name,
+		       orderbom.sortf,
+		       orderbom.lgort,
+            	zto.MIPOS,
+           		zto.KDAUF   ,orderbom.posnr  , carplan.order_plan_type      ]]>
+	</select>
+	
+	<select id="getSynSapOrderBomByOrderPlanId" resultClass="java.util.HashMap">
+			<![CDATA[
+		select zto.mandt,
+		       zto.aufnr,
+		       zto.matnr,
+		       zto.maktx1,
+		        zto.MIPOS,
+           		zto.KDAUF,
+		       orderbom.idnrk,
+		       orderbom.maktx2,
+		       orderbom.msehl2 msehl1,
+		       orderbom.zdtyl,
+		       taskbom.menge,
+		     sum(nvl(sup.car_num,0))  LGMNG,
+		       sup.lifnr,
+		       sup.lifnr_name,
+		       orderbom.sortf,
+		       orderbom.lgort,
+		       WMSYS.WM_CONCAT(carplan.cuid) carplancuid,
+		           decode( carplan.order_plan_type,'ABC','A','ABD','A','ABE','A','BACK','T','CHANGE','H','RENEW','B') LLTYP,orderbom.posnr
+		  from zg_t_order            zto,
+		       zg_t_orderbom         orderbom,
+		       zg_t_carplan          carplan,
+		       zg_t_carbom           carbom,
+		       zg_t_carbom_suppliers sup,
+		       zg_t_order_planbom planbom,
+           
+           zg_t_order_task task,
+           zg_t_order_taskbom taskbom
+		 where 
+		   planbom.taskbom_id=taskbom.cuid
+       and taskbom.order_bom_id=orderbom.cuid
+		   and planbom.cuid=carbom.order_planbom_id
+		   and zto.cuid = task.order_id
+       and task.cuid=carbom.order_task_id 
+		   and orderbom.cuid = taskbom.order_bom_id
+       and carbom.taskbom_id=taskbom.cuid
+		   and carbom.car_plan_id = carplan.cuid
+		   and carbom.cuid = sup.car_bom_id
+		    and sup.car_num>0
+		   and  carplan.syn = '0'
+		   and carplan.type='2'
+		   and carplan.car_state='8'
+		   and carplan.order_plan_type <>'3'
+		   and planbom.order_plan_id='$orderPlanId$'
+		   group by 
+		         zto.mandt,
+		       zto.aufnr,
+		       zto.matnr,
+		       zto.maktx1,
+		       orderbom.idnrk,
+		       orderbom.maktx2,
+		       orderbom.msehl2 ,
+		       orderbom.zdtyl,
+		       taskbom.menge,
+		       sup.lifnr,
+		       sup.lifnr_name,
+		       orderbom.sortf,
+		       orderbom.lgort,
+		        zto.MIPOS,
+           		zto.KDAUF  ,orderbom.posnr,carplan.order_plan_type    ]]>
+	</select>
+	
+	<select id="getSynSapOrderBomByCarPlanId" resultClass="java.util.HashMap">
+			<![CDATA[
+			select zto.mandt,
+		       zto.aufnr,
+		       zto.matnr,
+		       zto.maktx1,
+		        zto.MIPOS,
+           		zto.KDAUF,
+		       orderbom.idnrk,
+		       orderbom.maktx2,
+		       orderbom.msehl2 msehl1,
+		       orderbom.zdtyl,
+		       taskbom.menge,
+		     sum(nvl(sup.car_num,0))  LGMNG,
+		       sup.lifnr,
+		       sup.lifnr_name,
+		       orderbom.sortf,
+		       orderbom.lgort,
+		       WMSYS.WM_CONCAT(carplan.cuid) carplancuid,
+		           decode( carplan.order_plan_type,'ABC','A','ABD','A','ABE','A','BACK','T','CHANGE','H','RENEW','B') LLTYP,orderbom.posnr
+		  from zg_t_order            zto,
+		       zg_t_orderbom         orderbom,
+		       zg_t_carplan          carplan,
+		       zg_t_carbom           carbom,
+		       zg_t_carbom_suppliers sup,
+		       zg_t_order_planbom planbom,
+           
+           zg_t_order_task task,
+           zg_t_order_taskbom taskbom
+		 where 
+		   planbom.taskbom_id=taskbom.cuid
+       and taskbom.order_bom_id=orderbom.cuid
+		   and planbom.cuid=carbom.order_planbom_id
+		   and zto.cuid=task.order_id
+       and task.cuid = carbom.order_task_id 
+		   and orderbom.cuid = taskbom.order_bom_id
+       and carbom.taskbom_id=taskbom.cuid
+		   and carbom.car_plan_id = carplan.cuid
+		   and carbom.cuid = sup.car_bom_id
+		    and sup.car_num>0
+		   and  carplan.syn = '0'
+		   and carplan.type='2'
+		   and carplan.car_state='8'
+		   and carplan.cuid='$carPlanId$'
+		   group by 
+		         zto.mandt,
+		       zto.aufnr,
+		       zto.matnr,
+		       zto.maktx1,
+		       orderbom.idnrk,
+		       orderbom.maktx2,
+		       orderbom.msehl2 ,
+		       orderbom.zdtyl,
+		       taskbom.menge,
+		       sup.lifnr,
+		       sup.lifnr_name,
+		       orderbom.sortf,
+		       orderbom.lgort,
+		        zto.MIPOS,
+           		zto.KDAUF,orderbom.posnr ,carplan.order_plan_type    ]]>
+	</select>
+	
+	
+	<select id="getSynSapBatchBom" resultClass="java.util.HashMap">
+		  select null as mandt,
+		      null as aufnr,
+		       null as matnr,
+		       null as maktx1,
+		       null as arbpl,
+		        null as MIPOS,
+           		null as KDAUF,
+		       bom.idnrk,
+		       bom.maktx maktx2,
+		       bom.msehl msehl1,
+		       null as zdtyl,
+		       planbom.car_num menge,
+		       sum(nvl(sup.car_num,carbom.real_num))  LGMNG,
+		       sup.lifnr,
+		       sup.lifnr_name,
+		       null as sortf,
+		       bom.lgort,
+		       WMSYS.WM_CONCAT(carplan.cuid) carplancuid,
+		       'P' as LLTYP,null as posnr
+		       
+		  from zg_t_bom bom,
+		       zg_t_carplan          carplan,
+		       zg_t_carbom           carbom,
+		       zg_t_carbom_suppliers sup,
+		       zg_t_order_planbom planbom
+		 where
+		   carbom.order_planbom_id=planbom.cuid
+		   and planbom.bom_id=bom.cuid
+		   and carbom.car_plan_id = carplan.cuid
+		   and carbom.cuid = sup.car_bom_id
+		     and sup.car_num>0
+		   and  carplan.syn = '0'
+		   and carplan.type='2'
+		   and carplan.car_state='8'
+		   and carplan.order_plan_type='3'
+		  	<isNotEmpty prepend="AND" property="orderPlanId">
+	       			  carplan.cuid='$orderPlanId$'
+       		</isNotEmpty>
+		   group by 
+		       bom.idnrk,
+		       bom.maktx ,
+		       bom.msehl ,
+		       planbom.car_num ,
+		       sup.lifnr,
+		       sup.lifnr_name,
+		       bom.lgort
+
+	</select>
+	
+	
+	<update id="updateZgtCarPlanState" parameterClass="java.util.HashMap">
+    <![CDATA[
+       update zg_t_carplan t set t.syn='1' where t.cuid in ('$carPlanIds$')
+    ]]>
+    </update>
+    
+    <select id="OrderInfoSynByBatchNo" resultClass="java.util.HashMap">
+		  select distinct task.aufnr,
+       task.arbpl,
+       task.plant,
+       task.px_date PXDAT,
+       od.FREEZE,
+       org.extend2 DQDAT
+  from zg_t_order_task task, fw_organization org, zg_t_order od,ZG_T_ORDER_TEMP_SYN synod
+ where task.plant = org.cuid
+   and task.order_id = od.cuid
+   and task.aufnr=synod.aufnr
+   and task.plant=synod.plant
+   and synod.batch_no='$batchNo$'
+
+	</select>
+	
+	    <insert id="insertOrderInfoSynByBatchNo" parameterClass="java.util.HashMap">
+	    
+insert into ZG_T_ORDER_TEMP_SYN(aufnr,Arbpl,Plant,Pxdat,Freeze,Dqdat,Type,batch_no)
+
+		  select distinct task.aufnr,
+       task.arbpl,
+       task.plant,
+       task.px_date PXDAT,
+       od.FREEZE,
+       org.extend2 DQDAT,'2','$batchNo$'
+  from zg_t_order_task task, fw_organization org, zg_t_order od,ZG_T_ORDER_TEMP_SYN synod
+ where task.plant = org.cuid
+   and task.order_id = od.cuid
+   and task.aufnr=synod.aufnr
+   and task.plant=synod.plant
+   and synod.batch_no='$batchNo$'
+
+	</insert>
+	
+	
+	
+	
+		
+    
+</sqlMap>

@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTvirtualorg">
+    <typeAlias alias="zgTvirtualorg" type="com.boco.zg.virtualorg.base.model.ZgTvirtualorg"/>
+	<resultMap id="zgTvirtualorgResult" class="zgTvirtualorg">
+		<result property="cuid" column="ztv_cuid"/>
+		<result property="labelCn" column="ztv_label_cn"/>
+		<result property="orgId" column="ztv_org_id"/>
+		<result property="orgName" column="foz_orgName"/>
+		<result property="note" column="ztv_note"/>
+		<result property="type" column="ztv_type"/>
+		
+		<result property="userId" column="fo_userId"/>
+		<result property="userName" column="fo_userName"/>
+		<result property="sex" column="fe_sex"/>
+		<result property="mobile" column="fe_mobile"/>
+		<result property="email" column="fe_email"/>
+		<result property="zgTvirtualorgEmployeeCuid" column="ztve_cuid"/>
+    </resultMap>
+    <resultMap class="zgTvirtualorg" id="zgTvirtualorgResultSimple">
+    	<result property="cuid" column="CUID"/>
+		<result property="labelCn" column="LABEL_CN"/>
+		<result property="orgId" column="ORG_ID"/>
+		<result property="note" column="NOTE"/>
+		<result property="type" column="TYPE"/>
+    </resultMap>
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	        m.fo_userId,
+	        m.fo_userName,
+	        m.fe_sex,
+	        m.fe_mobile,
+	        m.fe_email,
+	        m.ztv_type,
+	        m.ztv_note,
+	        m.foz_orgName,
+	        m.ztv_label_cn,
+	        m.ztv_cuid,
+	        m.ztv_org_id,
+	        m.ztve_cuid
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend="AND" property="userId">
+	       			m.fo_userId like '%'||#userId#||'%'
+       		</isNotEmpty> 
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.ztv_cuid like '%'||#cuid#||'%'
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="orgId">
+	       			m.ztv_org_id like '%'||#orgId#||'%'
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="note">
+	       			m.ztv_note like '%'||#note#||'%'
+       		</isNotEmpty> 
+       		<isNotEqual property="type" compareValue="">   
+			    <isNotEmpty prepend="AND" property="type">
+		       			m.ztv_type = #type#
+	       		</isNotEmpty>
+       		</isNotEqual>
+       		<isNotEqual property="sex" compareValue="0">   
+			    <isNotEmpty prepend="AND" property="sex">
+		       			m.fe_sex = #sex#
+	       		</isNotEmpty>
+       		</isNotEqual>
+       		<isNotEqual property="whetherParent" compareValue=""> 
+       			<isEqual property="whetherParent" compareValue="0">
+       				<isNotEmpty prepend="AND" property="treeCuid">
+		       			m.ztv_org_id = #treeCuid#
+	       			</isNotEmpty>
+       			</isEqual>  
+			    <isEqual property="whetherParent" compareValue="1">
+       				<isNotEmpty prepend="AND" property="treeCuid">
+		       			m.ztv_cuid = #treeCuid#
+	       			</isNotEmpty>
+       			</isEqual>
+       		</isNotEqual>  
+       		<isNotEmpty prepend="AND" property="userName">
+		       			m.fo_userName like '%'||#userName#||'%'
+	       	</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertZG_T_VIRTUALORG" parameterClass="zgTvirtualorg">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_VIRTUALORG (
+        	CUID ,
+        	LABEL_CN ,
+        	ORG_ID ,
+        	NOTE ,
+        	TYPE 
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#orgId# ,
+        	#note# ,
+        	#type# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+     <insert id="insert" parameterClass="zgTvirtualorg">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_VIRTUALORG (
+        	CUID ,
+        	LABEL_CN ,
+        	ORG_ID ,
+        	NOTE ,
+        	TYPE 
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#orgId# ,
+        	#note# ,
+        	#type# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateZG_T_VIRTUALORG" parameterClass="zgTvirtualorg">
+    <![CDATA[
+        UPDATE ZG_T_VIRTUALORG SET
+	        LABEL_CN = #labelCn# ,
+	        ORG_ID = #orgId# ,
+	        NOTE = #note# ,
+	        TYPE = #type# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deletezg_t_virtualorg_employee" parameterClass="java.lang.String">
+		delete from zg_t_virtualorg_employee 
+		 where CUID = #cuid#
+	</delete>
+	<delete id="deleteZG_T_VIRTUALORG" parameterClass="java.lang.String">
+		delete from ZG_T_VIRTUALORG 
+		 where CUID = #cuid#
+	</delete>
+	
+	
+    
+    <select id="findByProperty" resultMap="zgTvirtualorgResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ORG_ID as t0_ORG_ID,
+	        		t0.NOTE as t0_NOTE,
+	        		t0.TYPE as t0_TYPE
+	        from 
+	        ZG_T_VIRTUALORG t0
+ ) m
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="getById" resultMap="zgTvirtualorgResult">
+	    select <include refid="commonColumns"/>
+	    <![CDATA[
+	       from (select fo.cuid fo_userId,
+			       fo.label_cn fo_userName,
+			       fe.sex fe_sex,
+			       fe.mobile fe_mobile,
+			       fe.email fe_email,
+			       ztv.type ztv_type,
+			       ztv.note ztv_note,
+			       foz.label_cn foz_orgName,
+			       ztv.label_cn ztv_label_cn,
+			       ztv.cuid ztv_cuid,
+			       ztv.org_id ztv_org_id,
+       			   ztve.cuid ztve_cuid
+			  from FW_OPERATOR              fo,
+			       FW_EMPLOYEE              fe,
+			       ZG_T_VIRTUALORG          ztv,
+			       ZG_T_VIRTUALORG_EMPLOYEE ztve,
+			       FW_ORGANIZATION          foz
+			 where fo.cuid(+) = fe.cuid
+			   and ztv.cuid(+) = ztve.org_id
+			   and ztve.user_id = fe.cuid(+)
+			   and foz.cuid(+) = ztv.org_id
+ 				) m
+        where m.ztve_cuid =#cuid# 
+        ]]>
+    </select>
+    <select id="getByCuid" resultMap="zgTvirtualorgResultSimple">
+    	<![CDATA[
+    		select * from zg_t_virtualorg where cuid=#cuid#
+    	]]>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+        <![CDATA[
+        from ( select fo.cuid fo_userId,
+			       fo.label_cn fo_userName,
+			       fe.sex fe_sex,
+			       fe.mobile fe_mobile,
+			       fe.email fe_email,
+			       ztv.type ztv_type,
+			       ztv.note ztv_note,
+			       foz.label_cn foz_orgName,
+			       ztv.label_cn ztv_label_cn,
+			       ztv.cuid ztv_cuid,
+			       ztv.org_id ztv_org_id,
+       			   ztve.cuid ztve_cuid
+			  from FW_OPERATOR              fo,
+			       FW_EMPLOYEE              fe,
+			       ZG_T_VIRTUALORG          ztv,
+			       ZG_T_VIRTUALORG_EMPLOYEE ztve,
+			       FW_ORGANIZATION          foz
+			 where fo.cuid(+) = fe.cuid
+			   and ztv.cuid(+) = ztve.org_id
+			   and ztve.user_id = fe.cuid(+)
+			   and foz.cuid(+) = ztv.org_id
+ 		) m
+    	]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    
+    
+    
+    
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTvirtualorgResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+		from ( select fo.cuid fo_userId,
+			       fo.label_cn fo_userName,
+			       fe.sex fe_sex,
+			       fe.mobile fe_mobile,
+			       fe.email fe_email,
+			       ztv.type ztv_type,
+			       ztv.note ztv_note,
+			       foz.label_cn foz_orgName,
+			       ztv.label_cn ztv_label_cn,
+			       ztv.cuid ztv_cuid,
+			       ztv.org_id ztv_org_id,
+       			   ztve.cuid ztve_cuid
+			  from FW_OPERATOR              fo,
+			       FW_EMPLOYEE              fe,
+			       ZG_T_VIRTUALORG          ztv,
+			       ZG_T_VIRTUALORG_EMPLOYEE ztve,
+			       FW_ORGANIZATION          foz
+			 where fo.cuid(+) = fe.cuid
+			   and ztv.cuid(+) = ztve.org_id
+			   and ztve.user_id = fe.cuid(+)
+			   and foz.cuid(+) = ztv.org_id
+ 			) m
+        ]]>
+		<include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findAll" resultMap="zgTvirtualorgResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.ORG_ID as t0_ORG_ID,
+	        		t0.NOTE as t0_NOTE,
+	        		t0.TYPE as t0_TYPE
+	        from 
+	        ZG_T_VIRTUALORG t0
+ ) m
+        ]]>
+    </select>
+    
+    <select id="findLabelCnForValid" resultClass="java.lang.String">
+    	<![CDATA[
+    		select label_cn from ZG_T_VIRTUALORG t where t.org_id=#orgId#
+    	]]>
+    </select>
+   	<select id="getLabelCnByCuid" resultClass="java.lang.String">
+   		<![CDATA[
+   			select label_cn from ZG_T_VIRTUALORG t where t.cuid=#cuid#
+   		]]>
+   	</select>
+    
+</sqlMap>

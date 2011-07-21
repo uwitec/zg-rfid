@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd"    default-autowire="byName" default-lazy-init="false">
+
+	<!-- component-scan自动搜索@Component , @Controller , @Service , @Repository等标注的类 -->
+	<!-- 默认值如果适合，该项可以不用修改 -->
+	<context:component-scan base-package="**.service" />
+	<context:component-scan base-package="sap" />
+	<context:component-scan base-package="javacommon.base" />
+	<context:component-scan base-package="com.boco.frame" />
+	
+	<context:component-scan base-package="sap" />
+	<bean id="xlsExportBo" class="com.boco.frame.excel.xlsexp.service.XlsExportBo">
+		<property name="tempFolderPath" value="${temp.folder.path}"/>
+	</bean>
+ 	<!--   <bean id="SapService" class="sap.ServiceInitMain" init-method="startServers">
+	  
+	</bean>   -->
+	
+	<!-- 配置导入导出的bean -->
+	<bean id="xlsImport" class="com.boco.frame.excel.ExcuteHelper">
+		<property name="config" ref="xmlConfig"></property>
+		<property name="reader" ref="excelReader"></property>
+		<property name="excute" ref="oracleExcute"></property>		
+	</bean>
+	
+	<bean id="xlsExport" class="com.boco.frame.excel.ExcuteHelper">
+		<property name="config" ref="xmlConfig"></property>
+		<property name="reader" ref="oracleReader"></property>
+		<property name="excute" ref="excelExcute"></property>		
+	</bean>
+	
+	
+	<!-- Excute 实现 -->
+	<bean id="excelExcute" class="com.boco.frame.excel.xlsimp.ExcelExcute" >
+	</bean>
+	
+	<bean id="oracleExcute" class="com.boco.frame.excel.xlsimp.OracleExcute" >
+		<property name="username" value="${jdbc.username}" ></property>
+		<property name="password" value="${jdbc.password}" ></property>
+		<property name="driver" value="${jdbc.driver}" ></property>
+		<property name="url" value="${jdbc.url}" ></property>
+	</bean>
+	
+	<!-- DataReader实现 -->
+	<bean id="excelReader" class="com.boco.frame.excel.xlsimp.ExcelReader" >
+		
+	</bean>
+	
+	<bean id="oracleReader" class="com.boco.frame.excel.xlsimp.OracleReader" >
+		<property name="username" value="${jdbc.username}" ></property>
+		<property name="password" value="${jdbc.password}" ></property>
+		<property name="driver" value="${jdbc.driver}" ></property>
+		<property name="url" value="${jdbc.url}" ></property>
+	</bean>
+	
+	<!-- Config实现 -->
+	<bean id="xmlConfig" class="com.boco.frame.excel.xlsimp.XmlConfig" >
+	</bean>
+	
+</beans>

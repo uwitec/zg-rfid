@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTstorageEx">
+    <typeAlias alias="zgTstorage" type="com.boco.zg.storage.base.model.ZgTstorage"/>
+	
+
+    
+    <update id="updateZG_T_STORAGE_STATE" parameterClass="zgTstorage">
+    <![CDATA[
+        UPDATE ZG_T_STORAGE SET
+	        STATE = #state# 
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+</sqlMap>

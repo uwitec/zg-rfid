@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTorderPlanGroup">
+    <typeAlias alias="zgTorderPlanGroup" type="com.boco.zg.plan.base.model.ZgTorderPlanGroup"/>
+	<resultMap id="zgTorderPlanGroupResult" class="zgTorderPlanGroup">
+		<result property="cuid" column="t0_CUID"/>
+		<result property="labelCn" column="t0_LABEL_CN"/>
+		<result property="state" column="t0_STATE"/>
+		<result property="percent" column="t0_PERCENT"/>
+		<result property="planType" column="t0_PLAN_TYPE"/>
+		<result property="psbh" column="t0_PSBH"/>
+		<result property="num" column="num"/>
+		<result property="advance" column="advance"/>
+		<result property="indexNo" column="indexNo"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+	<sql id="commonColumns">
+	    <![CDATA[
+	    
+	 	m.T0_CUID,
+		m.t0_LABEL_CN,
+		m.T0_STATE,
+		m.t0_percent,
+		m.t0_plan_type,
+		m.t0_PSBH,
+		m.t0_plant,
+		m.t0_arbpl
+	    ]]>
+	</sql>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="state">
+	       			m.t0_STATE like #state#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="percent">
+	       			m.t0_PERCENT = #percent#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="planType">
+	       			m.t0_PLAN_TYPE like #planType#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="posnr">
+	       			m.t0_POSNR like #posnr#
+       		</isNotEmpty>  
+       		 <isNotEmpty prepend="AND" property="pxDate">
+       		 		trunc(px_date)=  to_date('$pxDate$', 'yyyy-MM-dd')
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+	<sql id="dynamicWhere3">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="state">
+	       			m.t0_STATE like #state#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="percent">
+	       			m.t0_PERCENT = #percent#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="planType">
+	       			m.t0_PLAN_TYPE like #planType#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="posnr">
+	       			m.t0_POSNR like #posnr#
+       		</isNotEmpty>  
+       		 <isNotEmpty prepend="AND" property="pxDate">
+       		 	to_date('$pxDate$', 'yyyy-MM-dd')>	trunc(px_date)
+       		</isNotEmpty>
+       			 <isNotEmpty prepend="AND" property="aufnr">
+       		   instr(t0_LABEL_CN,'$aufnr$',1,1)>0
+       		</isNotEmpty>
+       		
+       		
+	    </dynamic>	
+	</sql>
+	
+	<sql id="dynamicWhere1">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="state">
+	       			m.t0_STATE like #state#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="percent">
+	       			m.t0_PERCENT = #percent#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="planType">
+	       			m.t0_PLAN_TYPE like #planType#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="posnr">
+	       			m.t0_POSNR like #posnr#
+       		</isNotEmpty>  
+	    </dynamic>	
+	</sql>
+	
+	<sql id="dynamicWhere2">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+		    <isNotEmpty prepend="AND" property="cuid">
+	       			m.t0_CUID like #cuid#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="labelCn">
+	       			m.t0_LABEL_CN like #labelCn#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="state">
+	       			m.t0_STATE like #state#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="percent">
+	       			m.t0_PERCENT = #percent#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="planType">
+	       			m.t0_PLAN_TYPE like #planType#
+       		</isNotEmpty>    
+		    <isNotEmpty prepend="AND" property="posnr">
+	       			m.t0_POSNR like #posnr#
+       		</isNotEmpty>  
+       		 <isNotEmpty prepend="AND" property="pxDate">
+       		 		trunc(px_date)=  to_date('$pxDate$', 'yyyy-MM-dd')
+       		</isNotEmpty>
+       		 <isNotEmpty prepend="AND" property="aufnr">
+       		   instr(t0_LABEL_CN,'$aufnr$',1,1)>0
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+    <insert id="insertZG_T_ORDER_PLAN_GROUP" parameterClass="zgTorderPlanGroup">
+    <![CDATA[
+        INSERT INTO
+        ZG_T_ORDER_PLAN_GROUP (
+        	CUID ,
+        	LABEL_CN ,
+        	STATE ,
+        	PERCENT ,
+        	PLAN_TYPE ,
+        	psbh,
+        	indexNo
+        ) VALUES (
+        	#cuid# ,
+        	#labelCn# ,
+        	#state# ,
+        	#percent# ,
+        	#planType# ,
+        	#psbh# ,
+        	#indexNo# 
+        )
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+    <update id="updateZG_T_ORDER_PLAN_GROUP" parameterClass="zgTorderPlanGroup">
+    <![CDATA[
+        UPDATE ZG_T_ORDER_PLAN_GROUP SET
+	        LABEL_CN = #labelCn# ,
+	        STATE = #state# ,
+	        PERCENT = #percent# ,
+	        PLAN_TYPE = #planType# ,
+	        psbh = #psbh# ,
+	        indexNo=#indexNo#
+	    WHERE CUID = #cuid#
+    ]]>
+    </update>
+    
+	<delete id="deleteZG_T_ORDER_PLAN_GROUP" parameterClass="java.lang.String">
+		delete from ZG_T_ORDER_PLAN_GROUP 
+		 where CUID = #cuid#
+	</delete>
+	
+	<select id="getById" resultMap="zgTorderPlanGroupResult">
+	    select <include refid="commonColumns"/>,0 as num,	 advance, indexno
+	    <![CDATA[
+	       from (select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.STATE as t0_STATE,
+	        		t0.PERCENT as t0_PERCENT,
+	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
+	        		t0.PSBH as t0_PSBH,
+	        		null as t0_arbpl,
+                  	null as t0_plant,
+                  	null as advance,
+                  	indexno
+	        from 
+	        ZG_T_ORDER_PLAN_GROUP t0
+ 		) m
+        where m.t0_CUID =#cuid# 
+        ]]>
+    </select>
+    
+    <select id="findByProperty" resultMap="zgTorderPlanGroupResult">
+    	select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.STATE as t0_STATE,
+	        		t0.PERCENT as t0_PERCENT,
+	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
+	        		t0.POSNR as t0_POSNR,	        		
+	        		null as indexNo,
+	        		nuss as advance
+	        		
+	        		
+	        from 
+	        ZG_T_ORDER_PLAN_GROUP t0
+ ) m
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="count" resultClass="long">
+        select count(*) from (
+        select <include refid="commonColumns"/>
+		         <![CDATA[
+			        from ( select t.cuid T0_CUID,
+				       t.label_cn t0_LABEL_CN,
+				       t.state T0_STATE,
+				       t.percent t0_percent,
+				       t.plan_type t0_plan_type,
+				       t.PSBH t0_PSBH,
+				       null as t0_plant,
+				       null as t0_arbpl,
+				       count(1) num,tor.pcdat
+		  from zg_t_order_plan_group t,
+		       zg_t_group_order_plan gop,
+		       zg_t_order_plan       op,
+		       zg_t_order            tor  ]]>
+		         <isNotEqual property="operatorId" compareValue="0"> ,fw_employee emp</isNotEqual>
+		    <![CDATA[ where t.cuid = gop.group_id
+		   and gop.order_plan_id = op.cuid
+		   and op.order_id = tor.cuid
+		   and op.plant is not null]]>
+		       <isNotEqual property="operatorId" compareValue="0"> 
+		   and emp.cuid=''
+		  and op.plant=emp.org_id
+		  </isNotEqual>
+		  <![CDATA[ group by t.cuid,
+		          t.label_cn,
+		          t.state,
+		          t.percent,
+		          t.plan_type,
+		          t.psbh
+		 ) m   ]]>
+		<include refid="dynamicWhere"/> 
+		)
+    </select>
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 #offset#,#pageSize#,#lastRows# 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="pageSelect" resultMap="zgTorderPlanGroupResult">
+    SELECT 	T0_CUID,
+		t0_LABEL_CN,
+		T0_STATE,
+		t0_percent,
+		t0_plan_type,
+		t0_PSBH,
+		t0_plant,
+		t0_arbpl,num,px_date,indexNo,advance FROM 
+		
+		(select <include refid="commonColumns"/> ,num,px_date,indexNo,advance
+	    <![CDATA[
+	        from ( select t.cuid T0_CUID,
+				       t.label_cn t0_LABEL_CN,
+				       t.state T0_STATE,
+				       t.percent t0_percent,
+				       t.plan_type t0_plan_type,
+				       t.PSBH t0_PSBH,
+				      null as  t0_plant,
+				    	 task.arbpl as t0_arbpl,
+				       count(1) num,
+                       tor.pcdat,      task.px_date,t.INDEXNO indexNo,'0' as advance
+				  from zg_t_order_plan_group t,
+				       zg_t_group_order_plan gop,
+				       zg_t_order_plan       op,
+				       zg_t_order            tor ,
+				        Zg_t_Order_task task ]]>
+				         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+				    <![CDATA[ where   
+        				  t.cuid = gop.group_id
+				   and gop.order_plan_id = op.cuid
+				   and op.order_task_id=task.cuid
+				   and task.order_id=tor.cuid
+				   and op.state<>'9'
+				   and task.flag<>'-1'
+				   and op.plant is not null]]>
+				   <isNotEmpty prepend="AND" property="px">
+       		  		 <![CDATA[ op.state<>'-1']]>
+       				</isNotEmpty>
+       				<isNotEmpty prepend="AND" property="arbpl">
+       		  		 task.arbpl='$arbpl$'
+       				</isNotEmpty>
+				    <isNotEqual property="operatorId" compareValue="0"> 
+				   		and ma.employee_id='$operatorId$'
+				 		and op.plant=ma.org_id
+				  	</isNotEqual>
+				  and task.plant='$plant$'
+				  <![CDATA[ group by t.cuid,
+				          t.label_cn,
+				          t.state,
+				          t.percent,
+				          t.plan_type,
+				          t.psbh, task.arbpl, task.px_date,t.INDEXNO
+				 ) m
+        ]]>
+		<include refid="dynamicWhere3"/>)
+		union
+    	(select <include refid="commonColumns"/> ,num,px_date,indexNo,advance
+	    <![CDATA[
+	        from ( select t.cuid T0_CUID,
+				       t.label_cn t0_LABEL_CN,
+				       t.state T0_STATE,
+				       t.percent t0_percent,
+				       t.plan_type t0_plan_type,
+				       t.PSBH t0_PSBH,
+				      null as  t0_plant,
+				    	 task.arbpl as t0_arbpl,
+				       count(1) num,
+                       tor.pcdat,      task.px_date,t.INDEXNO indexNo,'0' as advance
+				  from zg_t_order_plan_group t,
+				       zg_t_group_order_plan gop,
+				       zg_t_order_plan       op,
+				       zg_t_order            tor ,
+				        Zg_t_Order_task task ]]>
+				         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+				    <![CDATA[ where    t.cuid = gop.group_id
+				   and gop.order_plan_id = op.cuid
+				   and op.order_task_id=task.cuid
+				   and task.order_id=tor.cuid
+				   and op.plant is not null
+				   and task.flag<>'-1']]>
+				    <isNotEmpty prepend="AND" property="px">
+       		  		 <![CDATA[ op.state<>'-1']]>
+       				</isNotEmpty>
+				   <isNotEmpty prepend="AND" property="arbpl">
+       		  		 task.arbpl='$arbpl$'
+       				</isNotEmpty>
+				    <isNotEqual property="operatorId" compareValue="0"> 
+				   		and ma.employee_id='$operatorId$'
+				 		and op.plant=ma.org_id
+				  	</isNotEqual>
+				  and task.plant='$plant$'
+				  <![CDATA[ group by t.cuid,
+				          t.label_cn,
+				          t.state,
+				          t.percent,
+				          t.plan_type,
+				          t.psbh, task.arbpl, task.px_date,t.INDEXNO
+				 ) m
+        ]]>
+		<include refid="dynamicWhere"/>)
+		<isEmpty property="psbhChange">
+		 union 
+		
+		(
+			select <include refid="commonColumns"/> ,num,px_date,indexNo,advance
+	    <![CDATA[
+	        from ( select t.cuid T0_CUID,
+				       t.label_cn t0_LABEL_CN,
+				       t.state T0_STATE,
+				       t.percent t0_percent,
+				       t.plan_type t0_plan_type,
+				       t.PSBH t0_PSBH,
+				      null as  t0_plant,
+				    	 task.arbpl as t0_arbpl,
+				      count(distinct op.cuid) num,
+                       tor.pcdat,      task.px_date,t.INDEXNO indexNo,'0' as advance
+				  from zg_t_order_plan_group t,
+				       zg_t_group_order_plan gop,
+				       zg_t_order_plan       op,
+				       zg_t_order            tor ,
+				       Zg_t_Order_task task,
+				       zg_t_orderbom orderbom,
+				       zg_t_order_taskbom taskbom,
+               			zg_t_order_planbom planbom,
+               			zg_t_bom bom,
+               			zg_materiel mat ]]>
+				         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+				    <![CDATA[ where   
+				    	  	 orderbom.order_id=tor.cuid
+					         and planbom.order_plan_id=op.cuid
+					         and planbom.taskbom_id=taskbom.cuid
+					         and taskbom.order_bom_id=orderbom.cuid
+					         and orderbom.idnrk=bom.idnrk
+					         and bom.matkl=mat.id
+					         and mat.advance='1'
+					         and planbom.state<>'9'
+					      and   t.cuid = gop.group_id
+				   and gop.order_plan_id = op.cuid
+				   and op.order_task_id=task.cuid
+				   and task.order_id=tor.cuid
+				   			and op.plant is not null
+				   			and task.flag<>'-1'
+				   			]]>
+				   			and  trunc(task.px_date)> to_date('$pxDate$', 'yyyy-MM-dd')
+				   	<isNotEmpty prepend="AND" property="px">
+       		  		 	<![CDATA[ op.state<>'-1']]>
+       				</isNotEmpty>
+				   <isNotEmpty prepend="AND" property="arbpl">
+       		  		 task.arbpl='$arbpl$'
+       				</isNotEmpty>
+				    <isNotEqual property="operatorId" compareValue="0"> 
+				   		and ma.employee_id='$operatorId$'
+				 		and op.plant=ma.org_id
+				  	</isNotEqual>
+				  and task.plant='$plant$'
+				  <![CDATA[ group by t.cuid,
+				          t.label_cn,
+				          t.state,
+				          t.percent,
+				          t.plan_type,
+				          t.psbh, task.arbpl, task.px_date,t.INDEXNO
+				 ) m
+        ]]>
+		<include refid="dynamicWhere1"/>
+		)</isEmpty>
+		
+	<!-- 	<isEqual property="planType" compareValue="ABE">-->
+		<!-- 总装领料　按生产线　排序号　日期　来排序 -->
+			ORDER BY  t0_arbpl,indexNo,px_date, t0_PSBH
+	<!-- 	 </isEqual>-->
+		 
+	<!-- 	<isNotEqual property="planType" compareValue="ABE">
+		其他领料　按生　排序号　日期　来排序
+			ORDER BY  indexNo,px_date, t0_PSBH
+		 </isNotEqual>-->
+		
+    </select>
+    
+    <select id="pageSelect1" resultMap="zgTorderPlanGroupResult">
+  		select <include refid="commonColumns"/> ,num,px_date,indexNo,advance
+	    <![CDATA[
+	        from ( select t.cuid T0_CUID,
+				       t.label_cn t0_LABEL_CN,
+				       t.state T0_STATE,
+				       t.percent t0_percent,
+				       t.plan_type t0_plan_type,
+				       t.PSBH t0_PSBH,
+				      null as  t0_plant,
+				    	 task.arbpl as t0_arbpl,
+				       count(1) num,
+                       tor.pcdat,      task.px_date,t.INDEXNO indexNo,'0' as advance
+				  from zg_t_order_plan_group t,
+				       zg_t_group_order_plan gop,
+				       zg_t_order_plan       op,
+				       zg_t_order            tor ,
+				        Zg_t_Order_task task ]]>
+				         <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+				    <![CDATA[ where      t.cuid = gop.group_id
+                   and gop.order_plan_id = op.cuid
+                   and op.order_task_id=task.cuid
+                   and task.order_id=tor.cuid
+				   and op.plant is not null
+				   and task.flag<>'-1' ]]>
+				    <isNotEmpty prepend="AND" property="px">
+       		  		    <![CDATA[ op.state<>'-1']]>
+       				</isNotEmpty>
+				   <isNotEmpty prepend="AND" property="arbpl">
+       		  		 task.arbpl='$arbpl$'
+       				</isNotEmpty>
+				    <isNotEqual property="operatorId" compareValue="0"> 
+				   		and ma.employee_id='$operatorId$'
+				 		and op.plant=ma.org_id
+				  	</isNotEqual>
+				  and task.plant='$plant$'
+				  <![CDATA[ group by t.cuid,
+				          t.label_cn,
+				          t.state,
+				          t.percent,
+				          t.plan_type,
+				          t.psbh, task.arbpl, task.px_date,t.INDEXNO
+				 ) m
+        ]]>
+		<include refid="dynamicWhere2"/>
+	
+	<!-- 	<isEqual property="planType" compareValue="ABE">-->
+		<!-- 总装领料　按生产线　排序号　日期　来排序 -->
+			ORDER BY  t0_arbpl,indexNo,px_date, t0_PSBH
+	<!-- 	 </isEqual>-->
+		 
+	<!-- 	<isNotEqual property="planType" compareValue="ABE">
+		其他领料　按生　排序号　日期　来排序
+			ORDER BY  indexNo,px_date, t0_PSBH
+		 </isNotEqual>-->
+    </select>
+    
+    
+    <select id="findAll" resultMap="zgTorderPlanGroupResult">
+		select <include refid="commonColumns"/> 
+	    <![CDATA[
+	        from ( select 
+	        		t0.CUID as t0_CUID,
+	        		t0.LABEL_CN as t0_LABEL_CN,
+	        		t0.STATE as t0_STATE,
+	        		t0.PERCENT as t0_PERCENT,
+	        		t0.PLAN_TYPE as t0_PLAN_TYPE,
+	        		t0.POSNR as t0_POSNR,
+	        		null as indexNo,
+	        		nuss as advance
+	        from 
+	        ZG_T_ORDER_PLAN_GROUP t0
+ ) m
+        ]]>
+    </select>
+    
+</sqlMap>

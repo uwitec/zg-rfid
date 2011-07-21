@@ -1,0 +1,228 @@
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTstoragebomEx">
+    <typeAlias alias="zgTstoragebomEx" type="com.boco.zg.storage.model.ZgTstoragebomEx"/>
+	<resultMap id="zgTstoragebomExResult" class="zgTstoragebomEx">
+		<result property="orderAufnr" column="ORDERAUFNR" />
+		<result property="matnr" column="MATNR"/>
+		<result property="maktx1" column="MAKTX1"/>
+		<result property="idnrk" column="IDNRK"/>
+		<result property="msehl1" column="MSEHL1"/>
+		<result property="menge" column="MENGE"/>
+		<result property="arbpl" column="ARBPLName"/>
+		<result property="zdtyl" column="ZDTYL"/>
+		<result property="cuid" column="CUID"/>
+		<result property="orderBomId" column="orderBOmId"/>
+	</resultMap>
+	
+		<resultMap id="zgTstoragebomExResult1" class="zgTstoragebomEx">
+		<result property="orderAufnr" column="ORDERAUFNR" />
+		<result property="arbpl" column="LABEL_CN"/>
+		<result property="matnr" column="MATNR"/>
+		<result property="maktx1" column="MAKTX1"/>
+		<result property="msehl1" column="MSEHL1"/>
+		<result property="menge" column="MENGE"/>
+		<result property="zbz" column="ZBZ"/>
+		<result property="cuid" column="BOMCUID"/>
+		<result property="num" column="NUM"/>
+		<result property="idnrk" column="IDNRK"/>
+		<result property="orderBomId" column="order_bomid"/>	
+		<result property="zgTstorageId" column="ZG_T_STORAGE_ID"/>
+		<result property="orderId" column="order_id"/>
+		
+	</resultMap>
+	
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+       		 <isNotEmpty prepend="AND" property="orderId">
+	       			order_id='$orderId$'
+       		</isNotEmpty>   
+       		<isNotEmpty prepend="AND" property="arbpl">
+	       			 arbpl='$arbpl$'
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="productType">
+	       			 sortf='$productType$'
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="storageId">
+	       			cuid not in (select z1.order_bomid from zg_t_storage z ,zg_t_storagebom z1 where z.cuid='$storageId$' and z.cuid=z1.zg_t_storage_id)
+       		</isNotEmpty>  
+	    </dynamic>	
+	</sql>
+	
+	<sql id="dynamicWhere1">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>   
+       		 <isNotEmpty prepend="AND" property="cuid">
+	       			cuid='$cuid$'
+       		</isNotEmpty>   
+       			 <isNotEmpty prepend="AND" property="productType">
+	       			sortf='$productType$'
+       		</isNotEmpty>  
+       		<isNotEmpty prepend="AND" property="type">
+	       			type='$type$'
+       		</isNotEmpty>  
+	    </dynamic>	
+	</sql>
+	
+	<select id="findByProperty" resultMap="zgTstoragebomExResult">
+    	select ORDERAUFNR,
+		       MATNR,
+		       MAKTX1,
+		       IDNRK,
+		       MSEHL1,
+		       ZDTYL,
+		       MENGE,
+		       ARBPL,
+       		ARBPLName,
+		       sortf,
+		       order_id,cuid,
+		       orderBomId
+	    <![CDATA[
+		from  (select null as cuid,OB.AUFNR ORDERAUFNR,
+               OB.MATNR1 MATNR,
+               OB.MAKTX1,
+               OB.IDNRK,
+               OB.MSEHL1,
+               OB.ZDTYL,
+               OB.MENGE,
+               ob.arbpl,
+               FO.LABEL_CN ARBPLName,
+               ob.sortf,
+               ob.order_id,
+               ob.cuid orderBomId
+          from zg_t_orderbom ob, fw_organization fo
+         where ob.arbpl = fo.cuid)
+		   
+        ]]>
+        <include refid="dynamicWhere"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+     <select id="findByProperty1" resultMap="zgTstoragebomExResult1">
+    	select ORDERAUFNR ,
+		       MATNR,
+		       MAKTX1,
+		       MSEHL1,
+		       MENGE,
+		       ZBZ ,
+		       CUID,
+		       SORTF,
+		      LABEL_CN ,
+		      BOMCUID,
+		      NUM,
+		      IDNRK,
+		      ORDER_BOMID,ZG_T_STORAGE_ID,TYPE,
+		     order_id
+	    <![CDATA[
+		from (
+		   
+		    select  o.aufnr AS ORDERAUFNR 
+		     ,ob.matnr1 MATNR,
+		     ob.MAKTX1,
+		     ob.MSEHL1,
+		     ob.MENGE-nvl(ob.storage_num,0) MENGE ,
+		     sb.ZBZ ,
+		     s.cuid,
+		      ob.sortf,
+		      sb.cuid bomCuid,
+		      sb.num,
+          fo.label_cn,ob.idnrk,sb.order_bomid,sb.zg_t_storage_id,s.type,
+          o.cuid as order_id
+		    from zg_t_storagebom sb ,zg_t_storage s ,zg_t_order o,zg_t_orderbom ob,fw_organization fo
+				where sb.zg_t_storage_id=s.cuid
+				and s.order_id=o.cuid
+				and o.cuid=ob.order_id
+				and sb.order_bomid=ob.cuid
+				and s.lgort= fo.cuid
+			)
+		   
+        ]]>
+        <include refid="dynamicWhere1"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    
+    <select id="findByProperty2" resultMap="zgTstoragebomExResult1">
+    	select ORDERAUFNR ,
+		       MATNR,
+		       MAKTX1,
+		       MSEHL1,
+		       MENGE,
+		       ZBZ ,
+		       CUID,
+		       SORTF,
+		      LABEL_CN ,
+		      BOMCUID,
+		      NUM,
+		      IDNRK,
+		      ORDER_BOMID,ZG_T_STORAGE_ID,TYPE,
+		      order_id
+	    <![CDATA[
+		from (
+		   select  o.aufnr AS ORDERAUFNR 
+		     ,ob.matnr1 MATNR,
+		     ob.MAKTX1,
+		     ob.MSEHL1,
+		     nvl(st.num,0)-nvl(st.outnum,0) MENGE ,
+		     sb.ZBZ ,
+		     s.cuid,
+		      ob.sortf,
+		      sb.cuid bomCuid,
+		      sb.num,
+          fo.label_cn,ob.idnrk,sb.order_bomid,sb.zg_t_storage_id,s.type,
+          o.cuid as order_id
+		    from zg_t_storagebom sb ,zg_t_storage s ,zg_t_order o,zg_t_orderbom ob,fw_organization fo,zg_t_storage_stat st
+				where sb.zg_t_storage_id=s.cuid
+				and s.order_id=o.cuid
+				and o.cuid=ob.order_id
+				and sb.order_bomid=ob.cuid
+					and s.lgort= fo.cuid
+	         	and s.product_type=st.product_type
+	           and st.lgort=s.lgort
+	           and st.order_bomid = sb.order_bomid
+			)
+		   
+        ]]>
+        <include refid="dynamicWhere1"/>
+		<dynamic prepend="ORDER BY">
+			<isNotEmpty property="sortColumns">$sortColumns$</isNotEmpty>
+		</dynamic>
+    </select>
+    <!-- 通过半成品组件编号（idnrk）和订单号获取组成该半成品的bom -->
+    <select id="getBomListForProduct" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    	<![CDATA[
+      select
+       t.order_id,
+       t.idnrk,
+       t.zdtyl,
+       t.matnr1,
+       t.matnr,
+       t.sortf ,
+       t.cuid ,
+       nvl(pb.complete_num,0) as complete_num,
+       nvl(pb.move_num,0) as move_num,
+       nvl(pb.back_num,0) as back_num,
+       nvl(pb.out_num,0) as out_num
+      from zg_t_orderbom t ,zg_t_order_planbom pb
+      where t.cuid=pb.order_bom_id and t.order_id=pb.order_id and   t.order_id=#orderId# and t.matnr1=#idnrk#
+    	]]>
+    </select>
+    <!-- 半成品入库,更新组成这个半成品的bom的出库数量 -->
+    <update id="updateBomOutNumForProductIn" parameterClass="java.util.HashMap" >
+    	<![CDATA[
+			update  zg_t_order_planbom t 
+			set t.out_num=nvl(t.out_num,0)+#outNum#
+			where t.order_id=#orderId# and t.order_bom_id=#bomOrderbomId#
+    	]]>
+    </update>
+    
+</sqlMap>

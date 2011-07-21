@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ZgTorderPlanEx">
+    <typeAlias alias="zgTorderPlanEx" type="com.boco.zg.plan.model.ZgTorderPlanEx"/>
+    <typeAlias alias="zgTorderPlan" type="com.boco.zg.plan.base.model.ZgTorderPlan"/>
+	<resultMap id="zgTorderPlanExResult" class="zgTorderPlanEx">
+		<result property="cuid" column="CUID"/>
+		<result property="psbh" column="psbh"/>
+		<result property="aufnr" column="AUFNR"/>
+		<result property="pcdat" column="PCDAT"/>
+		<result property="pxdat" column="PXDAT"/>
+		<result property="kdauf" column="KDAUF"/>
+		<result property="matnr" column="MATNR"/>
+		<result property="maktx1" column="MAKTX1"/>
+		<result property="psmng" column="PSMNG"/>
+		<result property="pmenge" column="pmenge"/>		
+		<result property="plant" column="PLANT"/>
+		<result property="arbpl" column="ARBPL"/>
+		<result property="arbpl1" column="ARBPL1"/>
+		<result property="groupId" column="group_id"/>
+		<result property="planType" column="plan_type"/>
+		<result property="percent" column="percent"/>
+		<result property="state" column="state"/>
+		<result property="merge" column="merge"/>
+		<result property="freeZe" column="freeze"/>
+		<result property="notSetBomNum" column="notSetBomNum"/>
+		<result property="advance" column="advance"/>
+		<result property="indexNo" column="indexNo"/>
+			<result property="zbz" column="zbz"/>
+    </resultMap>
+    
+    <resultMap id="zgTorderPlanResult" class="zgTorderPlan">
+		<result property="cuid" column="cuid"/>
+		<result property="labelCn" column="label_Cn"/>
+		<result property="orderTaskId" column="order_task_Id"/>
+		<result property="departmenuId" column="DEPARTMENU_ID"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="planDate" column="PLAN_DATE"/>
+		<result property="planStartTime" column="PLAN_START_TIME"/>
+		<result property="planEndTime" column="PLAN_END_TIME"/>
+		<result property="state" column="state"/>
+		<result property="planType" column="PLAN_TYPE"/>
+		<result property="plant" column="plant"/>
+		<result property="percent" column="PERCENT"/>
+		<result property="backReason" column="BACK_REASON"/>
+		<result property="backZbz" column="BACK_ZBZ"/>
+		<result property="isManul" column="ISMANUL"/>
+		<result property="zbz" column="ZBZ"/>
+		<result property="extend1" column="EXTEND1"/>
+		
+		
+    </resultMap>
+    
+    <select id="getOrderPlanListByCarPlanId" resultMap="zgTorderPlanResult" >
+    	select distinct plan.*
+		  from zg_t_carplan       carplan,
+		       zg_t_carbom        carbom,
+		       zg_t_order_planbom planbom,
+		       zg_t_order_plan    plan
+		 where carplan.cuid = carbom.car_plan_id
+		   and carbom.order_planbom_id = planbom.cuid
+		   and planbom.order_plan_id = plan.cuid
+		   and carplan.cuid = '$carPlanId$'
+    </select>
+    
+	<sql id="dynamicWhere">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>
+       		
+       		<isNotEmpty prepend="AND" property="pxDate">
+       		   to_date('$pxDate$', 'yyyy-MM-dd') = trunc(m.pxdat)
+       		</isNotEmpty>
+      		<isNotEmpty prepend="AND" property="planType">
+       		   m.plan_type='$planType$'
+       		</isNotEmpty>
+       		 <isNotEmpty prepend="AND" property="arbpl">
+       		  		 arbpl='$arbpl$'
+       		</isNotEmpty>
+       				 <isNotEmpty prepend="AND" property="aufnr">
+       		  		  instr(groupName,'$aufnr$',1,1)>0
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+	<sql id="dynamicWhere3">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>
+       		
+       		<isNotEmpty prepend="AND" property="pxDate">
+       		   to_date('$pxDate$', 'yyyy-MM-dd') >trunc(m.pxdat)
+       		</isNotEmpty>
+      		<isNotEmpty prepend="AND" property="planType">
+       		   m.plan_type='$planType$'
+       		</isNotEmpty>
+       		 <isNotEmpty prepend="AND" property="arbpl">
+       		  		 arbpl='$arbpl$'
+       		</isNotEmpty>
+       		 <isNotEmpty prepend="AND" property="aufnr">
+       		  		  instr(groupName,'$aufnr$',1,1)>0
+       		</isNotEmpty>
+       		  
+	    </dynamic>	
+	</sql>
+	
+		<sql id="dynamicWhere1">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>
+      		<isNotEmpty prepend="AND" property="planType">
+       		   m.plan_type='$planType$'
+       		</isNotEmpty>
+       		 <isNotEmpty prepend="AND" property="arbpl">
+       		  		 arbpl='$arbpl$'
+       		</isNotEmpty>
+       		 <isNotEmpty prepend="AND" property="aufnr">
+       		  		  instr(groupName,'$aufnr$',1,1)>0
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+	<sql id="dynamicWhere2">
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty prepend="AND" property="sqlQueryString">
+	    		$sqlQueryString$ 
+	    	</isNotEmpty>
+       		
+       		<isNotEmpty prepend="AND" property="pxDate">
+       		   to_date('$pxDate$', 'yyyy-MM-dd') = trunc(m.pxdat)
+       		</isNotEmpty>
+      		<isNotEmpty prepend="AND" property="planType">
+       		   m.plan_type='$planType$'
+       		</isNotEmpty>
+       		 <isNotEmpty prepend="AND" property="arbpl">
+       		  		 arbpl='$arbpl$'
+       		</isNotEmpty>
+       		 <isNotEmpty prepend="AND" property="aufnr">
+       		  		  instr(groupName,'$aufnr$',1,1)>0
+       		</isNotEmpty>
+	    </dynamic>	
+	</sql>
+	
+	<!-- 查询订单，今天之前没有完成的　，今天的订单和今天之后的有需要提前领料的订单 -->
+    <select id="pageSelect" resultMap="zgTorderPlanExResult">
+    select cuid,
+       psbh,
+       aufnr,
+       pcdat,
+       pxdat,
+       KDAUF,
+       matnr,
+       maktx1,
+       psmng,
+       pmenge,
+       plant,
+       arbpl,arbpl1,
+       group_id,
+       plan_type,
+       percent,
+       state,
+       merge,
+       freeze,
+       notsetBomnum,
+       
+         indexno,
+       advance,
+       zbz
+       
+       from 
+       <!-- 今天之前的没有完成的 -->
+       ( <![CDATA[  select
+		    cuid,
+		  	   psbh,
+		       aufnr,
+		       pcdat,
+		       pxdat,
+		       KDAUF,
+		       matnr,
+		       maktx1,
+		       psmng,
+		       pmenge,
+		       plant,
+		       arbpl,
+		       arbpl1,
+		        group_id,
+		        plan_type,percent,state, instr(groupName,',')  merge,freeze,notsetBomnum,indexno,   '0' as advance,zbz
+		   from (
+				select oup.psbh,
+				op.cuid,
+			       od.aufnr,
+			       od.pcdat,
+			       od.KDAUF,
+			       od.matnr,
+			       od.maktx1,
+			       od.psmng,
+			       task.pmenge,
+			       task.plant,
+			       task.arbpl,
+			       od.arbpl1,
+			       gop.group_id,
+			         op.plan_type,op.percent,op.state,oup.label_cn as groupName,task.px_date pxdat,nvl(od.freeze,0) freeze,
+			          0 as notsetBomnum,oup.indexno,op.zbz
+			  from zg_t_order_plan       op,
+			       zg_t_group_order_plan gop,
+			       zg_t_order            od,
+			        zg_t_order_plan_group oup, zg_t_order_task task]]>
+		  <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+		   <![CDATA[       
+		 where op.cuid = gop.order_plan_id 
+                 and gop.group_id = oup.cuid
+                 and op.order_task_id=task.cuid
+                 and task.order_id=od.cuid
+                and op.state <> '9'
+                and task.flag<>'-1'
+		   ]]>
+		     <isNotEmpty prepend="AND" property="px">
+       		  		    <![CDATA[ op.state<>'-1']]>
+       		</isNotEmpty>
+		    <isNotEqual property="operatorId" compareValue="0"> 
+       		and  ma.employee_id = '$operatorId$'
+		     and op.plant=ma.org_id
+       		</isNotEqual>
+       		 and op.plant is not null
+       		 and task.plant='$plant$'
+			) m
+		<include refid="dynamicWhere3"/>)
+		union 
+		<!-- 今天的订单 -->
+		   ( <![CDATA[  select
+		    cuid,
+		  	   psbh,
+		       aufnr,
+		       pcdat,
+		       pxdat,
+		       KDAUF,
+		       matnr,
+		       maktx1,
+		       psmng,
+		       pmenge,
+		       plant,
+		       arbpl,
+		       arbpl1,
+		        group_id,
+		        plan_type,percent,state, instr(groupName,',')  merge,freeze,notsetBomnum,indexno,   '0' as advance,zbz
+		   from (
+				select oup.psbh,
+				op.cuid,
+			       od.aufnr,
+			       od.pcdat,
+			       od.KDAUF,
+			       od.matnr,
+			       od.maktx1,
+			       od.psmng,
+			       task.pmenge,
+			       task.plant,
+			       task.arbpl,
+			       od.arbpl1,
+			       gop.group_id,
+			         op.plan_type,op.percent,op.state,oup.label_cn as groupName,task.px_date pxdat,nvl(od.freeze,0) freeze,
+			          0 as notsetBomnum,oup.indexno,op.zbz
+			  from zg_t_order_plan       op,
+			       zg_t_group_order_plan gop,
+			       zg_t_order            od,
+			        zg_t_order_plan_group oup, zg_t_order_task task]]>
+		  <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+		   <![CDATA[       
+		 where op.cuid = gop.order_plan_id 
+                 and gop.group_id = oup.cuid
+                 and op.order_task_id=task.cuid
+                 and task.order_id=od.cuid
+                and task.flag<>'-1'
+		   ]]>  
+		   <isNotEmpty prepend="AND" property="px">
+       		  		    <![CDATA[ op.state<>'-1']]>
+       		</isNotEmpty>
+		   
+		    <isNotEqual property="operatorId" compareValue="0"> 
+       		and  ma.employee_id = '$operatorId$'
+		     and task.plant=ma.org_id
+       		</isNotEqual>
+       		 and op.plant is not null
+       		 and task.plant='$plant$'
+			) m
+		<include refid="dynamicWhere"/>)
+		<isEmpty property="psbhChange">
+		union 
+		<!-- 今天之后有提前领料的 -->
+		(
+			<![CDATA[  select distinct
+		       cuid,
+		  	   psbh,
+		       aufnr,
+		       pcdat,
+		       pxdat,
+		       KDAUF,
+		       matnr,
+		       maktx1,
+		       psmng,
+		       pmenge,
+		       plant,
+		       arbpl,
+		       arbpl1,
+		        group_id,
+		        plan_type,percent,state, instr(groupName,',')  merge,freeze,notsetBomnum, indexno,   '1' as advance,zbz
+		   from (
+				select oup.psbh,
+				op.cuid,
+			       od.aufnr,
+			       od.pcdat,
+			       od.KDAUF,
+			       od.matnr,
+			       od.maktx1,
+			       od.psmng,
+			       task.pmenge,
+			       task.plant,
+			       task.arbpl,
+			       od.arbpl1,
+			       gop.group_id,
+			         op.plan_type,op.percent,op.state,oup.label_cn as groupName,task.px_date pxdat,nvl(od.freeze,0) freeze,
+			          0 as notsetBomnum, oup.indexno,op.zbz
+			  from zg_t_order_plan       op,
+			       zg_t_group_order_plan gop,
+			       zg_t_order            od,
+			       zg_t_order_plan_group oup, zg_t_order_task task,
+			       zg_t_order_taskbom taskbom,
+			       zg_t_orderbom orderbom,
+               	   zg_t_order_planbom planbom,
+               	   zg_t_bom bom,
+               	   zg_materiel mat]]>
+		  <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+		   <![CDATA[       
+		 where 
+		 		od.cuid=orderbom.order_id
+                and planbom.taskbom_id = taskbom.cuid
+                  and taskbom.order_bom_id=orderbom.cuid
+               and planbom.order_plan_id=op.cuid
+               and orderbom.idnrk=bom.idnrk
+               and bom.matkl=mat.id
+               and mat.advance='1'
+               and planbom.state<>'9'
+               and  trunc(task.px_date)>trunc(to_date('$pxDate$', 'yyyy-MM-dd')) 
+              and op.order_task_id=task.cuid
+               and task.order_id=od.cuid
+                 and  op.cuid = gop.order_plan_id
+		  	 and gop.group_id=oup.cuid
+		         AND task.flag<>'-1'
+		   ]]>
+		     <isNotEmpty prepend="AND" property="px">
+       		  		    <![CDATA[ op.state<>'-1']]>
+       		</isNotEmpty>
+		    <isNotEqual property="operatorId" compareValue="0"> 
+       		and  ma.employee_id = '$operatorId$'
+		     and op.plant=ma.org_id
+       		</isNotEqual>
+       		 and op.plant is not null
+       		 and task.plant='$plant$'
+			) m
+      		<include refid="dynamicWhere1"/>
+		)
+		</isEmpty>
+		<!--<isEqual property="planType" compareValue="ABE"> -->
+		<!-- 总装领料　按生产线　排序号　日期　来排序 -->
+			ORDER BY  arbpl,indexNo,pxdat, psbh
+	<!--  </isEqual>-->
+		 
+		<!--<isNotEqual property="planType" compareValue="ABE">
+		其他领料　按　排序号　日期　来排序 
+			ORDER BY   indexNo,pxdat, psbh
+		 </isNotEqual>-->
+    </select>
+    
+    <!-- 查询订单，今天的订单和今天之后的有需要提前领料的订单 -->
+    <select id="pageSelect1" resultMap="zgTorderPlanExResult">
+  	 <![CDATA[  select
+		    cuid,
+		  	   psbh,
+		       aufnr,
+		       pcdat,
+		       pxdat,
+		       KDAUF,
+		       matnr,
+		       maktx1,
+		       psmng,
+		       pmenge,
+		       plant,
+		       arbpl,
+		       arbpl1,
+		       group_id,
+		        plan_type,percent,state, instr(groupName,',')  merge,freeze,notsetBomnum,indexno,   '0' as advance,zbz
+		   from (
+				select oup.psbh,
+				op.cuid,
+			       od.aufnr,
+			       od.pcdat,
+			       od.KDAUF,
+			       od.matnr,
+			       od.maktx1,
+			       od.psmng,
+			       task.pmenge,
+			       task.plant,
+			       task.arbpl,
+			       od.arbpl1,
+			       gop.group_id,
+			         op.plan_type,op.percent,op.state,oup.label_cn as groupName,task.px_date pxdat,nvl(od.freeze,0) freeze,
+			          0 as notsetBomnum, indexno,op.zbz
+			  from zg_t_order_plan       op,
+			       zg_t_group_order_plan gop,
+			       zg_t_order            od,
+			        zg_t_order_plan_group oup, zg_t_order_task task]]>
+		  <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+		   <![CDATA[       
+		 where task.cuid=op.order_task_id 
+		 and  op.cuid = gop.order_plan_id
+		 and task.order_id=od.cuid
+		   and gop.group_id=oup.cuid
+		      AND task.flag<>'-1'
+		   ]]>
+		     <isNotEmpty prepend="AND" property="px">
+       		  		    <![CDATA[ op.state<>'-1']]>
+       		</isNotEmpty>
+		    <isNotEqual property="operatorId" compareValue="0"> 
+       		and  ma.employee_id = '$operatorId$'
+		     and op.plant=ma.org_id
+       		</isNotEqual>
+       		 and op.plant is not null
+       		 and task.plant='$plant$'
+			) m
+		<include refid="dynamicWhere2"/>
+		<!--<isEqual property="planType" compareValue="ABE"> -->
+		<!-- 总装领料　按生产线　排序号　日期　来排序 -->
+			ORDER BY  arbpl,indexNo,pxdat, psbh
+	<!--  </isEqual>-->
+		 
+		<!--<isNotEqual property="planType" compareValue="ABE">
+		其他领料　按　排序号　日期　来排序 
+			ORDER BY   indexNo,pxdat, psbh
+		 </isNotEqual>-->
+    </select>
+    
+    <update id="updateState" parameterClass="zgTorderPlan">
+	    <![CDATA[
+	        UPDATE ZG_T_ORDER_PLAN SET
+		        STATE = #state#
+		    WHERE CUID = #cuid#
+	    ]]>
+    </update>
+    
+       <update id="updateOrderPlanForBatch" parameterClass="zgTorderPlan">
+	    <![CDATA[
+	        UPDATE ZG_T_ORDER_PLAN SET
+		        STATE = #state#,
+		        plan_date=#planDate#
+		    WHERE CUID = #cuid#
+	    ]]>
+    </update>
+    
+    <delete id="delete_ZG_T_Carplan_By_OrderplanId" parameterClass="java.lang.String">
+		delete from zg_t_carplan t where t.cuid  in (select temp.car_plan_id from zg_t_carbom temp where temp.order_planid=#cuid#)
+	</delete>
+	
+	<delete id="delete_ZG_T_Carbom_By_OrderplanId" parameterClass="java.lang.String">
+		delete  from zg_t_carbom t where t.order_planid=#cuid#
+	</delete>
+	
+	<select id="getDeptIdUserIdLgortListByOrderPlanId" resultClass="java.util.HashMap">
+		 select distinct pb.department_id, ob.lgort, pb.user_id
+	   from zg_t_order_planbom pb, zg_t_orderbom ob
+	  where pb.order_plan_id = #orderPlanId#
+	    and pb.order_bom_id = ob.cuid
+	</select>
+	
+	<select id="getCarBomByOrderPlanId" resultClass="java.util.HashMap">
+		select pb.state,
+	         pb.cuid as order_planbom_id,
+	         pb.order_bom_id,
+	         pb.order_id,
+	         nvl(pb.car_num, 0) - nvl(pb.plan_num, 0) num
+	    from zg_t_order_planbom pb, zg_t_orderbom ob
+	   where pb.order_plan_id = '$orderPlanId$'
+	     and pb.order_bom_id = ob.cuid
+	     and pb.department_id = '$deptId$'
+	     and ob.lgort = '$storageId$'
+	     and pb.user_id = '$userId$'
+	     and pb.state = '8'
+	     and nvl(pb.car_num, 0) - nvl(pb.plan_num, 0) != 0
+	</select>
+	
+	<update id="generateCarBomByOrderPlanId"  parameterClass="java.util.HashMap">
+	 insert into zg_t_carbom(cuid,car_plan_id,order_planbom_id,order_bom_id,order_id,plan_num,real_num)
+	  select sys_guid(),'$carPlanId$',order_planbom_id,order_bom_id,order_id,num,num from(
+	   select pb.state,
+	         pb.cuid as order_planbom_id,
+	         pb.order_bom_id,
+	         pb.order_id,
+	         nvl(pb.car_num, 0) - nvl(pb.plan_num, 0) num
+	    from zg_t_order_planbom pb, zg_t_orderbom ob
+	   where pb.order_plan_id = '$orderPlanId$'
+	     and pb.order_bom_id = ob.cuid
+	     and pb.department_id = '$deptId$'
+	     and ob.lgort = '$storageId$'
+	     and pb.user_id = '$userId$'
+	     and pb.state = '8'
+	     and nvl(pb.car_num, 0) - nvl(pb.plan_num, 0) != 0)
+	</update>
+	
+	<update id="updateZgtOrderPlanBomByOrderPlanId"  parameterClass="java.util.HashMap">
+	     update  zg_t_order_planbom pb set pb.plan_num=pb.car_num,pb.state='$state$' where exists
+			 (select 1 from  zg_t_orderbom ob
+			   where pb.order_plan_id = '$orderPlanId$'
+			     and pb.order_bom_id = ob.cuid
+			     and pb.department_id = '$deptId$'
+			     and ob.lgort ='$storageId$'
+			     and pb.user_id = '$userId$'
+			     and pb.state = '8'
+			     and nvl(pb.car_num, 0) - nvl(pb.plan_num, 0) != 0)
+	</update>
+	
+	
+	<update id="updateOrderPlanBomState"  parameterClass="java.util.HashMap">
+	    update zg_t_order_planbom t set t.state='$state$'  where t.order_plan_id= '$orderPlanId$' and (t.state!='9' or t.state is null)
+	</update>
+	
+	<!-- 今天之前的没有完成的订单，今天的订单和有需求提前领料的订单和 -->
+	<select id="getCurDateTotalOrderCount" resultClass="java.lang.Integer">
+		select count(distinct cuid) from  (
+		( select distinct t.cuid from zg_t_order_plan t, zg_t_order_task task
+        <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+	      where  t.order_task_id=task.cuid
+	      <![CDATA[  and task.flag <> '-1'
+	     
+	  			 and t.state<>'9'
+	  	  ]]>
+	      and  t.plan_type=#type#
+	      and  trunc(#pxDate#)>trunc(task.px_date)
+	      and  t.plant='$plant$'
+	       <isNotEqual property="operatorId" compareValue="0"> 
+         	and ma.employee_id='$operatorId$'
+            and task.plant=ma.org_id
+          </isNotEqual>
+          <isNotEmpty prepend="AND" property="arbpl">
+              task.arbpl='$arbpl$'
+           </isNotEmpty>) union
+		
+		( select distinct t.cuid from zg_t_order_plan t,  zg_t_order_task task
+        <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+	      where t.order_task_id=task.cuid
+	      <![CDATA[  and task.flag <> '-1']]>
+	      and  t.plan_type=#type#
+	      and  trunc(#pxDate#)=trunc(task.px_date)
+	      and  t.plant='$plant$'
+	       <isNotEqual property="operatorId" compareValue="0"> 
+         	and ma.employee_id='$operatorId$'
+            and t.plant=ma.org_id
+          </isNotEqual>
+          <isNotEmpty prepend="AND" property="arbpl">
+              task.arbpl='$arbpl$'
+           </isNotEmpty>) union
+           
+         ( select distinct t.cuid from zg_t_order_plan t, zg_t_order_task task,  zg_t_order_taskbom taskbom,
+          			 zg_t_orderbom           orderbom,
+       				 zg_t_order_planbom      planbom,
+        			 zg_t_bom                bom,
+        			 zg_materiel             mat
+        <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+	      where t.order_task_id=task.cuid
+	       and orderbom.order_id= task.order_id
+   			 and orderbom.cuid=taskbom.order_bom_id
+            and planbom.taskbom_id=taskbom.cuid
+   			and planbom.order_plan_id=t.cuid
+   			and orderbom.idnrk=bom.idnrk
+ 			and bom.matkl=mat.id
+   			and mat.advance = '1'
+   			   <![CDATA[   and task.flag <> '-1']]>
+    		<![CDATA[and planbom.state <> '9'  ]]>
+	      
+	      and  t.plan_type=#type#
+	      and trunc(task.px_date)>trunc(#pxDate#)
+	      and  t.plant='$plant$'
+	       <isNotEqual property="operatorId" compareValue="0"> 
+         	and ma.employee_id='$operatorId$'
+            and task.plant=ma.org_id
+          </isNotEqual>
+          <isNotEmpty prepend="AND" property="arbpl">
+              task.arbpl='$arbpl$'
+          </isNotEmpty>
+           
+           
+           ))
+	</select>
+	
+	<!-- 当天订单总数 -->
+	<select id="getCurDateTotalOrderCount1" resultClass="java.lang.Integer">
+		select count(distinct cuid) from  (
+		
+		( select distinct t.cuid from zg_t_order_plan t,ZG_T_ORDER zto,zg_t_order_task task
+        <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+	      where 
+	      zto.cuid=task.order_id
+	      and task.cuid=t.order_task_id 
+	      <![CDATA[  and zto.order_state<>'-1' ]]>
+	      and  t.plan_type=#type#
+	      and  trunc(#pxDate#)=trunc(task.px_date)
+	      and  task.plant='$plant$'
+	       <isNotEqual property="operatorId" compareValue="0"> 
+         	and ma.employee_id='$operatorId$'
+            and task.plant=ma.org_id
+          </isNotEqual>
+          <isNotEmpty prepend="AND" property="arbpl">
+              task.arbpl='$arbpl$'
+           </isNotEmpty>) 
+         )
+	</select>
+	
+		<select id="getCurDateFinishedOrderCount" resultClass="java.lang.Integer">
+		     select count(1) from zg_t_order_plan t, zg_t_order_task task
+       	 <isNotEqual property="operatorId" compareValue="0"> ,fw_organization_manager ma</isNotEqual>
+		      where  t.order_task_id=task.cuid
+		      <![CDATA[   and task.flag <> '-1' ]]>
+		      and  t.plan_type=#type#
+		      and  trunc(#pxDate#)=trunc(task.px_date)
+		      and  t.plant='$plant$'
+      	<isNotEqual property="operatorId" compareValue="0"> 
+         	and ma.employee_id='$operatorId$'
+            and t.plant=ma.org_id
+          </isNotEqual>
+          <isNotEmpty prepend="AND" property="arbpl">
+              task.arbpl='$arbpl$'
+           </isNotEmpty>
+      and t.state='9' 
+	</select>
+	
+	<select id="getOrderPlanListByOrderTaskId" resultMap="zgTorderPlanResult" >
+    	select t.* from zg_t_order_plan t where t.order_task_id='$orderTaskId$'
+    		<isNotEmpty prepend="AND" property="sortf">
+	    		 t.plan_type in ('$sortf$')
+	    	</isNotEmpty>
+    </select>
+    
+    <select id="getOrderPlanListByOrderId" resultMap="zgTorderPlanResult" >
+    	select t.* from zg_t_order_plan t,zg_t_order_task task where task.cuid=t.order_task_id and task.order_id='$orderId$'
+    </select>
+	
+</sqlMap>
