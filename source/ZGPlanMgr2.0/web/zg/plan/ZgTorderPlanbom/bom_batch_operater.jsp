@@ -157,7 +157,6 @@
 		function batchUpdate() {
 			
 			var judge;//用来判断有没有bom组件在计划单中
-			
 			var jsonString = this.buildJsonString();//在这里取修改页面上的东西的
 			DWREngine.setAsync(false);//DWR同步
 			if(jsonString!="false"){
@@ -187,7 +186,11 @@
 				var planDate=document.getElementById(cuid+"planDate").value;
 				var planStartTime=document.getElementById(cuid+"planStartTime").value;
 				var planEndTime=document.getElementById(cuid+"planEndTime").value;
-				
+			//	alert(document.getElementById(cuid+"meins"));
+				var meins=document.getElementById(cuid+"meins").value;
+			//	alert(document.getElementById(cuid+"meins"));
+				var msehl=document.getElementById(cuid+"msehl").value;
+			//	alert(document.getElementById(cuid+"meins"));
 				if(carNum==""){
 					alert("计划领取数量不能为空！");
 					return "false";
@@ -199,6 +202,8 @@
 			    josnString = josnString +'"planDate":"'+planDate+'",';
 			    josnString = josnString +'"planStartTime":"'+planStartTime+'",';
 			    josnString = josnString +'"planEndTime":"'+planEndTime+'",';
+			     josnString = josnString +'"meins":"'+meins+'",';
+			    josnString = josnString +'"msehl1":"'+msehl+'",';
 			    josnString = josnString +'"cuid":"'+cuid+'"},';
 			}
 			if(josnString.length>0){
@@ -244,6 +249,12 @@
 		var groupList = [];
 		<c:forEach items="${roles}" var="role">
 			groupList.push({value:'${role.cuid}',labelCn:'${role.labelCn}'});
+		</c:forEach>
+		
+		
+		var unit = [];
+		<c:forEach items="${units}" var="unit">
+			unit.push({value:'${unit.meins}',labelCn:'${unit.msehl}'});
 		</c:forEach>
 		
 		var times = [];
@@ -412,9 +423,6 @@
 									BOM组件描述
 								</td>
 								<td class="tableHeader">
-									基本单位
-								</td>
-								<td class="tableHeader">
 									计划领取数量
 								</td>
 								<c:if test="${zgTorderPlan.state=='2'||zgTorderPlan.state=='8'}">
@@ -422,6 +430,9 @@
 									审核数量
 								</td>
 									</c:if>
+								<td class="tableHeader">
+									单位
+								</td>
 								<td class="tableHeader">
 									领料组
 								</td>
@@ -478,9 +489,6 @@
 										${obj.maktx1}
 									</td>
 									<td align="center">
-										${obj.msehl1}
-									</td>
-									<td align="center">
 									
 										<c:choose>
 											<c:when test="${(zgTorderPlan.state eq '8')||(zgTorderPlan.state eq '1')}">${obj.carNum}</c:when>
@@ -519,12 +527,18 @@
 										</td>
 										</c:when>
 										<c:otherwise>
+										<td editable="true" editdata="unit" style="width:100px">
+											<input style="width:100px" type="hidden" attr="units" edittype="value" name="orderPlanboms[${n.count-1}].meins" id="${obj.cuid}meins" value="${obj.meins }"/>
+											<input  style="width:100px" type="text" attr="units" edittype="labelCn" class="readOnlyInput" readonly="readonly" size="8" name="unit_label" id="${obj.cuid}msehl" value="${obj.msehl1}"/>
+										</td>
 										<td editable="true" editdata="groupList" changehandle="clearValue('${n.count-1}userId','${obj.cuid}')">
 											<input type="hidden" attr="groups" edittype="value" name="orderPlanboms[${n.count-1}].departmentId" id="${n.count-1}departmentId"/>
 											<input type="hidden" attr="groups" edittype="value" id="${obj.cuid}groupId" value="${obj.departmentId}"/>
 											<input type="hidden" name="groupOldNames_label" id="${obj.cuid}groupOldLabelCn" value="${obj.departmentId_labelCn}"/>
 											<input type="text" edittype="labelCn" class="readOnlyInput" readonly="readonly" size="8" name="groups_label" id="${obj.cuid}groupName" value="${obj.departmentId_labelCn}"/>
 										</td>
+										
+										
 										<td editable="true" editdata="getUserData('${n.count-1}departmentId')" changehandle="changeOther('${obj.cuid}')">
 											<input type="hidden" attr="employees" edittype="value" name="orderPlanboms[${n.count-1}].userId" id="${n.count-1}userId"/>
 											<input type="hidden" attr="employees" edittype="value" id="${obj.cuid}userId" value="${obj.userId}"/>

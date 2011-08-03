@@ -184,6 +184,20 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
        		 	 <c:if test="${obj.orgId==defaultOrgId }"><option value="${ obj.orgId}"  selected >${ obj.orgId}</option></c:if>
        		</c:forEach>
         </select> </c:when>
+        <c:when test="${pageRequest.filters.planType=='ABCA'}">预焊线A今日领料  &nbsp;&nbsp;&nbsp;&nbsp;生产厂：
+           <select name="plant" id="plant" style="width:100px" onChange="plantOnChange(this.value)">
+       		<c:forEach items="${mangerOrgListABCA}" var="obj">
+       		 <c:if test="${obj.orgId!=defaultOrgId }"><option value="${ obj.orgId}"   >${ obj.orgId}</option></c:if>
+       		 	 <c:if test="${obj.orgId==defaultOrgId }"><option value="${ obj.orgId}"  selected >${ obj.orgId}</option></c:if>
+       		</c:forEach>
+        </select> </c:when>
+        <c:when test="${pageRequest.filters.planType=='ABDA'}">预装线A今日领料  &nbsp;&nbsp;&nbsp;&nbsp;生产厂：
+           <select name="plant" id="plant" style="width:100px" onChange="plantOnChange(this.value)">
+       		<c:forEach items="${mangerOrgListABDA}" var="obj">
+       		 <c:if test="${obj.orgId!=defaultOrgId }"><option value="${ obj.orgId}"   >${ obj.orgId}</option></c:if>
+       		 	 <c:if test="${obj.orgId==defaultOrgId }"><option value="${ obj.orgId}"  selected >${ obj.orgId}</option></c:if>
+       		</c:forEach>
+        </select> </c:when>
            <c:when test="${pageRequest.filters.planType=='CHANGE'}">换料领料  &nbsp;&nbsp;&nbsp;&nbsp;生产厂：
            <select name="plant" id="plant" style="width:100px" onChange="plantOnChange(this.value)">
        		<c:forEach items="${mangerOrgListCHANGE}" var="obj">
@@ -194,7 +208,10 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
         </c:choose>
        </if>	
        <c:if test="${ empty viewModel }">
-               &nbsp;&nbsp;&nbsp;&nbsp;<font style="font-size:12px;">当前排序日期：</font><font id="dateDiv" color="red"><fmt:formatDate value='${curDate}' pattern="yyyy-MM-dd" /></font> <a href="javascript:nextDay()"> <font color="blue">切换下一天</font></a>
+               &nbsp;&nbsp;&nbsp;&nbsp;<font style="font-size:12px;">当前排序日期：</font><font id="dateDiv" color="red"><fmt:formatDate value='${curDate}' pattern="yyyy-MM-dd" /></font>
+             <c:if test="${operatorInfo.operatorId=='0' or fn:indexOf(operatorInfo.roles,'PXMANAGER')>=0}">
+                <a href="javascript:nextDay()"> <font color="blue">切换下一天</font></a>
+             </c:if>  
        </c:if>
           <c:if test="${  viewModel=='view' }">
           <c:forEach items="${dateList}" varStatus="n" var="date" begin="0" end="0">

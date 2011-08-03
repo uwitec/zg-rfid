@@ -106,17 +106,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					},
 					{id:'gear',
 						handler:function(){
-							if(level==1) {alert("不能编辑一级物料组!");return;}
+							//if(level==1) {alert("不能编辑一级物料组!");return;}
 							DWREngine.setAsync(false);
 							ZgMaterielDwrAction.isLorgNode(orgId,function(lorgNode){
 								if(lorgNode!=false&&orgId!=null&&obj!=null){
 									var sFeatures="dialogHeight: 300px;dialogWidth:550px";
-									var firstShowQueryUrl="${ctx}/zg/materiel/ZgMateriel/editMateriel.do?id="+orgId+"&orgName="+URLEncoder.encode(orgName)+"&parentName="+URLEncoder.encode(parentName);
+									var firstShowQueryUrl="${ctx}/zg/materiel/ZgMateriel/editMateriel.do?id="+orgId+"&orgName="+URLEncoder.encode(orgName)+"&parentName="+URLEncoder.encode(parentName)+"&level="+level;
 									var returnValue=window.showModalDialog(firstShowQueryUrl,'',sFeatures);
 									if(returnValue!=null){
 										if(returnValue.parentId==obj.node.parentNode.attributes.cuid){
 											obj.node.setText(returnValue.materielName);
 										}else{
+											if(level==1) return;
 										//找到父节点，并把原来的节点前台删除，在父节点后加载一个节点
 											obj.node.setText(returnValue.materielName);
 											var name=returnValue.materielName;

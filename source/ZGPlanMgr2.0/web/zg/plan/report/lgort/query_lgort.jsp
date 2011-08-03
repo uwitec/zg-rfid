@@ -100,6 +100,17 @@
 		
 		}
 		
+		function selectLgort(){
+				var ogrIds=$("#s_lgort").val();
+				var sFeatures="dialogHeight: 400px;dialogWidth:300px";
+				var returnValue = window.showModalDialog(ctx+"/frame/sys/FwEmployee/edit_FwOrganazationByTree.jsp?templateId=lgort&orgIds="+ogrIds,'',sFeatures);
+				if(returnValue) {
+						var id = returnValue.id.substring(1);
+						var label = returnValue.label.substring(1);
+						$("#s_lgort").val(id);
+				}
+		}
+		
 		
 	</script>
 </head>
@@ -175,18 +186,19 @@
 					<td>
 					<input type="text" name="s_idnrk" maxlength="40"/>
 					</td>
-					<td class="label">发料仓库</td>
-					<td><input type="text" name="s_lgort" maxlength="40"/>  </td>
+					<td class="label">发料仓库：</td>
+					<td><input type="text" name="s_lgort" id="s_lgort" maxlength="40" onclick="selectLgort()"/> 
+					<img src="./resources/images/frame/autocomplete.png" style="cursor: pointer" onclick="selectLgort()"/> </td>
 					
 				</tr>
 			<tr>
 			<td class="label">供应商：</td>
 					<td><input type="text" name="s_suppliers" maxlength="40"/></td>
-					<td class="label">领料类型</td>
+					<td class="label">领料类型：</td>
 					<td>
 					<select name="s_planType">
 					<option value="">全部</option>
-					<option value="ABC','ABD','ABE">正常领料</option>
+					<option value="${needSortf }">正常领料</option>
 					<option value="BACK">退料</option>
 					<option value="CHANGE">换料</option>
 					<option value="RENEW">补料</option>

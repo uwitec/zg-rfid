@@ -335,7 +335,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							</c:when>
 							<c:otherwise>
 							<td editable="true" editdata="sortfList" align="center">
-								<input type="text" edittype="value" style="border:0;width:30px" readonly="readonly" name="sortfs" id="${obj.cuid}_sortfSel" key="${obj.cuid}" value="${obj.sortf}"/>
+								<input type="text" edittype="value" style="border:0;width:38px" readonly="readonly" name="sortfs" id="${obj.cuid}_sortfSel" key="${obj.cuid}" value="${obj.sortf}"/>
 								<input type="hidden"  readonly="readonly" name="lgorts"  value="${obj.lgort}"/>
 								<input type="hidden"  readonly="readonly" name="cuids"  value="${obj.cuid}_sortfSel"/>
 								<input type="hidden"  readonly="readonly" name="idnrks"  value="${obj.idnrk}"/>
