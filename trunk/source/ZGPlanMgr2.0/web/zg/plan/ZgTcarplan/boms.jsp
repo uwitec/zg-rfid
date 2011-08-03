@@ -105,6 +105,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var msehl=document.getElementById("msehl"+num).value;
 			var bomId_labelCn=document.getElementById("bomId_labelCn"+num).value;
 			var idnrk=document.getElementById("idnrk"+num).value;
+			var meins=document.getElementById("meins"+num).value;
+			
 			
 			var orderPlanId = '${orderPlanId}';
 			josnString=josnString+'{' ;
@@ -112,11 +114,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			josnString = josnString +'"bomId":"'+bomId+'",';
 			josnString = josnString +'"maktx1":"'+maktx+'",';
 			josnString = josnString +'"msehl1":"'+msehl+'",';
+			josnString = josnString +'"meins":"'+meins+'",';
 			josnString = josnString +'"lgort_lableCn":"'+window.parent.lgortText+'",';
 			josnString = josnString +'"bomId_labelCn":"'+bomId_labelCn+'",';
 			josnString = josnString +'"idnrk":"'+idnrk+'",';
 			josnString = josnString +'"orderPlanId":"'+orderPlanId+'"}';
 			josnString='['+josnString+']';
+			//alert(josnString);
 			if(obj.checked){//添加bom组件
 					ZgTorderPlanbomDwrAction.addPlanbomByCar(josnString,"<%=session%>",function(data){
 						if(data) {
@@ -211,6 +215,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<input type="hidden" name="bomId_labelCn" id="bomId_labelCn${n.count-1}" value="${obj.labelCn}"/>
 						<input type="hidden" name="maktx" id="maktx${n.count-1}" value="${obj.maktx}"/>
 						<input type="hidden" name=msehl id="msehl${n.count-1}" value="${obj.msehl}"/>
+						<input type="hidden" name="meins" id="meins${n.count-1}" value="${obj.meins}"/>
 						<input type="hidden" name=msehl id="idnrk${n.count-1}" value="${obj.idnrk}"/>
 						<input type="hidden" name="bomId" id="bomId${n.count-1}" value="${obj.cuid}"/>
 						<input type="hidden" attr="orderPlanId" name="orderPlanId" id="orderPlanId${n.count-1}" value="${orderPlanId}"/>

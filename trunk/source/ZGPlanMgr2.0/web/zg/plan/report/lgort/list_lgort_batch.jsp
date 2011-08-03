@@ -72,6 +72,7 @@ for(SortInfo si:list){
 							<td class="tableHeader">领料部门<%=map.get("ec_image_t0_MAKTX2")==null?"":map.get("ec_image_t0_MAKTX2")%></td>
 							<td class="tableHeader">物料编码<%=map.get("ec_image_t0_PLANT")==null?"":map.get("ec_image_t0_PLANT")%></td>
 							<td class="tableHeader">物料描述<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
+							<td class="tableHeader">基本单位<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
 							<td class="tableHeader">发料仓库编号<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
 							<td class="tableHeader">发料仓库<%=map.get("ec_image_t0_MATNR")==null?"":map.get("ec_image_t0_MATNR")%></td>
 							<td class="tableHeader">生产批量<%=map.get("ec_image_t0_MAKTX1")==null?"":map.get("ec_image_t0_MAKTX1")%></td>
@@ -95,6 +96,7 @@ for(SortInfo si:list){
 							<td align="center">${obj.DEPTNAME}</td>
 							<td>${obj.IDNRK}</td>
 							<td align="left">${obj.MAKTX}</td>
+							<td align="left">${obj.MSEHL}</td>
 							<td >${obj.LGORT}</td>
 							<td align="left">${obj.LGORTNAME}</td>
 							<td>${obj.CAR_NUM}</td>

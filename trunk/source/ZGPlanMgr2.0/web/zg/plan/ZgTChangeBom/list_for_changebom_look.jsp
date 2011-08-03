@@ -302,10 +302,8 @@
 				style="border-top: 1px solid #A8CFEB; margin-top: 3px;">
 		 <tr rowspan="2">
 		 <td  class="title" width="7%">		<c:if test="${model.planType=='CHANGE'}">换料原因</c:if>
-								<c:if test="${model.planType=='BACK'}">退料原因</c:if>
-								<c:if test="${model.planType=='ABCBACK'}">退料原因</c:if>
-								<c:if test="${model.planType=='ABDBACK'}">退料原因</c:if>
-								<c:if test="${model.planType=='ABEBACK'}">退料原因</c:if>：</td>
+								<c:if test="${fn:indexOf(model.planType,'BACK')>=0}">退料原因</c:if>
+								：</td>
 		 <td onclick="choose()"  class="title">
 		 <select name="back_reason" id="back_reason" align="left" >
 		            <option value="">请选择</option>

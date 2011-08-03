@@ -197,6 +197,24 @@
  				</c:forEach>
 	        </select>
          </c:when>
+            <c:when test="${orderPlanType=='ABDA'}">预装线A今日领料
+         	&nbsp;&nbsp;&nbsp;&nbsp;生产厂：
+	         <select name="plant" id="plant" style="width:100px" onChange="plantOnChange(this.value)">
+	       		<c:forEach items="${plantListABDA}" var="obj">
+	       		 	<c:if test="${obj.ORG_ID!=defaultPlant }"><option value="${ obj.ORG_ID}"   >${ obj.ORG_ID}</option></c:if>
+ 					<c:if test="${obj.ORG_ID==defaultPlant }"><option value="${ obj.ORG_ID}" selected  >${ obj.ORG_ID}</option></c:if>	       		
+ 				</c:forEach>
+	        </select>
+         </c:when>
+            <c:when test="${orderPlanType=='ABCA'}">预焊线A今日领料
+         	&nbsp;&nbsp;&nbsp;&nbsp;生产厂：
+	         <select name="plant" id="plant" style="width:100px" onChange="plantOnChange(this.value)">
+	       		<c:forEach items="${plantListABCA}" var="obj">
+	       		 	<c:if test="${obj.ORG_ID!=defaultPlant }"><option value="${ obj.ORG_ID}"   >${ obj.ORG_ID}</option></c:if>
+ 					<c:if test="${obj.ORG_ID==defaultPlant }"><option value="${ obj.ORG_ID}" selected  >${ obj.ORG_ID}</option></c:if>	       		
+ 				</c:forEach>
+	        </select>
+         </c:when>
           <c:when test="${orderPlanType=='ABE'}">总装线今日领料
           	&nbsp;&nbsp;&nbsp;&nbsp;生产厂：
 	         <select name="plant" id="plant" style="width:100px" onChange="plantOnChange(this.value)">

@@ -124,10 +124,7 @@
 								            <c:when test="${obj.PLAN_TYPE=='CHANGE'}">换料</c:when>
 								            <c:when test="${obj.PLAN_TYPE=='BACK'}">退料</c:when>
 								            <c:when test="${obj.PLAN_TYPE=='RENEW'}">补领料</c:when>
-								                   <c:when test="${obj.PLAN_TYPE=='ABCBACK'}">BOM物料替换变更退料</c:when>
-								            <c:when test="${obj.PLAN_TYPE=='ABDBACK'}">BOM物料替换变更退料</c:when>
-								            <c:when test="${obj.PLAN_TYPE=='ABEBACK'}">BOM物料替换变更退料</c:when>
-										
+								            <c:otherwise>BOM物料替换变更退料</c:otherwise>
 										</c:choose>
 											
 											

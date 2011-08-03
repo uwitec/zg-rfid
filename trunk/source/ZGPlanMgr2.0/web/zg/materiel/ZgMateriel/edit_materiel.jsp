@@ -64,6 +64,7 @@
 				var lgort=document.getElementById('lgort').value;
 				var id=document.getElementById('id').value;
 				var parentId=document.getElementById('parentName_value').value;
+				var advance=document.getElementById('advance').value;
 				if(chooseSelf(parentId,cuid)){
 					DWREngine.setAsync(false);
 					ZgMaterielDwrAction.validNameForUpdate(cuid,parentId,materielName,function(sameNameFlag){
@@ -80,11 +81,15 @@
 										}
 									}
 									if(lgort.length==0){
-										alert("请选择仓库!");
-										return;
+										if('${level}'!='1'){
+											alert("请选择仓库!");
+											return;
+										}
+										
 									}
-									ZgMaterielDwrAction.updateMateriel(cuid,materielName,id,parentId,lgort);
+									ZgMaterielDwrAction.updateMateriel(cuid,materielName,id,parentId,lgort,advance,'${level}');
 									alert('修改成功!');
+									
 									var obj=new Object();
 									obj.parentId=parentId;
 									obj.materielName=materielName;
@@ -165,12 +170,29 @@
 								<span style="color:red">*</span>物料组名称：
 							</td>	
 							<td>
-						   		<input type="text" id="materielName"  size="30" maxlength = "20" name="materielName" value="${materielName}" onfocus="nameValidSpanHidden()"class="required"/>
+								<c:choose>
+										<c:when test="${level=='1'}">
+											<input type="text" readOnly="true" id="materielName"  size="30" maxlength = "20" name="materielName" value="${materielName}" onfocus="nameValidSpanHidden()"class="required"/>
+											
+										</c:when>
+										<c:otherwise>
+											<input type="text" id="materielName"  size="30" maxlength = "20" name="materielName" value="${materielName}" onfocus="nameValidSpanHidden()"class="required"/>
+										
+										</c:otherwise>
+								</c:choose>
 						   		<input type="hidden" name="cuid" value="${cuid }"id="cuid"/>
 						   		<span id="materielNameValid" style="display:none ">该机构下有同名物料组!</span>
 							</td>
 						</tr>
-						
+						<tr>
+							<td class="label">是否提前领料：</td>
+							<td>
+								<select name="advance" id="advance">
+								<option value="0" <c:if test="${advance=='0' }">selected</c:if>>否</option>
+								<option value="1" <c:if test="${advance=='1' }">selected</c:if>>是</option>
+								</select>
+							</td>
+						</tr>
 						
 						<tr>
 							<td class="label">上层机构：</td>
@@ -193,15 +215,25 @@
 									<c:if test="${status.count%7==0}">
 									<br/>
 									
-									</c:if>
-											<c:choose>
+									</c:if>	
+										<c:choose>
+										<c:when test="${level=='1'}">
+											 ${obj.LGORT}
+														<input readOnly="true" type="hidden" checked="true" name="lgort" value="${obj.LGORT}"/>
+										</c:when>
+										<c:otherwise>
+										 <c:choose>
 													<c:when test="${obj.checked=='check'}">
+													
 														<input type="checkBox" checked="true" name="lgort" value="${obj.LGORT}"/>${obj.LGORT}
 													</c:when>
 													<c:otherwise>
 														<input type="checkBox"  name="lgort" value="${obj.LGORT}"/>${obj.LGORT}
 													</c:otherwise>
 											</c:choose>
+										</c:otherwise>
+										</c:choose>
+											
 	
 				
 								</c:forEach>

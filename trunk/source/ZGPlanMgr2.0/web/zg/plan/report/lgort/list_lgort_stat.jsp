@@ -115,7 +115,7 @@ for(SortInfo si:list){
 							<td>${obj.CAR_NUM}</td>
 							<td align="center">
 							<c:choose>
-							 <c:when test="${obj.ORDER_PLAN_TYPE=='BACK'}">退料</c:when>
+							 <c:when test="${fn:indexOf(obj.ORDER_PLAN_TYPE,'BACK')>=0}">退料</c:when>
 							 <c:when test="${obj.ORDER_PLAN_TYPE=='CHANGE'}">换料</c:when>
 							 <c:when test="${obj.ORDER_PLAN_TYPE=='RENEW'}">补领料</c:when>
 							 <c:otherwise>正常领料</c:otherwise>
