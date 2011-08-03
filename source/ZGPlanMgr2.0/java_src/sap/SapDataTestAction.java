@@ -92,7 +92,7 @@ public class SapDataTestAction extends BaseStruts2Action
 		int batchNo = getBaseDao().getSeq("SEQ_BATCH_NO");
 		TsysIfaceLog tsysIfaceLog = beforeInvokeDeal("ZSTFC_CONNECTION_RFID_02",batchNo);
 		try {
-//			this.writeExcelPxDataToDb(batchNo);
+			this.writeExcelPxDataToDb(batchNo);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -158,7 +158,7 @@ public class SapDataTestAction extends BaseStruts2Action
 		//写入关系数据
 	//	BOM 组件()	物料描述()	度量单位文本(最多30个字符）()	物料组()	库存地点()	备注()	认证清单()	供应商或债权人的帐号()	名称 1()
 
-		String[] bomFields = {"IDNRK","MAKTX2","MSEHL2","MATKL","LGORT","ZBZ","ZRZQD","LIFNR","NAME1"};
+		String[] bomFields = {"IDNRK","MAKTX2","MSEHL2","MATKL","LGORT","ZBZ","ZRZQD","LIFNR","NAME1","MEINS"};
 		List<Map> list = excelService.parseExcelFile("E:\\sap\\ZRFC_GET_ZBMAT__ZBMAT.xls",bomFields,"ZG_T_BOM_TEMP");
 		int i = 0;
 		for(Map map : list){

@@ -48,6 +48,7 @@ public class ZgTcarbom extends BaseEntity {
 	private Long oldRealNum;
 	private long oldPlanNum;
 	private String storageUserId;
+	private String storageUserName;
 	private java.util.Date carDate;
 	
 	
@@ -196,5 +197,19 @@ public class ZgTcarbom extends BaseEntity {
 	 */
 	public void setOrderTaskId(java.lang.String orderTaskId) {
 		this.orderTaskId = orderTaskId;
+	}
+
+	/**
+	 * @return the storageUserName
+	 */
+	public String getStorageUserName() {
+		return storageUserName;
+	}
+
+	/**
+	 * @param storageUserName the storageUserName to set
+	 */
+	public void setStorageUserName(String storageUserName) {
+		this.storageUserName = storageUserName;
 	}
 }

@@ -36,6 +36,7 @@ import com.boco.frame.sys.base.model.TsysIfaceLog;
 import com.boco.frame.sys.base.service.TsysIfaceLogBo;
 import com.boco.zg.plan.base.model.ZgTorderLock;
 import com.boco.zg.plan.base.model.ZgTorderTemp;
+import com.boco.zg.plan.base.service.ZgTcarbomBo;
 import com.boco.zg.plan.base.service.ZgTorderLockBo;
 import com.boco.zg.plan.base.service.ZgTorderTempBo;
 import com.boco.zg.plan.service.ZgTorderExBo;
@@ -90,6 +91,11 @@ public class LoadRequestProcessThread implements Runnable {
 	public ZgTorderLockBo getZgTorderLockBo(){
 		return (ZgTorderLockBo) ApplicationContextHolder
 		.getBean("zgTorderLockBo");
+	}
+	
+	public ZgTcarbomBo getZgTcarbomBo(){
+		return (ZgTcarbomBo) ApplicationContextHolder
+		.getBean("zgTcarbomBo");
 	}
 
 	public void run() {
@@ -266,6 +272,9 @@ public class LoadRequestProcessThread implements Runnable {
 	 * 		2把装车计划都标记为已同步（设置事务）
 	 * 		3把装车计划同步到sap接口
 	 * 		4如果同步成功则提交第2步的事务　否则回滚
+	 * 
+	 * 注：回传数据有两个表　result　代表整体回传情况
+	 * 					FZRFIDMESG表RFFLAG字段：代表每个物料的同步处理情况，值为'X'代表同步成功
 	 * @throws SQLException 
 	 * @throws JCoException 
 	 */
@@ -308,26 +317,38 @@ public class LoadRequestProcessThread implements Runnable {
 				
 				status= transactionManager.getTransaction(def); 
 
-				 try {//本次同步的装车计划标识为已同步    用jdbc来控制事务
-					for(Map bom:synBomList){
-						String carPlanIds=IbatisDAOHelper.getStringValue(bom, "CARPLANCUID");
-						carPlanIds=carPlanIds.replace(",", "','");
-						getJdbcTemplate().update(" update zg_t_carplan t set t.syn='1' where t.cuid in ('"+carPlanIds+"')");
-					}
-				        
-				 } catch (DataAccessException ex) { //出错则事务回滚
-					 transactionManager.rollback(status); 
-					 tsysIfaceLog.setRemark("更新数据库失败");
-					 tsysIfaceLog.setDataStauts(Constants.INTERFACE_DATA_STAUTS_FAILURE);
-					getTsysIfaceLogBo().update(tsysIfaceLog);
-				     throw ex;  
-				 } 
+//				 try {//本次同步的装车计划标识为已同步    用jdbc来控制事务
+//					for(Map bom:synBomList){
+//						String carPlanIds=IbatisDAOHelper.getStringValue(bom, "CARPLANCUID");
+//						carPlanIds=carPlanIds.replace(",", "','");
+//						getJdbcTemplate().update(" update zg_t_carplan t set t.syn='1' where t.cuid in ('"+carPlanIds+"')");
+//					}
+//				        
+//				 } catch (DataAccessException ex) { //出错则事务回滚
+//					 transactionManager.rollback(status); 
+//					 tsysIfaceLog.setRemark("更新数据库失败");
+//					 tsysIfaceLog.setDataStauts(Constants.INTERFACE_DATA_STAUTS_FAILURE);
+//					 getTsysIfaceLogBo().update(tsysIfaceLog);
+//				     throw ex;  
+//				 } 
 				
 				
-				 function.execute(destination);
+				function.execute(destination);
 				
 				
 				SapResult result=CommonUtils.convertTableToResult((JCoTable) function.getTableParameterList().getTable("RETURN"));
+				
+				
+				//循环遍历　synTable　具体更新每个bom的同步状态　RFFLAG为同步标识　，X为同步成功
+				for (int i = 0; i < synTable.getNumRows(); i++) {
+					synTable.setRow(i);
+					String flag = synTable.getString("RFFLAG");
+					String carbomIds=synTable.getString("JCTXT");
+					if("X".equals(flag)){
+						getZgTcarbomBo().updateSynFlagByCarBomIds(carbomIds,flag);
+					}
+				}
+				
 				
 				if(Constants.InterFaceSynBomSap.SUCCESS.value().equals(result.getNumber())){//接口处理成功　
 					//事务提交
@@ -340,8 +361,6 @@ public class LoadRequestProcessThread implements Runnable {
 					tsysIfaceLog.setRemark(result.getNumber()+":"+result.getMessage());
 					tsysIfaceLog.setDataStauts(Constants.INTERFACE_DATA_STAUTS_FAILURE);
 					getTsysIfaceLogBo().update(tsysIfaceLog);
-					
-					
 				}
 				
 			}

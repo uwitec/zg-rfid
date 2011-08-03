@@ -801,7 +801,7 @@
 	     from zg_t_order_planbom t, zg_t_order_plan plan
 	    where t.order_plan_id = plan.cuid
 	      and t.parent_id = '$planBomId$'
-	      and plan.plan_type in ('ABCBACK', 'ABDBACK', 'ABEBACK')  order by to_number(plan.state),t.bom_type desc
+	      and plan.plan_type in ('$sortf$')  order by to_number(plan.state),t.bom_type desc
     </select>
     
     <select id="getAutoWaitBackBomListNotAuditByPbId" resultMap="zgTorderPlanbomResultBase">
@@ -809,7 +809,7 @@
 	     from zg_t_order_planbom t, zg_t_order_plan plan
 	    where t.order_plan_id = plan.cuid
 	      and t.parent_id = '$planBomId$'
-	      and plan.plan_type in ('ABCBACK', 'ABDBACK', 'ABEBACK') and plan.STATE in ('-6','-7') order by t.bom_type desc
+	      and plan.plan_type in ('$sortf$')  and plan.STATE in ('-6','-7') order by t.bom_type desc
     </select>
       
       <select id="getPlanBomByPlanIdTaskBomId" resultMap="zgTorderPlanbomResultBase">

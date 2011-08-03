@@ -116,6 +116,9 @@ public class ZgTorderExDao extends ZgTorderDao{
 	 * @return 
 	 */
 	public List getFromOrderBom(String orderId){
+		Map paramsMap =new HashMap();
+		paramsMap.put("orderId", orderId);
+		paramsMap.put("sortf", Constants.NEEDPLANSORTF);
 		return getSqlMapClientTemplate().queryForList("ZgTorderEx.getFromOrderBom",orderId);
 	}
 	public List getFromOrderPlanBom(String orderId){

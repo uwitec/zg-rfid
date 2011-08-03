@@ -16,6 +16,7 @@
         <result property="zrzqd" column="ZRZQD"/>
         <result property="lgort" column="LGORT"/>
         <result property="labelCn" column="label_cn"/>
+          <result property="meins" column="meins"/>
     </resultMap>
     
     <resultMap id="zgTbomResult2" class="zgTbom">
@@ -30,6 +31,7 @@
         <result property="labelCn" column="label_cn"/>
         <result property="carNum" column="CAR_NUM"/>
          <result property="idnrk" column="IDNRK"/>
+         <result property="meins" column="meins"/>
     </resultMap>
     
     <resultMap id="zgTbomResult3" class="zgTbom">
@@ -67,7 +69,8 @@
         	t.ZRZQD,
         	t.LGORT,
         	t.label_cn,
-        	IDNRK
+        	IDNRK,
+        	t.meins
 	    ]]>
 	</sql>
 	
@@ -235,7 +238,7 @@
           t.ZBZ,
           t.ZRZQD,
           t.LGORT,
-          t.label_cn,t.IDNRK from zg_t_bom t where t.LGORT=#lgort# and t.type='2'
+          t.label_cn,t.IDNRK,t.meins from zg_t_bom t where t.LGORT=#lgort# and t.type='2'
          <isNotEmpty prepend="AND" property="bomId">
 	       			t.cuid=#bomId#
        	</isNotEmpty>

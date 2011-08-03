@@ -19,6 +19,7 @@
 		<result property="type" column="type"/>
 		<result property="id" column="id"/>
 		<result property="lgort" column="lgort"/>
+		<result property="advance" column="advance"/>
     </resultMap>
     
     <!-- 用于select查询公用抽取的列 -->
@@ -95,6 +96,9 @@
     
      <insert id="updateMaterielLevel" parameterClass="java.util.HashMap">
    		 update zg_materiel t set t.materiel_level='$materieLevel$' where t.id='$materielId$'
+    </insert>
+         <insert id="updateZgMatAdvance" parameterClass="java.util.HashMap">
+   		 update zg_materiel t set t.advance='$advance$' where t.id='$id$'
     </insert>
     
     

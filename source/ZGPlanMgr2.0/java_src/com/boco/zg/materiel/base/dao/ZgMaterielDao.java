@@ -270,6 +270,14 @@ public class ZgMaterielDao extends BaseIbatisDao<ZgMateriel,java.lang.String>{
 		return resultObject==null?"C":resultObject.toString();
 	}
 
+	/**
+	 * @param paramsMap
+	 */
+	public void updateZgMatAdvance(Map paramsMap) {
+		getSqlMapClientTemplate().update("ZgMateriel.updateZgMatAdvance",paramsMap);
+		
+	}
+
 
 
 }

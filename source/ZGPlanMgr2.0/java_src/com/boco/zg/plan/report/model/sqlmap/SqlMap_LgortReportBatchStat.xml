@@ -34,7 +34,7 @@
        		</isNotEmpty> 
        		
        			<isNotEmpty prepend="AND" property="lgort">
-	       		  bom.lgort like '%'||'$lgort$'||'%'
+	       		  bom.lgort in ('$lgort$')
        		</isNotEmpty> 
        		
 	    </dynamic>	
@@ -50,7 +50,8 @@
            sum(nvl(sup.car_num,0)) complete_num,
          sum(planbom.car_num) car_num,
          sup.lifnr_name,
-         org.label_cn deptName
+         org.label_cn deptName,
+         planbom.msehl
     from zg_t_carbom           carbom,
          zg_t_carplan          carplan,
          zg_t_order_planbom    planbom,
@@ -77,7 +78,8 @@
          bom.lgort,
          sup.lifnr,
          sup.lifnr_name,org.label_cn,
-         org1.label_cn
+         org1.label_cn,
+         planbom.msehl
 
 	</select>   
 	
@@ -109,7 +111,7 @@
 		         bom.lgort,
 		         sup.lifnr,
 		         sup.lifnr_name,org.label_cn,
-		         org1.label_cn)
+		         org1.label_cn,planbom.msehl)
 
 	  </select>
 </sqlMap>

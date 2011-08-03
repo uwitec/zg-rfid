@@ -151,6 +151,8 @@ public class ZgTorderPlanbomDwrAction extends BaseDwrAction {
 							obj.setPlanStartTime(zgTorderPlanbomEx.getPlanStartTime());
 							obj.setPlanEndTime(zgTorderPlanbomEx.getPlanEndTime());
 							obj.setIsModity(true);
+							obj.setMeins(zgTorderPlanbomEx.getMeins());
+							obj.setMsehl1(zgTorderPlanbomEx.getMsehl1());
 							break;
 						}
 					}

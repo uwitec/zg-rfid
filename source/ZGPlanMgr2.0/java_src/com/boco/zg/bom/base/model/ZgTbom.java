@@ -76,6 +76,7 @@ public class ZgTbom extends BaseEntity {
 	private String planType;
 	private Long remainNum;
 	private String orderPlanbomId;
+	private String meins;
 	//columns expand end
 
 	public String getOrderPlanbomId() {
@@ -323,6 +324,20 @@ public class ZgTbom extends BaseEntity {
 
 	public void setPlanType(String planType) {
 		this.planType = planType;
+	}
+
+	/**
+	 * @return the meins
+	 */
+	public String getMeins() {
+		return meins;
+	}
+
+	/**
+	 * @param meins the meins to set
+	 */
+	public void setMeins(String meins) {
+		this.meins = meins;
 	}
 
 	

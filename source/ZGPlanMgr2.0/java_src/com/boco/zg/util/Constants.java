@@ -14,10 +14,10 @@ public class Constants {
 	
 	public static String QUALITY="1";
 	public static String NOTQUALITY="-1";
-	public static String NEEDPLANSORTF="ABC','ABD','ABE";
-	public static String ORDERCHANGESORTF="ABCBACK','ABDBACK','ABEBACK";//工单变更引起退换料
+	public static String NEEDPLANSORTF="ABC','ABD','ABE','ABCA','ABDA";
+	public static String ORDERCHANGESORTF="ABCBACK','ABDBACK','ABEBACK','ABDABACK','ABCABACK";//工单变更引起退换料
 	public static String MANULCHANGESORTF="CHANGE','BACK','RENEW";//人工退换料
-	public static String ALLCHANGESORTF="CHANGE','BACK','RENEW','ABCBACK','ABDBACK','ABEBACK";//人工退换料
+	public static String ALLCHANGESORTF="CHANGE','BACK','RENEW','ABCBACK','ABDBACK','ABEBACK','ABDABACK','ABCABACK";//人工退换料
 	public final static int ADD = 1;
 	public final static int EDIT = 2;  //未做任何操作 /修改
 	public final static int DELETE = 3;

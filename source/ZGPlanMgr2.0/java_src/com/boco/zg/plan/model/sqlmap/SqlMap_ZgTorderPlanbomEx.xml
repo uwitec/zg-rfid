@@ -39,6 +39,7 @@
 		<result property="lgort_lableCn" column="DEPARTMENT_LABEL_CN"/>
 		<result property="maktx1" column="MAKTX1"/>
 		<result property="msehl1" column="MSEHL1"/>
+		<result property="meins" column="meins"/>
 		<result property="carNum" column="CAR_NUM"/>
 		<result property="zbz" column="zbz"/>
 		<result property="bomId_labelCn" column="bom_lanle_cn"/>
@@ -318,7 +319,8 @@
                b.cuid bom_id,
                b.label_cn bom_lanle_cn,
                b.MAKTX maktx1,
-               b.MSEHL MSEHL1,
+                 pb.MSEHL MSEHL1,
+               pb.meins meins,
                pb.car_num,
                pb.zbz,
                  b.idnrk,
@@ -685,7 +687,8 @@
                b.cuid bom_id,
                b.label_cn bom_lanle_cn,
                b.MAKTX maktx1,
-               b.MSEHL MSEHL1,
+               pb.MSEHL MSEHL1,
+               pb.meins meins,
                pb.car_num,
                pb.zbz,
                b.idnrk,
@@ -720,7 +723,8 @@
                b.cuid bom_id,
                b.label_cn bom_lanle_cn,
                b.MAKTX maktx1,
-               b.MSEHL MSEHL1,
+               pb.MSEHL MSEHL1,
+               pb.meins meins,
                pb.car_num,
                pb.zbz,
                  b.idnrk,
@@ -777,7 +781,6 @@
     </update>
     
      <update id="updateZgTorderPlanbomForBatch" parameterClass="zgTorderPlanbomEx">
-    <![CDATA[
 		  update zg_t_order_planbom t
 			   set t.car_num =#carNum#, 
 			   		t.audit_num=#auditNum#,
@@ -787,9 +790,14 @@
 			       t.user_id=#userId#,
 			       t.plan_date=#planDate#,
 			       t.plan_start_time=#planStartTime#,
-			       t.plan_end_time=#planEndTime#
+			       t.plan_end_time=#planEndTime#,
+			       <isNotEmpty  property="msehl1">
+	       				 t.msehl=#msehl1#,
+       			   </isNotEmpty>
+		    		<isNotEmpty  property="meins">
+	       				t.meins=#meins#
+       			   </isNotEmpty>
 			 where t.cuid =#cuid#
-    ]]>
     
     </update>
     
@@ -823,7 +831,7 @@
          user_id,
          plan_date,
          plan_start_time,
-         plan_end_time,	audit_num)
+         plan_end_time,	audit_num,msehl,meins)
        VALUES(
          #cuid#,
          #orderPlanId#,
@@ -837,7 +845,9 @@
          #planDate#,
          #planStartTime#,
          #planEndTime#,
-         #auditNum#
+         #auditNum#,
+         #msehl1#,
+         #meins#
        )
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >

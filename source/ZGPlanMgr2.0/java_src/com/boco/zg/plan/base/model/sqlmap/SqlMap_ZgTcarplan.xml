@@ -9,14 +9,17 @@
 		<result property="carState" column="CAR_STATE"/>
 		<result property="createUserId" column="CREATE_USER_ID"/>
 		<result property="createUserId_related.value" column="CREAT_USER_NAME"/>
+		<result property="createUserName" column="CREAT_USER_NAME"/>
 		<result property="createUserId_related.relatedBmClassId" column="t0_0_1_BD"/>
 		<result property="createDate" column="CREATE_DATE"/>
 		<result property="carUser" column="CARUSER_ID"/>
 		<result property="carUser_related.value" column="CARUSER_LABELCN"/>
+		<result property="carUserName" column="CAR_USER_NAME"/>
 		<result property="carUser_related.relatedBmClassId" column="t0_1_2_BD"/>
 		<result property="carDate" column="CAR_DATE"/>
 		<result property="storageUserId" column="STORAGE_USER_ID"/>
 		<result property="storageUserId_related.value" column="STORAGE_USER_NAME"/>
+		<result property="storageUserName" column="STORAGE_USER_NAME"/>
 		<result property="storageUserId_related.relatedBmClassId" column="t0_2_3_BD"/>
 		<result property="storageId" column="STORAGE_ID"/>
 		<result property="storageId_related.value" column="STORAGE_NAME"/>
@@ -56,7 +59,8 @@
 	         TYPE,
 	         ORDER_PLAN_TYPE,
 	         ORDER_PLAN_TYPE  SORTF,
-	         aufnr
+	         aufnr,
+	         CAR_USER_NAME
 	    ]]>
 	</sql>
     
@@ -212,6 +216,9 @@
         	ORDER_PLAN_TYPE,
         	REMARK ,
         	isManul,
+        	CAR_USER_NAME,
+        	STORAGE_USER_NAME,
+        	CREATE_USER_NAME
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
@@ -225,7 +232,10 @@
         	#type#,
         	#orderPlanType#,
         	#remark#,
-        	#isManul# 
+        	#isManul# ,
+        	#carUserName#,
+        	#storageUserName#,
+        	#createUserName#
         )
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
@@ -249,7 +259,10 @@
         	TYPE,
         	ORDER_PLAN_TYPE,
         	REMARK ,
-        	CAR_ID
+        	CAR_ID,
+        	CAR_USER_NAME,
+        	STORAGE_USER_NAME,
+        	CREATE_USER_NAME
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
@@ -263,7 +276,10 @@
         	#type#,
         	#orderPlanType#,
         	#remark#,
-        	#carId#
+        	#carId#,
+        	#carUserName#,
+        	#storageUserName#,
+        	#createUserName#
         )
     ]]>
     </insert>
@@ -284,7 +300,9 @@
         	REMARK ,
         	TYPE,
         	ORDER_PLAN_TYPE,
-        	DEPARTMENT_ID,isManul
+        	DEPARTMENT_ID,isManul,CAR_USER_NAME,
+        	STORAGE_USER_NAME,
+        	CREATE_USER_NAME
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
@@ -299,7 +317,9 @@
         	#type#,
         	#orderPlanType#,
         	#departmentId#,
-        	#isManul#
+        	#isManul#,#carUserName#,
+        	#storageUserName#,
+        	#createUserName#
         )
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
@@ -323,7 +343,9 @@
         	REMARK ,
         	TYPE,
         	ORDER_PLAN_TYPE,
-        	DEPARTMENT_ID,isManul
+        	DEPARTMENT_ID,isManul,CAR_USER_NAME,
+        	STORAGE_USER_NAME,
+        	CREATE_USER_NAME
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
@@ -338,7 +360,9 @@
         	#type#,
         	#orderPlanType#,
         	#departmentId#,
-        	#isManul#
+        	#isManul#,#carUserName#,
+        	#storageUserName#,
+        	#createUserName#
         )
     ]]>
     </insert>
@@ -359,7 +383,9 @@
         	REMARK ,
         	TYPE,
         	ORDER_PLAN_TYPE,
-        	DEPARTMENT_ID
+        	DEPARTMENT_ID,CAR_USER_NAME,
+        	STORAGE_USER_NAME,
+        	CREATE_USER_NAME
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
@@ -373,7 +399,9 @@
         	#remark# ,
         	#type#,
         	#orderPlanType#,
-        	#departmentId#
+        	#departmentId#,#carUserName#,
+        	#storageUserName#,
+        	#createUserName#
         )
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
@@ -397,7 +425,9 @@
         	REMARK ,
         	TYPE,
         	ORDER_PLAN_TYPE,
-        	DEPARTMENT_ID
+        	DEPARTMENT_ID,CAR_USER_NAME,
+        	STORAGE_USER_NAME,
+        	CREATE_USER_NAME
         ) VALUES (
         	#cuid# ,
         	#labelCn# ,
@@ -411,7 +441,9 @@
         	#remark# ,
         	#type#,
         	#orderPlanType#,
-        	#departmentId#
+        	#departmentId#,#carUserName#,
+        	#storageUserName#,
+        	#createUserName#
         )
     ]]>
     </insert>
@@ -429,7 +461,8 @@
 	        STORAGE_ID = #storageId# ,
 	        TYPE = #type#,
 	        ORDER_PLAN_TYPE = #orderPlanType#,
-	        REMARK = #remark#
+	        REMARK = #remark#,
+	        STORAGE_USER_NAME = #storageUserName# 
 	    WHERE CUID = #cuid#
     ]]>
     </update>
@@ -439,7 +472,7 @@
         UPDATE ZG_T_CARPLAN SET
 	        CAR_STATE = #carState# ,
 	        CAR_DATE = #carDate# ,
-	        STORAGE_USER_ID = #storageUserId# 
+	        STORAGE_USER_ID = #storageUserId# ,STORAGE_USER_NAME = #storageUserName# 
 	    WHERE CUID = #cuid#
     ]]>
     </update>
@@ -466,20 +499,21 @@
 	      from (
 			   select t.cuid,
 			   t.create_user_id,
-      		   (select temp.label_cn from fw_operator temp where t.create_user_id=temp.cuid(+)) as creat_user_name,
+      		   t.CREATE_USER_NAME as creat_user_name,
 		        t.storage_user_id,
-              (select temp.label_cn from fw_operator temp where t.storage_user_id=temp.cuid(+)) as storage_user_name,
+              	t.STORAGE_USER_NAME,
 		       t.create_date,
 		       t.car_date,
 		       t.label_cn car_plan_name ,
+		       t.CAR_USER_NAME,
       		   fo.label_cn carUser_labelCn ,
-		       fo.cuid carUser_Id,
+		       t.car_user carUser_Id,
 		       null as department_id ,
 		       null as department_name,
 		       t.storage_id,
 		       foz.label_cn as storage_name,
 		       t.car_state,
-		           t.remark,t.type,t.ORDER_PLAN_TYPE,null as aufnr
+		       t.remark,t.type,t.ORDER_PLAN_TYPE,null as aufnr
 		  from zg_t_carplan t, fw_operator fo, fw_employee fe, fw_organization foz
 		 where t.car_user = fo.cuid(+)
 		   and fo.cuid = fe.cuid(+)
@@ -634,18 +668,19 @@
     	select <include refid="commonColumns"/> 
 	    <![CDATA[
 	    from (
-			   select t.cuid,
+			   select  t.cuid,
 			   t.create_user_id,
-      		   (select temp.label_cn from fw_organization temp where t.create_user_id=temp.cuid(+)) as creat_user_name,
+      		   t.CREATE_USER_NAME as creat_user_name,
 		        t.storage_user_id,
-              (select temp.label_cn from fw_operator temp where t.storage_user_id=temp.cuid(+)) as storage_user_name,
+              	t.STORAGE_USER_NAME,
 		       t.create_date,
 		       t.car_date,
 		       t.label_cn car_plan_name ,
+		       t.CAR_USER_NAME,
       		   fo.label_cn carUser_labelCn ,
-		       fo.cuid carUser_Id,
-		       null as 	department_id ,
-		       null  as department_name,
+		       t.car_user carUser_Id,
+		       null as department_id ,
+		       null as department_name,
 		       t.storage_id,
 		       foz.label_cn as storage_name,
 		       t.car_state,
@@ -712,20 +747,16 @@
 		     select distinct plan.cuid,
 			       plan.create_date,
 			       plan.create_user_id,
-			       (select op.label_cn
-			          from fw_operator op
-			         where op.cuid = plan.create_user_id) creat_user_name,
+			      t.CREATE_USER_NAME as creat_user_name,
+					t.STORAGE_USER_NAME,
+					t.CAR_USER_NAME,
+					  t.car_user carUser_Id,
 			       plan.storage_id,
-			       org.label_cn storage_name,
 			       plan.car_state,
 			       plan.storage_user_id,
-			       (select temp.label_cn
-			          from fw_operator temp
-			         where plan.storage_user_id = temp.cuid(+)) as storage_user_name,
 			       plan.car_date,
 			       plan.label_cn car_plan_name,
 			       null as carUser_labelCn,
-			       null as carUser_Id,
 			       null as department_id,
 			       null as department_name,
 			       plan.remark,

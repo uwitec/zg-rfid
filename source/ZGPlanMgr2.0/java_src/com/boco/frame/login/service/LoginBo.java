@@ -19,6 +19,8 @@ import com.boco.frame.sys.base.model.FwEmployeeOrganazation;
 import com.boco.frame.sys.base.service.FwEmployeeBo;
 import com.boco.frame.sys.base.service.FwEmployeeOrganazationBo;
 import com.boco.frame.sys.base.service.FwOperatorBo;
+import com.boco.frame.sys.base.service.FwOperatorRoleBo;
+import com.boco.frame.sys.base.service.FwRoleBo;
 import com.boco.zg.plan.service.ZgTcarplanExBo;
 import com.boco.zg.util.Constants;
 import com.boco.zg.virtualorg.base.model.ZgTvirtualorg;
@@ -33,6 +35,7 @@ public class LoginBo {
 	private FwEmployeeOrganazationBo fwEmployeeOrganazationBo;
 	private ZgTvirtualorgBo zgTvirtualorgBo;
 	private ZgTcarplanExBo zgTcarplanExBo;
+	private FwOperatorRoleBo fwOperatorRoleBo;
 	
 	
 	public Map login(LoginForm loginForm) {
@@ -53,6 +56,8 @@ public class LoginBo {
 				
 				operatorInfo.setLoginTime(new Date());
 				operatorInfo.setUserName(fwEmployee.getLabelCn());
+				operatorInfo.setRoles(fwOperatorRoleBo.getRolesByUserId(fwEmployee.getCuid()));
+				
 				resultMap.put("success", "true"); 
 				resultMap.put("result", operatorInfo);
 			}
@@ -118,6 +123,21 @@ public class LoginBo {
 
 	public void setZgTcarplanExBo(ZgTcarplanExBo zgTcarplanExBo) {
 		this.zgTcarplanExBo = zgTcarplanExBo;
+	}
+
+
+	/**
+	 * @return the fwOperatorRoleBo
+	 */
+	public FwOperatorRoleBo getFwOperatorRoleBo() {
+		return fwOperatorRoleBo;
+	}
+
+	/**
+	 * @param fwOperatorRoleBo the fwOperatorRoleBo to set
+	 */
+	public void setFwOperatorRoleBo(FwOperatorRoleBo fwOperatorRoleBo) {
+		this.fwOperatorRoleBo = fwOperatorRoleBo;
 	}
 
 }

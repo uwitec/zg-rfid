@@ -57,4 +57,21 @@ public class FwOperatorRoleBo extends BaseManager<FwOperatorRole,java.lang.Strin
 	public void removeByOperateId(String cuid) {
 		fwOperatorRoleDao.deleteByOperateId(cuid);
 	}
+	/**
+	 * @param cuid
+	 * @return
+	 */
+	public String getRolesByUserId(String userId) {
+		FwOperatorRole oRole=new FwOperatorRole();
+		oRole.setOperatorId(userId);
+		List<FwOperatorRole> list=fwOperatorRoleDao.findByProperty(oRole);
+		String roles="";
+		for(FwOperatorRole obj:list){
+			roles=roles+obj.getRoleId()+",";
+		}
+		if (roles.length()>0) {
+			roles=roles.substring(0,roles.length()-1);
+		}
+		return roles;
+	}
 }

@@ -491,14 +491,14 @@
 	</select>
 	<!-- 约束条件二：初步判断订单BOM表和领料计划BOM中的BOM数量是不是一样 -->
 	<select id="getFromOrderBom" resultClass="java.util.HashMap">
-		<![CDATA[    select * from ZG_T_ORDERBOM t where t.ORDER_ID=#orderId#  and (SORTF='ABD' OR SORTF='ABC' OR SORTF='ABE')	]]>
+		<![CDATA[    select * from ZG_T_ORDERBOM t where t.ORDER_ID=#orderId#  and SORTF in('$sortf$')	]]>
 	</select>
 	<select id="getFromOrderPlanBom" resultClass="java.util.HashMap" >
 		<![CDATA[	 select * from zg_t_order_planbom t where t.order_id=#orderId# ]]>
 	</select>
 	
 	<select id="isCountInOrderBomAndOrderPlanBomEqual" resultClass="java.util.HashMap" >
-		<![CDATA[	 select * from ZG_T_ORDERBOM t where t.ORDER_ID=#orderId#  and (SORTF='ABD' OR SORTF='ABC' OR SORTF='ABE')
+		<![CDATA[	 select * from ZG_T_ORDERBOM t where t.ORDER_ID=#orderId#   and SORTF in('$sortf$')
 and not exists (select * from zg_t_order_planbom planbom where planbom.order_id=#orderId# and planbom.order_bom_id=t.cuid ) ]]>
 	</select>
 	<!-- 约束条件二：查看所有bom够不够下线 -->
@@ -508,7 +508,7 @@ and not exists (select * from zg_t_order_planbom planbom where planbom.order_id=
 		from zg_t_orderbom  x, zg_t_order_planbom  y 
 		where x.order_id=y.order_id 
 			and y.order_bom_id=x.cuid
-			and (x.SORTF='ABD' OR x.SORTF='ABC' OR x.SORTF='ABE') 
+			 and x.SORTF in('$sortf$')
 			and  x.order_id=#orderId#
 		]]>
 	</select>

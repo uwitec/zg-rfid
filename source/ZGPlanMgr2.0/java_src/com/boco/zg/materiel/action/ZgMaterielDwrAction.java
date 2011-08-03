@@ -61,20 +61,26 @@ public class ZgMaterielDwrAction extends BaseDwrAction{
 	public void delMateriel(String id){
 		getZgMaterielBo().delMateriel(id);
 	}
-	public void updateMateriel(String cuid,String materielName,String id,String parentOrgId,String lgorts){
-		String[] lgortArr=lgorts.split(",");
-		getZgMaterielBo().delMateriel(id);
-		for(String lgort:lgortArr){
-			Map parentMap=getZgMaterielBo().getByIdAndLgort(parentOrgId,lgort);
-			ZgMateriel entity =new ZgMateriel();
-			entity.setMaterielName(materielName);
-			entity.setParentId(IbatisDAOHelper.getStringValue(parentMap, "CUID", ""));
-			entity.setAdvance(IbatisDAOHelper.getStringValue(parentMap, "ADVANCE", ""));
-			entity.setId(id);
-			entity.setType(new Long(2));
-			entity.setLgort(lgort);
-			getZgMaterielBo().saveMateriel(entity);
+	public void updateMateriel(String cuid,String materielName,String id,String parentOrgId,String lgorts,String advance,String level){
+		if(!level.equals('1')){
+			getZgMaterielBo().updateZgMatAdvance(id,advance);
+		}else {
+			String[] lgortArr=lgorts.split(",");
+			getZgMaterielBo().delMateriel(id);
+			for(String lgort:lgortArr){
+				Map parentMap=getZgMaterielBo().getByIdAndLgort(parentOrgId,lgort);
+				ZgMateriel entity =new ZgMateriel();
+				entity.setMaterielName(materielName);
+				entity.setParentId(IbatisDAOHelper.getStringValue(parentMap, "CUID", ""));
+				entity.setAdvance(IbatisDAOHelper.getStringValue(parentMap, "ADVANCE", ""));
+				entity.setId(id);
+				entity.setType(new Long(2));
+				entity.setLgort(lgort);
+				entity.setAdvance(advance);
+				getZgMaterielBo().saveMateriel(entity);
+			}
 		}
+		
 		
 	}
 	/**
@@ -146,5 +152,6 @@ public class ZgMaterielDwrAction extends BaseDwrAction{
 	public boolean updateMaterielLevel(String marerielId,String level) {
 		return getZgMaterielBo().updateMaterielLevel(marerielId,level);
 	}
+	
 
 }

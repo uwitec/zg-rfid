@@ -154,6 +154,8 @@ public class AuditingForBatchExBo extends BaseManager<ZgTorderPlanEx,java.lang.S
 					zgTcarplan.setOrderPlanType(Constants.OrderPlanType.PLTYPE.value());
 					zgTcarplan.setType(Constants.CarPlanType.STOREGETDATA.value());
 					zgTcarplan.setIsManul(Constants.isNotManulFinished);
+					zgTcarplan.setCreateUserName(operatorInfo.getUserName());
+					zgTcarplan.setCarUserName(operatorInfo.getUserName());
 					carPlanId=zgTcarplanBo.saveCarplan(zgTcarplan);
 				}
 			ZgTcarbom bom = new ZgTcarbom();

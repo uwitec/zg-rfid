@@ -129,16 +129,16 @@
 	</select>
 	
 	<select id="getManagerOrgListByOperatorSorftType"  resultMap="fwOrganizationManagerResult1">
-			select distinct t.org_id, NULL AS employee_id, org.label_cn orgName,org.extend2
+			select distinct org.cuid org_id, NULL AS employee_id, org.label_cn orgName,org.extend2
 		  from fw_organization_manager t, fw_organization org
-		 where org.cuid = t.org_id and org.type='5'
+		 where org.cuid = t.org_id(+) and org.type='5'
 		 <isNotEqual property="operatorId" compareValue="0">
 		 AND t.employee_id = '$operatorId$'
 		</isNotEqual>
 			<isNotEmpty prepend="AND" property="needSortf">
-	    		org.extend1='$sorftType$'
+	    		org.extend1 = '$sorftType$'
 	    	</isNotEmpty> 
-		    order by t.org_id
+		    order by org.cuid
 	</select>
 	
 	<insert id="insertFW_ORGANIZATION_MANAGER" parameterClass="fwOrganizationManager">

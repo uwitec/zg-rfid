@@ -202,6 +202,7 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 		paraMap.put("orderTaskId2", orderTaskId2);
 		paraMap.put("both", both);
 		paraMap.put("isDel", isDel);
+		paraMap.put("sortf", Constants.NEEDPLANSORTF);
 		return  getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getBomListByOrderId",paraMap);
 	}
 	
@@ -348,6 +349,7 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 		Map paramsMap=new HashMap();
 		paramsMap.put("idnrk", idnrk);
 		paramsMap.put("orderTaskId", orderTaskId);
+		paramsMap.put("sortf", Constants.NEEDPLANSORTF);
 		return getSqlMapClientTemplate().queryForList("ZgTorderbomEx.getTargetBomListByOrderIdAndIdnrk",paramsMap);
 
 	}
