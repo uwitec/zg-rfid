@@ -21,6 +21,10 @@ import cn.org.rapid_framework.web.util.HttpUtils;
 
 import com.boco.frame.login.pojo.OperatorInfo;
 import com.boco.frame.meta.dao.IbatisDAOHelper;
+import com.boco.frame.sys.base.model.FwEmployee;
+import com.boco.frame.sys.base.model.FwOperator;
+import com.boco.frame.sys.base.service.FwEmployeeBo;
+import com.boco.frame.sys.base.service.FwOperatorBo;
 import com.boco.zg.plan.base.dao.ZgTcarbomDao;
 import com.boco.zg.plan.base.dao.ZgTcarplanDao;
 import com.boco.zg.plan.base.model.ZgTcarbom;
@@ -70,6 +74,8 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 	private ZgTorderPlanbomExBo zgTorderPlanbomExBo;
 	
 	private ZgTorderPlanGroupExBo zgTorderPlanGroupExBo;
+	
+	private FwEmployeeBo fwEmployeeBo;
 	
 	public void setZgTcarbomBo(ZgTcarbomBo zgTcarbomBo) {
 		this.zgTcarbomBo = zgTcarbomBo;
@@ -205,6 +211,10 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 				
 				//更新仓库管理员
 				carbom.setStorageUserId(storageUserId);
+				FwEmployee employee=fwEmployeeBo.getById(storageUserId);
+				if(employee!=null){
+					carbom.setStorageUserName(employee.getLabelCn());
+				}
 				carbom.setCarDate(Calendar.getInstance().getTime());
 				zgTcarbomBo.update(carbom);
 				
@@ -218,6 +228,11 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 			zgTcarplan.setCarState(Constants.CarPlanStatus.SUBMIT.value());
 			zgTcarplan.setCarDate(Calendar.getInstance().getTime());
 			zgTcarplan.setStorageUserId(storageUserId);
+			zgTcarplan.setStorageUserName(storageUserId);
+			FwEmployee emp =fwEmployeeBo.getById(storageUserId);
+			if(emp!=null){
+				zgTcarplan.setStorageUserName(emp.getLabelCn());
+			}
 			zgTcarplanBo.update(zgTcarplan);
 		}
 		return flag;
@@ -502,6 +517,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 						zgTcarplan=new ZgTcarplan();
 						zgTcarplan.setCuid(bom.getCarPlanId());
 						zgTcarplan.setCreateUserId(operatorInfo.getOperatorId());
+						
 						zgTcarplan.setCreateDate(creatDate);
 						zgTcarplan.setCarState(Constants.CarPlanStatus.NEW.value());
 						zgTcarplan.setOrderPlanType(planType);
@@ -510,6 +526,9 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 						zgTcarplan.setCarId(bom.getCarId());
 						zgTcarplan.setStorageId(bom.getLgort());
 						zgTcarplan.setIsManul(Constants.isNotManulFinished);
+						
+						zgTcarplan.setCreateUserName(operatorInfo.getUserName());
+						zgTcarplan.setCarUserName(operatorInfo.getUserName());
 						save1(zgTcarplan);
 					}
 					
@@ -629,6 +648,8 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 						zgTcarplan.setStorageId(bom.getLgort());
 						zgTcarplan.setIsManul(Constants.isNotManulFinished);
 						zgTcarplan.setRemark(remark);
+						zgTcarplan.setCreateUserName(operatorInfo.getUserName());
+						zgTcarplan.setCarUserName(operatorInfo.getUserName());
 						save1(zgTcarplan);
 					}
 					num++;
@@ -800,11 +821,12 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 			zgTcarbomExBo.saveSupBomNums(carbomList, Constants.CarPlanStatus.SUBMIT.value());
 			
 			String carPlanId=carbomList.get(0).getCarPlanId();
-			
+			FwEmployee employee=fwEmployeeBo.getById(storageUserId);
 			for(ZgTcarbomEx bom:carbomList){
 				ZgTcarbom carbom=zgTcarbomBo.getById(bom.getCuid());
 				carbom.setStorageUserId(storageUserId);
 				carbom.setCarDate(Calendar.getInstance().getTime());
+				carbom.setStorageUserName(employee.getLabelCn());
 				zgTcarbomBo.update(carbom);
 			}
 			
@@ -813,6 +835,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 			zgTcarplan.setCarState(Constants.CarPlanStatus.SUBMIT.value());
 			zgTcarplan.setCarDate(Calendar.getInstance().getTime());
 			zgTcarplan.setStorageUserId(storageUserId);
+			zgTcarplan.setStorageUserName(employee.getLabelCn());
 			zgTcarplanBo.update(zgTcarplan);
 			
 			//回传领料进度
@@ -1061,5 +1084,21 @@ String[] aufnrArbpl1={"","","","",""};
 	 */
 	public void setZgTorderbomExBo(ZgTorderbomExBo zgTorderbomExBo) {
 		this.zgTorderbomExBo = zgTorderbomExBo;
+	}
+
+
+	/**
+	 * @return the fwEmployeeBo
+	 */
+	public FwEmployeeBo getFwEmployeeBo() {
+		return fwEmployeeBo;
+	}
+
+
+	/**
+	 * @param fwEmployeeBo the fwEmployeeBo to set
+	 */
+	public void setFwEmployeeBo(FwEmployeeBo fwEmployeeBo) {
+		this.fwEmployeeBo = fwEmployeeBo;
 	}
 }

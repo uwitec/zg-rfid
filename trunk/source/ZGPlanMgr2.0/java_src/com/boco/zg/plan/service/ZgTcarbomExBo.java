@@ -9,6 +9,8 @@ import javacommon.util.StringHelper;
 
 import org.springframework.stereotype.Component;
 
+import com.boco.frame.sys.base.model.FwEmployee;
+import com.boco.frame.sys.base.service.FwEmployeeBo;
 import com.boco.zg.plan.base.dao.ZgTcarbomDao;
 import com.boco.zg.plan.base.model.ZgTcarbom;
 import com.boco.zg.plan.base.model.ZgTcarbomSuppliers;
@@ -44,6 +46,8 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 	private ZgTorderbomExDao zgTorderbomExDao;
 	
 	private ZgTorderSuppliersBo zgTorderSuppliersBo;
+	
+	private FwEmployeeBo fwEmployeeBo;
 	
 	public void setZgTorderbomExBo(ZgTorderbomExBo zgTorderbomExBo) {
 		this.zgTorderbomExBo = zgTorderbomExBo;
@@ -217,6 +221,9 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 						//保存具体供应商的bom数量
 						for(ZgTcarbomSuppliers sup:bom.getSupList()){
 							if(!StringHelper.isEmpty(sup.getCuid())) {
+								if(sup.getCarNum()==null){
+									sup.setCarNum(0l);
+								}
 								zgTcarbomSuppliersBo.update(sup);
 							}else {
 								if(sup.getCarNum()!=null){
@@ -355,7 +362,7 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 	 */
 	public List<Map> findBomList(String carPlanId) {
 		StringBuffer sql = new StringBuffer();
-		sql.append("select cb.cuid,b.label_cn, b.maktx, b.MSEHL,b.idnrk, cb.plan_num, cb.real_num, pb.zbz     ");                                                    
+		sql.append("select cb.cuid,b.label_cn, b.maktx, pb.meins,pb.MSEHL,b.idnrk, cb.plan_num, cb.real_num, pb.zbz     ");                                                    
 		sql.append("   from zg_t_carbom cb, zg_t_bom b, zg_t_order_planbom pb                 ");                                      
 		sql.append("       where cb.car_plan_id = '"+ carPlanId +"'                             ");
 		sql.append("         and cb.order_planbom_id = pb.cuid  and pb.bom_id = b.cuid        ");                                                    
@@ -486,6 +493,10 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 		zgTcarplan.setCarState(state);
 		zgTcarplan.setCuid(carPlanId);
 		zgTcarplan.setStorageUserId(storageUserId);
+		FwEmployee employee=fwEmployeeBo.getById(storageUserId);
+		if(employee!=null){
+			zgTcarplan.setStorageUserName(employee.getLabelCn());
+		}
 		zgTcarplan.setCarDate(carDate);
 		zgTcarplanBo.updateState(zgTcarplan);
 		
@@ -618,5 +629,19 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 	 */
 	public void setZgTcarplanExBo(ZgTcarplanExBo zgTcarplanExBo) {
 		this.zgTcarplanExBo = zgTcarplanExBo;
+	}
+
+	/**
+	 * @return the fwEmployeeBo
+	 */
+	public FwEmployeeBo getFwEmployeeBo() {
+		return fwEmployeeBo;
+	}
+
+	/**
+	 * @param fwEmployeeBo the fwEmployeeBo to set
+	 */
+	public void setFwEmployeeBo(FwEmployeeBo fwEmployeeBo) {
+		this.fwEmployeeBo = fwEmployeeBo;
 	}
 }

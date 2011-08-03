@@ -345,6 +345,16 @@ public class ZgMaterielBo extends BaseManager<ZgMateriel,java.lang.String>{
 		paramsMap.put("taskBomId", taskBomId);
 		return zgMaterielDao.getMaterielLevelByTaskBomId(paramsMap);
 	}
+	/**
+	 * @param id
+	 * @param level
+	 */
+	public void updateZgMatAdvance(String id, String advance) {
+		Map paramsMap=new HashMap();
+		paramsMap.put("id", id);
+		paramsMap.put("advance", advance);
+		zgMaterielDao.updateZgMatAdvance(paramsMap);		
+	}
 	
 	
 }

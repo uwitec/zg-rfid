@@ -1257,7 +1257,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		  from zg_t_orderbom orderbom, zg_t_order_planbom planbom,zg_t_order_taskbom taskbom,zg_t_order_plan plan
 		 where 
 		 plan.cuid=planbom.order_plan_id
-		 and plan.PLAN_TYPE in ('ABE','ABD','ABC')
+		 and plan.PLAN_TYPE in ('$sortf$')
 		 and orderbom.cuid = taskbom.order_bom_id
  				and taskbom.cuid= planbom.taskbom_id
 		   and orderbom.lgort is not null
@@ -1312,7 +1312,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 		       nvl(planbom.out_num,0) out_num
 		  from zg_t_orderbom orderbom, zg_t_order_planbom planbom,zg_t_order_taskbom taskbom,zg_t_order_plan plan
 		 where  plan.cuid=planbom.order_plan_id
-		 and plan.PLAN_TYPE in ('ABE','ABD','ABC')
+		 and plan.PLAN_TYPE in ('$sortf$')
 		 and orderbom.cuid = taskbom.order_bom_id
 		 and taskbom.cuid=planbom.taskbom_id
 		   and orderbom.lgort is not null
@@ -1429,7 +1429,7 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
 			       zg_t_order_taskbom taskbom,
 			       zg_t_orderbom      orderbom
 			 where plan.cuid = planbom.order_plan_id
-			   and plan.plan_type in ('ABE', 'ABC', 'ABD')
+			   and plan.plan_type in ('$sortf$')
 			   and planbom.taskbom_id = taskbom.cuid
 			   and taskbom.order_bom_id = orderbom.cuid
 			   and orderbom.idnrk = '$idnrk$'

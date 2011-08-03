@@ -284,6 +284,7 @@ public class ZgMaterielAction extends BaseStruts2Action implements Preparable,Mo
 	
 	public String editMateriel(){
 		String id=getRequest().getParameter("id");
+		String level=getRequest().getParameter("level");
 		zgMateriel=zgMaterielBo.getByCuid(id);
 		getRequest().setAttribute("parentName", getRequest().getParameter("parentName"));
 		getRequest().setAttribute("id", zgMateriel.getId());
@@ -292,15 +293,23 @@ public class ZgMaterielAction extends BaseStruts2Action implements Preparable,Mo
 		getRequest().setAttribute("lgort", zgMateriel.getLgort());
 		getRequest().setAttribute("id",id );
 		getRequest().setAttribute("materielName",zgMateriel.getMaterielName());
+		getRequest().setAttribute("advance",zgMateriel.getAdvance());
 		
 		ZgMateriel parentMat=zgMaterielBo.getById(zgMateriel.getParentId());
 		getRequest().setAttribute("parentId", parentMat.getId());
 		
-		//获取父结点的仓库列表
-		List<Map> parentLgortList=zgMaterielBo.findLgortListById(parentMat.getId());
+		
 		
 		//该物料组的仓库列表
 		List<Map>	lgortList=zgMaterielBo.findLgortListById(id);
+		
+		//获取父结点的仓库列表
+		List<Map> parentLgortList=null;
+		if(level.equals("1")){
+			parentLgortList=lgortList;
+		}else {
+			parentLgortList=zgMaterielBo.findLgortListById(parentMat.getId());;
+		}
 		
 		for(Map mat:parentLgortList){
 			for(Map temp:lgortList){
@@ -312,6 +321,8 @@ public class ZgMaterielAction extends BaseStruts2Action implements Preparable,Mo
 		}
 		
 		getRequest().setAttribute("parentLgortList", parentLgortList);
+		getRequest().setAttribute("level", level);
+		
 		
 //		getRequest().setAttribute("parentName", getRequest().getParameter("orgName"));
 		return EDIT_MATERIEL_JSP;

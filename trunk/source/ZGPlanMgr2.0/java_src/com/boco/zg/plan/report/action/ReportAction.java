@@ -29,12 +29,14 @@ import cn.org.rapid_framework.page.PageRequest;
 import cn.org.rapid_framework.web.util.HttpUtils;
 
 import com.boco.frame.meta.base.model.TmdEnumevalue;
+import com.boco.frame.meta.dao.IbatisDAOHelper;
 import com.boco.frame.sys.base.model.FwOrganization;
 import com.boco.frame.sys.base.service.FwOrganizationBo;
 import com.boco.zg.plan.base.model.ZgTorderbom;
 import com.boco.zg.plan.common.service.CommonService;
 import com.boco.zg.plan.report.service.ReportBo;
 import com.boco.zg.plan.service.ZgTorderbomExBo;
+import com.boco.zg.util.Constants;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.util.Key;
@@ -100,6 +102,8 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 	 */
 	public String queryLgortReport(){
 		CommonService.defultDateTimeSet(getRequest(), "date_start", "date_end",0,0);
+		getRequest().setAttribute("needSortf", Constants.NEEDPLANSORTF);
+		
 		return  QUERYLGORTREPORT;
 	}
 	
@@ -110,6 +114,9 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 	public String lgortReportStat(){
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		//pageRequest.getFilters().put("key",value);     //add custom filter
+		String lgort=IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "lgort","");
+		lgort=lgort.replace(",", "','");
+		pageRequest.getFilters().put("lgort", lgort);
 		Page page = reportBo.lgortReportStat(pageRequest);
 		savePage(page,pageRequest);
 		return LISTLGORTREPORTSTAT;
@@ -117,6 +124,11 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 	
 	public String lgortReportStatExport() {
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+		
+		String lgort=IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "lgort","");
+		lgort=lgort.replace(",", "','");
+		pageRequest.getFilters().put("lgort", lgort);
+		
 		getRequest().getSession().setAttribute("ex_template","lgortReportStatExport");
 //		reportBo.addPlantWhere(pageRequest);
 		getRequest().getSession().setAttribute("ex_in", pageRequest.getFilters());
@@ -131,6 +143,9 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 	public String lgortReport(){
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		//pageRequest.getFilters().put("key",value);     //add custom filter
+		String lgort=IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "lgort","");
+		lgort=lgort.replace(",", "','");
+		pageRequest.getFilters().put("lgort", lgort);
 		Page page = reportBo.lgortReport(pageRequest);
 		savePage(page,pageRequest);
 		return LISTLGORTREPORT;
@@ -140,6 +155,11 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		getRequest().getSession().setAttribute("ex_template","lgortReportExport");
 //		reportBo.addPlantWhere(pageRequest);
+		
+		String lgort=IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "lgort","");
+		lgort=lgort.replace(",", "','");
+		pageRequest.getFilters().put("lgort", lgort);
+		
 		getRequest().getSession().setAttribute("ex_in", pageRequest.getFilters());
 		
 		return EXPORT_STORECAR;
@@ -151,6 +171,11 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 	 */
 	public String lgortReportBatchStatExport() {
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+		
+		String lgort=IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "lgort","");
+		lgort=lgort.replace(",", "','");
+		pageRequest.getFilters().put("lgort", lgort);
+		
 		getRequest().getSession().setAttribute("ex_template","lgortReportBatchStatExport");
 		getRequest().getSession().setAttribute("ex_in", pageRequest.getFilters());
 		
@@ -163,6 +188,11 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 	 */
 	public String lgortReportBatchExport() {
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
+		
+		String lgort=IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "lgort","");
+		lgort=lgort.replace(",", "','");
+		pageRequest.getFilters().put("lgort", lgort);
+		
 		getRequest().getSession().setAttribute("ex_template","lgortReportBatchExport");
 		getRequest().getSession().setAttribute("ex_in", pageRequest.getFilters());
 		
@@ -188,6 +218,10 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 	public String lgortReportBatch(){
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		//pageRequest.getFilters().put("key",value);     //add custom filter
+		String lgort=IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "lgort","");
+		lgort=lgort.replace(",", "','");
+		pageRequest.getFilters().put("lgort", lgort);
+		
 		Page page = reportBo.lgortReportBatch(pageRequest);
 		savePage(page,pageRequest);
 		return LISTLGORTREPORTBATCH;
@@ -201,6 +235,10 @@ public class ReportAction extends BaseStruts2Action implements Preparable,ModelD
 	public String lgortReportBatchStat(){
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		//pageRequest.getFilters().put("key",value);     //add custom filter
+		String lgort=IbatisDAOHelper.getStringValue(pageRequest.getFilters(), "lgort","");
+		lgort=lgort.replace(",", "','");
+		pageRequest.getFilters().put("lgort", lgort);
+		
 		Page page = reportBo.lgortReportBatchStat(pageRequest);
 		savePage(page,pageRequest);
 		return LISTLGORTREPORTBATCHSTAT;

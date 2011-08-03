@@ -81,16 +81,19 @@ public class ZgTcarplan extends BaseEntity {
 	private java.lang.String createUserId_labelCn;
 	private RelatedModel createUserId_related = new RelatedModel("FW_EMPLOYEE","CUID","LABEL_CN");
 	private java.lang.String createUserId;
+	private java.lang.String createUserName;
 	private java.util.Date createDate_start;
 	private java.util.Date createDate_end;
 	private java.util.Date createDate;
 	private java.lang.String carUser_labelCn;
+	private java.lang.String carUserName;
 	private RelatedModel carUser_related = new RelatedModel("FW_EMPLOYEE","CUID","LABEL_CN");
 	private java.lang.String carUser;
 	private java.util.Date carDate_start;
 	private java.util.Date carDate_end;
 	private java.util.Date carDate;
 	private java.lang.String storageUserId_labelCn;
+	private java.lang.String storageUserName;
 	private RelatedModel storageUserId_related = new RelatedModel("FW_EMPLOYEE","CUID","LABEL_CN");
 	private java.lang.String storageUserId;
 	private java.lang.String storageId_labelCn;
@@ -431,5 +434,47 @@ public class ZgTcarplan extends BaseEntity {
 
 	public void setAufnr(String aufnr) {
 		this.aufnr = aufnr;
+	}
+
+	/**
+	 * @return the createUserName
+	 */
+	public java.lang.String getCreateUserName() {
+		return createUserName;
+	}
+
+	/**
+	 * @param createUserName the createUserName to set
+	 */
+	public void setCreateUserName(java.lang.String createUserName) {
+		this.createUserName = createUserName;
+	}
+
+	/**
+	 * @return the carUserName
+	 */
+	public java.lang.String getCarUserName() {
+		return carUserName;
+	}
+
+	/**
+	 * @param carUserName the carUserName to set
+	 */
+	public void setCarUserName(java.lang.String carUserName) {
+		this.carUserName = carUserName;
+	}
+
+	/**
+	 * @return the storageUserName
+	 */
+	public java.lang.String getStorageUserName() {
+		return storageUserName;
+	}
+
+	/**
+	 * @param storageUserName the storageUserName to set
+	 */
+	public void setStorageUserName(java.lang.String storageUserName) {
+		this.storageUserName = storageUserName;
 	}
 }

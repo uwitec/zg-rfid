@@ -34,7 +34,7 @@
        		</isNotEmpty> 
        		
        			<isNotEmpty prepend="AND" property="lgort">
-	       		  bom.lgort like '%'||'$lgort$'||'%'
+	       		  bom.lgort in ('$lgort$')
        		</isNotEmpty> 
        		
 	    </dynamic>	
@@ -51,14 +51,14 @@
          planbom.car_num,
          sup.lifnr_name,
          carplan.car_user,
-         op.label_cn car_user_name,
+          carplan.car_user_name,
          to_char(carplan.create_date,'yyyy-MM-dd hh24:mi:ss') create_date,
 	       to_char(carplan.car_date,'yyyy-MM-dd hh24:mi:ss') car_date,
 	       carplan.storage_user_id,
-	       op1.label_cn storage_user_name,
+	        carplan.storage_user_name,
          org.label_cn deptName,
          sup.batchno,
-         sup.zrzqd
+         sup.zrzqd,planbom.msehl
     from zg_t_carbom           carbom,
          zg_t_carplan          carplan,
          zg_t_order_planbom    planbom,
@@ -70,10 +70,10 @@
          fw_organization org,
           fw_organization org1
    where org1.cuid=bom.lgort
-     and op.cuid = carplan.car_user
-      and em.cuid=carplan.car_user
-     and org.cuid=em.org_id
-     and op1.cuid = carplan.storage_user_id
+     and op.cuid(+) = carplan.car_user
+      and em.cuid(+)=carplan.car_user
+     and org.cuid(+)=em.org_id
+     and op1.cuid(+) = carplan.storage_user_id
      and carbom.car_plan_id = carplan.cuid
     and planbom.bom_id=bom.cuid
   and sup.car_num>0
@@ -99,10 +99,10 @@
          fw_organization org,
           fw_organization org1
    where org1.cuid=bom.lgort
-     and op.cuid = carplan.car_user
-      and em.cuid=carplan.car_user
-     and org.cuid=em.org_id
-     and op1.cuid = carplan.storage_user_id
+     and op.cuid(+) = carplan.car_user
+      and em.cuid(+)=carplan.car_user
+     and org.cuid(+)=em.org_id
+     and op1.cuid (+)= carplan.storage_user_id
      and carbom.car_plan_id = carplan.cuid
     and planbom.bom_id=bom.cuid
 

@@ -850,5 +850,81 @@
    
     </update>
     
+    <select id="getForBatchAddBomList" resultClass="java.util.HashMap">
+    		select t.*
+			  from zg_t_bom_temp t
+			 where t.batch_no = '$cuid$'
+			   and not exists
+			 (select 1
+			          from zg_t_bom bom
+			         where bom.type = '2'
+			           and bom.idnrk = t.idnrk
+			           and nvl(bom.plantid, 'null') = nvl(t.lifnr, 'null'))
+    </select>
+    
+      <select id="getForBatchEditBomList" resultClass="java.util.HashMap">
+    		select bt.*
+			  from zg_t_bom_temp bt
+			 where exists (select 1
+			          from (select idnrk,
+			                       maktx,
+			                       msehl,
+			                       matkl,
+			                       zbz,
+			                       zrzqd,
+			                       lgort,
+			                       plant,
+			                       Plantid,
+			                       MEINS
+			                  from zg_t_bom t
+			                 where t.type = '2'
+			                minus
+			                select temp.idnrk,
+			                       temp.maktx2,
+			                       temp.msehl2,
+			                       temp.matkl,
+			                       temp.zbz,
+			                       temp.zrzqd,
+			                       temp.lgort,
+			                       Temp.name1,
+			                       temp.lifnr,
+			                       MEINS
+			                  from zg_t_bom_temp temp
+			                 where temp.batch_no = '$cuid$') w
+			         where w.idnrk = bt.idnrk
+			           and nvl(w.plantid, 'null') = nvl(bt.lifnr, 'null'))
+			   and bt.batch_no = '$cuid$'
+    </select>
+    
+    <insert id="saveTbom" parameterClass="java.util.HashMap">
+    <![CDATA[
+       insert into zg_t_bom(cuid,idnrk,maktx,msehl,matkl,zbz,zrzqd,lgort,plant,Plantid,TYPE,MEINS)
+
+		values (sys_guid(),'$IDNRK$','$MAKTX2$','$MSEHL2$','$MATKL$','$ZBZ$','$ZRZQD$','$LGORT$','$NAME1$','$LIFNR$','2','$MEINS$')
+    ]]>
+    	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
+			select sys_guid() AS ID FROM DUAL
+		</selectKey>
+    </insert>
+    
+   <update id="updateTbom" parameterClass="java.util.HashMap">
+      update zg_t_bom t
+		   set t.maktx = '$MAKTX2$',
+		       T.msehl = '$MSEHL2$',
+		       T.matkl = '$MATKL$',
+		       T.zbz   = '$ZBZ$',
+		       T.zrzqd = 'ZRZQD',
+		       T.lgort = '$LGORT$',
+		       T.plant = '$NAME1$',
+		       T.MEINS = '$MEINS$'
+		 WHERE T.IDNRK = '$IDNRK$'
+		    <isNotEmpty prepend="AND" property="LIFNR">
+	       		   T.PLANTID = '$LIFNR$'
+       		</isNotEmpty>   
+       		<isEmpty prepend="AND" property="LIFNR">
+	       		T.PLANTID is null
+       		</isEmpty>   
+		 
+    </update>
     
 </sqlMap>

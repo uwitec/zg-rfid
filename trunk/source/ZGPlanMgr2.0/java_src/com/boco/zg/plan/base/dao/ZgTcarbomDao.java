@@ -124,4 +124,12 @@ public class ZgTcarbomDao extends BaseIbatisDao<ZgTcarbom,java.lang.String>{
 		}
 	}
 
+	/**
+	 * @param carbomIds
+	 * @param flag
+	 */
+	public void updateSynFlagByCarBomIds(Map paramsMap) {
+		getSqlMapClientTemplate().update("ZgTcarbom.updateSynFlagByCarBomIds",paramsMap);
+	}
+
 }

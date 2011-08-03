@@ -29,9 +29,11 @@ import com.boco.frame.sys.base.service.FwOrganizationBo;
 import com.boco.zg.plan.base.model.ZgTorderPlan;
 import com.boco.zg.plan.base.model.ZgTorderPlanComment;
 import com.boco.zg.plan.base.model.ZgTorderPlanbom;
+import com.boco.zg.plan.base.model.ZgTunit;
 import com.boco.zg.plan.base.service.ZgTcarbomBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanBo;
 import com.boco.zg.plan.base.service.ZgTorderPlanbomBo;
+import com.boco.zg.plan.base.service.ZgTunitBo;
 import com.boco.zg.plan.model.ZgTorderPlanbomEx;
 import com.boco.zg.plan.service.ZgTorderPlanbomExBo;
 import com.boco.zg.util.Constants;
@@ -62,6 +64,8 @@ public class ZgTorderPlanbomForBatchAction extends BaseStruts2Action implements 
 	private FwEmployeeBo fwEmployeeBo;	
 	private ZgTorderPlanbomBo zgTorderPlanbomBo;
 	private ZgTorderPlanBo zgTorderPlanBo;
+	private ZgTunitBo zgTunitBo;
+	
 	
 	
 	private ZgTorderPlanbomEx zgTorderPlanbomEx;
@@ -138,6 +142,8 @@ public class ZgTorderPlanbomForBatchAction extends BaseStruts2Action implements 
 	}
 	
 	private List<FwOrganization> roles;
+	
+	private List<ZgTunit> units;
 	private FwOrganizationBo fwOrganizationBo;
 	public List<FwOrganization> getRoles() {
 		if(roles == null) {
@@ -147,6 +153,13 @@ public class ZgTorderPlanbomForBatchAction extends BaseStruts2Action implements 
 			roles = fwOrganizationBo.findByProperty(fwOrganization, "t0_LABEL_CN", true);
 		}
 		return roles;
+	}
+	
+	public List<ZgTunit> getUnits() {
+		if(units == null) {
+			units = zgTunitBo.findAll();
+		}
+		return units;
 	}
 	
 	/**
@@ -362,5 +375,19 @@ public class ZgTorderPlanbomForBatchAction extends BaseStruts2Action implements 
 
 	public void setFwOrganizationBo(FwOrganizationBo fwOrganizationBo) {
 		this.fwOrganizationBo = fwOrganizationBo;
+	}
+
+	/**
+	 * @return the zgTunitBo
+	 */
+	public ZgTunitBo getZgTunitBo() {
+		return zgTunitBo;
+	}
+
+	/**
+	 * @param zgTunitBo the zgTunitBo to set
+	 */
+	public void setZgTunitBo(ZgTunitBo zgTunitBo) {
+		this.zgTunitBo = zgTunitBo;
 	}
 }

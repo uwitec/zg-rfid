@@ -40,6 +40,7 @@ import cn.org.rapid_framework.page.PageRequest;
 import cn.org.rapid_framework.util.MapAndObject;
 
 import com.boco.zg.plan.base.model.ZgTorderPlanbom;
+import com.boco.zg.util.Constants;
 import com.boco.frame.sys.base.model.FwOrganization;
 import com.boco.frame.sys.base.model.Province;
 
@@ -186,6 +187,7 @@ public class ZgTorderPlanbomDao extends BaseIbatisDao<ZgTorderPlanbom,java.lang.
 	 * @return
 	 */
 	public List<ZgTorderPlanbom> getAutoWaitBackBomListByPbId(Map paramsMap) {
+		paramsMap.put("sortf", Constants.ORDERCHANGESORTF);
 		return getSqlMapClientTemplate().queryForList("ZgTorderPlanbom.getAutoWaitBackBomListByPbId",paramsMap);
 	}
 	

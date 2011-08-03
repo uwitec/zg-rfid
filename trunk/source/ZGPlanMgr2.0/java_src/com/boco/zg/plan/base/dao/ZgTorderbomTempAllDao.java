@@ -164,4 +164,38 @@ public class ZgTorderbomTempAllDao extends BaseIbatisDao<ZgTorderbomTempAll,java
 		
 	}
 
+	/**
+	 * 批量物料接口处理获取增物料
+	 * @param batchNo
+	 * @return
+	 */
+	public List<Map> getForBatchAddBomList(int batchNo) {
+		return  getSqlMapClientTemplate().queryForList("ZgTorderbomTempAll.getForBatchAddBomList",batchNo);
+	}
+	
+	/**
+	 * 批量物料接口处理获取增物料
+	 * @param batchNo
+	 * @return
+	 */
+	public List<Map> getForBatchEditBomList(int batchNo) {
+		return  getSqlMapClientTemplate().queryForList("ZgTorderbomTempAll.getForBatchEditBomList",batchNo);
+	}
+
+	/**
+	 * @param bom
+	 */
+	public void saveTbom(Map bom) {
+		getSqlMapClientTemplate().insert("ZgTorderbomTempAll.saveTbom",bom);
+	}
+	
+	/**
+	 * @param bom
+	 */
+	public void updateTbom(Map bom) {
+		getSqlMapClientTemplate().update("ZgTorderbomTempAll.updateTbom",bom);
+	}
+	
+	
+
 }

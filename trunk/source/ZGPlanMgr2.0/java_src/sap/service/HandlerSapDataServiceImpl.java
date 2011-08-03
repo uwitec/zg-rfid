@@ -182,7 +182,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		findPlanBomSql.append("  from zg_t_orderbom ob, zg_t_order_planbom pb  ,zg_t_order_plan p                                  ");
 		findPlanBomSql.append(" where ob.cuid = pb.order_bom_id                                                   ");
 		findPlanBomSql.append("   and p.cuid=pb.order_plan_id                                                     ");
-		findPlanBomSql.append("    and p.plan_type in ('ABE','ABC','ABD')                                         ");
+		findPlanBomSql.append("    and p.plan_type in ('"+Constants.NEEDPLANSORTF+"')                                         ");
 		findPlanBomSql.append("   and ob.aufnr = '"+aufnr+"'                                                      ");
 		findPlanBomSql.append("   and ob.idnrk = '"+idnrk+"'                                                      ");
 		findPlanBomSql.append("   and ob.posnr = '"+posnr+"'                                                      ");
@@ -207,7 +207,14 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 * @param batchNo
 	 */
 	public void handleBatchBomByBo(int batchNo){
-		StringBuffer delBuffer=new StringBuffer();
+		HandlerOrderServiceImpl handlerOrderServiceImpl=getHandlerOrderServiceImpl();
+		//处理新增加物料
+		handlerOrderServiceImpl.doBatchAddBomData(batchNo);
+		
+		//处理编辑加物料
+		handlerOrderServiceImpl.doBatchEditBomData(batchNo);
+		
+		/*StringBuffer delBuffer=new StringBuffer();
 		delBuffer.append(" delete from zg_t_bom  t where exists (select 1 from zg_t_bom_temp temp ");
 		delBuffer.append(" where temp.batch_no="+batchNo);
 		delBuffer.append(" and temp.operate_type=2 ");
@@ -216,10 +223,10 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		this.baseDao.executeSql(delBuffer.toString());
 		
 		StringBuffer insertBuffer=new StringBuffer();
-		insertBuffer.append("insert into zg_t_bom(cuid,idnrk,maktx,msehl,matkl,zbz,zrzqd,lgort,plant,Plantid,TYPE) ");
-		insertBuffer.append(" select sys_guid(),temp.idnrk,temp.maktx2,temp.msehl2,temp.matkl,temp.zbz,temp.zrzqd,temp.lgort,Temp.name1 ,temp.lifnr,'2' ");
+		insertBuffer.append("insert into zg_t_bom(cuid,idnrk,maktx,msehl,matkl,zbz,zrzqd,lgort,plant,Plantid,TYPE,MEINS) ");
+		insertBuffer.append(" select sys_guid(),temp.idnrk,temp.maktx2,temp.msehl2,temp.matkl,temp.zbz,temp.zrzqd,temp.lgort,Temp.name1 ,temp.lifnr,'2',MEINS ");
 		insertBuffer.append("from zg_t_bom_temp temp where temp.batch_no="+batchNo);
-		this.baseDao.executeSql(insertBuffer.toString());
+		this.baseDao.executeSql(insertBuffer.toString());*/
 
 
 	}
@@ -572,6 +579,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 	 * @param bom
 	 */
 	private void parseDataToTable(JCoTable synTable, int num, Map bom) {
+		//RFFLAG  JCTXT
 		try {
 			String mandt=IbatisDAOHelper.getStringValue(bom, "MANDT");
 			String zrfpid=IbatisDAOHelper.getStringValue(bom, "ZRFPID");
@@ -594,7 +602,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			String mipos=IbatisDAOHelper.getStringValue(bom,"MIPOS");
 			String kdauf=IbatisDAOHelper.getStringValue(bom,"KDAUF");
 			String posnr=IbatisDAOHelper.getStringValue(bom,"POSNR");
-			//String posnr=IbatisDAOHelper.getStringValue(bom,"POSNR");
+			String meins=IbatisDAOHelper.getStringValue(bom,"MEINS");
 			
 			synTable.appendRow();
 	        //定位到第0行
@@ -621,6 +629,8 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			synTable.setValue("LGORT",lgort);
 			synTable.setValue("LLTYP",lltyp);
 			synTable.setValue("POSNR",posnr);
+			synTable.setValue("MEINS",meins);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -717,7 +727,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			
 			//TODO 初期 如果没有设置过的bom自有物料组默认为原来的物料组
 			sqlBuffer=new StringBuffer();
-			sqlBuffer.append("update zg_t_orderbom t set t.matkl_self=t.matkl where  t.sortf in ('ABC','ABE','ABD') and t.matkl_self is null ");
+			sqlBuffer.append("update zg_t_orderbom t set t.matkl_self=t.matkl where  t.sortf in ('"+Constants.NEEDPLANSORTF+"') and t.matkl_self is null ");
 			this.baseDao.executeSql(sqlBuffer.toString());
 		}
 		
@@ -1106,8 +1116,8 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		
 		
 		if(list.size()==0){//订单不存在则进行插入
-			//String orderId=saveZgTorderByAufnr(temp.getAufnr(),batchNo);
-			//addSapBomsDataByAufnr(batchNo, temp.getAufnr(),orderId);
+			String orderId=saveZgTorderByAufnr(temp.getAufnr(),batchNo);
+			addSapBomsDataByAufnr(batchNo, temp.getAufnr(),orderId);
 		}else {//修改相关信息
 			
 			//修改订单信息

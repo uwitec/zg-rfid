@@ -18,6 +18,8 @@ public class OperatorInfo {
 	
 	private String userName;
 	
+	private String roles;
+	
 	private int pageSizeValue;
 	//private List<FwMenu> menus;
 	
@@ -78,6 +80,20 @@ public class OperatorInfo {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	/**
+	 * @return the roles
+	 */
+	public String getRoles() {
+		return roles;
+	}
+
+	/**
+	 * @param roles the roles to set
+	 */
+	public void setRoles(String roles) {
+		this.roles = roles;
 	}
 	
 	

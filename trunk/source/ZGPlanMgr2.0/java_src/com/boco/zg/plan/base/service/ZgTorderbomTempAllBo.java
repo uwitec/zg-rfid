@@ -7,6 +7,7 @@
 package com.boco.zg.plan.base.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javacommon.base.BaseManager;
 import javacommon.base.EntityDao;
@@ -129,5 +130,34 @@ public class ZgTorderbomTempAllBo extends BaseManager<ZgTorderbomTempAll,java.la
 	public void updateOrderBomForPc(ZgTorderbomTempAll tempBom) {
 		zgTorderbomTempAllDao.updateOrderBomForPc(tempBom);
 		
+	}
+	
+	/**
+	 * @param batchNo
+	 * @return
+	 */
+	public List<Map> getForBatchAddBomList(int batchNo) {
+		return zgTorderbomTempAllDao.getForBatchAddBomList(batchNo);
+	}
+	
+	/**
+	 * @param batchNo
+	 * @return
+	 */
+	public List<Map> getForBatchEditBomList(int batchNo) {
+		return zgTorderbomTempAllDao.getForBatchEditBomList(batchNo);
+	}
+	/**
+	 * @param bom
+	 */
+	public void saveTbom(Map bom) {
+		zgTorderbomTempAllDao.saveTbom(bom);	
+	}
+	
+	/**
+	 * @param bom
+	 */
+	public void updateTbom(Map bom) {
+		zgTorderbomTempAllDao.updateTbom(bom);	
 	}
 }

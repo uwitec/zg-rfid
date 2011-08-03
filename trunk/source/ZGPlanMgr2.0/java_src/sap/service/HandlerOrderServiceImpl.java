@@ -528,4 +528,32 @@ public class HandlerOrderServiceImpl {
 		return addBomList.size();
 	}
 
+	/**
+	 * 批量领料处理新增加物料
+	 * @param batchNo
+	 */
+	public void doBatchAddBomData(int batchNo) {
+		List<Map> addBomList=getZgTorderbomTempAllBo().getForBatchAddBomList(batchNo);
+		
+		//循环插入
+		for(Map bom:addBomList){
+			getZgTorderbomTempAllBo().saveTbom(bom);
+		}
+		
+	}
+
+	/**
+	 *  批量领料处理新编辑物料
+	 * @param batchNo
+	 */
+	public void doBatchEditBomData(int batchNo) {
+		List<Map> editBomList=getZgTorderbomTempAllBo().getForBatchEditBomList(batchNo);
+		
+		//循环修改
+		for(Map bom:editBomList){
+			getZgTorderbomTempAllBo().updateTbom(bom);
+		}
+		
+	}
+
 }

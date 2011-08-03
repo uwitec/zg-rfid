@@ -71,6 +71,9 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	
 	private String sortf;
 	
+	private String meins;
+	private String msehl;
+	
 	/*
 	 * wjz，领料组，领料人
 	 */
@@ -375,6 +378,30 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	 */
 	public void setSortf(String sortf) {
 		this.sortf = sortf;
+	}
+	/**
+	 * @return the meins
+	 */
+	public String getMeins() {
+		return meins;
+	}
+	/**
+	 * @param meins the meins to set
+	 */
+	public void setMeins(String meins) {
+		this.meins = meins;
+	}
+	/**
+	 * @return the msehl
+	 */
+	public String getMsehl() {
+		return msehl;
+	}
+	/**
+	 * @param msehl the msehl to set
+	 */
+	public void setMsehl(String msehl) {
+		this.msehl = msehl;
 	}
 	
 }

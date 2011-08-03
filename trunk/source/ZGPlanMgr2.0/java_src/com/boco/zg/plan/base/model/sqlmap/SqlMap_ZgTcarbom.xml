@@ -108,10 +108,19 @@
 	        ORDER_PLANBOM_ID = #orderPlanbomId# ,
 	        storage_user_id=#storageUserId#,
 	        CAR_DATE=#carDate#
+	        ,STORAGE_USER_NAME = #storageUserName# 
 	    WHERE 
 	        CUID = #cuid# 
     ]]>
     </update>
+    
+    <update id="updateSynFlagByCarBomIds" parameterClass="java.util.HashMap">
+    <![CDATA[
+       update zg_t_carbom t set t.syn='$flag$' where t.cuid in ('$carbomIds$')
+    ]]>
+    </update>
+    
+    
     
 	<delete id="deleteZG_T_CARBOM" parameterClass="java.lang.String">
 		delete from ZG_T_CARBOM 

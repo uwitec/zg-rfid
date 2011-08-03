@@ -78,4 +78,18 @@ public class ZgTcarbomBo extends BaseManager<ZgTcarbom,java.lang.String>{
 	}
 	
 	
+	/**
+	 * @param carbomIds
+	 * @param flag
+	 */
+	public void updateSynFlagByCarBomIds(String carbomIds, String flag) {
+		carbomIds=carbomIds.replace(",", "','");
+		
+		Map paramsMap=new HashMap();
+		paramsMap.put("carbomIds", carbomIds);
+		paramsMap.put("flag", flag);
+		zgTcarbomDao.updateSynFlagByCarBomIds(paramsMap);
+	}
+	
+	
 }
