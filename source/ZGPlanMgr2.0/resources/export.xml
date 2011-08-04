@@ -336,7 +336,7 @@
                orderbom.maktx2,
                orderbom.sortf,
                orderbom.lgort,
-               decode( carplan.order_plan_type,'ABC' ,'正常领料','ABD','正常领料','ABE','正常领料','BACK','退料','CHANGE','换料','RENEW','补领料') order_plan_type,
+               decode( carplan.order_plan_type,'ABC' ,'正常领料','ABD','正常领料','ABCA' ,'正常领料','ABDA','正常领料','ABE','正常领料','BACK','退料','CHANGE','换料','RENEW','补领料','退料') order_plan_type,
                sup.lifnr,
                  case when sum(nvl(sup.car_num, 0))=0 then sum(carbom.real_num) else sum(nvl(sup.car_num, 0)) end as complete_num,
                sum(taskbom.menge) car_num,
@@ -405,7 +405,7 @@
        			 and  carplan.order_plan_type in ('#planType#')
        		</isNotEmpty>  
        			<isNotEmpty id="lgort">
-	       		AND  orderbom.lgort like  '%#lgort#%' 
+	       		AND  orderbom.lgort in ('#lgort#')
        		</isNotEmpty> 
        		<isEmpty id="null">
        		group by zto.aufnr,
@@ -484,16 +484,16 @@
 	       orderbom.sortf,
 	       orderbom.lgort,
 	       sup.lifnr,
-	       decode( carplan.order_plan_type,'ABC' ,'正常领料','ABD','正常领料','ABE','正常领料','BACK','退料','CHANGE','换料','RENEW','补领料') order_plan_type,
+	       decode( carplan.order_plan_type,'ABC' ,'正常领料','ABD','正常领料','ABCA' ,'正常领料','ABDA','正常领料','ABE','正常领料','BACK','退料','CHANGE','换料','RENEW','补领料','退料') order_plan_type,
 	       case when  nvl(sup.car_num,0)=0 then carbom.real_num else nvl(sup.car_num,0) end as real_num,
 	       planbom.car_num,
 	       sup.lifnr_name,
 	       carplan.car_user,
-	       op.label_cn car_user_name,
+	       carplan.car_user_name,
 	       to_char(carplan.create_date,'yyyy-MM-dd hh24:mi:ss') create_date,
 	       to_char(carbom.car_date,'yyyy-MM-dd hh24:mi:ss') car_date,
 	       carplan.storage_user_id,
-	       op1.label_cn storage_user_name,
+	      carbom.storage_user_name,
 	       sup.batchno,
            sup.zrzqd,zto.kdauf,zto.KDPOS,       
            orderbom.posnr,
@@ -560,7 +560,7 @@
        		</isNotEmpty> 
        		
        			<isNotEmpty id="lgort">
-	       		and  orderbom.lgort like   '%#lgort#%'
+	       		and  orderbom.lgort in ('#lgort#')
        		</isNotEmpty> 
        		
 	    </dynamic>	
@@ -581,6 +581,7 @@
         <col id="deptName" name="领料部门" datatype="string" desc=""></col>
         <col id="idnrk" name="物料编码" datatype="string" desc=""></col>
         <col id="maktx" name="物料描述" datatype="string" desc=""></col>
+        <col id="msehl" name="基本单位" datatype="string" desc=""></col>
         <col id="lgort" name="发料仓库编号" datatype="string" desc=""></col>
         <col id="logName" name="发料仓库" datatype="string" desc=""></col>
         <col id="car_num" name="生产批量" datatype="string" desc=""></col>
@@ -604,7 +605,7 @@
        sum(nvl(sup.car_num,0)) complete_num,
          sum(planbom.car_num) car_num,
          sup.lifnr_name,
-         org.label_cn deptName
+         org.label_cn deptName,planbom.msehl
     from zg_t_carbom           carbom,
          zg_t_carplan          carplan,
          zg_t_order_planbom    planbom,
@@ -655,7 +656,7 @@
        		</isNotEmpty> 
        		
        			<isNotEmpty id="lgort">
-	       		and  bom.lgort like '%#lgort#%'
+	       		and  bom.lgort in ('#lgort#')
        		</isNotEmpty> 
        		
        		 <isEmpty id="null">
@@ -664,7 +665,7 @@
 		         bom.lgort,
 		         sup.lifnr,
 		         sup.lifnr_name,org.label_cn,
-		         org1.label_cn
+		         org1.label_cn,planbom.msehl
        		</isEmpty>
         </dynamic>
         <content>
@@ -685,6 +686,7 @@
         
         <col id="idnrk" name="物料编码" datatype="string" desc=""></col>
         <col id="maktx" name="物料描述" datatype="string" desc=""></col>
+         <col id="msehl" name="基本单位" datatype="string" desc=""></col>
         <col id="lgort" name="发料仓库编号" datatype="string" desc=""></col>
         <col id="lgortName" name="发料仓库" datatype="string" desc=""></col>
         <col id="car_num" name="生产批量" datatype="string" desc=""></col>
@@ -714,14 +716,14 @@
          planbom.car_num,
          sup.lifnr_name,
          carplan.car_user,
-         op.label_cn car_user_name,
+          carplan.car_user_name,
          to_char(carplan.create_date,'yyyy-MM-dd hh24:mi:ss') create_date,
 	       to_char(carplan.car_date,'yyyy-MM-dd hh24:mi:ss') car_date,
 	       carplan.storage_user_id,
-	       op1.label_cn storage_user_name,
+	      carplan.storage_user_name,
          org.label_cn deptName,
          sup.batchno,
-         sup.zrzqd
+         sup.zrzqd,planbom.msehl
     from zg_t_carbom           carbom,
          zg_t_carplan          carplan,
          zg_t_order_planbom    planbom,
@@ -733,10 +735,10 @@
          fw_organization org,
           fw_organization org1
    where org1.cuid=bom.lgort
-     and op.cuid = carplan.car_user
-      and em.cuid=carplan.car_user
-     and org.cuid=em.org_id
-     and op1.cuid = carplan.storage_user_id
+     and op.cuid(+) = carplan.car_user
+      and em.cuid(+)=carplan.car_user
+     and org.cuid(+)=em.org_id
+     and op1.cuid (+)= carplan.storage_user_id
      and carbom.car_plan_id = carplan.cuid
     and planbom.bom_id=bom.cuid
 
@@ -775,7 +777,7 @@
        		</isNotEmpty> 
        		
        			<isNotEmpty id="lgort">
-	       		and  bom.lgort like '%#lgort#%'
+	       		and  bom.lgort in ('#lgort#')
        		</isNotEmpty> 
         </dynamic>
         <content>
