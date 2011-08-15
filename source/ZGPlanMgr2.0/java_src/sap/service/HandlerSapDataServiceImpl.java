@@ -603,6 +603,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			String kdauf=IbatisDAOHelper.getStringValue(bom,"KDAUF");
 			String posnr=IbatisDAOHelper.getStringValue(bom,"POSNR");
 			String meins=IbatisDAOHelper.getStringValue(bom,"MEINS");
+			String carbomIds=IbatisDAOHelper.getStringValue(bom,"CARBOMCUID");
 			
 			synTable.appendRow();
 	        //定位到第0行
@@ -630,6 +631,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 			synTable.setValue("LLTYP",lltyp);
 			synTable.setValue("POSNR",posnr);
 			synTable.setValue("MEINS",meins);
+			synTable.setValue("JCTXT",carbomIds);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

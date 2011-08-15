@@ -369,4 +369,22 @@ public class ZgTorderbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.lang.
 		
 	}
 
+
+	/**
+	 * @param aufnr
+	 * @param idnrk
+	 * @param posnr
+	 * @param lgort
+	 */
+	public void setLgortByAufnrIdnrkPosnr(String aufnr, String idnrk,
+			String posnr, String lgort) {
+		Map paramsMap=new HashMap();
+		paramsMap.put("idnrk", idnrk);
+		paramsMap.put("aufnr", aufnr);
+		paramsMap.put("posnr", posnr);
+		paramsMap.put("lgort", lgort);
+		getSqlMapClientTemplate().update("ZgTorderbomEx.updateLgortByAufnrIdnrkPosnr",paramsMap);
+		
+	}
+
 }

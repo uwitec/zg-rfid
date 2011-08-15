@@ -914,4 +914,16 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 		this.zgTorderBo = zgTorderBo;
 	}
 
+	/**
+	 * @param aufnr
+	 * @param idnrk
+	 * @param posnr
+	 * @param lgort
+	 */
+	public void setLgortByAufnrIdnrkPosnr(String aufnr, String idnrk,
+			String posnr, String lgort) {
+		zgTorderbomExDao.setLgortByAufnrIdnrkPosnr(aufnr,idnrk,posnr,lgort);
+		
+	}
+
 }

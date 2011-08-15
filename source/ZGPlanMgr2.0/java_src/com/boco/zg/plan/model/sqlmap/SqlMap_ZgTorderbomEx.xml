@@ -420,6 +420,17 @@ select e.org_id      from fw_employee e where e.cuid=#operatorId#)))
     ]]>
     </update>
     
+    <update id="updateLgortByAufnrIdnrkPosnr" parameterClass="java.util.HashMap">
+   		
+   		 update zg_t_orderbom t set t.lgort='$lgort$' where t.aufnr='$aufnr$' and t.idnrk ='$idnrk$' 
+   		 
+   		<isNotEmpty prepend="AND" property="posnr">
+	        t.posnr='$posnr$'
+       </isNotEmpty>  
+   		 
+    </update>
+    
+    
     
     
     <resultMap id="zgTorderbomExResult4" class="zgTorderbomEx">
