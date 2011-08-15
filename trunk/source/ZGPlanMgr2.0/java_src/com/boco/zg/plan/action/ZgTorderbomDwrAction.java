@@ -245,6 +245,17 @@ public class ZgTorderbomDwrAction extends BaseDwrAction {
 		return "OK";
 	}
 
+	
+	/**
+	 * 更新物料的仓库
+	 * @param idnrk
+	 * @param matkl
+	 * @return
+	 */
+	public String setLgortByAufnrIdnrkPosnr(String aufnr,String idnrk,String posnr,String lgort){
+		getZgTorderbomExBo().setLgortByAufnrIdnrkPosnr(aufnr,idnrk,posnr,lgort);
+		return "OK";
+	}
 
 	
 

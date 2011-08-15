@@ -789,7 +789,6 @@
     <![CDATA[
         UPDATE ZG_T_ORDERBOM SET
 	        MATKL = #matkl# ,
-	        LGORT = #lgort# ,
 	        ZBZ = #zbz# ,
 	        ZRZQD = #zrzqd# ,
 	        IDNRK = #idnrk# ,
@@ -821,7 +820,6 @@
     <![CDATA[
         UPDATE ZG_T_ORDERBOM SET
 	        MATKL = #matkl# ,
-	        LGORT = #lgort# ,
 	        ZBZ = #zbz# ,
 	        ZRZQD = #zrzqd# ,
 	        IDNRK = #idnrk# ,

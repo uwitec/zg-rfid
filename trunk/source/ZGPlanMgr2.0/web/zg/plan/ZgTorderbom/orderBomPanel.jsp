@@ -188,6 +188,30 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 				matklSelfs[count].value=label;
 			}
 		}
+		
+		function lgortSet(aufnr,idnrk,posnr){
+			var sFeatures="dialogHeight: 400px;dialogWidth:300px";
+			
+		//	alert(ctx+"/zg/plan/ZgTorderbom/materiel_tree.jsp?matkl="+matkl);
+			var returnValue = window.showModalDialog(ctx+"/explorer/tree/commonTree.jsp?templateId=lgort",'sada',sFeatures);
+			if(returnValue) {
+				var id = returnValue.id;
+				var label=returnValue.label;
+				
+				ZgTorderbomDwrAction.setLgortByAufnrIdnrkPosnr(aufnr,idnrk,posnr,id,function(data){
+					if(data=='OK'){
+						$("#"+idnrk+"-"+posnr+"-lgort").attr("innerText",label);
+					}else{
+						alert("系统繁忙，请稍后再试!");
+					}
+				});
+				
+				
+				//var matklSelfs=document.getElementsByName("lgort");
+				///matklSelfs[count].value=label;
+				
+			}
+		}
 	</script>
 </head>
 <body>
@@ -320,7 +344,9 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							<td align="center" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.msehl1}</td>
 							<td align="center" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.zdtyl}</td>
 							<td align="center" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.menge}</td>
-							<td align="left" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')"> ${obj.lgort_label_cn}</td>
+							<td align="left" style="color:red" ondblclick="lgortSet('${obj.aufnr}','${obj.idnrk}','${obj.posnr }')" title="双击设置仓库"> 
+							<span id="${obj.idnrk}-${obj.posnr }-lgort">${obj.lgort_label_cn}(${obj.lgort })</span>
+							</td>
 							<td align="center" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.zbz}</td>		
 						</c:if>
 						<c:if test="${not empty obj.carNum}">
@@ -355,7 +381,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							<td align="center">${obj.msehl1}</td>
 							<td align="center">${obj.zdtyl}</td>
 							<td align="center">${obj.menge}</td>
-							<td align="left"> ${obj.lgort_label_cn}</td>
+							<td align="left" ondblclick="lgortSet('${obj.aufnr}','${obj.idnrk}','${obj.posnr }')" title="双击设置仓库"> <span id="${obj.idnrk}-${obj.posnr }-lgort">${obj.lgort_label_cn}(${obj.lgort })</span></td>
 							<td align="center">${obj.zbz}</td>
 						
 						</c:if>
