@@ -147,6 +147,8 @@ public class ZgTorderPlanbomDwrAction extends BaseDwrAction {
 							obj.setCarNum(zgTorderPlanbomEx.getCarNum());
 							obj.setDepartmentId(zgTorderPlanbomEx.getDepartmentId());
 							obj.setUserId(zgTorderPlanbomEx.getUserId());
+							obj.setDepartmentId_labelCn(zgTorderPlanbomEx.getDepartmentId_labelCn());
+							obj.setUserId_labelCn(zgTorderPlanbomEx.getUserId_labelCn());
 							obj.setPlanDate(zgTorderPlanbomEx.getPlanDate());
 							obj.setPlanStartTime(zgTorderPlanbomEx.getPlanStartTime());
 							obj.setPlanEndTime(zgTorderPlanbomEx.getPlanEndTime());

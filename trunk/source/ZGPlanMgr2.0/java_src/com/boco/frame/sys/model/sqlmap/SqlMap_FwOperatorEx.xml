@@ -54,7 +54,7 @@
 	    <![CDATA[select o.*
 				  from fw_operator o, fw_employee fe
 				 where o.cuid=fe.cuid
-				   and fe.org_id='$orgId$' )  ]]>
+				   and fe.org_id='$orgId$' ) order by label_cn  ]]>
     </select>
     
         <select id="getUserByRfidCode" resultMap="fwOperatorResult">

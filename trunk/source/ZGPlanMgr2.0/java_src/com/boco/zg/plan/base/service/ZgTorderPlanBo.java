@@ -111,5 +111,12 @@ public class ZgTorderPlanBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 		List<ZgTorderPlan> list= zgTorderPlanDao.getPlanNotAuditList(paramsMap);
 		return list.size()==0?null:list.get(0);
 	}
+	/**
+	 * @return
+	 */
+	public String getCuid() {
+		List<Map> list= zgTorderPlanDao.findDynQuery("SELECT to_char(SYSTIMESTAMP,'yyyymmddhhmissff') cuid FROM DUAL");
+		return list.get(0).get("CUID").toString();
+	}
 	
 }

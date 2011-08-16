@@ -278,6 +278,14 @@
 									审核数量
 								</td>
 								
+								<td class="tableHeader">
+									领料部门
+								</td>
+								<td class="tableHeader">
+									领料员
+								</td>
+								
+								
 							</tr>
 							
 						</thead>
@@ -344,6 +352,12 @@
 											</c:otherwise>
 										</c:choose>
 
+									</td>
+									<td align="left">
+										${obj.departmentId_labelCn}
+									</td>
+									<td align="left">
+										${obj.userId_labelCn}
 									</td>
 									</tr>
 								</c:if>

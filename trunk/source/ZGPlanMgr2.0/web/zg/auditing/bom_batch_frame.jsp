@@ -176,9 +176,9 @@
 							<c:when test="${(zgTorderPlan.state eq '8')||(zgTorderPlan.state eq '2')}"></c:when>
 							<c:otherwise>
 							
-							 <a href="javascript:"><span onclick="submitOrRejectPlan(1,'${orderPlanId}',this)"><img
+							 <a href="javascript:submitOrRejectPlan(1,'${orderPlanId}',this)"><span><img
 										src="<%=iconPath%>/true.gif" />通过</span> </a>
-							 &nbsp;<a href="javascript:"><span onclick="submitOrRejectPlan(2,'${orderPlanId}',this)"><img
+							 &nbsp;<a href="javascript:submitOrRejectPlan(2,'${orderPlanId}',this)"><span><img
 										src="<%=iconPath%>/ico_009a.gif" />退回</span> </a>
 							</c:otherwise>
 						</c:choose>

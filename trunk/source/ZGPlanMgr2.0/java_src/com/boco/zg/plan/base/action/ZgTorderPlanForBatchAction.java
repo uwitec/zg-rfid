@@ -22,16 +22,13 @@ import cn.org.rapid_framework.page.Page;
 import cn.org.rapid_framework.page.PageRequest;
 import cn.org.rapid_framework.web.util.HttpUtils;
 
-import com.boco.frame.login.pojo.OperatorInfo;
 import com.boco.frame.sys.base.model.FwEmployee;
 import com.boco.frame.sys.base.model.FwOrganization;
 import com.boco.frame.sys.base.service.FwOrganizationBo;
 import com.boco.zg.plan.base.model.ZgTorderPlan;
 import com.boco.zg.plan.base.service.ZgTorderPlanBo;
 import com.boco.zg.plan.common.service.CommonService;
-import com.boco.zg.plan.model.ZgTorderPlanEx;
 import com.boco.zg.plan.model.ZgTorderPlanbomEx;
-import com.boco.zg.plan.service.ZgTorderPlanExBo;
 import com.boco.zg.plan.service.ZgTorderPlanForBatchExBo;
 import com.boco.zg.plan.service.ZgTorderPlanbomExBo;
 import com.boco.zg.util.Constants;
@@ -216,10 +213,17 @@ public class ZgTorderPlanForBatchAction extends BaseStruts2Action implements Pre
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		String createUserId=pageRequest.getFilters().get("operatorId").toString();//创建人的id
 		zgTorderPlan.setUserId(createUserId);
+		zgTorderPlan.setPlanType(Constants.OrderPlanType.PLTYPE.value());
 		
 		//1 遍历session中的bom组件，找出其中修改标记为true的组件更新领料计划bom表中
 		List<ZgTorderPlanbomEx> list=(List<ZgTorderPlanbomEx>) this.getSession().getAttribute("bomForBatchList");
 		synSessionBomToDataBase(list);
+		
+		try {
+			zgTorderPlanBo.saveOrderPlan1(zgTorderPlan);
+		} catch (Exception e) {
+		}
+		
 		
 		//2 更新领料计划表状态为“保存”
 		//如果是‘退回’状态的再度保存的话，状态还是‘退回’状态
@@ -227,7 +231,6 @@ public class ZgTorderPlanForBatchAction extends BaseStruts2Action implements Pre
 			zgTorderPlan.setState(Constants.OrderPlanStatus.REJECTAUDITING.value());
 			zgTorderPlanForBatchExBo.saveOrderPlan(zgTorderPlan,"",Constants.OrderPlanStatus.REJECTAUDITING.value());
 		}else{
-		
 			zgTorderPlan.setState(Constants.OrderPlanStatus.SAVE.value());
 			zgTorderPlanForBatchExBo.saveOrderPlan(zgTorderPlan,"",Constants.OrderPlanStatus.REJECTAUDITING.value());
 		}
@@ -277,6 +280,13 @@ public class ZgTorderPlanForBatchAction extends BaseStruts2Action implements Pre
 		PageRequest<Map> pageRequest = newPageRequest(DEFAULT_SORT_COLUMNS);
 		String createUserId=pageRequest.getFilters().get("operatorId").toString();//拿到创建人的ID
 		zgTorderPlan.setUserId(createUserId);
+		zgTorderPlan.setPlanType(Constants.OrderPlanType.PLTYPE.value());
+		
+		try {
+			zgTorderPlanBo.saveOrderPlan1(zgTorderPlan);
+		} catch (Exception e) {
+		}
+		
 		//拿到所选审核人的id
 		String auiditingUserId=this.getRequest().getParameter("userId");
 		
