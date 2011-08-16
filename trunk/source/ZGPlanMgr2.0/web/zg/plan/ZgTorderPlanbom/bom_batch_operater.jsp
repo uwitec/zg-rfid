@@ -35,6 +35,7 @@
 			border: 0;
 			background: transparent;
 		}
+		.sfont {font-size:20px;}
 		</style>
 		<script type="text/javascript">
 		
@@ -589,7 +590,7 @@
 											<input  style="width:100px" type="text" attr="units" edittype="labelCn" class="readOnlyInput" readonly="readonly" size="8" name="unit_label" id="${obj.cuid}msehl" value="${obj.msehl1}"/>
 										</td>
 										<td  onClick="changeDept('${n.count-1}userId','${obj.cuid}')">
-											<input type="hidden" attr="groups" edittype="value" name="orderPlanboms[${n.count-1}].departmentId" id="${n.count-1}departmentId"/>
+											<input type="hidden" attr="groups" edittype="value" name="orderPlanboms[${n.count-1}].departmentId" id="${n.count-1}departmentId" value="${obj.departmentId}"/>
 											<input type="hidden" attr="groups" edittype="value" id="${obj.cuid}groupId" value="${obj.departmentId}"/>
 											<input type="hidden" name="groupOldNames_label" id="${obj.cuid}groupOldLabelCn" value="${obj.departmentId_labelCn}"/>
 											<input type="text" edittype="labelCn" class="readOnlyInput" readonly="readonly" size="8" name="groups_label" id="${obj.cuid}groupName" value="${obj.departmentId_labelCn}"/>
