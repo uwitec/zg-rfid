@@ -1,3 +1,5 @@
+
+
 function initGridEditor() {
 	$("td[editable=true]").bind("click",focusEdit);
 	$("td[editable=true]").bind("changeHandle",changeHandle);
@@ -12,6 +14,8 @@ function changeHandle(event) {
 function createSelect(data,val) {
 	var targetEl = document.createElement("select");
 	var emptyOpt = document.createElement("option");
+	targetEl.style.width="150px";
+	targetEl.style.fontSize="10pt";
 	emptyOpt.value="";
 	emptyOpt.innerHTML = "请选择...";
 	targetEl.appendChild(emptyOpt);
@@ -20,7 +24,7 @@ function createSelect(data,val) {
 		var value = data[i].value;
 		var opt = document.createElement("option");
 		opt.value=value;
-		opt.innerHTML = labelCn;
+		opt.innerHTML = '<span style= "font-size:15px" >'+labelCn+"</font>";
 		targetEl.appendChild(opt);
 		if(value == val) {
 			opt.selected = true;
