@@ -41,6 +41,7 @@
 		<result property="msehl1" column="MSEHL1"/>
 		<result property="meins" column="meins"/>
 		<result property="carNum" column="CAR_NUM"/>
+		<result property="completeNum" column="complete_num"/>
 		<result property="zbz" column="zbz"/>
 		<result property="bomId_labelCn" column="bom_lanle_cn"/>
 		<result property="orderPlanId" column="order_plan_id"/>
@@ -322,6 +323,7 @@
                  pb.MSEHL MSEHL1,
                pb.meins meins,
                pb.car_num,
+               pb.complete_num,
                pb.zbz,
                  b.idnrk,
                 pb.state,
@@ -690,6 +692,7 @@
                pb.MSEHL MSEHL1,
                pb.meins meins,
                pb.car_num,
+               pb.complete_num,
                pb.zbz,
                b.idnrk,
                pb.state,
@@ -726,6 +729,7 @@
                pb.MSEHL MSEHL1,
                pb.meins meins,
                pb.car_num,
+               pb.complete_num,
                pb.zbz,
                  b.idnrk,
                pb.state,
@@ -793,9 +797,7 @@
 			       t.plan_end_time=#planEndTime#,
 			       <isNotEmpty  property="msehl1">
 	       				 t.msehl=#msehl1#,
-       			   </isNotEmpty>
-		    		<isNotEmpty  property="meins">
-	       				t.meins=#meins#
+	       				 t.meins=#meins#
        			   </isNotEmpty>
 			 where t.cuid =#cuid#
     

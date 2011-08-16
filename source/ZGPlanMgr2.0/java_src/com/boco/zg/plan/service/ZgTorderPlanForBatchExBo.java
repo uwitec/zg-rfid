@@ -246,9 +246,20 @@ public class ZgTorderPlanForBatchExBo extends BaseManager<ZgTorderPlanEx,java.la
 	 * @param orderPlanId
 	 */
 	public void deleteBatchOrderPlan(String orderPlanId){
-		zgTorderPlanFoBatchExDao.deleteOrderPlanCommentByPlanId(orderPlanId);
-		zgTorderPlanFoBatchExDao.deleteOrderPlanBomByPlanId(orderPlanId);
-		zgTorderPlanFoBatchExDao.deleteOrderPlan(orderPlanId);
+		//判断是否已经开始领料 如果已经开始领料则只删除未开始领料的
+		boolean isStartCar=zgTorderPlanFoBatchExDao.isStartCar(orderPlanId);
+		
+		if(isStartCar){//已经开始领料 则只删除未领料的物料
+			zgTorderPlanFoBatchExDao.deleteNotStartCarPlanByPlanId(orderPlanId);
+			zgTorderPlanFoBatchExDao.deleteNotStartPlanBomByPlanId(orderPlanId);
+		}else {
+			zgTorderPlanFoBatchExDao.deleteCarPlanByPlanId(orderPlanId);
+			zgTorderPlanFoBatchExDao.deleteOrderPlanCommentByPlanId(orderPlanId);
+			zgTorderPlanFoBatchExDao.deleteOrderPlanBomByPlanId(orderPlanId);
+			zgTorderPlanFoBatchExDao.deleteOrderPlan(orderPlanId);
+		}
+		
+		
 	}
 	
 	/**

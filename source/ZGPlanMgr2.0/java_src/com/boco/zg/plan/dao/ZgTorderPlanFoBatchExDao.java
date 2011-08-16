@@ -112,5 +112,40 @@ public class ZgTorderPlanFoBatchExDao extends BaseIbatisDao<ZgTorderPlanEx,java.
 	public void deleteOrderPlanCommentByPlanId(String orderPlanId){
 		super.getSqlMapClientTemplate().delete("ZgTorderPlanForBatchEx.deleteOrderPlanCommentByPlanId",orderPlanId);
 	}
+
+
+	/**
+	 * @param orderPlanId
+	 * @return
+	 */
+	public boolean isStartCar(String orderPlanId) {
+		return getSqlMapClientTemplate().queryForList("ZgTorderPlanForBatchEx.isStartCar",orderPlanId).size()>0;
+	}
+
+
+	/**
+	 * @param orderPlanId
+	 */
+	public void deleteNotStartCarPlanByPlanId(String orderPlanId) {
+		super.getSqlMapClientTemplate().delete("ZgTorderPlanForBatchEx.deleteNotStartCarPlanByPlanId",orderPlanId);
+	}
+
+
+	/**
+	 * @param orderPlanId
+	 */
+	public void deleteNotStartPlanBomByPlanId(String orderPlanId) {
+		super.getSqlMapClientTemplate().delete("ZgTorderPlanForBatchEx.deleteNotStartPlanBomByPlanId",orderPlanId);
+		
+	}
+
+
+	/**
+	 * @param orderPlanId
+	 */
+	public void deleteCarPlanByPlanId(String orderPlanId) {
+		super.getSqlMapClientTemplate().delete("ZgTorderPlanForBatchEx.deleteCarPlanByPlanId",orderPlanId);
+		
+	}
 	
 }

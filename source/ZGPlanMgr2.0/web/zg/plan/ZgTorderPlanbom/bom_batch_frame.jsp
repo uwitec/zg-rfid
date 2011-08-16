@@ -118,8 +118,10 @@
 					obj.disabled=false;
 					return;
 				}
-				document.forms[0].action="${ctx}/zg/plan/ZgTorderPlanForBatch/saveOrderPlanForBatch.do?zgTorderPlanStateData="+zgTorderPlanStateData;
-				document.forms[0].submit();
+				var form=document.forms[0];
+				form.target="_self";
+				form.action="${ctx}/zg/plan/ZgTorderPlanForBatch/saveOrderPlanForBatch.do?zgTorderPlanStateData="+zgTorderPlanStateData;
+				form.submit();
 			}else{
 				alert("请按完成后再保存！");
 			}
@@ -392,8 +394,8 @@
 						<c:choose>
 							<c:when test="${(zgTorderPlan.state eq '8')||(zgTorderPlan.state eq '1')}"></c:when>
 							<c:otherwise>
-							<a href="javascript:"><span  onclick="addPlan('${orderPlanId}',this)"><img src="<%=iconPath%>/action_save.gif" />保存</span></a>
-							<a href="javascript:"><span onclick="submitPlan('${orderPlanId}',this)"><img src="<%=iconPath%>/true.gif" />提交审核</span></a>
+							<a href="javascript:addPlan('${orderPlanId}',this)"><span><img src="<%=iconPath%>/action_save.gif" />保存</span></a>
+							<a href="javascript:submitPlan('${orderPlanId}',this)"><span><img src="<%=iconPath%>/true.gif" />提交审核</span></a>
 							</c:otherwise>
 						</c:choose>
 							<a href="javascript:if(parent.doQuery)parent.doQuery()"><span><img src="<%=iconPath%>/ico_007.gif" />返回</span></a>
@@ -404,7 +406,7 @@
 		</table>
 		<form
 			action="${ctx}/zg/plan/ZgTorderPlanForBatch/saveOrderPlanForBatch.do"
-			method="post">
+			method="post" target="_self">
 			<input type="hidden" name="orderPlanId" value="${orderPlanId}" />
 			<input type="hidden" value="5" name="planType" class="required" />
 			<table class="formitem" width="100%" cellpadding="0" cellspacing="1"

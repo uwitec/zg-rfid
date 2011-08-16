@@ -192,6 +192,7 @@ public class ZgTorderPlanbomForBatchAction extends BaseStruts2Action implements 
 			zgTorderPlan.setState(Constants.CarPlanStatus.NEW.value());
 			zgTorderPlan.setPlanType(Constants.OrderPlanType.PLTYPE.value());
 			orderPlanId=zgTorderPlanBo.saveOrderPlan(zgTorderPlan);
+			orderPlanId=zgTorderPlanBo.getCuid();
 			zgTorderPlan.setCuid(orderPlanId);
 			
 		}else{//修改单据

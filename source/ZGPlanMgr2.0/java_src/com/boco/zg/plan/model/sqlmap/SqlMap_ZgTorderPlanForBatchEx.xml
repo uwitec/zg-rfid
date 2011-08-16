@@ -132,9 +132,6 @@
 			 <isNotEqual property="state" compareValue="4">
       		 	<![CDATA[ and ztopc.order_plan_id=op.cuid(+)]]>
       		 </isNotEqual>
-			 <isNotEqual property="operatorId" compareValue="0">
-			 	<![CDATA[and opr.CUID=#operatorId# ]]>
-			 </isNotEqual>
 		)
 		<include refid="dynamicWhere"/>
 	</select>
@@ -182,9 +179,6 @@
 			 <isNotEqual property="state" compareValue="4">
       		 	<![CDATA[ and ztopc.order_plan_id=op.cuid(+)]]>
       		 </isNotEqual>
-			 <isNotEqual property="operatorId" compareValue="0">
-			 	<![CDATA[and opr.CUID=#operatorId# ]]>
-			 </isNotEqual>
 		<![CDATA[) ]]>
 		<include refid="dynamicWhere"/>
 		<dynamic prepend="ORDER BY">
@@ -192,6 +186,17 @@
 		</dynamic>
     </select>
     
+    
+      <select id="isStartCar" resultClass="java.util.HashMap">
+		select cp.*
+		  from zg_t_carplan cp, zg_t_carbom cb
+		 where cp.cuid = cb.car_plan_id
+		   and cb.order_planbom_id in
+		       (select t.cuid
+		          from zg_t_order_planbom t
+		         where t.order_plan_id = '$cuid$')
+		   and cp.car_state = '8'
+    </select>
     
     
     
@@ -250,6 +255,21 @@
 	<delete id="deleteOrderPlan" parameterClass="java.lang.String" >
 		delete  from zg_t_order_plan t
 			where t.cuid=#cuid#
+	</delete>
+	
+	<delete id="deleteNotStartCarPlanByPlanId" parameterClass="java.lang.String" >
+		    <![CDATA[	  delete from zg_t_carplan cp where exists (select 1 from zg_t_carbom cb,zg_t_order_planbom pb  where
+   		cb.order_planbom_id=pb.cuid and cp.cuid=cb.car_plan_id and pb.order_plan_id='$cuid$') and cp.car_state<>'8'  ]]>
+	</delete>
+	
+	<delete id="deleteNotStartPlanBomByPlanId" parameterClass="java.lang.String" >
+		   delete from zg_t_order_planbom t where t.order_plan_id='$cuid$' and  not exists
+  			 (select 1 from zg_t_carbom cb where cb.order_planbom_id=t.cuid)
+	</delete>
+	
+	<delete id="deleteCarPlanByPlanId" parameterClass="java.lang.String" >
+		    <![CDATA[	  delete from zg_t_carplan cp where exists (select 1 from zg_t_carbom cb,zg_t_order_planbom pb  where
+   		cb.order_planbom_id=pb.cuid and cp.cuid=cb.car_plan_id and pb.order_plan_id='$cuid$')  ]]>
 	</delete>
 	
 	

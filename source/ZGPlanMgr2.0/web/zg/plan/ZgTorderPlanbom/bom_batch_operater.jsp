@@ -73,6 +73,8 @@
 		}
 		
 		function addPlanBom(id){
+			batchUpdate();
+		
 			var id = '<%=orderPlanId%>';
 			if(id=='自动生成'){
 				id="";
@@ -155,7 +157,6 @@
 		
 		//进行资源合并的
 		function batchUpdate() {
-			
 			var judge;//用来判断有没有bom组件在计划单中
 			var jsonString = this.buildJsonString();//在这里取修改页面上的东西的
 			DWREngine.setAsync(false);//DWR同步
@@ -190,6 +191,9 @@
 				var meins=document.getElementById(cuid+"meins").value;
 			//	alert(document.getElementById(cuid+"meins"));
 				var msehl=document.getElementById(cuid+"msehl").value;
+				var groupName=document.getElementById(cuid+"groupName").value;
+				var userLable=document.getElementById(i+"userLable").value;
+		//		alert(userLable+"   "+groupName);
 			//	alert(document.getElementById(cuid+"meins"));
 				if(carNum==""){
 					alert("计划领取数量不能为空！");
@@ -198,6 +202,10 @@
 				josnString=josnString+'{' ;
 			    josnString = josnString +'"carNum":"'+carNum+'",';
 			    josnString = josnString +'"departmentId":"'+groupId+'",';
+			    
+			    josnString = josnString +'"departmentId_labelCn":"'+groupName+'",';
+			    josnString = josnString +'"userId_labelCn":"'+userLable+'",';
+			    
 			    josnString = josnString +'"userId":"'+userId+'",';
 			    josnString = josnString +'"planDate":"'+planDate+'",';
 			    josnString = josnString +'"planStartTime":"'+planStartTime+'",';
@@ -214,7 +222,7 @@
 		}
 		
 		function deleteBom(){
-		
+			batchUpdate();
 			var items=document.getElementsByName("items");
 			var orderPlanId = '${orderPlanId}';
 		
@@ -263,6 +271,7 @@
 		</c:forEach>
 		
 		function clearValue(id,cuId) {
+			
 			var num=id.replace('userId','');//只有num部分的
 			var newValueLabel=document.getElementById(cuId+"groupName").value;//改变后的值
 			var oldValueLabel=document.getElementById(cuId+"groupOldLabelCn").value;//原来的值
@@ -322,6 +331,45 @@
 				return false;
 			}
 			return true;
+		}
+		
+		
+			//<input type="hidden" attr="groups" edittype="value" name="orderPlanboms[${n.count-1}].departmentId" id="${n.count-1}departmentId"/>
+			//<input type="hidden" attr="groups" edittype="value" id="${obj.cuid}groupId" value="${obj.departmentId}"/>
+			//<input type="hidden" name="groupOldNames_label" id="${obj.cuid}groupOldLabelCn" value="${obj.departmentId_labelCn}"/>
+			//<input type="text" edittype="labelCn" class="readOnlyInput" readonly="readonly" size="8" name="groups_label" id="${obj.cuid}groupName" value="${obj.departmentId_labelCn}"/>
+										
+		
+		function changeDept(id,cuId){
+			var sFeatures="dialogHeight: 400px;dialogWidth:300px";
+			
+			var returnValue = window.showModalDialog(ctx+"/explorer/tree/commonTree.jsp?templateId=1",'sada',sFeatures);
+			if(returnValue) {
+				var returnId = returnValue.id;
+				var returnLabel=returnValue.label;
+				
+				
+				var num=id.replace('userId','');//只有num部分的
+				document.getElementById(num+"departmentId").value=returnId;//改变后的值
+				document.getElementById(cuId+"groupId").value=returnId;//改变后的值
+				document.getElementById(cuId+"groupName").value=returnLabel;//改变后的值
+				
+				
+				var oldValueLabel=document.getElementById(cuId+"groupOldLabelCn").value;//原来的值
+				var panel = document.getElementById(id).parentNode;
+				var inputs = panel.getElementsByTagName("input");
+				for(var i = 0; i <inputs.length;i++) {
+					//思路：如果下拉框的值变成另一个的话，就清空，否则不清空
+					if(returnLabel==oldValueLabel)
+						inputs[i].value = document.getElementById(num+"userLable").value;//userLable
+					else{
+						inputs[i].value = "";
+						document.getElementById(cuId+"groupOldLabelCn").value=document.getElementById(cuId+"groupName").value;//把新的值赋给旧值
+					}
+				}
+				changeOther(cuId);
+				
+			}
 		}
 		
 	</script>
@@ -429,6 +477,9 @@
 									<td class="tableHeader">
 									审核数量
 								</td>
+								<td class="tableHeader">
+									领取数量
+								</td>
 									</c:if>
 								<td class="tableHeader">
 									单位
@@ -483,7 +534,7 @@
 										${obj.lgort_lableCn}
 									</td>
 									<td align="center">
-										${obj.idnrk}
+										${obj.idnrk} 
 									</td>
 									<td align="center">
 										${obj.maktx1}
@@ -505,11 +556,17 @@
 									<td>
 										${obj.auditNum}
 											</td>
+												<td>
+										${obj.completeNum}
+											</td>
 									</c:if>
 									
 								
 									<c:choose>
 										<c:when test="${(zgTorderPlan.state eq '8')||(zgTorderPlan.state eq '1')}">
+											<td>
+										${obj.msehl1}
+										</td>
 										<td>
 											${obj.departmentId_labelCn}
 										</td>
@@ -531,7 +588,7 @@
 											<input style="width:100px" type="hidden" attr="units" edittype="value" name="orderPlanboms[${n.count-1}].meins" id="${obj.cuid}meins" value="${obj.meins }"/>
 											<input  style="width:100px" type="text" attr="units" edittype="labelCn" class="readOnlyInput" readonly="readonly" size="8" name="unit_label" id="${obj.cuid}msehl" value="${obj.msehl1}"/>
 										</td>
-										<td editable="true" editdata="groupList" changehandle="clearValue('${n.count-1}userId','${obj.cuid}')">
+										<td  onClick="changeDept('${n.count-1}userId','${obj.cuid}')">
 											<input type="hidden" attr="groups" edittype="value" name="orderPlanboms[${n.count-1}].departmentId" id="${n.count-1}departmentId"/>
 											<input type="hidden" attr="groups" edittype="value" id="${obj.cuid}groupId" value="${obj.departmentId}"/>
 											<input type="hidden" name="groupOldNames_label" id="${obj.cuid}groupOldLabelCn" value="${obj.departmentId_labelCn}"/>
