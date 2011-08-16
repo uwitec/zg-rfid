@@ -27,6 +27,7 @@
 	border: 0;
 	background: transparent;
 }
+.sfont {font-size:20px;}
 </style>
 		<script type="text/javascript">
 		$(function() {
