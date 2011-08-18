@@ -684,7 +684,7 @@
 		 select * from (
     	  select pb.cuid,
     	  	 pb.order_plan_id,
-    	  	   b.lgort,
+    	  	   pb.extend1 lgort,
     	  	   fo.label_cn as DEPARTMENT_LABEL_CN,
                b.cuid bom_id,
                b.label_cn bom_lanle_cn,
@@ -705,7 +705,7 @@
                pb.plan_end_time,pb.audit_num
 	       from zg_t_order_planbom pb,zg_t_bom b ,fw_organization fo,fw_operator opr
 	         where b.cuid(+)=pb.bom_id
-              and fo.cuid(+)=b.lgort
+              and fo.cuid(+)=pb.extend1
 	       		and opr.cuid(+) = pb.user_id
 	       		and b.type='2'
 			)
@@ -721,7 +721,7 @@
 		 select * from (
     	  select pb.cuid,
     	  	 pb.order_plan_id,
-    	  	   b.lgort,
+    	  	   pb.extend1 lgort,
     	  	   fo.label_cn as DEPARTMENT_LABEL_CN,
                b.cuid bom_id,
                b.label_cn bom_lanle_cn,
@@ -742,7 +742,7 @@
                pb.plan_end_time,pb.audit_num
 	       from zg_t_order_planbom pb,zg_t_bom b ,fw_organization fo,fw_operator opr
 	         where b.cuid(+)=pb.bom_id
-              and fo.cuid(+)=b.lgort
+              and fo.cuid(+)=pb.extend1
 	       		and opr.cuid(+) = pb.user_id
 			)
         ]]>
@@ -795,6 +795,7 @@
 			       t.plan_date=#planDate#,
 			       t.plan_start_time=#planStartTime#,
 			       t.plan_end_time=#planEndTime#,
+			       t.extend1=#lgort#,
 			       <isNotEmpty  property="msehl1">
 	       				 t.msehl=#msehl1#,
 	       				 t.meins=#meins#
@@ -833,7 +834,7 @@
          user_id,
          plan_date,
          plan_start_time,
-         plan_end_time,	audit_num,msehl,meins)
+         plan_end_time,	audit_num,msehl,meins,extend1)
        VALUES(
          #cuid#,
          #orderPlanId#,
@@ -849,7 +850,7 @@
          #planEndTime#,
          #auditNum#,
          #msehl1#,
-         #meins#
+         #meins#,#lgort#
        )
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >

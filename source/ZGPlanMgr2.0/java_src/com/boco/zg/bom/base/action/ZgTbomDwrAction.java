@@ -24,7 +24,7 @@ public class ZgTbomDwrAction extends BaseDwrAction{
 	 */
 	public String updateOutNumForBathchOut(String orderPlanbomId,String newOutNumStr ){
 		if(newOutNumStr!=null||"".equals(newOutNumStr)){
-			getZgTbomManager().updateOutNumForBathchOut(orderPlanbomId, Long.parseLong(newOutNumStr));
+			getZgTbomManager().updateOutNumForBathchOut(orderPlanbomId, Double.parseDouble(newOutNumStr));
 			return "success";
 		}else{
 			return "failure";

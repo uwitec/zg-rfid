@@ -80,7 +80,7 @@ public class ZgTstorageCanclebomEx extends BaseEntity {
 	private RelatedModel storageId_related = new RelatedModel("ZG_T_STORAGE","CUID","LABEL_CN");
 	private java.lang.String storageId;
 	private java.lang.String orderBomId;
-	private java.lang.Long num;
+	private java.lang.Double num;
 	private java.lang.String zbz;
 	
 	private String aufnr;
@@ -88,20 +88,13 @@ public class ZgTstorageCanclebomEx extends BaseEntity {
 	private String matnr;
 	private String idnrk;
 	private String msehl1;
-	private Long allNum;
+	private Double allNum;
 	private String lgort;
 	
 	private boolean isDel=false;//由于编辑修改bom组件时，都是放在session中，然后再统一提交修改，本字段用于标记bom组件是否补删除
 	private boolean isModity=false;//同上，用于标记该组件是否被修改过
 
 	
-	public Long getAllNum() {
-		return allNum;
-	}
-
-	public void setAllNum(Long allNum) {
-		this.allNum = allNum;
-	}
 
 	public String getAufnr() {
 		return aufnr;
@@ -203,13 +196,7 @@ public class ZgTstorageCanclebomEx extends BaseEntity {
 		this.storageId = value;
 	}
 
-	public java.lang.Long getNum() {
-		return this.num;
-	}
-	
-	public void setNum(java.lang.Long value) {
-		this.num = value;
-	}
+
 	public java.lang.String getZbz() {
 		return this.zbz;
 	}
@@ -284,6 +271,34 @@ public class ZgTstorageCanclebomEx extends BaseEntity {
 
 	public void setLgort(String lgort) {
 		this.lgort = lgort;
+	}
+
+	/**
+	 * @return the num
+	 */
+	public java.lang.Double getNum() {
+		return num;
+	}
+
+	/**
+	 * @param num the num to set
+	 */
+	public void setNum(java.lang.Double num) {
+		this.num = num;
+	}
+
+	/**
+	 * @return the allNum
+	 */
+	public Double getAllNum() {
+		return allNum;
+	}
+
+	/**
+	 * @param allNum the allNum to set
+	 */
+	public void setAllNum(Double allNum) {
+		this.allNum = allNum;
 	}
 
 }

@@ -208,7 +208,7 @@ public class ZgTstorageExBo extends ZgTstorageBo {
 	 * @param bomEList
 	 */
 	public void updateOrderPlanBomOutNum(List<ZgTstoragebomEx> bomEList) {
-		Long outNum;
+		Double outNum;
 		String bomOrderbomId;//组成半成品的orderbomcuid
 		String idnrk;
 		String orderId;
@@ -232,7 +232,7 @@ public class ZgTstorageExBo extends ZgTstorageBo {
 				}
 				bomOrderbomId=IbatisDAOHelper.getStringValue(map, "CUID");
 				//半成品入库，逐个更新组成这个半成品的所有bom的出库数量
-				zgTstorageExDao.updateBomOutNumForProductIn(bomOrderbomId,orderId,outNum*Long.parseLong(zdtyl));
+				zgTstorageExDao.updateBomOutNumForProductIn(bomOrderbomId,orderId,outNum*Double.parseDouble(zdtyl));
 			}
 		}
 	}

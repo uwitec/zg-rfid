@@ -1089,6 +1089,24 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		this.baseDao.executeSql(sql.toString());
 	
 	}
+	
+	/**
+	 * 处理供应商信息
+	 * @param batchNo
+	 */
+	public void handleBatchSuppliersData(int batchNo){
+		StringBuffer sql=new StringBuffer();
+		sql.append("   delete from zg_t_order_suppliers t where exists ");
+		sql.append("(select 1 from zg_t_bom_temp  temp where t.idnrk=temp.idnrk and temp.batch_no='"+batchNo+"'  )");
+		this.baseDao.executeSql(sql.toString());
+		
+		sql=new StringBuffer();
+		sql.append(" insert into zg_t_order_suppliers  (cuid, aufnr, idnrk, lifnr, lifnr_name, plant) ");
+		sql.append(" select sys_guid(),'',idnrk,lifnr,name1,'' from  ");
+		sql.append(" ( select distinct temp.idnrk,temp.lifnr,temp.name1 from zg_t_order_suppliers_temp temp where temp.batch_no='"+batchNo+"') ");
+		this.baseDao.executeSql(sql.toString());
+	
+	}
 
 	/**
 	 * 插入订单

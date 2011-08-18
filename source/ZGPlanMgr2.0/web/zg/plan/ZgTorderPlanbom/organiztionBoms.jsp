@@ -19,6 +19,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		var orderPlanId = '${orderPlanId}';
 		var navTreePanel = null;
 		var lgortText;
+		var lgort;
 		Ext.onReady(function() {
 			var navTreePanel = new DRM.NTTreePanel({
 				region : 'west',
@@ -32,7 +33,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			navTreePanel.on("_click",function(orgArgs, extArgs){
 				lgortText = orgArgs.node.attributes.text;
-				var lgort = orgArgs.node.attributes.cuid;
+				lgort = orgArgs.node.attributes.cuid;
 				var bomId="";
 				if(orgArgs.node.isLeaf()){
 					bomId = orgArgs.node.attributes.cuid;

@@ -148,15 +148,15 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 			String orderPlanbomId = carbom.getOrderPlanbomId();
 			if(orderPlanBomIds.contains(orderPlanbomId)||orderPlanBomIds.equals("ALL")){//选哪个物料刷哪些物料的装车数量
 				ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(orderPlanbomId);
-				Long carNum = planbom.getCarNum()==null?new Long(0):planbom.getCarNum();
-				Long planNum = planbom.getPlanNum()==null?new Long(0):planbom.getPlanNum();
-				Long completeNum = planbom.getCompleteNum()==null?new Long(0):planbom.getCompleteNum();
-				Long waitBackNum=planbom.getWaitBackNum()==null?new Long(0):planbom.getWaitBackNum();
-				Long backNum=planbom.getBackNum()==null?new Long(0):planbom.getBackNum();
+				Double carNum = planbom.getCarNum()==null?new Double(0):planbom.getCarNum();
+				Double planNum = planbom.getPlanNum()==null?new Double(0):planbom.getPlanNum();
+				Double completeNum = planbom.getCompleteNum()==null?new Double(0):planbom.getCompleteNum();
+				Double waitBackNum=planbom.getWaitBackNum()==null?new Double(0):planbom.getWaitBackNum();
+				Double backNum=planbom.getBackNum()==null?new Double(0):planbom.getBackNum();
 				
 				if(planType.contains("BACK")){//退料的更新退料数量
-					Long realNum = carbom.getRealNum()==null?new Long(0):carbom.getRealNum();
-					Long cPlanNum = carbom.getPlanNum()==null?new Long(0):carbom.getPlanNum();
+					Double realNum = carbom.getRealNum()==null?new Long(0):carbom.getRealNum();
+					Double cPlanNum = carbom.getPlanNum()==null?new Long(0):carbom.getPlanNum();
 					waitBackNum=waitBackNum-realNum;
 					backNum=backNum+realNum;
 					planbom.setWaitBackNum(waitBackNum);
@@ -182,8 +182,8 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 						}
 					}
 				}else {//其他的更新　领料数量
-					Long realNum = carbom.getRealNum()==null?new Long(0):carbom.getRealNum();
-					Long cPlanNum = carbom.getPlanNum()==null?new Long(0):carbom.getPlanNum();
+					Double realNum = carbom.getRealNum()==null?new Double(0):carbom.getRealNum();
+					Double cPlanNum = carbom.getPlanNum()==null?new Double(0):carbom.getPlanNum();
 					planNum = planNum - (cPlanNum - realNum);
 					completeNum = completeNum + realNum;
 					planbom.setPlanNum(planNum);
@@ -255,9 +255,9 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 			ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(orderPlanbomId);
 			
 			
-			Long realNum = carbom.getRealNum()==null?new Long(0):carbom.getRealNum();
-			Long cPlanNum = carbom.getPlanNum()==null?new Long(0):carbom.getPlanNum();
-			Long planNum = cPlanNum;
+			Double realNum = carbom.getRealNum()==null?new Double(0):carbom.getRealNum();
+			Double cPlanNum = carbom.getPlanNum()==null?new Double(0):carbom.getPlanNum();
+			Double planNum = cPlanNum;
 			planbom.setPlanNum(planNum);
 			planbom.setCompleteNum(realNum);
 			planbom.setStorageNum(realNum);
@@ -892,7 +892,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		for(ZgTcarbomEx bom:bomList){
 			ZgTcarbom temp=zgTcarbomExBo.getById(bom.getCuid());
 			String orderPlanbomId=bom.getOrderPlanbomId();
-			long carPlanNum=temp.getPlanNum();
+			Double carPlanNum=temp.getPlanNum();
 			zgTorderPlanbomExBo.updatePlanNum(orderPlanbomId,carPlanNum);
 		}
 	}
@@ -905,7 +905,7 @@ public class ZgTcarplanExBo extends ZgTcarplanBo{
 		
 			
 		ZgTcarbom temp=zgTcarbomExBo.getById(carBomId);
-		long carPlanNum=temp.getPlanNum();
+		Double carPlanNum=temp.getPlanNum();
 		zgTorderPlanbomExBo.updatePlanNum(orderPlanbomId,carPlanNum);
 		zgTcarbomBo.removeById(carBomId);
 	}

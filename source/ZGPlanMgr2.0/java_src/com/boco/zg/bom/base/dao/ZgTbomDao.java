@@ -91,7 +91,7 @@ public class ZgTbomDao extends BaseIbatisDao<ZgTbom,java.lang.String>{
 	 * @param orderPlanbomId  ZG_T_ORDER_PLANBOM cuid
 	 * @param outNumNew  出库数量
 	 */
-	public void updateOutNumForBathchOut(String orderPlanbomId,Long outNumNew){
+	public void updateOutNumForBathchOut(String orderPlanbomId,Double outNumNew){
 		Map paramsMap=new HashMap();
 		paramsMap.put("orderPlanbomId", orderPlanbomId);
 		paramsMap.put("outNumNew", outNumNew);

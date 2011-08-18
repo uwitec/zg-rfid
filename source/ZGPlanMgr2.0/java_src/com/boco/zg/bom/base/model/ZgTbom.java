@@ -70,11 +70,11 @@ public class ZgTbom extends BaseEntity {
 	
 	//columns END
 	//columns expand start
-	private java.lang.Long completeNum;
-	private java.lang.Long outNum;
-	private java.lang.Long backNum;
+	private java.lang.Double completeNum;
+	private java.lang.Double outNum;
+	private java.lang.Double backNum;
 	private String planType;
-	private Long remainNum;
+	private Double remainNum;
 	private String orderPlanbomId;
 	private String meins;
 	//columns expand end
@@ -87,11 +87,60 @@ public class ZgTbom extends BaseEntity {
 		this.orderPlanbomId = orderPlanbomId;
 	}
 
-	public Long getRemainNum() {
+
+	/**
+	 * @return the completeNum
+	 */
+	public java.lang.Double getCompleteNum() {
+		return completeNum;
+	}
+
+	/**
+	 * @param completeNum the completeNum to set
+	 */
+	public void setCompleteNum(java.lang.Double completeNum) {
+		this.completeNum = completeNum;
+	}
+
+	/**
+	 * @return the outNum
+	 */
+	public java.lang.Double getOutNum() {
+		return outNum;
+	}
+
+	/**
+	 * @param outNum the outNum to set
+	 */
+	public void setOutNum(java.lang.Double outNum) {
+		this.outNum = outNum;
+	}
+
+	/**
+	 * @return the backNum
+	 */
+	public java.lang.Double getBackNum() {
+		return backNum;
+	}
+
+	/**
+	 * @param backNum the backNum to set
+	 */
+	public void setBackNum(java.lang.Double backNum) {
+		this.backNum = backNum;
+	}
+
+	/**
+	 * @return the remainNum
+	 */
+	public Double getRemainNum() {
 		return remainNum;
 	}
 
-	public void setRemainNum(Long remainNum) {
+	/**
+	 * @param remainNum the remainNum to set
+	 */
+	public void setRemainNum(Double remainNum) {
 		this.remainNum = remainNum;
 	}
 
@@ -294,29 +343,7 @@ public class ZgTbom extends BaseEntity {
 		this.carId_labelCn = carId_labelCn;
 	}
 
-	public java.lang.Long getCompleteNum() {
-		return completeNum;
-	}
 
-	public void setCompleteNum(java.lang.Long completeNum) {
-		this.completeNum = completeNum;
-	}
-
-	public java.lang.Long getOutNum() {
-		return outNum;
-	}
-
-	public void setOutNum(java.lang.Long outNum) {
-		this.outNum = outNum;
-	}
-
-	public java.lang.Long getBackNum() {
-		return backNum;
-	}
-
-	public void setBackNum(java.lang.Long backNum) {
-		this.backNum = backNum;
-	}
 
 	public String getPlanType() {
 		return planType;

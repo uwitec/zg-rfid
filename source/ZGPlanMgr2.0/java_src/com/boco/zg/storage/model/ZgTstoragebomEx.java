@@ -75,7 +75,7 @@ public class ZgTstoragebomEx extends BaseEntity {
 	private java.lang.String zgTstorageId_labelCn;
 	private RelatedModel zgTstorageId_related = new RelatedModel("ZG_T_STORAGE","CUID","LABEL_CN");
 	private java.lang.String zgTstorageId;
-	private java.lang.Long num;
+	private java.lang.Double num;
 	private java.lang.String zbz;
 	
 	private String orderAufnr;
@@ -83,7 +83,7 @@ public class ZgTstoragebomEx extends BaseEntity {
 	private String maktx1;
 	private String idnrk;
 	private String msehl1;
-	private Long menge;
+	private Double menge;
 	private String arbpl;
 	private String zdtyl;
 	private String orderBomId;
@@ -131,13 +131,34 @@ public class ZgTstoragebomEx extends BaseEntity {
 	public void setZgTstorageId(java.lang.String value) {
 		this.zgTstorageId = value;
 	}
-	public java.lang.Long getNum() {
-		return this.num;
+	/**
+	 * @return the num
+	 */
+	public java.lang.Double getNum() {
+		return num;
 	}
-	
-	public void setNum(java.lang.Long value) {
-		this.num = value;
+
+	/**
+	 * @param num the num to set
+	 */
+	public void setNum(java.lang.Double num) {
+		this.num = num;
 	}
+
+	/**
+	 * @return the menge
+	 */
+	public Double getMenge() {
+		return menge;
+	}
+
+	/**
+	 * @param menge the menge to set
+	 */
+	public void setMenge(Double menge) {
+		this.menge = menge;
+	}
+
 	public java.lang.String getZbz() {
 		return this.zbz;
 	}
@@ -222,13 +243,6 @@ public class ZgTstoragebomEx extends BaseEntity {
 		this.msehl1 = msehl1;
 	}
 
-	public Long getMenge() {
-		return menge;
-	}
-
-	public void setMenge(Long menge) {
-		this.menge = menge;
-	}
 
 	public String getArbpl() {
 		return arbpl;

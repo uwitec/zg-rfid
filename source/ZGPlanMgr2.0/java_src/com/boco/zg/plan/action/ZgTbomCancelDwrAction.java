@@ -53,7 +53,7 @@ public class ZgTbomCancelDwrAction extends BaseDwrAction {
 		boolean result = true;
 		for(int i = 0;i < bomECancleList.size();i++){
 			ZgTstorageCanclebomEx zgTstorageCanclebomEx = bomECancleList.get(i);
-			Long num = zgTstorageCanclebomEx.getNum();
+			Double num = zgTstorageCanclebomEx.getNum();
 			String aufnr = zgTstorageCanclebomEx.getAufnr();
 			String idnrk = zgTstorageCanclebomEx.getIdnrk();
 			String lgort=zgTstorageCanclebomEx.getLgort();

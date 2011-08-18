@@ -68,7 +68,7 @@ public class ZgTorderbomTempAll extends BaseEntity {
 	}
 	
 	//columns START
-	private java.lang.Long menge;
+	private java.lang.Double menge;
 	private java.lang.String matkl;
 	private java.lang.String sortf;
 	private java.lang.String lgort;
@@ -88,21 +88,14 @@ public class ZgTorderbomTempAll extends BaseEntity {
 	private java.lang.String sortfH;
 	private java.lang.String matnr1;
 	private java.lang.String storageState;
-	private java.lang.Long storageNum;
-	private java.lang.Long zdtyl;
+	private java.lang.Double storageNum;
+	private java.lang.Double zdtyl;
 	private java.lang.String plant;
 	private java.lang.Long batchNo;
 	private java.lang.Long operateType;
 	private java.lang.String posnr;
 	private java.lang.String matklSelf;
 	//columns END
-	public java.lang.Long getMenge() {
-		return this.menge;
-	}
-	
-	public void setMenge(java.lang.Long value) {
-		this.menge = value;
-	}
 	public java.lang.String getMatkl() {
 		return this.matkl;
 	}
@@ -236,20 +229,34 @@ public class ZgTorderbomTempAll extends BaseEntity {
 	public void setStorageState(java.lang.String value) {
 		this.storageState = value;
 	}
-	public java.lang.Long getStorageNum() {
-		return this.storageNum;
+	/**
+	 * @return the storageNum
+	 */
+	public java.lang.Double getStorageNum() {
+		return storageNum;
 	}
-	
-	public void setStorageNum(java.lang.Long value) {
-		this.storageNum = value;
+
+	/**
+	 * @param storageNum the storageNum to set
+	 */
+	public void setStorageNum(java.lang.Double storageNum) {
+		this.storageNum = storageNum;
 	}
-	public java.lang.Long getZdtyl() {
-		return this.zdtyl;
+
+	/**
+	 * @return the zdtyl
+	 */
+	public java.lang.Double getZdtyl() {
+		return zdtyl;
 	}
-	
-	public void setZdtyl(java.lang.Long value) {
-		this.zdtyl = value;
+
+	/**
+	 * @param zdtyl the zdtyl to set
+	 */
+	public void setZdtyl(java.lang.Double zdtyl) {
+		this.zdtyl = zdtyl;
 	}
+
 	public java.lang.String getPlant() {
 		return this.plant;
 	}
@@ -383,5 +390,19 @@ public class ZgTorderbomTempAll extends BaseEntity {
 			.append(getPosnr(),other.getPosnr())
 			.append(getMatklSelf(),other.getMatklSelf())
 			.isEquals();
+	}
+
+	/**
+	 * @return the menge
+	 */
+	public java.lang.Double getMenge() {
+		return menge;
+	}
+
+	/**
+	 * @param menge the menge to set
+	 */
+	public void setMenge(java.lang.Double menge) {
+		this.menge = menge;
 	}
 }

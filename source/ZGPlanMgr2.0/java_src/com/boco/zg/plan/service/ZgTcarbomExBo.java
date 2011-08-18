@@ -204,8 +204,8 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 				if(null!=bom){
 					String cuid = bom.getCuid();
 					ZgTcarbom newbom = this.getById(cuid);
-					Long planNum = bom.getPlanNum();
-					Long realNum = bom.getRealNum();
+					Double planNum = bom.getPlanNum();
+					Double realNum = bom.getRealNum();
 					if(planNum != null) {
 						if(isPlanNumChange){
 							newbom.setPlanNum(planNum);
@@ -222,7 +222,7 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 						for(ZgTcarbomSuppliers sup:bom.getSupList()){
 							if(!StringHelper.isEmpty(sup.getCuid())) {
 								if(sup.getCarNum()==null){
-									sup.setCarNum(0l);
+									sup.setCarNum(0d);
 								}
 								zgTcarbomSuppliersBo.update(sup);
 							}else {
@@ -266,7 +266,7 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 					//修改ZgTorderPlanbom中的bom表记录plan_num=plan_num-(c_plan_num(旧)-c_plan_num(新))  注： c_plan_num为装车计划bom表中的计划装车数量  
 					String orderPlanbomId = bom.getOrderPlanbomId();
 					ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(orderPlanbomId);
-					Long planNum = planbom.getPlanNum()-(oldBom.getPlanNum()-bom.getPlanNum());
+					Double planNum = planbom.getPlanNum()-(oldBom.getPlanNum()-bom.getPlanNum());
 					planbom.setPlanNum(planNum);
 					if(Constants.CarPlanStatus.SUBMIT.value().equals(state)){//提交
 						planbom.setState(Constants.CarPlanStatus.SUBMIT.value());
@@ -276,8 +276,8 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 				
 				
 				//更新carbom表的计划领数量
-				Long  planNum = bom.getPlanNum();
-				Long realNum = bom.getRealNum();
+				Double  planNum = bom.getPlanNum();
+				Double realNum = bom.getRealNum();
 				if(planNum != null) {
 					oldBom.setPlanNum(planNum);
 				}
@@ -290,7 +290,7 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 					//保存具体供应商的bom数量
 					for(ZgTcarbomSuppliers sup:bom.getSupList()){
 						if(sup.getCarNum()==null){
-							sup.setCarNum(0l);
+							sup.setCarNum(0d);
 						}
 						zgTcarbomSuppliersBo.update(sup);
 					}
@@ -331,7 +331,7 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 				//保存具体供应商bom数量
 				for (ZgTcarbomSuppliers sup:bom.getSupList()) {
 					if(sup.getCarNum()==null){
-						sup.setCarNum(0l);
+						sup.setCarNum(0d);
 					}
 					sup.setCarBomId(carBomId);
 					zgTcarbomSuppliersBo.save(sup);
@@ -449,14 +449,14 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 	 * @param carPlanNum
 	 * @return num 为超出的数量
 	 */
-	public Long checkForBomCarNum(String orderPlanbomId, Long carPlanNum) {
+	public Double checkForBomCarNum(String orderPlanbomId, Double carPlanNum) {
 		StringBuffer sql=new StringBuffer();
 		sql.append("select t.car_num- (nvl(t.complete_num,0)+"+carPlanNum+") num from zg_t_order_planbom t  where t.cuid='"+orderPlanbomId+"'");
 		List<Map> list=((ZgTcarbomDao)this.getEntityDao()).findDynQuery(sql.toString());
 		if(list.size()>0){
-			return Long.parseLong(list.get(0).get("NUM").toString());
+			return Double.parseDouble(list.get(0).get("NUM").toString());
 		}
-		return 0l;
+		return 0d;
 	}
 	
 	/**
@@ -465,14 +465,14 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 	 * @param carPlanNum
 	 * @return num 为超出的数量
 	 */
-	public Long checkForBomCarNumForBack(String orderPlanbomId, Long carPlanNum) {
+	public Double checkForBomCarNumForBack(String orderPlanbomId, Double carPlanNum) {
 		StringBuffer sql=new StringBuffer();
 		sql.append("select nvl(t.wait_back_num,0)- "+carPlanNum+" num from zg_t_order_planbom t  where t.cuid='"+orderPlanbomId+"'");
 		List<Map> list=((ZgTcarbomDao)this.getEntityDao()).findDynQuery(sql.toString());
 		if(list.size()>0){
-			return Long.parseLong(list.get(0).get("NUM").toString());
+			return Double.parseDouble(list.get(0).get("NUM").toString());
 		}
-		return 0l;
+		return 0d;
 	}
 
 	public ZgTcarbomSuppliersBo getZgTcarbomSuppliersBo() {
@@ -590,7 +590,7 @@ public class ZgTcarbomExBo extends ZgTcarbomBo{
 			}
 			
 			if(tempList.size()==1){//只有一个供应商，则默认该供应商数量和领料数量一样
-				tempList.get(0).setCarNum(bom.get("CAR_PLAN_NUM")==null?0l:Long.parseLong(bom.get("CAR_PLAN_NUM").toString()));
+				tempList.get(0).setCarNum(bom.get("CAR_PLAN_NUM")==null?0l:Double.parseDouble(bom.get("CAR_PLAN_NUM").toString()));
 			}
 			bom.put("subList", tempList);
 		}

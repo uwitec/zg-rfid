@@ -30,7 +30,7 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	private java.lang.String maktx2;
 	private java.lang.String menge;
 	private java.lang.String matnr;
-	private java.lang.Long zdtyl;
+	private java.lang.Double zdtyl;
 	private java.lang.String msehl1;
 	private java.lang.String msehl2;
 	private java.lang.String lgort;
@@ -47,26 +47,26 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	private java.util.Date planDate;//领料时间
 	private java.lang.String planStartTime;//开始时间
 	private java.lang.String planEndTime;//结束时间
-	private java.lang.Long carNum;
+	private java.lang.Double carNum;
 	private java.lang.String zbz;
 	private java.lang.String state;
-	private Long planNum;
-	private Long completeNum;
+	private Double planNum;
+	private Double completeNum;
 	private String taskBomId;
 	
-	private Long waitBackNum;
+	private Double waitBackNum;
 	
 	private boolean isDel=false;//由于编辑修改bom组件时，都是放在session中，然后再统一提交修改，本字段用于标记bom组件是否补删除
 	private boolean isModity=false;//同上，用于标记该组件是否被修改过
 	
 	private java.lang.String aufnr;//单据编号
 	
-	private java.lang.Long auditNum;
+	private java.lang.Double auditNum;
 	private String posnr;
 	private double per;
 	
 	private String carId;
-	private Long carnum;
+	private Double carnum;
 	private String orderTaskId;
 	
 	private String sortf;
@@ -121,10 +121,16 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	public void setMenge(java.lang.String menge) {
 		this.menge = menge;
 	}
-	public java.lang.Long getZdtyl() {
+	/**
+	 * @return the zdtyl
+	 */
+	public java.lang.Double getZdtyl() {
 		return zdtyl;
 	}
-	public void setZdtyl(java.lang.Long zdtyl) {
+	/**
+	 * @param zdtyl the zdtyl to set
+	 */
+	public void setZdtyl(java.lang.Double zdtyl) {
 		this.zdtyl = zdtyl;
 	}
 	public java.lang.String getMsehl1() {
@@ -217,12 +223,6 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	public void setBomId(String bomId) {
 		this.bomId = bomId;
 	}
-	public java.lang.Long getCarNum() {
-		return carNum;
-	}
-	public void setCarNum(java.lang.Long carNum) {
-		this.carNum = carNum;
-	}
 	public java.lang.String getLgort_lableCn() {
 		return lgort_lableCn;
 	}
@@ -283,23 +283,11 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	public void setAufnr(java.lang.String aufnr) {
 		this.aufnr = aufnr;
 	}
-	public Long getPlanNum() {
-		return planNum;
-	}
-	public void setPlanNum(Long planNum) {
-		this.planNum = planNum;
-	}
 	public java.lang.String getMaktx2() {
 		return maktx2;
 	}
 	public void setMaktx2(java.lang.String maktx2) {
 		this.maktx2 = maktx2;
-	}
-	public java.lang.Long getAuditNum() {
-		return auditNum;
-	}
-	public void setAuditNum(java.lang.Long auditNum) {
-		this.auditNum = auditNum;
 	}
 	public java.lang.String getMsehl2() {
 		return msehl2;
@@ -307,11 +295,53 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	public void setMsehl2(java.lang.String msehl2) {
 		this.msehl2 = msehl2;
 	}
-	public Long getCompleteNum() {
+	/**
+	 * @return the carNum
+	 */
+	public java.lang.Double getCarNum() {
+		return carNum;
+	}
+	/**
+	 * @param carNum the carNum to set
+	 */
+	public void setCarNum(java.lang.Double carNum) {
+		this.carNum = carNum;
+	}
+	/**
+	 * @return the planNum
+	 */
+	public Double getPlanNum() {
+		return planNum;
+	}
+	/**
+	 * @param planNum the planNum to set
+	 */
+	public void setPlanNum(Double planNum) {
+		this.planNum = planNum;
+	}
+	/**
+	 * @return the completeNum
+	 */
+	public Double getCompleteNum() {
 		return completeNum;
 	}
-	public void setCompleteNum(Long completeNum) {
+	/**
+	 * @param completeNum the completeNum to set
+	 */
+	public void setCompleteNum(Double completeNum) {
 		this.completeNum = completeNum;
+	}
+	/**
+	 * @return the auditNum
+	 */
+	public java.lang.Double getAuditNum() {
+		return auditNum;
+	}
+	/**
+	 * @param auditNum the auditNum to set
+	 */
+	public void setAuditNum(java.lang.Double auditNum) {
+		this.auditNum = auditNum;
 	}
 	public double getPer() {
 		return per;
@@ -331,17 +361,29 @@ public class ZgTorderPlanbomEx extends BaseEntity{
 	public void setCarId(String carId) {
 		this.carId = carId;
 	}
-	public Long getCarnum() {
-		return carnum;
-	}
-	public void setCarnum(Long carnum) {
-		this.carnum = carnum;
-	}
-	public Long getWaitBackNum() {
+	/**
+	 * @return the waitBackNum
+	 */
+	public Double getWaitBackNum() {
 		return waitBackNum;
 	}
-	public void setWaitBackNum(Long waitBackNum) {
+	/**
+	 * @param waitBackNum the waitBackNum to set
+	 */
+	public void setWaitBackNum(Double waitBackNum) {
 		this.waitBackNum = waitBackNum;
+	}
+	/**
+	 * @return the carnum
+	 */
+	public Double getCarnum() {
+		return carnum;
+	}
+	/**
+	 * @param carnum the carnum to set
+	 */
+	public void setCarnum(Double carnum) {
+		this.carnum = carnum;
 	}
 	/**
 	 * @return the taskBomId

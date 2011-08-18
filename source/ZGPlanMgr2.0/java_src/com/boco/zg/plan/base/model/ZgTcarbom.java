@@ -40,8 +40,8 @@ public class ZgTcarbom extends BaseEntity {
 	private java.lang.String cuid;
 	private java.lang.String taskBomId;
 	private java.lang.String orderTaskId;
-	private java.lang.Long planNum;
-	private java.lang.Long realNum;
+	private java.lang.Double planNum;
+	private java.lang.Double realNum;
 	private java.lang.String labelCn;
 	private java.lang.String carPlanId;
 	private java.lang.String orderPlanbomId;
@@ -61,20 +61,34 @@ public class ZgTcarbom extends BaseEntity {
 	public void setCuid(java.lang.String value) {
 		this.cuid = value;
 	}
-	public java.lang.Long getPlanNum() {
-		return this.planNum;
+	/**
+	 * @return the planNum
+	 */
+	public java.lang.Double getPlanNum() {
+		return planNum;
 	}
-	
-	public void setPlanNum(java.lang.Long value) {
-		this.planNum = value;
+
+	/**
+	 * @param planNum the planNum to set
+	 */
+	public void setPlanNum(java.lang.Double planNum) {
+		this.planNum = planNum;
 	}
-	public java.lang.Long getRealNum() {
-		return this.realNum;
+
+	/**
+	 * @return the realNum
+	 */
+	public java.lang.Double getRealNum() {
+		return realNum;
 	}
-	
-	public void setRealNum(java.lang.Long value) {
-		this.realNum = value;
+
+	/**
+	 * @param realNum the realNum to set
+	 */
+	public void setRealNum(java.lang.Double realNum) {
+		this.realNum = realNum;
 	}
+
 	public java.lang.String getLabelCn() {
 		return this.labelCn;
 	}

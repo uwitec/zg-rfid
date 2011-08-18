@@ -214,8 +214,8 @@ public class ZgTstorageCanclebomAction extends BaseStruts2Action implements Prep
 			obj.setMatnr((java.lang.String)params.get("matnr"));
 			obj.setIdnrk((java.lang.String)params.get("idnrk"));
 			obj.setMsehl1((java.lang.String)params.get("msehl1"));
-			obj.setAllNum(Long.parseLong((java.lang.String)params.get("allNum")));
-			obj.setNum(Long.parseLong((java.lang.String)params.get("allNum")));
+			obj.setAllNum(Double.parseDouble((java.lang.String)params.get("allNum")));
+			obj.setNum(Double.parseDouble((java.lang.String)params.get("allNum")));
 			obj.setOrderBomId((java.lang.String)params.get("orderBomId"));
 			obj.setStorageCancleId((java.lang.String)params.get("storageCancleId"));
 			obj.setLgort((String)params.get("lgort"));

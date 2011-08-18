@@ -97,7 +97,7 @@ public class ZgTorderbomBo extends BaseManager<ZgTorderbom,java.lang.String>{
 	 * @param cuid
 	 * @param psmng
 	 */
-	public void updateMengeByOrder(String cuid, Long psmng) {
+	public void updateMengeByOrder(String cuid, long psmng) {
 		Map paramsMap=new HashMap<String, Object>();
 		paramsMap.put("orderId", cuid);
 		paramsMap.put("psmng", psmng);

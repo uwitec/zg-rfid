@@ -55,7 +55,7 @@ public class ZgTorderTaskbom extends BaseEntity {
 	private java.lang.String orderBomId_labelCn;
 	private RelatedModel orderBomId_related = new RelatedModel("ZG_T_ORDERBOM","CUID","LABEL_CN");
 	private java.lang.String orderBomId;
-	private java.lang.Long menge;
+	private java.lang.Double menge;
 	//columns END
 	public java.lang.String getCuid() {
 		return this.cuid;
@@ -108,13 +108,7 @@ public class ZgTorderTaskbom extends BaseEntity {
 	public void setOrderBomId(java.lang.String value) {
 		this.orderBomId = value;
 	}
-	public java.lang.Long getMenge() {
-		return this.menge;
-	}
 	
-	public void setMenge(java.lang.Long value) {
-		this.menge = value;
-	}
 
 	public String toString() {
 		return new ToStringBuilder(this)
@@ -144,5 +138,19 @@ public class ZgTorderTaskbom extends BaseEntity {
 			.append(getOrderBomId(),other.getOrderBomId())
 			.append(getMenge(),other.getMenge())
 			.isEquals();
+	}
+
+	/**
+	 * @return the menge
+	 */
+	public java.lang.Double getMenge() {
+		return menge;
+	}
+
+	/**
+	 * @param menge the menge to set
+	 */
+	public void setMenge(java.lang.Double menge) {
+		this.menge = menge;
 	}
 }

@@ -240,7 +240,7 @@ public class ZgTorderPlanExDao extends BaseIbatisDao<ZgTorderPlanEx,java.lang.St
 	 * @param orderPlanbomId
 	 * @param carPlanNum
 	 */
-	public boolean updateOrderPlanBomState(String orderPlanbomId,long carPlanNum) {
+	public boolean updateOrderPlanBomState(String orderPlanbomId,Double carPlanNum) {
 		return false;
 	}
 
