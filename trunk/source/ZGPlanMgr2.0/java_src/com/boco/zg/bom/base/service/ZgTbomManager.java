@@ -92,7 +92,7 @@ public class ZgTbomManager extends BaseManager<ZgTbom,java.lang.String>{
 	/**
 	 * 批量领料bom出备料库库，更新已出库数量
 	 */
-	public void updateOutNumForBathchOut(String orderPlanbomId,Long outNumNew){
+	public void updateOutNumForBathchOut(String orderPlanbomId,Double outNumNew){
 		zgTbomDao.updateOutNumForBathchOut(orderPlanbomId,outNumNew);
 	}
 	

@@ -72,7 +72,7 @@ public class ZgTcarbomSuppliers extends BaseEntity {
 	private java.lang.String carBomId;
 	private java.lang.String lifnr;
 	private java.lang.String lifnrName;
-	private java.lang.Long carNum;
+	private java.lang.Double carNum;
 	private String aufnr;
 	private String idnrk;
 	private String batchno;
@@ -106,12 +106,19 @@ public class ZgTcarbomSuppliers extends BaseEntity {
 	public void setLifnrName(java.lang.String value) {
 		this.lifnrName = value;
 	}
-	public java.lang.Long getCarNum() {
-		return this.carNum;
+
+	/**
+	 * @return the carNum
+	 */
+	public java.lang.Double getCarNum() {
+		return carNum;
 	}
-	
-	public void setCarNum(java.lang.Long value) {
-		this.carNum = value;
+
+	/**
+	 * @param carNum the carNum to set
+	 */
+	public void setCarNum(java.lang.Double carNum) {
+		this.carNum = carNum;
 	}
 
 	public String toString() {

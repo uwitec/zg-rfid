@@ -141,7 +141,7 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 	private ZgTorderPlanbom zgTorderPlanbom;
 	private ZgTorderPlanbomBo zgTorderPlanbomBo;
 	private String s_state;
-	private Long waitBackNum;
+	private Double waitBackNum;
 	private ZgTcarbomBo zgTcarbomBo;
 	private List<ZgTorderPlanComment> zgTorderPlanCommentList;
 	private ZgTorderPlanGroupBo zgTorderPlanGroupBo;
@@ -166,11 +166,18 @@ public class ZgTBomManagerAction extends BaseStruts2Action implements Preparable
 		this.zgTorderPlanCommentList = zgTorderPlanCommentList;
 	}
 
-	public Long getWaitBackNum() {
+
+	/**
+	 * @return the waitBackNum
+	 */
+	public Double getWaitBackNum() {
 		return waitBackNum;
 	}
 
-	public void setWaitBackNum(Long waitBackNum) {
+	/**
+	 * @param waitBackNum the waitBackNum to set
+	 */
+	public void setWaitBackNum(Double waitBackNum) {
 		this.waitBackNum = waitBackNum;
 	}
 

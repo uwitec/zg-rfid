@@ -44,7 +44,7 @@
 		select   
          bom.idnrk,
          bom.maktx,
-         bom.lgort,
+         planbom.extend1 lgort,
          org1.label_cn logName,
          sup.lifnr,
            sum(nvl(sup.car_num,0)) complete_num,
@@ -61,7 +61,7 @@
          fw_organization org,
          fw_organization org1
    where
-     org1.cuid=bom.lgort
+   org1.cuid(+)=planbom.extend1
     and carbom.car_plan_id = carplan.cuid
    	 and em.cuid=carplan.car_user
    	and em.org_id=org.cuid
@@ -75,7 +75,7 @@
      <include refid="dynamicWhere"/>
   group by  bom.idnrk,
          bom.maktx,
-         bom.lgort,
+          planbom.extend1,
          sup.lifnr,
          sup.lifnr_name,org.label_cn,
          org1.label_cn,
@@ -94,7 +94,7 @@
 		         fw_organization org,
 		         fw_organization org1
 		   where
-		     org1.cuid=bom.lgort
+		   org1.cuid(+)=planbom.extend1
 		    and carbom.car_plan_id = carplan.cuid
 		   	 and em.cuid=carplan.car_user
 		   	and em.org_id=org.cuid
@@ -108,7 +108,7 @@
 		     <include refid="dynamicWhere"/>
 		  group by  bom.idnrk,
 		         bom.maktx,
-		         bom.lgort,
+		          planbom.extend1,
 		         sup.lifnr,
 		         sup.lifnr_name,org.label_cn,
 		         org1.label_cn,planbom.msehl)

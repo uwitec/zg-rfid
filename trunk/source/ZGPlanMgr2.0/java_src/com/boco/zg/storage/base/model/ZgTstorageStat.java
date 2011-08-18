@@ -75,8 +75,8 @@ public class ZgTstorageStat extends BaseEntity {
 	private java.lang.String orderId_labelCn;
 	private RelatedModel orderId_related = new RelatedModel("ZG_T_ORDER","CUID","LABEL_CN");
 	private java.lang.String orderId;//订单号
-	private java.lang.Long num;
-	private java.lang.Long outNum;
+	private java.lang.Double num;
+	private java.lang.Double outNum;
 	private java.lang.String lgort_labelCn;
 	private RelatedModel lgort_related = new RelatedModel("FW_ORGANIZATION","CUID","LABEL_CN");
 	private java.lang.String lgort;
@@ -166,13 +166,6 @@ public class ZgTstorageStat extends BaseEntity {
 		this.orderBomId = orderBomId;
 	}
 
-	public java.lang.Long getOutNum() {
-		return outNum;
-	}
-
-	public void setOutNum(java.lang.Long outNum) {
-		this.outNum = outNum;
-	}
 
 	public java.lang.String getProductType() {
 		return productType;
@@ -182,13 +175,34 @@ public class ZgTstorageStat extends BaseEntity {
 		this.productType = productType;
 	}
 
-	public java.lang.Long getNum() {
-		return this.num;
+	/**
+	 * @return the num
+	 */
+	public java.lang.Double getNum() {
+		return num;
 	}
-	
-	public void setNum(java.lang.Long value) {
-		this.num = value;
+
+	/**
+	 * @param num the num to set
+	 */
+	public void setNum(java.lang.Double num) {
+		this.num = num;
 	}
+
+	/**
+	 * @return the outNum
+	 */
+	public java.lang.Double getOutNum() {
+		return outNum;
+	}
+
+	/**
+	 * @param outNum the outNum to set
+	 */
+	public void setOutNum(java.lang.Double outNum) {
+		this.outNum = outNum;
+	}
+
 	public java.lang.String getLgort_labelCn() {
 		return this.lgort_labelCn;
 	}

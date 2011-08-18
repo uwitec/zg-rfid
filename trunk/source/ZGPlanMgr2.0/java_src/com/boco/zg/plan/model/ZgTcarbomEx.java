@@ -45,17 +45,17 @@ public class ZgTcarbomEx extends BaseEntity {
 	private java.lang.String cuid;
 	private java.lang.String orderBomId;
 	private java.lang.String orderId;
-	private java.lang.Long planNum;
-	private java.lang.Long realNum;
+	private java.lang.Double planNum;
+	private java.lang.Double realNum;
 	private java.lang.String labelCn;
 	private java.lang.String carPlanId;
 	private java.lang.String carId;
 	private java.lang.String orderPlanbomId;
-	private Long oldRealNum;
-	private long oldPlanNum;
+	private Double oldRealNum;
+	private Double oldPlanNum;
 	private String planType;
 	private String lgort;
-	private Long supCarNum;
+	private Double supCarNum;
 	private String storageUserId;
 	private String taskBomId;
 	private String orderTaskId;
@@ -87,20 +87,34 @@ public class ZgTcarbomEx extends BaseEntity {
 	public void setOrderId(java.lang.String value) {
 		this.orderId = value;
 	}
-	public java.lang.Long getPlanNum() {
-		return this.planNum;
+	/**
+	 * @return the planNum
+	 */
+	public java.lang.Double getPlanNum() {
+		return planNum;
 	}
-	
-	public void setPlanNum(java.lang.Long value) {
-		this.planNum = value;
+
+	/**
+	 * @param planNum the planNum to set
+	 */
+	public void setPlanNum(java.lang.Double planNum) {
+		this.planNum = planNum;
 	}
-	public java.lang.Long getRealNum() {
-		return this.realNum;
+
+	/**
+	 * @return the realNum
+	 */
+	public java.lang.Double getRealNum() {
+		return realNum;
 	}
-	
-	public void setRealNum(java.lang.Long value) {
-		this.realNum = value;
+
+	/**
+	 * @param realNum the realNum to set
+	 */
+	public void setRealNum(java.lang.Double realNum) {
+		this.realNum = realNum;
 	}
+
 	public java.lang.String getLabelCn() {
 		return this.labelCn;
 	}
@@ -165,21 +179,6 @@ public class ZgTcarbomEx extends BaseEntity {
 			.isEquals();
 	}
 
-	public Long getOldRealNum() {
-		return oldRealNum;
-	}
-
-	public void setOldRealNum(Long oldRealNum) {
-		this.oldRealNum = oldRealNum;
-	}
-
-	public long getOldPlanNum() {
-		return oldPlanNum;
-	}
-
-	public void setOldPlanNum(long oldPlanNum) {
-		this.oldPlanNum = oldPlanNum;
-	}
 
 	public String getPlanType() {
 		return planType;
@@ -307,11 +306,46 @@ public class ZgTcarbomEx extends BaseEntity {
 		this.supList = supList;
 	}
 
-	public Long getSupCarNum() {
+
+	/**
+	 * @return the oldRealNum
+	 */
+	public Double getOldRealNum() {
+		return oldRealNum;
+	}
+
+	/**
+	 * @param oldRealNum the oldRealNum to set
+	 */
+	public void setOldRealNum(Double oldRealNum) {
+		this.oldRealNum = oldRealNum;
+	}
+
+	/**
+	 * @return the oldPlanNum
+	 */
+	public Double getOldPlanNum() {
+		return oldPlanNum;
+	}
+
+	/**
+	 * @param oldPlanNum the oldPlanNum to set
+	 */
+	public void setOldPlanNum(Double oldPlanNum) {
+		this.oldPlanNum = oldPlanNum;
+	}
+
+	/**
+	 * @return the supCarNum
+	 */
+	public Double getSupCarNum() {
 		return supCarNum;
 	}
 
-	public void setSupCarNum(Long supCarNum) {
+	/**
+	 * @param supCarNum the supCarNum to set
+	 */
+	public void setSupCarNum(Double supCarNum) {
 		this.supCarNum = supCarNum;
 	}
 

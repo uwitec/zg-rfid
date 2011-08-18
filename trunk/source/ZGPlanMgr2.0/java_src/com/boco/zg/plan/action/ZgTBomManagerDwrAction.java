@@ -39,7 +39,7 @@ public class ZgTBomManagerDwrAction extends BaseDwrAction {
 			for (Map temp : sessionBomList) {
 				System.out.println("旧"+temp.get("CUID")+"  "+temp.get("BOM_TYPE"));
 				if(bom.getCuid().equals(temp.get("CUID"))&&bom.getBomType().equals(temp.get("BOM_TYPE"))){
-					if(bom.getWaitBackNum().equals(Long.parseLong(temp.get("WAIT_BACK_NUM").toString()))&&bom.getZbz().equals(IbatisDAOHelper.getStringValue(temp, "ZBZ"))){
+					if(bom.getWaitBackNum().equals(Double.parseDouble(temp.get("WAIT_BACK_NUM").toString()))&&bom.getZbz().equals(IbatisDAOHelper.getStringValue(temp, "ZBZ"))){
 					}else {
 						temp.put("WAIT_BACK_NUM",bom.getWaitBackNum());
 						temp.put("CAR_NUM",bom.getWaitBackNum());

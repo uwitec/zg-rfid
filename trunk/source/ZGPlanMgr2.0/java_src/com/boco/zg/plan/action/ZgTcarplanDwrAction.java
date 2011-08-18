@@ -236,14 +236,14 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 		String orderPlanBomIds="";
 		String aufnr="";
 		String idnrk="";
-		Long num=0l;
+		Double num=0d;
 		
 		List<Map> bomList=new ArrayList<Map>();
 		for (int i = 0; i < jsonArray.size(); i++) {//因为浏览器双击，有时候会向后台发送两次请求，生成两条同样数据，防止有两个一样的bom记录，这里负责合并
 			JSONObject jsonObj=jsonArray.getJSONObject(i);
 			
 			String orderPlanbomId = jsonObj.getString("orderPlanbomId");
-			Long carPlanNum=Long.parseLong(jsonObj.getString("carPlanNum"));
+			Double carPlanNum=Double.parseDouble(jsonObj.getString("carPlanNum"));
 			aufnr=jsonObj.getString("aufnr");
 			idnrk=jsonObj.getString("idnrk");
 			
@@ -251,7 +251,7 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 			for(int j=0;j<bomList.size();j++){
 				Map bomMap=bomList.get(j);
 				if(bomMap.get("orderPlanbomId").toString().equals(orderPlanbomId)){//相同的bom合并
-					carPlanNum=Long.parseLong(bomMap.get("carPlanNum").toString())+carPlanNum;
+					carPlanNum=Double.parseDouble(bomMap.get("carPlanNum").toString())+carPlanNum;
 					bomMap.put("carPlanNum", carPlanNum);
 					flag=true;
 					break;
@@ -279,7 +279,7 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 			
 			String orderPlanbomId = IbatisDAOHelper.getStringValue(bomMap,"orderPlanbomId");
 			
-			Long carPlanNum=Long.parseLong(IbatisDAOHelper.getStringValue(bomMap,"carPlanNum"));
+			Double carPlanNum=Double.parseDouble(IbatisDAOHelper.getStringValue(bomMap,"carPlanNum"));
 			aufnr=IbatisDAOHelper.getStringValue(bomMap,"aufnr");
 			idnrk=IbatisDAOHelper.getStringValue(bomMap,"idnrk");
 			
@@ -401,11 +401,11 @@ public class ZgTcarplanDwrAction extends BaseDwrAction {
 			boolean flag=true;
 			JSONObject jsonObj=jsonArray.getJSONObject(i);
 			String orderPlanbomId=jsonObj.get("orderPlanbomId").toString();
-			Long realNum=Long.parseLong(jsonObj.get("planNum").toString());
+			Double realNum=Double.parseDouble(jsonObj.get("planNum").toString());
 			for (Map map:list) {
 				if(map.get("CUID").toString().equals(orderPlanbomId)){
-					Long carNum=Long.parseLong(map.get("CAR_NUM").toString());
-					Long completeNum=Long.parseLong(map.get("COMPLETE_NUM").toString());
+					Double carNum=Double.parseDouble(map.get("CAR_NUM").toString());
+					Double completeNum=Double.parseDouble(map.get("COMPLETE_NUM").toString());
 					if(realNum+completeNum>carNum){
 						flag=false;
 						result=false;

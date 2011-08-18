@@ -101,15 +101,15 @@ public class ZgTorderbom extends BaseEntity {
 	private java.lang.String maktx2;
 	private java.lang.String msehl1;
 	private java.lang.String msehl2;
-	private java.lang.Long zdtyl;
-	private java.lang.Long menge;
+	private java.lang.Double zdtyl;
+	private java.lang.Double menge;
 	private java.lang.String matkl;
 	private java.lang.String sortf;
 	private java.lang.String sortfH;
 	private java.lang.String lgort;
 	private java.lang.String zbz;
 	private java.lang.String zrzqd;
-	private Long storageNum;
+	private Double storageNum;
 	private String storageState;
 	private java.lang.String posnr;
 	private String lgort_label_cn;//库存的中文名
@@ -118,15 +118,15 @@ public class ZgTorderbom extends BaseEntity {
 	private String planEndTime;
 	private String carNum;
 	private String matklSelf;
-	private Long remainNum;// 备料库存数量
-	private Long moveNum;
-	private Long planNum;
-	private Long backNum;
-	private Long outNum;
-	private Long completeNum;
-	private Long semifinStoreNum;//半成品库存数量
+	private Double remainNum;// 备料库存数量
+	private Double moveNum;
+	private Double planNum;
+	private Double backNum;
+	private Double outNum;
+	private Double completeNum;
+	private Double semifinStoreNum;//半成品库存数量
 	
-	private Long bomNum;
+	private Double bomNum;
 	private String taskBomId;
 	//columns END
 	public java.lang.String getCuid() {
@@ -228,20 +228,34 @@ public class ZgTorderbom extends BaseEntity {
 	public void setMsehl2(java.lang.String value) {
 		this.msehl2 = value;
 	}
-	public java.lang.Long getZdtyl() {
-		return this.zdtyl;
+	/**
+	 * @return the zdtyl
+	 */
+	public java.lang.Double getZdtyl() {
+		return zdtyl;
 	}
-	
-	public void setZdtyl(java.lang.Long value) {
-		this.zdtyl = value;
+
+	/**
+	 * @param zdtyl the zdtyl to set
+	 */
+	public void setZdtyl(java.lang.Double zdtyl) {
+		this.zdtyl = zdtyl;
 	}
-	public java.lang.Long getMenge() {
-		return this.menge;
+
+	/**
+	 * @return the menge
+	 */
+	public java.lang.Double getMenge() {
+		return menge;
 	}
-	
-	public void setMenge(java.lang.Long value) {
-		this.menge = value;
+
+	/**
+	 * @param menge the menge to set
+	 */
+	public void setMenge(java.lang.Double menge) {
+		this.menge = menge;
 	}
+
 	public java.lang.String getMatkl() {
 		return this.matkl;
 	}
@@ -380,12 +394,131 @@ public class ZgTorderbom extends BaseEntity {
 		this.storageState = storageState;
 	}
 
-	public Long getStorageNum() {
+
+	/**
+	 * @return the storageNum
+	 */
+	public Double getStorageNum() {
 		return storageNum;
 	}
 
-	public void setStorageNum(Long storageNum) {
+	/**
+	 * @param storageNum the storageNum to set
+	 */
+	public void setStorageNum(Double storageNum) {
 		this.storageNum = storageNum;
+	}
+
+	/**
+	 * @return the remainNum
+	 */
+	public Double getRemainNum() {
+		return remainNum;
+	}
+
+	/**
+	 * @param remainNum the remainNum to set
+	 */
+	public void setRemainNum(Double remainNum) {
+		this.remainNum = remainNum;
+	}
+
+	/**
+	 * @return the moveNum
+	 */
+	public Double getMoveNum() {
+		return moveNum;
+	}
+
+	/**
+	 * @param moveNum the moveNum to set
+	 */
+	public void setMoveNum(Double moveNum) {
+		this.moveNum = moveNum;
+	}
+
+	/**
+	 * @return the planNum
+	 */
+	public Double getPlanNum() {
+		return planNum;
+	}
+
+	/**
+	 * @param planNum the planNum to set
+	 */
+	public void setPlanNum(Double planNum) {
+		this.planNum = planNum;
+	}
+
+	/**
+	 * @return the backNum
+	 */
+	public Double getBackNum() {
+		return backNum;
+	}
+
+	/**
+	 * @param backNum the backNum to set
+	 */
+	public void setBackNum(Double backNum) {
+		this.backNum = backNum;
+	}
+
+	/**
+	 * @return the outNum
+	 */
+	public Double getOutNum() {
+		return outNum;
+	}
+
+	/**
+	 * @param outNum the outNum to set
+	 */
+	public void setOutNum(Double outNum) {
+		this.outNum = outNum;
+	}
+
+	/**
+	 * @return the completeNum
+	 */
+	public Double getCompleteNum() {
+		return completeNum;
+	}
+
+	/**
+	 * @param completeNum the completeNum to set
+	 */
+	public void setCompleteNum(Double completeNum) {
+		this.completeNum = completeNum;
+	}
+
+	/**
+	 * @return the semifinStoreNum
+	 */
+	public Double getSemifinStoreNum() {
+		return semifinStoreNum;
+	}
+
+	/**
+	 * @param semifinStoreNum the semifinStoreNum to set
+	 */
+	public void setSemifinStoreNum(Double semifinStoreNum) {
+		this.semifinStoreNum = semifinStoreNum;
+	}
+
+	/**
+	 * @return the bomNum
+	 */
+	public Double getBomNum() {
+		return bomNum;
+	}
+
+	/**
+	 * @param bomNum the bomNum to set
+	 */
+	public void setBomNum(Double bomNum) {
+		this.bomNum = bomNum;
 	}
 
 	public String getLgort_label_cn() {
@@ -437,69 +570,6 @@ public class ZgTorderbom extends BaseEntity {
 	}
 
 
-	public Long getMoveNum() {
-		return moveNum;
-	}
-
-	public void setMoveNum(Long moveNum) {
-		this.moveNum = moveNum;
-	}
-
-	public Long getPlanNum() {
-		return planNum;
-	}
-
-	public void setPlanNum(Long planNum) {
-		this.planNum = planNum;
-	}
-	
-	public Long getBackNum() {
-		return backNum;
-	}
-
-	public void setBackNum(Long backNum) {
-		this.backNum = backNum;
-	}
-
-	public Long getOutNum() {
-		return outNum;
-	}
-
-	public void setOutNum(Long outNum) {
-		this.outNum = outNum;
-	}
-
-	public Long getCompleteNum() {
-		return completeNum;
-	}
-
-	public void setCompleteNum(Long completeNum) {
-		this.completeNum = completeNum;
-	}
-
-	public Long getRemainNum() {
-		return remainNum;
-	}
-
-	public void setRemainNum(Long remainNum) {
-		this.remainNum = remainNum;
-	}
-
-	public Long getSemifinStoreNum() {
-		return semifinStoreNum;
-	}
-
-	public void setSemifinStoreNum(Long semifinStoreNum) {
-		this.semifinStoreNum = semifinStoreNum;
-	}
-
-	public Long getBomNum() {
-		return bomNum;
-	}
-
-	public void setBomNum(Long bomNum) {
-		this.bomNum = bomNum;
-	}
 
 	public String getMatklSelf() {
 		return matklSelf;

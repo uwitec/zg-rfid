@@ -57,7 +57,7 @@ public class ZgTorderbomMoveLog extends BaseEntity {
 	private java.lang.String sourceOrderTaskId;
 	private java.lang.String targetOrderTaskId;
 	private java.lang.String targetPlanbom;
-	private java.lang.Long moveNum;
+	private java.lang.Double moveNum;
 	private java.lang.String createId_labelCn;
 	private RelatedModel createId_related = new RelatedModel("FW_EMPLOYEE","CUID","LABEL_CN");
 	private java.lang.String createId;
@@ -103,13 +103,34 @@ public class ZgTorderbomMoveLog extends BaseEntity {
 	public void setTargetPlanbom(java.lang.String value) {
 		this.targetPlanbom = value;
 	}
-	public java.lang.Long getMoveNum() {
-		return this.moveNum;
+	/**
+	 * @return the moveNum
+	 */
+	public java.lang.Double getMoveNum() {
+		return moveNum;
 	}
-	
-	public void setMoveNum(java.lang.Long value) {
-		this.moveNum = value;
+
+	/**
+	 * @param moveNum the moveNum to set
+	 */
+	public void setMoveNum(java.lang.Double moveNum) {
+		this.moveNum = moveNum;
 	}
+
+	/**
+	 * @return the orgName
+	 */
+	public String getOrgName() {
+		return orgName;
+	}
+
+	/**
+	 * @param orgName the orgName to set
+	 */
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
 	public java.lang.String getCreateId_labelCn() {
 		return this.createId_labelCn;
 	}

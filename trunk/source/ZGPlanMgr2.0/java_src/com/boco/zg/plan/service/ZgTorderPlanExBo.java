@@ -157,7 +157,7 @@ public class ZgTorderPlanExBo extends BaseManager<ZgTorderPlanEx,java.lang.Strin
 			bom.setCarPlanId(carPlanId);
 			bom.setOrderPlanbomId(zgTorderPlan.getCuid());
 			bom.setPlanNum(obj.getCarNum());
-			bom.setRealNum(0l);
+			bom.setRealNum(0d);
 			zgTcarbomBo.save(bom);
 		}
 	}

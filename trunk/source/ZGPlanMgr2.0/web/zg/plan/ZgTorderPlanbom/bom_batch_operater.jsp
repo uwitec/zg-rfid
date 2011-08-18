@@ -29,6 +29,9 @@
 			src="${ctx}/dwr/interface/CommonDwrAction.js"></script>
 		<script type="text/javascript"
 			src="${ctx}/dwr/interface/ZgTorderPlanbomDwrAction.js"></script>
+		<script type="text/javascript"
+			src="${ctx}/dwr/interface/ZgTorderbomDwrAction.js"></script>
+			
 		<script type="text/javascript" src="${ctx}/scripts/gridEditor.js"></script>
 		<style>
 		.readOnlyInput {
@@ -136,9 +139,9 @@
 		}
 		
 		function changeOther(id){
-			if(cuids.length==0)
+			if(cuids.length==0){
 				cuids[cuids.length] = id;
-			else{
+			}else{
 				for(i=0;i<cuids.length;i++){//判断是否有相同的
 					if(cuids[i]==id){//如果有相同的话
 						return;
@@ -181,6 +184,7 @@
 			var josnString='';
 			for(var i=0;i<cuids.length;i++)
 			{
+				
 				var cuid=cuids[i];
 				var carNum = document.getElementById(cuid+"carnum").value;
 				var groupId=document.getElementById(cuid+"groupId").value;
@@ -196,6 +200,10 @@
 				var userLable=document.getElementById(i+"userLable").value;
 		//		alert(userLable+"   "+groupName);
 			//	alert(document.getElementById(cuid+"meins"));
+				var lgort=document.getElementById(cuid+"lgort").value;
+				var lgortLable=document.getElementById(cuid+"lgort_lableCn").value;
+									
+			
 				if(carNum==""){
 					alert("计划领取数量不能为空！");
 					return "false";
@@ -206,6 +214,9 @@
 			    
 			    josnString = josnString +'"departmentId_labelCn":"'+groupName+'",';
 			    josnString = josnString +'"userId_labelCn":"'+userLable+'",';
+			    
+			     josnString = josnString +'"lgort":"'+lgort+'",';
+			    josnString = josnString +'"lgort_lableCn":"'+lgortLable+'",';
 			    
 			    josnString = josnString +'"userId":"'+userId+'",';
 			    josnString = josnString +'"planDate":"'+planDate+'",';
@@ -373,6 +384,27 @@
 			}
 		}
 		
+		function lgortSet(idnrk,cuid){
+					var sFeatures="dialogHeight: 400px;dialogWidth:300px";
+					changeOther(cuid);
+					var returnValue = window.showModalDialog(ctx+"/explorer/tree/commonTree.jsp?templateId=lgort",'sada',sFeatures);
+					if(returnValue) {
+						var lgort = returnValue.id;
+						var label=returnValue.label;
+						document.getElementById(cuid+"lgort").value=lgort;;
+						document.getElementById(cuid+"lgort_lableCn").value=label;
+						//alert(cuid+"  "+lgort+label);
+						ZgTorderbomDwrAction.setCarLgort(cuid,lgort,label,function(data){
+							if(data=='OK'){
+							}else{
+								alert("系统繁忙，请稍后再试!");
+							}
+						});
+					}
+					
+					
+		}
+		
 	</script>
 	</head>
 	<body>
@@ -531,8 +563,9 @@
 									<td width="3%" align="center">
 										<input type="checkbox" name="items" value="${obj.cuid}" />
 									</td>
-									<td align="center">
-										${obj.lgort_lableCn}
+									<td onclick="lgortSet('${obj.idnrk}','${obj.cuid}')" align="center" style="width:150px">
+										<input style="width:150px" type="hidden"   id="${obj.cuid}lgort" value="${obj.lgort }"/>
+										<input  style="width:150px" type="text"  class="readOnlyInput" readonly="readonly" size="8" id="${obj.cuid}lgort_lableCn" value="${obj.lgort_lableCn}"/>
 									</td>
 									<td align="center">
 										${obj.idnrk} 

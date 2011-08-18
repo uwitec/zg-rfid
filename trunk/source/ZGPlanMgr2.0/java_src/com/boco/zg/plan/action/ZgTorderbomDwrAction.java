@@ -124,7 +124,7 @@ public class ZgTorderbomDwrAction extends BaseDwrAction {
 			zgTstoragebomEx = bomEList.get(i);
 			String idnrk = zgTstoragebomEx.getIdnrk();
 			String aufnr = zgTstoragebomEx.getOrderAufnr();
-			Long num = zgTstoragebomEx.getNum();
+			Double num = zgTstoragebomEx.getNum();
 			boolean flag = getZgTorderbomExBo().checkStateForGenerateRightNum(num,
 					idnrk, aufnr);
 			if (!flag) {
@@ -174,7 +174,7 @@ public class ZgTorderbomDwrAction extends BaseDwrAction {
 			zgTstoragebomEx = bomEList.get(i);
 			String aufnr = zgTstoragebomEx.getOrderAufnr();
 			String idnrk = zgTstoragebomEx.getIdnrk();
-			Long num = zgTstoragebomEx.getNum();
+			Double num = zgTstoragebomEx.getNum();
 			boolean flag = getZgTorderbomExBo().checkStateForGenerateBomNum(aufnr,idnrk, num,lgort);
 			if (!flag) {
 				result = false;

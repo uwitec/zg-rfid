@@ -100,18 +100,18 @@ public class ZgTorderPlanbom extends BaseEntity {
 	private java.lang.String planEndTime;
 	private EnumModel state_enum = new EnumModel("ORDER_STATE");
 	private java.lang.String state;
-	private java.lang.Long completeNum;
-	private java.lang.Long carNum;
-	private java.lang.Long planNum;
+	private java.lang.Double completeNum;
+	private java.lang.Double carNum;
+	private java.lang.Double planNum;
 	private java.lang.String bomId;
 	private java.lang.String zbz;
-	private java.lang.Long auditNum;
-	private Long moveNum;
-	private Long backNum;
-	private Long outNum;
-	private Long moveNumIn;
-	private Long waitBackNum;
-	private Long storageNum;
+	private java.lang.Double auditNum;
+	private Double moveNum;
+	private Double backNum;
+	private Double outNum;
+	private Double moveNumIn;
+	private Double waitBackNum;
+	private Double storageNum;
 	private String taskBomId;
 	private RelatedModel taskBomId_related = new RelatedModel("ZG_T_ORDER_TASK_BOM","CUID","LABEL_CN");
 	private java.lang.String taskBomId_labelCn;
@@ -257,28 +257,6 @@ public class ZgTorderPlanbom extends BaseEntity {
 	public void setState(java.lang.String value) {
 		this.state = value;
 	}
-	public java.lang.Long getCompleteNum() {
-		return this.completeNum==null?0l:this.completeNum;
-	}
-	
-	public void setCompleteNum(java.lang.Long value) {
-		this.completeNum = value;
-	}
-	public java.lang.Long getCarNum() {
-		return this.carNum==null?0l:this.carNum;
-	}
-	
-	public void setCarNum(java.lang.Long value) {
-		this.carNum = value;
-	}
-
-	public java.lang.Long getPlanNum() {
-		return planNum==null?0l:this.planNum;
-	}
-
-	public void setPlanNum(java.lang.Long planNum) {
-		this.planNum = planNum;
-	}
 
 	public java.lang.String getBomId() {
 		return bomId;
@@ -356,59 +334,133 @@ public class ZgTorderPlanbom extends BaseEntity {
 			.isEquals();
 	}
 
-	public java.lang.Long getAuditNum() {
-		return auditNum;
+
+
+
+
+	/**
+	 * @return the moveNum
+	 */
+	public Double getMoveNum() {
+		return moveNum;
 	}
 
-	public void setAuditNum(java.lang.Long auditNum) {
-		this.auditNum = auditNum;
-	}
-
-	public Long getMoveNum() {
-		return moveNum==null?0l:moveNum;
-	}
-
-	public void setMoveNum(Long moveNum) {
+	/**
+	 * @param moveNum the moveNum to set
+	 */
+	public void setMoveNum(Double moveNum) {
 		this.moveNum = moveNum;
 	}
 
-	public Long getBackNum() {
-		return backNum;
-	}
-
-	public void setBackNum(Long backNum) {
-		this.backNum = backNum;
-	}
-
-	public Long getOutNum() {
+	/**
+	 * @return the outNum
+	 */
+	public Double getOutNum() {
 		return outNum;
 	}
 
-	public void setOutNum(Long outNum) {
+	/**
+	 * @param outNum the outNum to set
+	 */
+	public void setOutNum(Double outNum) {
 		this.outNum = outNum;
 	}
 
-	public Long getMoveNumIn() {
-		return moveNumIn==null?0l:moveNumIn;
+	/**
+	 * @return the moveNumIn
+	 */
+	public Double getMoveNumIn() {
+		return moveNumIn;
 	}
 
-	public void setMoveNumIn(Long moveNumIn) {
+	/**
+	 * @param moveNumIn the moveNumIn to set
+	 */
+	public void setMoveNumIn(Double moveNumIn) {
 		this.moveNumIn = moveNumIn;
 	}
 
-	public Long getWaitBackNum() {
+	/**
+	 * @return the waitBackNum
+	 */
+	public Double getWaitBackNum() {
 		return waitBackNum;
 	}
 
-	public void setWaitBackNum(Long waitBackNum) {
+	/**
+	 * @param waitBackNum the waitBackNum to set
+	 */
+	public void setWaitBackNum(Double waitBackNum) {
 		this.waitBackNum = waitBackNum;
 	}
 
-	public Long getStorageNum() {
-		return storageNum==null?0l:storageNum;
+	/**
+	 * @return the completeNum
+	 */
+	public java.lang.Double getCompleteNum() {
+		return completeNum;
 	}
 
-	public void setStorageNum(Long storageNum) {
+	/**
+	 * @param completeNum the completeNum to set
+	 */
+	public void setCompleteNum(java.lang.Double completeNum) {
+		this.completeNum = completeNum;
+	}
+
+	/**
+	 * @return the carNum
+	 */
+	public java.lang.Double getCarNum() {
+		return carNum;
+	}
+
+	/**
+	 * @param carNum the carNum to set
+	 */
+	public void setCarNum(java.lang.Double carNum) {
+		this.carNum = carNum;
+	}
+
+	/**
+	 * @return the planNum
+	 */
+	public java.lang.Double getPlanNum() {
+		return planNum;
+	}
+
+	/**
+	 * @param planNum the planNum to set
+	 */
+	public void setPlanNum(java.lang.Double planNum) {
+		this.planNum = planNum;
+	}
+
+	/**
+	 * @return the auditNum
+	 */
+	public java.lang.Double getAuditNum() {
+		return auditNum;
+	}
+
+	/**
+	 * @param auditNum the auditNum to set
+	 */
+	public void setAuditNum(java.lang.Double auditNum) {
+		this.auditNum = auditNum;
+	}
+
+	/**
+	 * @return the storageNum
+	 */
+	public Double getStorageNum() {
+		return storageNum;
+	}
+
+	/**
+	 * @param storageNum the storageNum to set
+	 */
+	public void setStorageNum(Double storageNum) {
 		this.storageNum = storageNum;
 	}
 
@@ -571,6 +623,20 @@ public class ZgTorderPlanbom extends BaseEntity {
 	 */
 	public void setParentId(String parentId) {
 		this.parentId = parentId;
+	}
+
+	/**
+	 * @return the backNum
+	 */
+	public Double getBackNum() {
+		return backNum;
+	}
+
+	/**
+	 * @param backNum the backNum to set
+	 */
+	public void setBackNum(Double backNum) {
+		this.backNum = backNum;
 	}
 
 

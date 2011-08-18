@@ -190,7 +190,7 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 	 * @param cuid
 	 * @return
 	 */
-	public Long getManulWaitBackNumByPbId(String planBomId) {
+	public Double getManulWaitBackNumByPbId(String planBomId) {
 		Map paramsMap=new HashMap<String, Object>();
 		paramsMap.put("planBomId", planBomId);
 		return zgTorderPlanbomDao.getManulWaitBackNumByPbId(paramsMap);
@@ -213,7 +213,7 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 	 * @param planbom
 	 * @param manulWaitBackNum 人工引起的退料数量
 	 */
-	public void generateWaiBackBom(ZgTorderPlanbom planbom,Long manulWaitBackNum ) {
+	public void generateWaiBackBom(ZgTorderPlanbom planbom,Double manulWaitBackNum ) {
 		
 		//获取工单变更引起的退料信息
 		List<ZgTorderPlanbom> list=getAutoWaitBackBomListByPbId(planbom.getCuid());
@@ -221,7 +221,7 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 		if(manulWaitBackNum>=planbom.getWaitBackNum()){//人工申请的退料数量大于待退料数量　则无须生成工单变更退料　之前的工单变更退料置0
 			planbom.setWaitBackNum(manulWaitBackNum);
 			for(ZgTorderPlanbom pbom:list){
-					pbom.setWaitBackNum(0l);
+					pbom.setWaitBackNum(0d);
 					zgTorderPlanbomDao.update(pbom);
 			}
 		}else {//人工申请的退料数量小于待退料数量，则需要生成工单退料数量
@@ -241,18 +241,18 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 			
 			
 			
-			Long needWaitBackNum=planbom.getWaitBackNum()-manulWaitBackNum;//需要工单变更引起的退料数量
+			Double needWaitBackNum=planbom.getWaitBackNum()-manulWaitBackNum;//需要工单变更引起的退料数量
 			
 			if(planBomNotAuditList.size()==0){// 测试　没有未审核的退料信息，则插入
 				if(needWaitBackNum>0){
-					Long oldWaitBackNum=0l;//之前工单变更退料的总数量
+					Double oldWaitBackNum=0d;//之前工单变更退料的总数量
 					for(ZgTorderPlanbom pbom:list){
 						oldWaitBackNum=oldWaitBackNum+pbom.getWaitBackNum();
 					}
 					if(oldWaitBackNum<=needWaitBackNum){//之前工单变更退料的总数量小于需要工单变更引起的退料数量 则插入一打新的退料记录
 						genereteNewBackPlanInfo(planbom, needWaitBackNum-oldWaitBackNum,planNotAudit,materielLevel);
 					}else {//否则，从之前的退料信息中减数量
-						Long curNum=oldWaitBackNum-needWaitBackNum;
+						Double curNum=oldWaitBackNum-needWaitBackNum;
 						for(ZgTorderPlanbom pbom:list){
 							if(pbom.getWaitBackNum()>=curNum){//测试过
 								pbom.setWaitBackNum(pbom.getWaitBackNum()-curNum);
@@ -260,7 +260,7 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 								break;
 							}else {
 								curNum=curNum-pbom.getWaitBackNum();
-								pbom.setWaitBackNum(0l);
+								pbom.setWaitBackNum(0d);
 								zgTorderPlanbomDao.update(pbom);
 							}
 						}
@@ -270,7 +270,7 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 				}
 				
 			}else {//之前存在退料信息　且未审核　则更新
-				Long oldWaitBackNum=0l;//之前工单变更退料的总数量
+				Double oldWaitBackNum=0d;//之前工单变更退料的总数量
 				for(ZgTorderPlanbom pbom:list){
 					oldWaitBackNum=oldWaitBackNum+pbom.getWaitBackNum();
 				}
@@ -287,7 +287,7 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 					}
 					
 				}else {//否则 则需要从原来的工单变更记录中减去相应的数量
-					Long curNum=oldWaitBackNum-needWaitBackNum;
+					Double curNum=oldWaitBackNum-needWaitBackNum;
 					for(ZgTorderPlanbom pbom:list){
 						if(pbom.getWaitBackNum()>=curNum){//测试过
 							pbom.setWaitBackNum(pbom.getWaitBackNum()-curNum);
@@ -295,7 +295,7 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 							break;
 						}else {
 							curNum=curNum-pbom.getWaitBackNum();
-							pbom.setWaitBackNum(0l);
+							pbom.setWaitBackNum(0d);
 							zgTorderPlanbomDao.update(pbom);
 						}
 					}
@@ -319,7 +319,7 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 	 * @param planbom
 	 * @param needWaitBackNum
 	 */
-	private void genereteNewBackPlanInfo(ZgTorderPlanbom planbom,	Long needWaitBackNum,ZgTorderPlan planNotAudit,String materelLevel) {
+	private void genereteNewBackPlanInfo(ZgTorderPlanbom planbom,	Double needWaitBackNum,ZgTorderPlan planNotAudit,String materelLevel) {
 		ZgTorderPlan oldPlan=getZgTorderPlanBo().getById(planbom.getOrderPlanId());
 		ZgTorderTask task=zgTorderTaskBo.getById(oldPlan.getOrderTaskId());
 		String orderPlanId="";
@@ -366,19 +366,19 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 		newBom.setParentId(planbom.getCuid());
 		newBom.setOrderPlanId(orderPlanId);
 		newBom.setWaitBackNum(needWaitBackNum);
-		newBom.setCarNum(0l);
-		newBom.setCompleteNum(0l);
-		newBom.setPlanNum(0l);
-		newBom.setMoveNum(0l);
-		newBom.setMoveNumIn(0l);
-		newBom.setBackNum(0l);
-		newBom.setOutNum(0l);
-		newBom.setStorageNum(0l);
+		newBom.setCarNum(0d);
+		newBom.setCompleteNum(0d);
+		newBom.setPlanNum(0d);
+		newBom.setMoveNum(0d);
+		newBom.setMoveNumIn(0d);
+		newBom.setBackNum(0d);
+		newBom.setOutNum(0d);
+		newBom.setStorageNum(0d);
 		newBom.setBomType(Constants.QUALITY);
 		save(newBom);
 		
 		newBom.setBomType(Constants.NOTQUALITY);
-		newBom.setWaitBackNum(0l);
+		newBom.setWaitBackNum(0d);
 		save(newBom);
 	}
 	
@@ -412,13 +412,13 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 	 * @param childPlanId
 	 * @param realnum:本次领料数量
 	 */
-	public void upDateParentWaitBackNumByPlanBom(ZgTorderPlanbom parentPbom,String childPlanId,Long realNum) {
+	public void upDateParentWaitBackNumByPlanBom(ZgTorderPlanbom parentPbom,String childPlanId,Double realNum) {
 		ZgTorderPlan plan=zgTorderPlanBo.getById(childPlanId);
 		if(!Constants.OrderPlanType.CHANGE.value().equals(plan.getPlanType())){
 			Map map=getParentWaitBackNumByPBId(parentPbom.getCuid());
 			if(map!=null){
-				Long parentWaitBackNum=IbatisDAOHelper.getLongValue(map, "WAIT_BACK_NUM");
-				Long parentBackNum=IbatisDAOHelper.getLongValue(map, "BACK_NUM");
+				Double parentWaitBackNum=Double.parseDouble(map.get("WAIT_BACK_NUM").toString());
+				Double parentBackNum=Double.parseDouble(map.get("BACK_NUM").toString());
 				parentPbom.setWaitBackNum(parentWaitBackNum);
 				parentPbom.setBackNum(parentBackNum);
 				parentPbom.setBackNum(parentBackNum);
@@ -451,7 +451,7 @@ public class ZgTorderPlanbomBo extends BaseManager<ZgTorderPlanbom,java.lang.Str
 	 * @param realNum
 	 */
 	public void upDateParentCompleteNumByPlanBom(ZgTorderPlanbom planbom,
-			Long realNum,String childPlanId) {
+			Double realNum,String childPlanId) {
 		ZgTorderPlan plan=zgTorderPlanBo.getById(childPlanId);
 		if(!Constants.OrderPlanType.CHANGE.value().equals(plan.getPlanType())){
 			planbom.setPlanNum(planbom.getPlanNum()+realNum);

@@ -177,8 +177,8 @@ public class ZgTorderPlanbomDao extends BaseIbatisDao<ZgTorderPlanbom,java.lang.
 	 * @param paramsMap
 	 * @return
 	 */
-	public Long getManulWaitBackNumByPbId(Map paramsMap) {
-		return Long.parseLong(getSqlMapClientTemplate().queryForObject("ZgTorderPlanbom.getManulWaitBackNumByPbId",paramsMap).toString());
+	public Double getManulWaitBackNumByPbId(Map paramsMap) {
+		return Double.parseDouble(getSqlMapClientTemplate().queryForObject("ZgTorderPlanbom.getManulWaitBackNumByPbId",paramsMap).toString());
 	}
 	
 	/**

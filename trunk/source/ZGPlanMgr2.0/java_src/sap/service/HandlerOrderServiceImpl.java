@@ -210,12 +210,12 @@ public class HandlerOrderServiceImpl {
 				}else {//已经做了装车计划，则生成相应的退料数据
 					flag=false;
 					
-					taskbom.setMenge(0l);
+					taskbom.setMenge(0d);
 					getZgTorderTaskbomBo().update(taskbom);
 					
-					planbom.setCarNum(0l);
-					Long carNum=planbom.getCarNum();
-					Long completeNum=planbom.getCompleteNum();
+					planbom.setCarNum(0d);
+					Double carNum=planbom.getCarNum();
+					Double completeNum=planbom.getCompleteNum();
 					planbom.setState(Constants.OrderPlanStatus.FINISHED.value());
 					planbom.setWaitBackNum(completeNum-carNum);
 					getZgTorderPlanbomBo().update(planbom);
@@ -225,7 +225,7 @@ public class HandlerOrderServiceImpl {
 			if(flag){//所有物料未开始领料则可以删除ORDERBOM
 				getZgTorderbomBo().removeById(tempBom.getCuid());
 			}else {
-				tempBom.setMenge(0l);
+				tempBom.setMenge(0d);
 				getZgTorderbomBo().update(tempBom);
 			}
 		}
@@ -416,10 +416,10 @@ public class HandlerOrderServiceImpl {
 			getZgTorderPlanbomDao().save(planbom);
 		}else {//测试过 更新
 			planbom.setCarNum(taskbom.getMenge());
-			Long carNum=planbom.getCarNum();
-			Long completeNum=planbom.getCompleteNum();
+			Double carNum=planbom.getCarNum();
+			Double completeNum=planbom.getCompleteNum();
 			//获取人工申请的退料数量
-			Long manulWaitBackNum=getZgTorderPlanbomBo().getManulWaitBackNumByPbId(planbom.getCuid());
+			Double manulWaitBackNum=getZgTorderPlanbomBo().getManulWaitBackNumByPbId(planbom.getCuid());
 			if(carNum<=completeNum){//产生退料
 				planbom.setState(Constants.OrderPlanStatus.FINISHED.value());
 				
@@ -429,7 +429,7 @@ public class HandlerOrderServiceImpl {
 				getZgTorderPlanbomBo().generateWaiBackBom(planbom,manulWaitBackNum);
 			}else {
 				planbom.setState(Constants.OrderPlanStatus.NEW.value());
-				planbom.setWaitBackNum(0l);
+				planbom.setWaitBackNum(0d);
 				
 				//生成退料子记录
 				getZgTorderPlanbomBo().generateWaiBackBom(planbom,manulWaitBackNum);
@@ -442,7 +442,7 @@ public class HandlerOrderServiceImpl {
 		}
 	}
 
-	public ZgTorderTaskbom saveZgTorderTaskBom(String taskId,Long menge, String orderBomId) {
+	public ZgTorderTaskbom saveZgTorderTaskBom(String taskId,Double menge, String orderBomId) {
 		ZgTorderTaskbom taskbom=new ZgTorderTaskbom();
 		taskbom.setOrderTaskId(taskId);
 		taskbom.setOrderBomId(orderBomId);

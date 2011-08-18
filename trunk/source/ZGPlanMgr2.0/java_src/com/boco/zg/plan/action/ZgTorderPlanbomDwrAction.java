@@ -155,6 +155,9 @@ public class ZgTorderPlanbomDwrAction extends BaseDwrAction {
 							obj.setIsModity(true);
 							obj.setMeins(zgTorderPlanbomEx.getMeins());
 							obj.setMsehl1(zgTorderPlanbomEx.getMsehl1());
+							
+							obj.setLgort(zgTorderPlanbomEx.getLgort());
+							obj.setLgort_lableCn(zgTorderPlanbomEx.getLgort_lableCn());
 							break;
 						}
 					}
@@ -223,7 +226,7 @@ public class ZgTorderPlanbomDwrAction extends BaseDwrAction {
 				if(!result){
 					zgTorderPlanbomEx.setCuid(getZgTorderPlanbomExBo().getCUID());
 					zgTorderPlanbomEx.setIsModity(true);
-					zgTorderPlanbomEx.setCarNum(0l);
+					zgTorderPlanbomEx.setCarNum(0d);
 					
 					list.add(zgTorderPlanbomEx);
 				}
@@ -235,6 +238,35 @@ public class ZgTorderPlanbomDwrAction extends BaseDwrAction {
 		
 		setSessionBomBatchIds(session,list);
 		
+		return flag;
+	}
+	
+	
+	/**
+	 * 批量领料计划 添加bom组件
+	 * @param objcetJOSNs
+	 * @param orderPlanId
+	 * @param session
+	 * @return
+	 */
+	public boolean setCarLgort(String cuid,String lgort,String lgortLable,HttpSession session){
+		boolean flag = true;
+		List<ZgTorderPlanbomEx> 	list=(List<ZgTorderPlanbomEx>) session.getAttribute("bomForBatchList");
+		try{
+			for (ZgTorderPlanbomEx obj : list) {//遍历原来的列表中有没有该bom组件
+				if(obj.getBomId().equals(cuid)){
+					obj.setIsDel(false);
+					obj.setIsModity(true);
+					obj.setLgort(lgort);
+					obj.setLgort_lableCn(lgortLable);
+					break;
+				}
+			}
+				
+		}catch(Exception e){
+			flag = false;
+			e.printStackTrace();
+		}
 		return flag;
 	}
 	

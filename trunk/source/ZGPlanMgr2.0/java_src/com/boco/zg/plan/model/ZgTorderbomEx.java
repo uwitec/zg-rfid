@@ -99,8 +99,8 @@ public class ZgTorderbomEx extends BaseEntity {
 	private java.lang.String maktx2;
 	private java.lang.String msehl1;
 	private java.lang.String msehl2;
-	private java.lang.Long zdtyl;
-	private java.lang.Long menge;
+	private java.lang.Double zdtyl;
+	private java.lang.Double menge;
 	private java.lang.String matkl;
 	private java.lang.String sortf;
 	private java.lang.String sortfH;
@@ -121,9 +121,9 @@ public class ZgTorderbomEx extends BaseEntity {
 	private java.lang.String    orderPlanId;
 	private java.lang.String    orderBomId;
 	
-	private Long planNum;
-	private Long carNum;
-	private Long completeNum;
+	private Double planNum;
+	private Double carNum;
+	private Double completeNum;
 		
 	private String orderPlanbomId;
 	private String departmentId;
@@ -143,9 +143,9 @@ public class ZgTorderbomEx extends BaseEntity {
 	private String carId;
 	private String carCode;	
 	
-	private Long validNum;
-	private Long waitBackNum;
-	private Long backNum;
+	private Double validNum;
+	private Double waitBackNum;
+	private Double backNum;
 	private String taskBomId;
 	private String bomType;
 	
@@ -339,20 +339,34 @@ public class ZgTorderbomEx extends BaseEntity {
 	public void setMsehl2(java.lang.String value) {
 		this.msehl2 = value;
 	}
-	public java.lang.Long getZdtyl() {
-		return this.zdtyl;
+	/**
+	 * @return the zdtyl
+	 */
+	public java.lang.Double getZdtyl() {
+		return zdtyl;
 	}
-	
-	public void setZdtyl(java.lang.Long value) {
-		this.zdtyl = value;
+
+	/**
+	 * @param zdtyl the zdtyl to set
+	 */
+	public void setZdtyl(java.lang.Double zdtyl) {
+		this.zdtyl = zdtyl;
 	}
-	public java.lang.Long getMenge() {
-		return this.menge;
+
+	/**
+	 * @return the menge
+	 */
+	public java.lang.Double getMenge() {
+		return menge;
 	}
-	
-	public void setMenge(java.lang.Long value) {
-		this.menge = value;
+
+	/**
+	 * @param menge the menge to set
+	 */
+	public void setMenge(java.lang.Double menge) {
+		this.menge = menge;
 	}
+
 	public java.lang.String getMatkl() {
 		return this.matkl;
 	}
@@ -535,27 +549,46 @@ public class ZgTorderbomEx extends BaseEntity {
 		this.percent = percent;
 	}
 
-	public Long getPlanNum() {
+
+	/**
+	 * @return the planNum
+	 */
+	public Double getPlanNum() {
 		return planNum;
 	}
 
-	public void setPlanNum(Long planNum) {
+	/**
+	 * @param planNum the planNum to set
+	 */
+	public void setPlanNum(Double planNum) {
 		this.planNum = planNum;
 	}
 
-	public Long getCarNum() {
+	/**
+	 * @return the carNum
+	 */
+	public Double getCarNum() {
 		return carNum;
 	}
 
-	public void setCarNum(Long carNum) {
+	/**
+	 * @param carNum the carNum to set
+	 */
+	public void setCarNum(Double carNum) {
 		this.carNum = carNum;
 	}
 
-	public Long getCompleteNum() {
+	/**
+	 * @return the completeNum
+	 */
+	public Double getCompleteNum() {
 		return completeNum;
 	}
 
-	public void setCompleteNum(Long completeNum) {
+	/**
+	 * @param completeNum the completeNum to set
+	 */
+	public void setCompleteNum(Double completeNum) {
 		this.completeNum = completeNum;
 	}
 
@@ -583,27 +616,47 @@ public class ZgTorderbomEx extends BaseEntity {
 		this.carCode = carCode;
 	}
 
-	public Long getValidNum() {
+
+
+	/**
+	 * @return the validNum
+	 */
+	public Double getValidNum() {
 		return validNum;
 	}
 
-	public void setValidNum(Long validNum) {
+	/**
+	 * @param validNum the validNum to set
+	 */
+	public void setValidNum(Double validNum) {
 		this.validNum = validNum;
 	}
 
-	public Long getWaitBackNum() {
+	/**
+	 * @return the waitBackNum
+	 */
+	public Double getWaitBackNum() {
 		return waitBackNum;
 	}
 
-	public void setWaitBackNum(Long waitBackNum) {
+	/**
+	 * @param waitBackNum the waitBackNum to set
+	 */
+	public void setWaitBackNum(Double waitBackNum) {
 		this.waitBackNum = waitBackNum;
 	}
 
-	public Long getBackNum() {
+	/**
+	 * @return the backNum
+	 */
+	public Double getBackNum() {
 		return backNum;
 	}
 
-	public void setBackNum(Long backNum) {
+	/**
+	 * @param backNum the backNum to set
+	 */
+	public void setBackNum(Double backNum) {
 		this.backNum = backNum;
 	}
 

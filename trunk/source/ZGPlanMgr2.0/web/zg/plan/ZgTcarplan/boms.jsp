@@ -116,6 +116,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			josnString = josnString +'"msehl1":"'+msehl+'",';
 			josnString = josnString +'"meins":"'+meins+'",';
 			josnString = josnString +'"lgort_lableCn":"'+window.parent.lgortText+'",';
+			josnString = josnString +'"lgort":"'+window.parent.lgort+'",';
 			josnString = josnString +'"bomId_labelCn":"'+bomId_labelCn+'",';
 			josnString = josnString +'"idnrk":"'+idnrk+'",';
 			josnString = josnString +'"orderPlanId":"'+orderPlanId+'"}';

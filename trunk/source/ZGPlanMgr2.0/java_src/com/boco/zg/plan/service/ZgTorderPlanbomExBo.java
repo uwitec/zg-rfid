@@ -115,7 +115,7 @@ public class ZgTorderPlanbomExBo extends ZgTorderPlanbomBo{
 	 * @param orderPlanbomId
 	 * @param carPlanNum
 	 */
-	public boolean updatePlanNum(String orderPlanbomId, long carPlanNum) {
+	public boolean updatePlanNum(String orderPlanbomId, Double carPlanNum) {
 		return zgTorderPlanbomExDao.updatePlanNum(orderPlanbomId,carPlanNum) ;
 		
 	}

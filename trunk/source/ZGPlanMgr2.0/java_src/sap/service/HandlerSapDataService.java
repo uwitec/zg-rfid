@@ -119,6 +119,11 @@ public interface HandlerSapDataService {
 	 */
 	void handlerOrderInfoSyn(JCoTable synTable,int batchNo);
 
+	/**
+	 * @param batchNo
+	 */
+	void handleBatchSuppliersData(int batchNo);
+
 
 
 	

@@ -111,7 +111,7 @@ public class ZgTorderPlanbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.l
 	 * @param orderPlanbomId
 	 * @param carPlanNum
 	 */
-	public boolean updatePlanNum(String orderPlanbomId, long carPlanNum) {
+	public boolean updatePlanNum(String orderPlanbomId, Double carPlanNum) {
 		ZgTorderPlanbom entity=new ZgTorderPlanbom();
 		entity.setCuid(orderPlanbomId);
 		entity.setPlanNum(carPlanNum);
@@ -230,7 +230,7 @@ public class ZgTorderPlanbomExDao extends BaseIbatisDao<ZgTorderPlanbomEx,java.l
 	 * @param cuid planbom主键编号
 	 * @param moveNum 移单数量
 	 */
-	public void updateSourceBomNum(String cuid, Long moveNum) {
+	public void updateSourceBomNum(String cuid, Double moveNum) {
 		Map paramsBom=new HashMap();
 		paramsBom.put("cuid", cuid);
 		paramsBom.put("moveNum", moveNum);

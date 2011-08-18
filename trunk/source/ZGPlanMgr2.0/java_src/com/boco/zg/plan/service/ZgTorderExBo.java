@@ -296,8 +296,8 @@ public class ZgTorderExBo extends ZgTorderBo {
 				planbom.setTaskBomId(bom.getTaskBomId());
 				planbom.setState(PLAN_STATE_CREATE);
 				planbom.setCarNum(bom.getMenge());
-				planbom.setCompleteNum(0l);
-				planbom.setPlanNum(0l);
+				planbom.setCompleteNum(0d);
+				planbom.setPlanNum(0d);
 				zgTorderPlanbomDao.save(planbom);
 				count++;
 				

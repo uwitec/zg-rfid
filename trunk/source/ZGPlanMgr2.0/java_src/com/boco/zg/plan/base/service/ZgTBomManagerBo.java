@@ -151,19 +151,19 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 					if(Constants.OrderPlanType.RENEW.value().equals(planType)){
 						
 					}else {
-						zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+						zgTorderPlanbom.setWaitBackNum(Double.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
 					}
 					
 					if(planType.contains("BACK")){
 						
 					}else {
-						zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+						zgTorderPlanbom.setCarNum(Double.parseDouble(String.valueOf(obj.get("WAIT_BACK_NUM"))));
 					}
 					
 					//获取该退换料记录的主记录
 					ZgTorderPlanbom parentPlanbom=zgTorderPlanbomBo.getParentPlanBomByTaskBomId(String.valueOf(obj.get("CUID")));
 					if(!planType.equals(Constants.OrderPlanType.CHANGE.value())){//注：换料不需要汇总，因为一退一领备料数量是不会改变的
-						parentPlanbom.setWaitBackNum(parentPlanbom.getWaitBackNum()+Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+						parentPlanbom.setWaitBackNum(parentPlanbom.getWaitBackNum()+Double.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
 						zgTorderPlanbomBo.update(parentPlanbom);
 					}
 					
@@ -171,7 +171,7 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 					zgTorderPlanbom.setParentId(parentPlanbom.getCuid());
 					zgTorderPlanbom.setTaskBomId(String.valueOf(obj.get("CUID")));
 					zgTorderPlanbom.setOrderTaskId(zgTorderPlan.getOrderTaskId());
-					zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
+					zgTorderPlanbom.setStorageNum(0d);  
 					zgTorderPlanbom.setState("0");
 					zgTorderPlanbomBo.save1(zgTorderPlanbom);
 				}
@@ -200,13 +200,13 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 					if(Constants.OrderPlanType.RENEW.value().equals(planType)){//补领料时不需要退料
 						
 					}else {
-						zgTorderPlanbom.setWaitBackNum(Long.valueOf(obj.get("WAIT_BACK_NUM").toString()));
+						zgTorderPlanbom.setWaitBackNum(Double.valueOf(obj.get("WAIT_BACK_NUM").toString()));
 					}
 					
 					if(planType.contains("BACK")){//退料时不需要领料
 						
 					}else {
-						zgTorderPlanbom.setCarNum(Long.valueOf(obj.get("WAIT_BACK_NUM").toString()));
+						zgTorderPlanbom.setCarNum(Double.parseDouble(obj.get("WAIT_BACK_NUM").toString()));
 					}
 				   
 					zgTorderPlanbom.setZbz(IbatisDAOHelper.getStringValue(obj, "ZBZ"));
@@ -245,26 +245,26 @@ public class ZgTBomManagerBo extends BaseManager<ZgTorderPlan,java.lang.String>{
 					if(Constants.OrderPlanType.RENEW.value().equals(planType)){//补领料时不需要退料
 						
 					}else {
-						zgTorderPlanbom.setWaitBackNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+						zgTorderPlanbom.setWaitBackNum(Double.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
 					}
 					
 					if(planType.contains("BACK")){//退料时不需要领料
 						
 					}else {
-						zgTorderPlanbom.setCarNum(Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+						zgTorderPlanbom.setCarNum(Double.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
 					}
 						
 					//获取该退换料记录的主记录
 					ZgTorderPlanbom parentPlanbom=zgTorderPlanbomBo.getParentPlanBomByTaskBomId(String.valueOf(obj.get("CUID")));
 					if(!planType.equals(Constants.OrderPlanType.CHANGE.value())){//注：换料不需要汇总，因为一退一领备料数量是不会改变
-						parentPlanbom.setWaitBackNum(parentPlanbom.getWaitBackNum()+Long.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
+						parentPlanbom.setWaitBackNum(parentPlanbom.getWaitBackNum()+Double.valueOf(String.valueOf(obj.get("WAIT_BACK_NUM"))));
 						zgTorderPlanbomBo.update(parentPlanbom);
 					}
 					
 					
 					zgTorderPlanbom.setParentId(parentPlanbom.getCuid());
 					zgTorderPlanbom.setTaskBomId(String.valueOf(obj.get("CUID")));
-					zgTorderPlanbom.setStorageNum(Long.valueOf(0));  
+					zgTorderPlanbom.setStorageNum(0d);  
 					zgTorderPlanbom.setState("0");
 					zgTorderPlanbomBo.save1(zgTorderPlanbom);
 				}

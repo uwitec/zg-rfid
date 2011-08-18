@@ -856,8 +856,7 @@
 			 (select 1
 			          from zg_t_bom bom
 			         where bom.type = '2'
-			           and bom.idnrk = t.idnrk
-			           and nvl(bom.plantid, 'null') = nvl(t.lifnr, 'null'))
+			           and bom.idnrk = t.idnrk)
     </select>
     
       <select id="getForBatchEditBomList" resultClass="java.util.HashMap">
@@ -871,8 +870,6 @@
 			                       zbz,
 			                       zrzqd,
 			                       lgort,
-			                       plant,
-			                       Plantid,
 			                       MEINS
 			                  from zg_t_bom t
 			                 where t.type = '2'
@@ -884,21 +881,18 @@
 			                       temp.zbz,
 			                       temp.zrzqd,
 			                       temp.lgort,
-			                       Temp.name1,
-			                       temp.lifnr,
 			                       MEINS
 			                  from zg_t_bom_temp temp
 			                 where temp.batch_no = '$cuid$') w
-			         where w.idnrk = bt.idnrk
-			           and nvl(w.plantid, 'null') = nvl(bt.lifnr, 'null'))
+			         where w.idnrk = bt.idnrk)
 			   and bt.batch_no = '$cuid$'
     </select>
     
     <insert id="saveTbom" parameterClass="java.util.HashMap">
     <![CDATA[
-       insert into zg_t_bom(cuid,idnrk,maktx,msehl,matkl,zbz,zrzqd,lgort,plant,Plantid,TYPE,MEINS)
+       insert into zg_t_bom(cuid,idnrk,maktx,msehl,matkl,zbz,zrzqd,lgort,TYPE,MEINS)
 
-		values (sys_guid(),'$IDNRK$','$MAKTX2$','$MSEHL2$','$MATKL$','$ZBZ$','$ZRZQD$','$LGORT$','$NAME1$','$LIFNR$','2','$MEINS$')
+		values (sys_guid(),'$IDNRK$','$MAKTX2$','$MSEHL2$','$MATKL$','$ZBZ$','$ZRZQD$','$LGORT$','2','$MEINS$')
     ]]>
     	<selectKey resultClass="java.lang.String" type="pre" keyProperty="cuid" >
 			select sys_guid() AS ID FROM DUAL
@@ -916,13 +910,6 @@
 		       T.plant = '$NAME1$',
 		       T.MEINS = '$MEINS$'
 		 WHERE T.IDNRK = '$IDNRK$'
-		    <isNotEmpty prepend="AND" property="LIFNR">
-	       		   T.PLANTID = '$LIFNR$'
-       		</isNotEmpty>   
-       		<isEmpty prepend="AND" property="LIFNR">
-	       		T.PLANTID is null
-       		</isEmpty>   
-		 
     </update>
     
 </sqlMap>

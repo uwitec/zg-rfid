@@ -122,6 +122,7 @@ public class LoadRequestProcessThread implements Runnable {
 			//批量领料bom组件
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_03")) {
 				this.handlerBatchData();
+				this.handleBatchSuppliersData();
 			}
 			// 处理变更数据
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_04")) {
@@ -134,7 +135,7 @@ public class LoadRequestProcessThread implements Runnable {
 			
 			// 领料数据回传sap接口
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_05")) {
-				this.handlerSynOrderBOM();//TODO 实际部署时放开
+//				this.handlerSynOrderBOM();//TODO 实际部署时放开
 			}
 			
 			// 退料接口
@@ -397,6 +398,30 @@ public class LoadRequestProcessThread implements Runnable {
 		
 		try {
 			getHandlerSapDataService().handleSuppliersData(batchNo);
+		} catch (Exception e) {
+			log.error(batchNo+"  :",e);
+			throw e;
+		}finally{
+			//订单解锁
+			zgTorderLock.setAufnr("");
+			getZgTorderLockBo().update(zgTorderLock);
+		} 
+		
+	
+	}
+	/**
+	 * 更新供应商数据
+	 * @throws Exception 
+	 */
+	private void handleBatchSuppliersData() throws Exception {
+		
+		ZgTorderLock zgTorderLock=getZgTorderLockBo().getById("SUP");
+		//订单加锁，同步不允许领料
+		zgTorderLock.setAufnr("ALL");
+		getZgTorderLockBo().update(zgTorderLock);
+		
+		try {
+			getHandlerSapDataService().handleBatchSuppliersData(batchNo);
 		} catch (Exception e) {
 			log.error(batchNo+"  :",e);
 			throw e;

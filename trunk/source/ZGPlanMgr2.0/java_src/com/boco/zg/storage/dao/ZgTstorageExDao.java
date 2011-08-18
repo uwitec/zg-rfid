@@ -84,7 +84,7 @@ public class ZgTstorageExDao extends BaseIbatisDao<ZgTstorage,java.lang.String>{
 	 * @param bomOrderbomId bom表cuid
 	 * @param orderId 订单id
 	 */
-	public void updateBomOutNumForProductIn(String bomOrderbomId, String orderId,long outNum) {
+	public void updateBomOutNumForProductIn(String bomOrderbomId, String orderId,Double outNum) {
 		Map params=new HashMap();
 		params.put("orderId",orderId);
 		params.put("bomOrderbomId",bomOrderbomId);

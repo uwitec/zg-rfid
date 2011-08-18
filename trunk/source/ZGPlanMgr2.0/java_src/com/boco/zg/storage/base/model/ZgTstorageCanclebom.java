@@ -80,7 +80,7 @@ public class ZgTstorageCanclebom extends BaseEntity {
 	private RelatedModel storageId_related = new RelatedModel("ZG_T_STORAGE","CUID","LABEL_CN");
 	private java.lang.String storageId;
 	private java.lang.String orderBomId;
-	private java.lang.Long num;
+	private java.lang.Double num;
 	private java.lang.String zbz;
 
 	//columns END
@@ -143,13 +143,20 @@ public class ZgTstorageCanclebom extends BaseEntity {
 		this.storageId = value;
 	}
 
-	public java.lang.Long getNum() {
-		return this.num;
+	/**
+	 * @return the num
+	 */
+	public java.lang.Double getNum() {
+		return num;
 	}
-	
-	public void setNum(java.lang.Long value) {
-		this.num = value;
+
+	/**
+	 * @param num the num to set
+	 */
+	public void setNum(java.lang.Double num) {
+		this.num = num;
 	}
+
 	public java.lang.String getZbz() {
 		return this.zbz;
 	}

@@ -327,10 +327,10 @@ public class ZgTstoragebomAction extends BaseStruts2Action implements Preparable
 			
 			
 		
-			obj.setMenge(Long.parseLong((java.lang.String)params.get("menge")));
+			obj.setMenge(Double.parseDouble((java.lang.String)params.get("menge")));
 			obj.setOrderBomId((java.lang.String)params.get("orderBomId"));
 			obj.setZgTstorageId((java.lang.String)params.get("storageId"));
-			obj.setNum(Long.parseLong((java.lang.String)params.get("menge")));
+			obj.setNum(Double.parseDouble((java.lang.String)params.get("menge")));
 			obj.setIsModity(true);
 			bomEList.add(obj);
 		}

@@ -317,7 +317,8 @@ public class ZgTcarbomAction extends BaseStruts2Action implements Preparable,Mod
 					
 				
 				//获取供应商信息
-				List<ZgTcarbomSuppliers> suppliersLst=zgTbomManager.getSuppliersListByIdnrks(idnrks);
+//				List<ZgTcarbomSuppliers> suppliersLst=zgTbomManager.getSuppliersListByIdnrks(idnrks);
+				List<ZgTcarbomSuppliers> suppliersLst=zgTorderSuppliersBo.getBomSuppliersListByAufnrIdnrk("",idnrks);
 				
 				for(Map bom:bomList){
 					List<ZgTcarbomSuppliers> tempList=new ArrayList<ZgTcarbomSuppliers>();
@@ -343,7 +344,7 @@ public class ZgTcarbomAction extends BaseStruts2Action implements Preparable,Mod
 				
 				//获取供应商信息
 				List<ZgTcarbomSuppliers> suppliersLst=zgTcarbomSuppliersBo.getCarBomSuppliersListByCarbomIds(carBomIds);
-				
+
 				for(Map bom:bomList){
 					List<ZgTcarbomSuppliers> tempList=new ArrayList<ZgTcarbomSuppliers>();
 					for(ZgTcarbomSuppliers sup:suppliersLst){
@@ -383,7 +384,7 @@ public class ZgTcarbomAction extends BaseStruts2Action implements Preparable,Mod
 			
 			ZgTorderPlanbom planbom = zgTorderPlanbomBo.getById(orderPlanbomId);
 			planbom.setState(Constants.CarPlanStatus.SUBMIT.value());
-			planbom.setPlanNum(0L);
+			planbom.setPlanNum(0d);
 			zgTorderPlanbomBo.update(planbom);
 			
 			//删除装车计划bom
@@ -417,7 +418,7 @@ public class ZgTcarbomAction extends BaseStruts2Action implements Preparable,Mod
 //			bom.setOrderBomId(orderBomId);
 //			bom.setOrderId(orderId);
 			bom.setPlanNum(planbom.getCarNum()-planbom.getCompleteNum());
-			bom.setRealNum(0l);
+			bom.setRealNum(0d);
 			bom.setOrderPlanbomId(orderPlanbomId);
 			zgTcarbomBo.save(bom);
 		}

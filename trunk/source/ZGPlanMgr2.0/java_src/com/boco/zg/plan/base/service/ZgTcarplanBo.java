@@ -106,7 +106,7 @@ public class ZgTcarplanBo extends BaseManager<ZgTcarplan,java.lang.String>{
 			if(log.isInfoEnabled()){
 				log.info("取消装车计划 orderPlanbomId:"+orderPlanbomId);
 			}
-			long carPlanNum=Long.parseLong(map.get("CAR_PLAN_NUM").toString());
+			Double carPlanNum=Double.parseDouble(map.get("CAR_PLAN_NUM").toString());
 			zgTorderPlanbomExBo.updatePlanNum(orderPlanbomId,carPlanNum);
 		}
 		//!-->

@@ -185,7 +185,7 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 				String taskSortf=getPlantSortfMap().get(orderTask.getPlant());
 				if(taskSortf!=null&&taskSortf.equals(sortf)){
 					//插入工单任务BOM ZG_T_ORDER_TASKBOM
-					Long menge=orderTask.getPmenge()*orderbom.getZdtyl();
+					Double menge=orderTask.getPmenge()*orderbom.getZdtyl();
 					ZgTorderTaskbom taskbom=getHandlerOrderServiceImpl().saveZgTorderTaskBom(orderTask.getCuid(),menge , bomId);
 					
 					//该BOM插入领料计划中
@@ -241,7 +241,7 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 				String taskSortf=getPlantSortfMap().get(orderTask.getPlant());
 				if(taskSortf!=null&&taskSortf.equals(sortf)){
 					//插入工单任务BOM ZG_T_ORDER_TASKBOM
-					Long menge=orderTask.getPmenge()*orderbom.getZdtyl();
+					Double menge=orderTask.getPmenge()*orderbom.getZdtyl();
 					ZgTorderTaskbom taskbom=getHandlerOrderServiceImpl().saveZgTorderTaskBom(orderTask.getCuid(),menge , bomId);
 					
 					//该BOM插入领料计划中
@@ -440,7 +440,7 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	 * @return
 	 */
 
-	public boolean checkStateForGenerateRightNum(Long num, String idnrk,
+	public boolean checkStateForGenerateRightNum(Double num, String idnrk,
 			String aufnr) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select * from ZG_T_ORDERBOM t where t.idnrk ='" + idnrk
@@ -459,7 +459,7 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	 * @return
 	 */
 	public boolean checkStateForGenerateBomNum(String aufnr, String idnrk,
-			long num,String lgort) {
+			Double num,String lgort) {
 		StringBuffer sql = new StringBuffer();
 		sql.append("select * from ZG_T_STORAGE_STAT m,ZG_T_ORDERBOM t where (nvl(m.NUM,0)-nvl(m.OUTNUM,0)) >="
 						+ num
@@ -625,17 +625,17 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 			ZgTorder tartgTorder=new ZgTorder();
 			tartgTorder.setCuid(targetOrderTaskId);
 			List<Map> bomList=zgTorderbomExDao.getTargetBomListByOrderIdAndIdnrk(planbom.getIdnrk(),targetOrderTaskId);
-			Long moveNum=planbom.getMoveNum();
+			Double moveNum=planbom.getMoveNum();
 			for(Map bom:bomList){
-				Long maxMoveNum=IbatisDAOHelper.getLongValue(bom,"MAXMOVENUM");
-				String planbomId=IbatisDAOHelper.getStringValue(bom, "CUID");
+				Double maxMoveNum=Double.parseDouble(bom.get("MAXMOVENUM").toString());
+				String planbomId=(String) bom.get("CUID");
 				if(moveNum>0){
-					Long realMoveNum=0l;
+					Double realMoveNum=0d;
 					if(maxMoveNum>=moveNum){
 						
 						realMoveNum=moveNum;
 						doMoveTargetBom(planbomId,moveNum);
-						moveNum=0l;
+						moveNum=0d;
 					}else {
 						realMoveNum=maxMoveNum;
 						doMoveTargetBom(planbomId,maxMoveNum);
@@ -672,7 +672,7 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	 * @param cuid
 	 * @param moveNum
 	 */
-	private void doMoveTargetBom(String planbomID, Long moveNum) {
+	private void doMoveTargetBom(String planbomID, Double moveNum) {
 		ZgTorderPlanbom tempPlanbom=zgTorderPlanbomBo.getById(planbomID);
 		tempPlanbom.setMoveNumIn(tempPlanbom.getMoveNumIn()+moveNum);
 		tempPlanbom.setPlanNum(tempPlanbom.getPlanNum()+moveNum);
@@ -700,11 +700,11 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 			if(tempPlanbom.getWaitBackNum()-planbom.getMoveNum()>=0){
 				tempPlanbom.setWaitBackNum(tempPlanbom.getWaitBackNum()-planbom.getMoveNum());
 			}else {
-				tempPlanbom.setWaitBackNum(0l);
+				tempPlanbom.setWaitBackNum(0d);
 			}
 			
 			//生成退料子记录
-			Long manulWaitBackNum=getZgTorderPlanbomBo().getManulWaitBackNumByPbId(planbom.getCuid());
+			Double manulWaitBackNum=getZgTorderPlanbomBo().getManulWaitBackNumByPbId(planbom.getCuid());
 			getZgTorderPlanbomBo().generateWaiBackBom(tempPlanbom,manulWaitBackNum);
 			
 		}

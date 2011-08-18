@@ -116,16 +116,7 @@
 		       fw_operator     emp,
 		       fw_organization org,
            fw_employee     emo
-		 where   exists
-           (select 1
-                    from zg_t_virtualorg vorg, zg_t_virtualorg_employee vemp
-                   where vorg.cuid = vemp.org_id
-                     and vorg.org_id = t.plant
-               <isNotEqual property="operatorId" compareValue="0">
-           				 and  vemp.user_id = '$operatorId$'
-			    </isNotEqual>
-                     )
-		 	and t.order_task_id = task.cuid
+		 where   t.order_task_id = task.cuid
 		  and t.user_id = emp.cuid(+)
 		   and emo.cuid(+)=t.user_id
            and emo.org_id=org.cuid(+)
@@ -164,16 +155,7 @@
 		       fw_operator     emp,
 		       fw_organization org,
            fw_employee     emo
-		 where  exists
-           (select 1
-                    from zg_t_virtualorg vorg, zg_t_virtualorg_employee vemp
-                   where vorg.cuid = vemp.org_id
-                     and vorg.org_id = t.plant
-               <isNotEqual property="operatorId" compareValue="0">
-           				 and  vemp.user_id = '$operatorId$'
-			    </isNotEqual>
-                     )
-		 	and t.order_task_id = task.cuid
+		 where   t.order_task_id = task.cuid
 		   and t.user_id = emp.cuid(+)
 		   and emo.cuid(+)=t.user_id
            and emo.org_id=org.cuid(+)
@@ -212,16 +194,7 @@
 		       fw_operator     emp,
 		       fw_organization org,
            fw_employee     emo
-		 where   exists
-           (select 1
-                    from zg_t_virtualorg vorg, zg_t_virtualorg_employee vemp
-                   where vorg.cuid = vemp.org_id
-                     and vorg.org_id = t.plant
-               <isNotEqual property="operatorId" compareValue="0">
-           				 and  vemp.user_id = '$operatorId$'
-			    </isNotEqual>
-                     )
-		 	and t.order_task_id = task.cuid
+		 where   t.order_task_id = task.cuid
 		 and t.user_id = emp.cuid(+)
 		   and emo.cuid(+)=t.user_id
            and emo.org_id=org.cuid(+)
@@ -243,16 +216,8 @@
 		       fw_operator     emp,
 		       fw_organization org,
            fw_employee     emo
-		 where  exists
-           (select 1
-                    from zg_t_virtualorg vorg, zg_t_virtualorg_employee vemp
-                   where vorg.cuid = vemp.org_id
-                     and vorg.org_id = t.plant
-               <isNotEqual property="operatorId" compareValue="0">
-           				 and  vemp.user_id = '$operatorId$'
-			    </isNotEqual>
-                     )
-		 	and t.order_task_id = task.cuid
+		 where  
+		 	 t.order_task_id = task.cuid
 		  and t.user_id = emp.cuid(+)
 		   and emo.cuid(+)=t.user_id
            and emo.org_id=org.cuid(+)

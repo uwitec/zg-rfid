@@ -75,8 +75,8 @@ public class AuditingForBatchExBo extends BaseManager<ZgTorderPlanEx,java.lang.S
 //			bom.setOrderBomId(obj.getOrderBomId());//TODO TASKBOMID
 			bom.setOrderPlanbomId(obj.getCuid());
 //			bom.setOrderId(obj.getOrderId());
-			bom.setPlanNum(Long.parseLong(obj.getMenge()));
-			bom.setRealNum(0l);
+			bom.setPlanNum(Double.parseDouble(obj.getMenge()));
+			bom.setRealNum(0d);
 			zgTcarbomBo.save(bom);
 		}
 		updateOrderPlanState(orderPlanId,"8");

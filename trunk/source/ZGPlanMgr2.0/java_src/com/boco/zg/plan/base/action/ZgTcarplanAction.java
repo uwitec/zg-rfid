@@ -707,7 +707,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		
 	
 
-		Long carEdNum=0l;//已装车数量
+		Double carEdNum=0d;//已装车数量
 		//if(bomList.size()==0){//原来装车bom为空时，则计算目前新添加的bom的装车数量
 		for(Map bom:newBomList){
 //			if(bomCuids.contains(IbatisDAOHelper.getStringValue(bom, "ORDER_BOM_ID"))){//只计算本次点击的bom默认装车数量
@@ -723,8 +723,8 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 //			}
 			
 			//modify by wengqin 20110516 0903 所有物料默认装车规格装车数量
-			Long carCount=Long.parseLong(bom.get("CARCOUNT").toString());//每车可以装车 的数量
-			Long maxValue=Long.parseLong(bom.get("MAX_VALUE").toString());//该物料目前可以装车的数量
+			Double carCount=Double.parseDouble(bom.get("CARCOUNT").toString());//每车可以装车 的数量
+			Double maxValue=Double.parseDouble(bom.get("MAX_VALUE").toString());//该物料目前可以装车的数量
 			if(maxValue<=carCount){
 				bom.put("CAR_PLAN_NUM", maxValue);
 			}else {
@@ -754,6 +754,9 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		//获取供应商信息
 		List<ZgTcarbomSuppliers> suppliersLst=zgTorderSuppliersBo.getBomSuppliersListByAufnrIdnrk(aufnrs,idnrks);
 		
+
+		
+		
 		for(Map bom:newBomList){
 			List<ZgTcarbomSuppliers> tempList=new ArrayList<ZgTcarbomSuppliers>();
 			String aufnr=bom.get("AUFNR").toString();
@@ -765,7 +768,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 			}
 			
 			if(tempList.size()==1){//只有一个供应商，则默认该供应商数量和领料数量一样
-				tempList.get(0).setCarNum(bom.get("MAX_VALUE")==null?0l:Long.parseLong(bom.get("CAR_PLAN_NUM").toString()));
+				tempList.get(0).setCarNum(bom.get("MAX_VALUE")==null?0l:Double.parseDouble(bom.get("CAR_PLAN_NUM").toString()));
 			}
 			bom.put("subList", tempList);
 		}
@@ -779,6 +782,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		
 		getRequest().setAttribute("bomList", bomList);
 		String[]  aufnrArbpls =zgTcarplanExBo.getAufnrsByorderBomIds(bomList);
+		
 		getRequest().setAttribute("aufnrs", aufnrArbpls[0]);
 		getRequest().setAttribute("arbpls", aufnrArbpls[1]);
 		getRequest().setAttribute("kdauf", aufnrArbpls[2]);
@@ -1172,7 +1176,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		
 		
 		
-		Long carEdNum=0l;//已装车数量
+		Double carEdNum=0d;//已装车数量
 		//if(bomList.size()==0){//原来装车bom为空时，则计算目前新添加的bom的装车数量
 			for(Map bom:newBomList){
 //				if(bomCuids.contains(IbatisDAOHelper.getStringValue(bom, "ORDER_BOM_ID"))){//只计算本次点击的bom默认装车数量
@@ -1188,8 +1192,8 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 //				}
 				
 				//modify by wengqin 20110516 0903 所有物料默认装车规格装车数量
-				Long carCount=Long.parseLong(bom.get("CARCOUNT").toString());//每车可以装车 的数量
-				Long maxValue=Long.parseLong(bom.get("MAX_VALUE").toString());//该物料目前可以装车的数量
+				Double carCount=Double.parseDouble(bom.get("CARCOUNT").toString());//每车可以装车 的数量
+				Double maxValue=Double.parseDouble(bom.get("MAX_VALUE").toString());//该物料目前可以装车的数量
 				if(maxValue<=carCount){
 					bom.put("CAR_PLAN_NUM", maxValue);
 				}else {
@@ -1228,7 +1232,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 				}
 				
 				if(tempList.size()==1){//只有一个供应商，则默认该供应商数量和领料数量一样
-					tempList.get(0).setCarNum(bom.get("CAR_PLAN_NUM")==null?0l:Long.parseLong(bom.get("CAR_PLAN_NUM").toString()));
+					tempList.get(0).setCarNum(bom.get("CAR_PLAN_NUM")==null?0l:Double.parseDouble(bom.get("CAR_PLAN_NUM").toString()));
 				}
 				bom.put("subList", tempList);
 			}
@@ -1239,6 +1243,7 @@ public class ZgTcarplanAction extends BaseStruts2Action implements Preparable,Mo
 		
 		for(Map bom:newBomList){
 			bomList.add(bom);
+			
 		}
 		
 		//获取物料所对应的订单
