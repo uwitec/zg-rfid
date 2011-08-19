@@ -683,7 +683,7 @@ public class LoadRequestProcessThread implements Runnable {
 					String plant=IbatisDAOHelper.getStringValue(map, "PLANT","");
 					Long orderCou=IbatisDAOHelper.getLongValue(map, "COU");
 					
-					if(aufnr.equals("1000020172")){
+					if(aufnr.equals("6000090599")){
 						System.out.println("");
 					}
 					

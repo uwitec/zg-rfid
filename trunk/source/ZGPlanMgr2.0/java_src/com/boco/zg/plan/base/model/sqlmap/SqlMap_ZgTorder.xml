@@ -1882,7 +1882,7 @@
 	        		t0.freeze as t0_freeze,
 	        		t0.ARBPL1 as t0_ARBPL1,
 	        		task.cuid as t0_taskid,
-	        		task.poskey as t0_poskey
+	        		task.poskey as t0_poskey,task.flag
 	        from 
 	        ZG_T_ORDER t0,zg_t_order_task task
 	        where t0.cuid=task.order_id(+)
@@ -1898,8 +1898,8 @@
        		</isNotEmpty>
        		
 	       
-	<![CDATA[        and task.flag<>'-1'
- ) m
+	<![CDATA[        
+ ) m order by m.flag desc
         ]]>
     </select>
     
