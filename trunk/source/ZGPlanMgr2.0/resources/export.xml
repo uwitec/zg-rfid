@@ -169,7 +169,7 @@
          where  t.idnrk = bom.idnrk
            and bom.lgort = org.cuid(+)
            and bom.matkl = mat.id
-           and (bom.car_id is null or  bom.carnum is null)
+           and (bom.car_id is null or  bom.carnum is null or bom.carnum=0)
            and zto.cuid=t.order_id
            order by  bom.lgort,bom.matkl
           ]]>
@@ -599,7 +599,7 @@
             select   
          bom.idnrk,
          bom.maktx,
-         bom.lgort,
+         planbom.extend1 lgort,
          org1.label_cn logName,
          sup.lifnr,
        sum(nvl(sup.car_num,0)) complete_num,
@@ -615,7 +615,7 @@
          fw_organization org,
          fw_organization org1
    where
-     org1.cuid=bom.lgort
+     org1.cuid(+)=planbom.extend1
     and carbom.car_plan_id = carplan.cuid
    	 and em.cuid=carplan.car_user
    	and em.org_id=org.cuid
@@ -655,14 +655,14 @@
 	       		and  sup.lifnr_name like  '%#suppliers#%'
        		</isNotEmpty> 
        		
-       			<isNotEmpty id="lgort">
+       		<isNotEmpty id="lgort">
 	       		and  bom.lgort in ('#lgort#')
        		</isNotEmpty> 
        		
        		 <isEmpty id="null">
        		 group by  bom.idnrk,
 		         bom.maktx,
-		         bom.lgort,
+		         planbom.extend1,
 		         sup.lifnr,
 		         sup.lifnr_name,org.label_cn,
 		         org1.label_cn,planbom.msehl
@@ -709,7 +709,7 @@
             select   
          bom.idnrk,
          bom.maktx,
-         bom.lgort,
+         planbom.extend1 lgort,
          org1.label_cn lgortName,
          sup.lifnr,
          sup.car_num complete_num,
@@ -734,7 +734,7 @@
          fw_employee em,
          fw_organization org,
           fw_organization org1
-   where org1.cuid=bom.lgort
+   where org1.cuid=planbom.extend1(+)
      and op.cuid(+) = carplan.car_user
       and em.cuid(+)=carplan.car_user
      and org.cuid(+)=em.org_id

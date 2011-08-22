@@ -211,6 +211,9 @@ public class ZgTorderbomExBo extends ZgTorderbomBo {
 	 * @return
 	 */
 	public String updateOrderBomSortf1(String bomId, String sortf) {
+		if("D38D564040224443B3E93743D71A5336".equals(bomId)){
+			System.out.println();
+		}
 		ZgTorderbom orderbom = (ZgTorderbom) zgTorderbomDao.getById(bomId);
 		if(!sortf.equals(orderbom.getSortf())){
 			//删除原排序字符串相应的planbom

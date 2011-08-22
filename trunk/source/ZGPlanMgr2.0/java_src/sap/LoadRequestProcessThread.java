@@ -135,7 +135,7 @@ public class LoadRequestProcessThread implements Runnable {
 			
 			// 领料数据回传sap接口
 			if (functionName.equals("ZSTFC_CONNECTION_RFID_05")) {
-//				this.handlerSynOrderBOM();//TODO 实际部署时放开
+				this.handlerSynOrderBOM();//TODO 实际部署时放开
 			}
 			
 			// 退料接口

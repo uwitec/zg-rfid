@@ -148,8 +148,10 @@ public class SapClient extends Object {
         {
             function.execute(destination);
 			JCoTable table = function.getTableParameterList().getTable("ZBMAT");
+			JCoTable table1 = function.getTableParameterList().getTable("ZGYS");
 //			sapBusiService.parseDataXls(table, functionName, "",batchNo);
 			sapBusiService.parseData(table,functionName,"",batchNo);
+			sapBusiService.parseData(table1,functionName,"",batchNo);
         }
         catch(AbapException e)
         {
