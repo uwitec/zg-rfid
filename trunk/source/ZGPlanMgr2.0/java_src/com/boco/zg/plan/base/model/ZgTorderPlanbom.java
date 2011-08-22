@@ -426,7 +426,7 @@ public class ZgTorderPlanbom extends BaseEntity {
 	 * @return the planNum
 	 */
 	public java.lang.Double getPlanNum() {
-		return planNum;
+		return planNum==null?0d:planNum;
 	}
 
 	/**
