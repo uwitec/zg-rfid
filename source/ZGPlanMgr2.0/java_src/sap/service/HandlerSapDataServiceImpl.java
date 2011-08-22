@@ -280,7 +280,7 @@ public class HandlerSapDataServiceImpl implements HandlerSapDataService {
 		sql.append("    from (select distinct t.IDNRK,   t.MAKTX2, t.MATKL, t.LGORT,  t.MSEHL2 ,t.matkl_self              ");
 		sql.append("            from zg_t_orderbom t                                                         ");
 		sql.append("           where t.matkl is not null                                                     ");
-		sql.append("           and t.lgort is not null and                                                   ");
+		sql.append("           and                                                   ");
 		sql.append("          not exists (select 1 from zg_t_bom bom where bom.idnrk=t.idnrk                 ");
 		sql.append("          )     ) temp                       ");
 	    this.baseDao.executeSql(sql.toString());

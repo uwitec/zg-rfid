@@ -312,7 +312,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							<input type="checkbox" name="items" value="id=${obj.cuid}&"/> 
 							</c:if>
 						</td>
-						<c:if test="${empty obj.carNum}">
+						<c:if test="${empty obj.carNum || obj.carNum=='0'}">
 							<td align="left" style="color:red"   ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">
 							<c:if test="${orderbom.key.idnrk ne matnr}">
 								<input type="checkbox" name="items" value="id=${obj.cuid}&"/>
@@ -349,7 +349,7 @@ String expandIcon = basePath+"/resources/images/frame/ico_expand.gif";
 							</td>
 							<td align="center" style="color:red" ondblclick="carSet('${obj.idnrk}','${obj.matkl }')">${obj.zbz}</td>		
 						</c:if>
-						<c:if test="${not empty obj.carNum}">
+						<c:if test="${not empty obj.carNum &&obj.carNum!= '0'}">
 							<td align="left">
 							<c:if test="${orderbom.key.idnrk ne matnr}">
 								<input type="checkbox" name="items" value="id=${obj.cuid}&"/>

@@ -27,7 +27,7 @@ public class SapDataTestAction extends BaseStruts2Action
 	{
 		int batchNo = getBaseDao().getSeq("SEQ_BATCH_NO");
 		try {
-			this.writeExcelBgDataToDb(batchNo);
+//			this.writeExcelBgDataToDb(batchNo);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -92,7 +92,7 @@ public class SapDataTestAction extends BaseStruts2Action
 		int batchNo = getBaseDao().getSeq("SEQ_BATCH_NO");
 		TsysIfaceLog tsysIfaceLog = beforeInvokeDeal("ZSTFC_CONNECTION_RFID_02",batchNo);
 		try {
-//			this.writeExcelPxDataToDb(batchNo);
+			this.writeExcelPxDataToDb(batchNo);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
